@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# OS junk files
+.DS_Store
+Thumbs.db
