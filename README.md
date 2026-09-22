@@ -1,4 +1,4 @@
-# Vampire Survivors 2D
+# Sector Cero
 
 Proyecto académico para la asignatura "Demostra el teu talent": una experiencia
 interactiva que demuestra nuestras capacidades como desarrolladores de
@@ -6,10 +6,17 @@ videojuegos.
 
 ## Descripción
 
-Un "survivors-like" en 2D con vista cenital. El jugador solo
-controla el movimiento; las armas atacan solas. Oleadas de enemigos que persiguen
-al jugador, sueltan gemas de experiencia, se sube de nivel y se eligen mejoras.
-Partida cronometrada de 10-15 minutos con un jefe final.
+Un "survivors-like" en 2D con vista cenital, ambientado dentro de un ordenador
+infectado. Encarnas un proceso antivirus que defiende el sector de arranque de
+oleadas de malware: bits corruptos, paquetes perdidos, gusanos y procesos
+colgados.
+
+El jugador solo controla el movimiento; las armas atacan solas. Los enemigos
+sueltan fragmentos de datos que dan experiencia, se sube de nivel y se eligen
+mejoras. Partida cronometrada de 10-15 minutos que termina con un jefe final.
+
+Estética: geométrica y de neón sobre fondo oscuro, con post-proceso de CRT y
+tipografía monoespaciada.
 
 ## Equipo
 
