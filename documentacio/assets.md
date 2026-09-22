@@ -25,13 +25,15 @@ Los élites y el jefe sí son nodos normales y pueden llevar animación.
 
 ### Enemigos de horda
 
+Tres tipos en el MVP. Cubren los tres comportamientos básicos del género
+(numeroso, rápido y resistente), que es suficiente para que las oleadas se noten
+distintas entre sí.
+
 | Sprite | Tamaño | Rol |
 |---|---|---|
 | Bit corrupto | 24×24 | Básico, lento, muy numeroso |
 | Paquete perdido | 24×24 | Rápido y frágil |
 | Proceso colgado | 40×40 | Lento y resistente |
-| Gusano | 32×32 | Se divide en dos al morir |
-| Popup | 20×20 | Enjambre muy rápido, muere de un golpe |
 
 ### Élites y jefe
 
@@ -53,15 +55,14 @@ contorno por shader sobre el mismo sprite.
 
 ### Armas y proyectiles
 
-Las evoluciones son el mismo sprite recoloreado y escalado, no dibujos nuevos.
+Dos armas en el MVP, elegidas por contraste: una de corto alcance que premia
+meterse entre los enemigos, y una a distancia. Las evoluciones son el mismo
+sprite recoloreado y escalado, no dibujos nuevos.
 
 | Arma | Sprite | Comportamiento |
 |---|---|---|
 | Firewall | Anillo 96×96 | Aura permanente alrededor del jugador |
-| Escáner | Haz 128×16 | Barrido giratorio |
 | Ping | Punto 12×12 | Proyectil que rebota |
-| Cuarentena | Zona 80×80 | Área que se deja en el suelo |
-| Purga | Destello 48×48 | Golpea a un enemigo cercano al azar |
 
 ### Recogibles
 
@@ -117,22 +118,29 @@ Las evoluciones son el mismo sprite recoloreado y escalado, no dibujos nuevos.
 
 ## Opcional, solo si sobra tiempo
 
-- Decoración del suelo: chips, condensadores, pistas sueltas (3-4 sprites)
-- Dos tipos de enemigo de horda adicionales
-- Un segundo jefe intermedio
-- Iconografía para la pantalla de resultados
-- Variantes de color del escenario según el minuto de partida
+Por orden de prioridad si hay margen:
+
+1. **Dos armas más**: Escáner (haz 128×16, barrido giratorio) y Cuarentena
+   (zona 80×80 que se deja en el suelo). Son las que más falta hacen, porque el
+   elemento diferencial del proyecto depende de que diversificar armas sea una
+   decisión real
+2. Dos tipos de enemigo de horda más: Gusano (32×32, se divide al morir) y
+   Popup (20×20, enjambre muy rápido)
+3. Quinta arma: Purga (destello 48×48, golpea a un enemigo cercano al azar)
+4. Decoración del suelo: chips, condensadores, pistas sueltas (3-4 sprites)
+5. Un segundo jefe intermedio
+6. Iconografía para la pantalla de resultados
+7. Variantes de color del escenario según el minuto de partida
 
 ---
 
 ## Orden de recorte
 
-La lista de arriba ya es bastante trabajo para las horas disponibles. Si no se
-llega, se recorta en este orden:
+Si aun así no se llega, se recorta en este orden:
 
-1. Los tipos de enemigo de horda 4º y 5º (gusano y popup)
-2. La segunda música
-3. Los fotogramas de animación de los élites
+1. La segunda música
+2. Los fotogramas de animación de los élites
+3. El borde decorado de la arena
 
 Lo último que se toca son **la tipografía y el shader de CRT**, porque son los
 que sostienen que el juego parezca una pieza coherente y no un conjunto de

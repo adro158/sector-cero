@@ -151,7 +151,10 @@ ejecutar el proyecto sin abrir Godot. Descubrir problemas de exportación en la
 última semana sería el peor momento posible, por lo que hay una exportación de
 prueba planificada ya en la Fita 2.
 
-**Alcance del contenido.** Cinco tipos de enemigo de horda y cinco armas es
-ambicioso. Si el tiempo aprieta, se recorta contenido (tipos de enemigo, armas)
-antes que sistemas, porque el enunciado valora más un proyecto pequeño y acabado
-que uno grande e incompleto.
+**El elemento diferencial necesita variedad de armas.** La resistencia adaptativa
+del malware obliga a diversificar, pero con solo dos armas "diversificar" se
+reduce a alternar entre dos opciones, que es una decisión pobre. Dos armas bastan
+para el MVP y para el bucle de juego, pero la mecánica diferencial —que vale 15
+puntos— luce de verdad a partir de tres o cuatro. Como el sistema de armas es
+data-driven, añadir la tercera y la cuarta debería costar poco una vez esté
+construido: es la primera ampliación a la que recurrir si sobra tiempo.
