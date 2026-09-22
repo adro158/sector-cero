@@ -3,13 +3,14 @@ extends Node2D
 const MAXIMO_GEMAS := 800
 
 @export var tamano: float = 10.0
-@export var experiencia: int = 1
 @export var radio_iman: float = 100.0
 @export var radio_recogida: float = 18.0
 @export var velocidad_iman: float = 420.0
 
 var _posiciones := PackedVector2Array()
+var _valores := PackedInt32Array()
 var _vivas := 0
+var _experiencia_por_tipo := {}
 var _jugador: Node2D
 
 @onready var _gemas: MultiMeshInstance2D = $Gemas
@@ -18,7 +19,11 @@ var _jugador: Node2D
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_posiciones.resize(MAXIMO_GEMAS)
+	_valores.resize(MAXIMO_GEMAS)
 	_preparar_multimesh()
+
+	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
+		_experiencia_por_tipo[gestor.datos.tipo] = gestor.datos.experiencia
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 
 
@@ -35,11 +40,12 @@ func _preparar_multimesh() -> void:
 	_gemas.multimesh = multimesh
 
 
-func _al_morir_enemigo(posicion: Vector2, _tipo: String) -> void:
+func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 	if _vivas >= MAXIMO_GEMAS:
 		return
 
 	_posiciones[_vivas] = posicion
+	_valores[_vivas] = _experiencia_por_tipo.get(tipo, 1)
 	_vivas += 1
 
 
@@ -53,7 +59,7 @@ func _physics_process(delta: float) -> void:
 		var distancia := _posiciones[i].distance_to(objetivo)
 
 		if distancia < radio_recogida:
-			BusEventos.experiencia_ganada.emit(experiencia)
+			BusEventos.experiencia_ganada.emit(_valores[i])
 			_eliminar(i)
 		elif distancia < radio_iman:
 			_posiciones[i] = _posiciones[i].move_toward(objetivo, velocidad_iman * delta)
@@ -66,6 +72,7 @@ func _physics_process(delta: float) -> void:
 func _eliminar(indice: int) -> void:
 	_vivas -= 1
 	_posiciones[indice] = _posiciones[_vivas]
+	_valores[indice] = _valores[_vivas]
 
 
 func _volcar_al_multimesh() -> void:

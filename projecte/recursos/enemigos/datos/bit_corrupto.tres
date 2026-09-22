@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
+
+[resource]
+script = ExtResource("1_tipo")
+tipo = "bit_corrupto"
+vida = 20.0
+velocidad = 85.0
+tamano = 24.0
+color = Color(0.9, 0.3, 0.45, 1)
+dano_contacto = 8.0
+experiencia = 1
+tiempo_aparicion = 0.0

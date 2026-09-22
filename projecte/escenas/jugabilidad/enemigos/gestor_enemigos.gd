@@ -1,16 +1,11 @@
 class_name GestorEnemigos
 extends Node2D
 
-const MAXIMO_ENEMIGOS := 500
+const MAXIMO_ENEMIGOS := 400
 
-@export var tipo: String = "bit_corrupto"
-@export var velocidad: float = 90.0
-@export var tamano: float = 24.0
-@export var vida: float = 20.0
+@export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
 @export var fuerza_separacion: float = 1.8
-@export var radio_contacto: float = 28.0
-@export var dano_contacto: float = 8.0
 
 var _posiciones := PackedVector2Array()
 var _vidas := PackedFloat32Array()
@@ -31,9 +26,28 @@ func _ready() -> void:
 	_preparar_multimesh()
 
 
+func tiempo_aparicion() -> float:
+	return datos.tiempo_aparicion
+
+
+func aparecer(posicion: Vector2) -> void:
+	if _vivos >= MAXIMO_ENEMIGOS:
+		return
+
+	_posiciones[_vivos] = posicion
+	_vidas[_vivos] = datos.vida
+	_vivos += 1
+
+
+func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> void:
+	for i in _rejilla.indices_cerca(centro, radio):
+		if _posiciones[i].distance_to(centro) < radio:
+			_vidas[i] -= cantidad
+
+
 func _preparar_multimesh() -> void:
 	var malla := QuadMesh.new()
-	malla.size = Vector2(tamano, tamano)
+	malla.size = Vector2(datos.tamano, datos.tamano)
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
@@ -42,21 +56,7 @@ func _preparar_multimesh() -> void:
 	multimesh.visible_instance_count = 0
 
 	_horda.multimesh = multimesh
-
-
-func aparecer(posicion: Vector2) -> void:
-	if _vivos >= MAXIMO_ENEMIGOS:
-		return
-
-	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = vida
-	_vivos += 1
-
-
-func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> void:
-	for i in _rejilla.indices_cerca(centro, radio):
-		if _posiciones[i].distance_to(centro) < radio:
-			_vidas[i] -= cantidad
+	_horda.modulate = datos.color
 
 
 func _physics_process(delta: float) -> void:
@@ -88,7 +88,7 @@ func _mover(delta: float) -> void:
 		# normalizara, la separación solo podría girar la dirección y nunca
 		# llegaría a vencer al impulso hacia el jugador, que es justo lo que
 		# hace falta cuando dos enemigos están encima el uno del otro.
-		_posiciones[i] += (hacia_jugador + empuje) * velocidad * delta
+		_posiciones[i] += (hacia_jugador + empuje) * datos.velocidad * delta
 
 
 func _separacion(indice: int) -> Vector2:
@@ -111,12 +111,13 @@ func _separacion(indice: int) -> Vector2:
 
 func _danar_jugador() -> void:
 	var posicion_jugador := _jugador.global_position
+	var radio_contacto := datos.tamano * 0.5 + 16.0
 
 	for i in _rejilla.indices_cerca(posicion_jugador, radio_contacto):
 		if _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
 			# Basta con el primero que toque: el golpe activa la invulnerabilidad
 			# y los demás del montón no harían nada.
-			_salud_jugador.recibir_dano(dano_contacto)
+			_salud_jugador.recibir_dano(datos.dano_contacto)
 			return
 
 
@@ -127,7 +128,7 @@ func _retirar_muertos() -> void:
 
 	while i >= 0:
 		if _vidas[i] <= 0.0:
-			BusEventos.enemigo_muerto.emit(_posiciones[i], tipo)
+			BusEventos.enemigo_muerto.emit(_posiciones[i], datos.tipo)
 			_eliminar(i)
 		i -= 1
 

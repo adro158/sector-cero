@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
+
+[resource]
+script = ExtResource("1_tipo")
+tipo = "paquete_perdido"
+vida = 10.0
+velocidad = 165.0
+tamano = 20.0
+color = Color(0.95, 0.65, 0.25, 1)
+dano_contacto = 6.0
+experiencia = 2
+tiempo_aparicion = 45.0
