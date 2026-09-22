@@ -5,10 +5,13 @@ const MAXIMO_ENEMIGOS := 500
 
 @export var velocidad: float = 90.0
 @export var tamano: float = 24.0
+@export var radio_separacion: float = 26.0
+@export var fuerza_separacion: float = 1.8
 
 var _posiciones := PackedVector2Array()
 var _vivos := 0
 var _jugador: Node2D
+var _rejilla: RejillaEspacial
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -16,6 +19,7 @@ var _jugador: Node2D
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
+	_rejilla = RejillaEspacial.new(radio_separacion)
 	_preparar_multimesh()
 
 
@@ -48,13 +52,51 @@ func eliminar(indice: int) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_reconstruir_rejilla()
+	_mover(delta)
+	_volcar_al_multimesh()
+
+
+func _reconstruir_rejilla() -> void:
+	# Se reconstruye entera cada fotograma en vez de ir moviendo enemigos de
+	# celda en celda: con todos en movimiento constante, rehacerla sale más
+	# barato que detectar y aplicar los cambios uno a uno.
+	_rejilla.limpiar()
+
+	for i in _vivos:
+		_rejilla.insertar(i, _posiciones[i])
+
+
+func _mover(delta: float) -> void:
 	var destino := _jugador.global_position
 
 	for i in _vivos:
-		var direccion := (destino - _posiciones[i]).normalized()
-		_posiciones[i] += direccion * velocidad * delta
+		var hacia_jugador := (destino - _posiciones[i]).normalized()
+		var empuje := _separacion(i) * fuerza_separacion
 
-	_volcar_al_multimesh()
+		# El empuje se suma al avance en lugar de normalizarse junto a él: si se
+		# normalizara, la separación solo podría girar la dirección y nunca
+		# llegaría a vencer al impulso hacia el jugador, que es justo lo que
+		# hace falta cuando dos enemigos están encima el uno del otro.
+		_posiciones[i] += (hacia_jugador + empuje) * velocidad * delta
+
+
+func _separacion(indice: int) -> Vector2:
+	var empuje := Vector2.ZERO
+	var posicion := _posiciones[indice]
+
+	for otro in _rejilla.indices_cerca(posicion):
+		if otro == indice:
+			continue
+
+		var diferencia := posicion - _posiciones[otro]
+		var distancia := diferencia.length()
+
+		if distancia > 0.0 and distancia < radio_separacion:
+			# Cuanto más cerca está el vecino, más fuerte empuja.
+			empuje += diferencia / distancia * (1.0 - distancia / radio_separacion)
+
+	return empuje
 
 
 func _volcar_al_multimesh() -> void:
