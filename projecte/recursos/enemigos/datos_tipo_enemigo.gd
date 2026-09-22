@@ -1,0 +1,2 @@
+class_name DatosTipoEnemigo
+extends Resource

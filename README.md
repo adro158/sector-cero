@@ -1,74 +1,89 @@
 # Vampire Survivors 3D
 
-Projecte acadèmic per a l'assignatura "Demostra el teu talent": una experiència
-interactiva que demostra les nostres capacitats com a desenvolupadors de
-videojocs.
+Proyecto académico para la asignatura "Demostra el teu talent": una experiencia
+interactiva que demuestra nuestras capacidades como desarrolladores de
+videojuegos.
 
-## Descripció
+## Descripción
 
-Un "survivors-like" en 3D amb càmera cenital en perspectiva 3/4. El jugador
-només controla el moviment; les armes ataquen soles. Onades d'enemics que
-persegueixen el jugador, deixen anar gemmes d'experiència, pugen de nivell i
-trien millores. Partida cronometrada de 10-15 minuts amb un boss final.
+Un "survivors-like" en 3D con cámara cenital en perspectiva 3/4. El jugador solo
+controla el movimiento; las armas atacan solas. Oleadas de enemigos que persiguen
+al jugador, sueltan gemas de experiencia, se sube de nivel y se eligen mejoras.
+Partida cronometrada de 10-15 minutos con un jefe final.
 
-## Equip
+## Equipo
 
-- **Adam** — nucli de gameplay (moviment, càmera, enemics, armes, dany,
-  experiència i nivells, director d'onades)
-- **Alan** — UI/menús, persistència, àudio, escena de l'arena i il·luminació,
-  assets, partícules, shaders, documentació i testeig
+- **Adam** — núcleo de jugabilidad (movimiento, cámara, enemigos, armas, daño,
+  experiencia y niveles, director de oleadas)
+- **Alan** — interfaz y menús, persistencia, audio, escena de la arena e
+  iluminación, recursos artísticos, partículas, shaders, documentación y testeo
 
-## Estructura del repositori
+## Estructura del repositorio
 
-- `projecte/` — projecte de Godot 4.7.2
-- `documentacio/` — memòria i documentació lliurable
+- `projecte/` — proyecto de Godot 4.7.2
+- `documentacio/` — memoria y documentación entregable
+
+Los nombres `projecte/` y `documentacio/` están en catalán porque el enunciado
+los exige literalmente así. Todo lo demás está en castellano.
+
+### Dentro de `projecte/`
+
+- `globales/` — autoloads: bus de eventos, estado del juego, audio y guardado
+- `escenas/` — escenas del juego, separadas por responsable
+- `recursos/` — clases de Resource y los `.tres` de datos (armas, mejoras,
+  enemigos, oleadas)
+- `medios/` — modelos, texturas, audio y shaders
 
 ## Motor
 
-Godot 4.7.2 (GDScript). Plataforma objectiu: PC (Windows/Linux).
-Renderitzador: **Compatibility** (OpenGL), no Forward+.
+Godot 4.7.2 (GDScript). Plataforma objetivo: PC (Windows/Linux).
+Renderizador: **Compatibility** (OpenGL), no Forward+.
 
-## Flux de treball
+## Flujo de trabajo
 
-### Missatges de commit
-
-```
-<tipus>(<àmbit>): <descripció en imperatiu i minúscula>
-```
-
-Tipus: `feat` (funcionalitat nova), `fix` (correcció d'un error),
-`refactor` (canvi intern sense canviar comportament), `chore` (configuració,
-estructura), `docs` (documentació), `assets` (models, textures, so).
-
-Àmbits: `player`, `enemies`, `weapons`, `progression`, `waves`, `ui`, `audio`,
-`save`, `arena`, `godot`.
-
-Exemples:
+### Mensajes de commit
 
 ```
-feat(player): add camera-relative movement with acceleration
-fix(enemies): correct separation force at high densities
-chore(godot): register autoloads and input map
-assets(arena): add floor and wall textures
+<tipo>(<ámbito>): <descripción en imperativo y minúscula>
 ```
 
-Un commit = una unitat de treball amb sentit propi. Ni un commit per fitxer,
-ni un commit setmanal amb tot barrejat.
+Tipos: `feat` (funcionalidad nueva), `fix` (corrección de un error),
+`refactor` (cambio interno sin cambiar el comportamiento), `chore`
+(configuración, estructura), `docs` (documentación), `assets` (modelos,
+texturas, sonido).
 
-### Branques
+Los tipos se mantienen en inglés porque son etiquetas estándar reconocibles en
+cualquier repositorio; la descripción va en castellano.
 
-- `main` sempre ha de poder executar-se. No es treballa directament sobre ella.
-- Cada funcionalitat va a la seva branca: `feature/<àmbit>-<descripció-curta>`,
-  per exemple `feature/player-movement` o `feature/ui-hud`.
-- Cadascú treballa només a les seves branques.
-- Abans de fusionar: `git pull` de `main` cap a la teva branca, resoldre els
-  conflictes **allà**, i després fusionar cap a `main` amb `--no-ff` perquè
-  l'historial mostri l'agrupació de la funcionalitat.
-- Fusionar cap a `main` cada dia o dos, mai un cop per setmana.
+Ámbitos: `jugador`, `enemigos`, `armas`, `progresion`, `oleadas`, `interfaz`,
+`audio`, `guardado`, `arena`, `godot`.
 
-### Regla d'or amb les escenes
+Ejemplos:
 
-Els fitxers `.tscn` es fusionen malament a Git. Mai editem la mateixa escena
-alhora. L'arquitectura ja ho evita: cadascú té les seves escenes i la
-comunicació passa pel `EventBus` i pels noms de grup, no per referències
-directes entre nodes.
+```
+feat(jugador): añadir movimiento relativo a la cámara con aceleración
+fix(enemigos): corregir la fuerza de separación con muchas unidades
+chore(godot): registrar autoloads y mapa de input
+assets(arena): añadir texturas de suelo y paredes
+```
+
+Un commit es una unidad de trabajo con sentido propio. Ni un commit por fichero,
+ni un commit semanal con todo mezclado.
+
+### Ramas
+
+- `main` siempre debe poder ejecutarse. No se trabaja directamente sobre ella.
+- Cada funcionalidad va en su rama: `feature/<ámbito>-<descripción-corta>`,
+  por ejemplo `feature/jugador-movimiento` o `feature/interfaz-hud`.
+- Cada uno trabaja solo en sus propias ramas.
+- Antes de fusionar: traer `main` a tu rama, resolver los conflictos **ahí**, y
+  después fusionar hacia `main` con `--no-ff` para que el historial muestre la
+  funcionalidad agrupada.
+- Fusionar hacia `main` cada día o dos, nunca una vez por semana.
+
+### Regla de oro con las escenas
+
+Los ficheros `.tscn` se fusionan mal en Git. Nunca editamos la misma escena a la
+vez. La arquitectura ya lo evita: cada uno tiene sus escenas y la comunicación
+pasa por el `BusEventos` y por nombres de grupo, no por referencias directas
+entre nodos.

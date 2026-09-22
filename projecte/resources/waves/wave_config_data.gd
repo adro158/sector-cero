@@ -1,2 +1,0 @@
-class_name WaveConfigData
-extends Resource

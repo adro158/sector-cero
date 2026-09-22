@@ -1,0 +1,17 @@
+# Normaliza los finales de línea: LF dentro del repositorio y en el disco,
+# independientemente del sistema operativo de cada uno.
+* text=auto eol=lf
+
+# Ficheros binarios: Git no debe tocarlos ni intentar fusionarlos.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
+*.glb binary
+*.gltf binary
+*.blend binary
+*.ttf binary
+*.otf binary
