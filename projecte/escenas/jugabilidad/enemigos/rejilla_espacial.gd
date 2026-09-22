@@ -22,14 +22,15 @@ func insertar(indice: int, posicion: Vector2) -> void:
 		_celdas[clave] = [indice]
 
 
-func indices_cerca(posicion: Vector2) -> Array:
-	# Con celdas del tamaño del radio de búsqueda, mirar la celda propia y las 8
-	# de alrededor basta para no dejarse ningún vecino dentro del radio.
+func indices_cerca(posicion: Vector2, radio: float) -> Array:
+	# Cuántas celdas hay que abarcar en cada dirección para cubrir el radio
+	# pedido. Con radio igual al tamaño de celda es 1, o sea las 8 de alrededor.
+	var alcance := ceili(radio / _tamano_celda)
 	var resultado: Array = []
 	var centro := _clave(posicion)
 
-	for desplazamiento_y in range(-1, 2):
-		for desplazamiento_x in range(-1, 2):
+	for desplazamiento_y in range(-alcance, alcance + 1):
+		for desplazamiento_x in range(-alcance, alcance + 1):
 			var clave := centro + Vector2i(desplazamiento_x, desplazamiento_y)
 			if _celdas.has(clave):
 				resultado.append_array(_celdas[clave])

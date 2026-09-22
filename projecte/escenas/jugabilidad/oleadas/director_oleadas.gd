@@ -6,7 +6,7 @@ extends Node
 var _jugador: Node2D
 var _tiempo_restante := 0.0
 
-@onready var _gestor_enemigos: GestorEnemigos = %GestorEnemigos
+@onready var _gestor_enemigos: GestorEnemigos = get_tree().get_first_node_in_group("gestor_enemigos")
 
 
 func _ready() -> void:

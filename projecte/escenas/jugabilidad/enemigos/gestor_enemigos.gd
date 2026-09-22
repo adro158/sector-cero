@@ -3,14 +3,17 @@ extends Node2D
 
 const MAXIMO_ENEMIGOS := 500
 
+@export var tipo: String = "bit_corrupto"
 @export var velocidad: float = 90.0
 @export var tamano: float = 24.0
+@export var vida: float = 20.0
 @export var radio_separacion: float = 26.0
 @export var fuerza_separacion: float = 1.8
 @export var radio_contacto: float = 28.0
 @export var dano_contacto: float = 8.0
 
 var _posiciones := PackedVector2Array()
+var _vidas := PackedFloat32Array()
 var _vivos := 0
 var _jugador: Node2D
 var _salud_jugador: Salud
@@ -23,6 +26,7 @@ func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_salud_jugador = _jugador.get_node("Salud")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
+	_vidas.resize(MAXIMO_ENEMIGOS)
 	_rejilla = RejillaEspacial.new(radio_separacion)
 	_preparar_multimesh()
 
@@ -45,32 +49,22 @@ func aparecer(posicion: Vector2) -> void:
 		return
 
 	_posiciones[_vivos] = posicion
+	_vidas[_vivos] = vida
 	_vivos += 1
 
 
-func eliminar(indice: int) -> void:
-	# El último vivo pasa a ocupar el hueco del que muere. Así los vivos siempre
-	# son las primeras posiciones del array, sin huecos que haya que saltarse.
-	_vivos -= 1
-	_posiciones[indice] = _posiciones[_vivos]
+func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> void:
+	for i in _rejilla.indices_cerca(centro, radio):
+		if _posiciones[i].distance_to(centro) < radio:
+			_vidas[i] -= cantidad
 
 
 func _physics_process(delta: float) -> void:
 	_reconstruir_rejilla()
 	_mover(delta)
 	_danar_jugador()
+	_retirar_muertos()
 	_volcar_al_multimesh()
-
-
-func _danar_jugador() -> void:
-	var posicion_jugador := _jugador.global_position
-
-	for i in _rejilla.indices_cerca(posicion_jugador):
-		if _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
-			# Basta con el primero que toque: el golpe activa la invulnerabilidad
-			# y los demás del montón no harían nada.
-			_salud_jugador.recibir_dano(dano_contacto)
-			return
 
 
 func _reconstruir_rejilla() -> void:
@@ -101,7 +95,7 @@ func _separacion(indice: int) -> Vector2:
 	var empuje := Vector2.ZERO
 	var posicion := _posiciones[indice]
 
-	for otro in _rejilla.indices_cerca(posicion):
+	for otro in _rejilla.indices_cerca(posicion, radio_separacion):
 		if otro == indice:
 			continue
 
@@ -113,6 +107,37 @@ func _separacion(indice: int) -> Vector2:
 			empuje += diferencia / distancia * (1.0 - distancia / radio_separacion)
 
 	return empuje
+
+
+func _danar_jugador() -> void:
+	var posicion_jugador := _jugador.global_position
+
+	for i in _rejilla.indices_cerca(posicion_jugador, radio_contacto):
+		if _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
+			# Basta con el primero que toque: el golpe activa la invulnerabilidad
+			# y los demás del montón no harían nada.
+			_salud_jugador.recibir_dano(dano_contacto)
+			return
+
+
+func _retirar_muertos() -> void:
+	# Se recorre hacia atrás porque al eliminar se trae el último vivo al hueco:
+	# ese que llega ya lo hemos comprobado, así que no hace falta repetirlo.
+	var i := _vivos - 1
+
+	while i >= 0:
+		if _vidas[i] <= 0.0:
+			BusEventos.enemigo_muerto.emit(_posiciones[i], tipo)
+			_eliminar(i)
+		i -= 1
+
+
+func _eliminar(indice: int) -> void:
+	# El último vivo pasa a ocupar el hueco del que muere. Así los vivos siempre
+	# son las primeras posiciones del array, sin huecos que haya que saltarse.
+	_vivos -= 1
+	_posiciones[indice] = _posiciones[_vivos]
+	_vidas[indice] = _vidas[_vivos]
 
 
 func _volcar_al_multimesh() -> void:

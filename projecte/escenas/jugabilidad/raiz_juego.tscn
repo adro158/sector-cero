@@ -10,8 +10,7 @@ script = ExtResource("1_raiz")
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
 
-[node name="GestorEnemigos" type="Node2D" parent="."]
-unique_name_in_owner = true
+[node name="GestorEnemigos" type="Node2D" parent="." groups=["gestor_enemigos"]]
 script = ExtResource("3_enemigos")
 
 [node name="Horda" type="MultiMeshInstance2D" parent="GestorEnemigos"]
