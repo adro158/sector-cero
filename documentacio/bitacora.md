@@ -12,7 +12,7 @@ Se actualiza al terminar cada sesión de trabajo, antes de hacer el commit.
 
 ## Sesión 1 — 18/09/2026
 
-**Fita:** 1 (Idea i prototip) · **Participantes:** Adam
+**Duración:** 2 h · **Fita:** 1 (Idea i prototip) · **Participantes:** Adam
 
 ### Qué se ha hecho
 
@@ -77,7 +77,9 @@ se mueve.
 
 ## Sesión 2 — 22/09/2026
 
-**Fita:** 1 (Idea i prototip) · **Participantes:** Adam
+**Duración:** 2 h · **Fita:** 1 (Idea i prototip) · **Participantes:** Adam
+
+**Horas acumuladas:** 4 h de las 60 sugeridas (6,7 %)
 
 ### Qué se ha hecho
 
