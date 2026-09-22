@@ -6,7 +6,7 @@
 script = ExtResource("1_tipo")
 tipo = "bit_corrupto"
 vida = 20.0
-velocidad = 85.0
+velocidad = 150.0
 tamano = 24.0
 color = Color(0.9, 0.3, 0.45, 1)
 dano_contacto = 8.0

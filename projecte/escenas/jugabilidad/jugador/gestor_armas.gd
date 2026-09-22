@@ -1,5 +1,7 @@
 extends Node
 
+signal arma_disparada(indice: int)
+
 @export var armas: Array[DatosArma] = []
 
 # Las mejoras se aplican como multiplicadores aquí y nunca modificando el .tres
@@ -32,6 +34,7 @@ func _physics_process(delta: float) -> void:
 
 		_tiempos[i] = armas[i].cadencia * multiplicador_cadencia
 		_atacar(armas[i])
+		arma_disparada.emit(i)
 
 
 func _atacar(arma: DatosArma) -> void:
