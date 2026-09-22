@@ -26,6 +26,11 @@ func _ready() -> void:
 		_gestores.append(nodo)
 
 
+func anadir_arma(arma: DatosArma) -> void:
+	armas.append(arma)
+	_tiempos.append(0.0)
+
+
 func _physics_process(delta: float) -> void:
 	for i in armas.size():
 		_tiempos[i] -= delta

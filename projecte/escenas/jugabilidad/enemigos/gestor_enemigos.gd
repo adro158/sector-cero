@@ -26,6 +26,10 @@ func _ready() -> void:
 	_preparar_multimesh()
 
 
+func vivos() -> int:
+	return _vivos
+
+
 func tiempo_aparicion() -> float:
 	return datos.tiempo_aparicion
 

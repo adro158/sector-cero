@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Resource" path="res://recursos/armas/datos/escaner.tres" id="2_escaner"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Escáner de subred"
+descripcion = "Barrido lento de gran alcance que golpea fuerte"
+efecto = 5
+valor = 0.0
+arma = ExtResource("2_escaner")

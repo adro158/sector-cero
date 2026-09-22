@@ -9,6 +9,10 @@ const OPCIONES_POR_NIVEL := 3
 var _nivel := 1
 var _experiencia := 0
 var _objetivo: int
+
+# Las mejoras de un solo uso, como desbloquear un arma, dejan de sortearse una
+# vez elegidas. Las de porcentaje se pueden repetir y se acumulan.
+var _agotadas: Array[DatosMejora] = []
 var _jugador: Node2D
 var _gestor_armas: Node
 var _salud: Salud
@@ -37,7 +41,12 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 
 
 func _sortear_opciones() -> Array[DatosMejora]:
-	var disponibles := pool_mejoras.mejoras.duplicate()
+	var disponibles: Array[DatosMejora] = []
+
+	for mejora in pool_mejoras.mejoras:
+		if mejora not in _agotadas:
+			disponibles.append(mejora)
+
 	disponibles.shuffle()
 	return disponibles.slice(0, mini(OPCIONES_POR_NIVEL, disponibles.size()))
 
@@ -54,3 +63,6 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 			_jugador.velocidad_maxima *= 1.0 + mejora.valor
 		DatosMejora.Efecto.VIDA_MAXIMA:
 			_salud.aumentar_vida_maxima(mejora.valor)
+		DatosMejora.Efecto.NUEVA_ARMA:
+			_gestor_armas.anadir_arma(mejora.arma)
+			_agotadas.append(mejora)

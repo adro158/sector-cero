@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/paquete_perdido.tres" id="9_paquete"]
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/proceso_colgado.tres" id="10_proceso"]
 [ext_resource type="Resource" path="res://recursos/oleadas/datos/config_principal.tres" id="11_config"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_depuracion.gd" id="12_depuracion"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -48,3 +49,16 @@ config = ExtResource("11_config")
 [node name="SistemaNiveles" type="Node" parent="."]
 script = ExtResource("6_niveles")
 pool_mejoras = ExtResource("7_pool_mejoras")
+
+[node name="CapaDepuracion" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="PanelDepuracion" type="Label" parent="CapaDepuracion"]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 320.0
+offset_bottom = 200.0
+theme_override_colors/font_color = Color(0.55, 0.95, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+script = ExtResource("12_depuracion")
