@@ -1,47 +1,41 @@
 [gd_scene load_steps=6 format=3]
 
-[sub_resource type="Environment" id="Environment_pruebas"]
-background_mode = 1
-background_color = Color(0.09, 0.1, 0.13, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.45, 0.5, 0.6, 1)
-ambient_light_energy = 0.7
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_muro_horizontal"]
+size = Vector2(1640, 20)
 
-[sub_resource type="BoxMesh" id="BoxMesh_suelo"]
-size = Vector3(60, 0.5, 60)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_muro_vertical"]
+size = Vector2(20, 1640)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suelo"]
-albedo_color = Color(0.22, 0.24, 0.27, 1)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_limites"]
+size = Vector2(1600, 1600)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
-size = Vector3(60, 0.5, 60)
+[node name="ArenaPruebas" type="Node2D"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_limites"]
-size = Vector3(60, 4, 60)
+[node name="Suelo" type="Polygon2D" parent="."]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(-800, -800, 800, -800, 800, 800, -800, 800)
 
-[node name="ArenaPruebas" type="Node3D"]
+[node name="Muros" type="StaticBody2D" parent="."]
 
-[node name="EntornoMundo" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_pruebas")
+[node name="MuroArriba" type="CollisionShape2D" parent="Muros"]
+position = Vector2(0, -810)
+shape = SubResource("RectangleShape2D_muro_horizontal")
 
-[node name="LuzDireccional" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 12, 0)
-shadow_enabled = true
+[node name="MuroAbajo" type="CollisionShape2D" parent="Muros"]
+position = Vector2(0, 810)
+shape = SubResource("RectangleShape2D_muro_horizontal")
 
-[node name="Suelo" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+[node name="MuroIzquierda" type="CollisionShape2D" parent="Muros"]
+position = Vector2(-810, 0)
+shape = SubResource("RectangleShape2D_muro_vertical")
 
-[node name="Malla" type="MeshInstance3D" parent="Suelo"]
-mesh = SubResource("BoxMesh_suelo")
-surface_material_override/0 = SubResource("StandardMaterial3D_suelo")
+[node name="MuroDerecha" type="CollisionShape2D" parent="Muros"]
+position = Vector2(810, 0)
+shape = SubResource("RectangleShape2D_muro_vertical")
 
-[node name="FormaColision" type="CollisionShape3D" parent="Suelo"]
-shape = SubResource("BoxShape3D_suelo")
+[node name="AparicionJugador" type="Marker2D" parent="." groups=["aparicion_jugador"]]
 
-[node name="AparicionJugador" type="Marker3D" parent="." groups=["aparicion_jugador"]]
+[node name="LimitesArena" type="Area2D" parent="." groups=["limites_arena"]]
 
-[node name="LimitesArena" type="Area3D" parent="." groups=["limites_arena"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-
-[node name="FormaColision" type="CollisionShape3D" parent="LimitesArena"]
-shape = SubResource("BoxShape3D_limites")
+[node name="FormaColision" type="CollisionShape2D" parent="LimitesArena"]
+shape = SubResource("RectangleShape2D_limites")

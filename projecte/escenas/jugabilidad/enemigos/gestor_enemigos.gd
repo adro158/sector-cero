@@ -1,1 +1,1 @@
-extends Node3D
+extends Node2D

@@ -1,4 +1,4 @@
-# Vampire Survivors 3D
+# Vampire Survivors 2D
 
 Proyecto académico para la asignatura "Demostra el teu talent": una experiencia
 interactiva que demuestra nuestras capacidades como desarrolladores de
@@ -6,7 +6,7 @@ videojuegos.
 
 ## Descripción
 
-Un "survivors-like" en 3D con cámara cenital en perspectiva 3/4. El jugador solo
+Un "survivors-like" en 2D con vista cenital. El jugador solo
 controla el movimiento; las armas atacan solas. Oleadas de enemigos que persiguen
 al jugador, sueltan gemas de experiencia, se sube de nivel y se eligen mejoras.
 Partida cronometrada de 10-15 minutos con un jefe final.
@@ -32,7 +32,7 @@ los exige literalmente así. Todo lo demás está en castellano.
 - `escenas/` — escenas del juego, separadas por responsable
 - `recursos/` — clases de Resource y los `.tres` de datos (armas, mejoras,
   enemigos, oleadas)
-- `medios/` — modelos, texturas, audio y shaders
+- `medios/` — sprites, texturas, audio y shaders
 
 ## Motor
 

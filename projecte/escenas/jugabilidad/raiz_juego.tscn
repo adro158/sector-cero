@@ -1,17 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
-[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/camara_seguimiento.gd" id="3_camara"]
 
-[node name="RaizJuego" type="Node3D"]
+[node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
-
-[node name="SoporteCamara" type="Node3D" parent="."]
-script = ExtResource("3_camara")
-
-[node name="Camara3D" type="Camera3D" parent="SoporteCamara"]
-transform = Transform3D(1, 0, 0, 0, 0.573576, -0.819152, 0, 0.819152, 0.573576, 0, 14, 10)
-current = true
