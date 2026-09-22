@@ -1,11 +1,21 @@
 [gd_scene format=3 uid="uid://blrufxrclvnp7"]
 
+[ext_resource type="Shader" uid="uid://d0cl0wnsyqb5x" path="res://escenas/arena/arena.gdshader" id="1_6ajmc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tl4v3"]
+shader = ExtResource("1_6ajmc")
+shader_parameter/color_fondo = Color(0.02, 0.03, 0.06, 1)
+shader_parameter/color_linea = Color(0, 0.8, 0.9, 0.3)
+shader_parameter/tamano_rejilla = 64.0
+shader_parameter/grosor_linea = 1.5
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5ud5j"]
 size = Vector2(1920, 1080)
 
 [node name="Arena" type="Node2D" unique_id=513062588]
 
 [node name="Fondo" type="ColorRect" parent="." unique_id=1944967115]
+material = SubResource("ShaderMaterial_tl4v3")
 offset_left = -960.0
 offset_top = -540.0
 offset_right = 960.0
