@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Memoria redundante"
+descripcion = "+25 de integridad máxima"
+efecto = 4
+valor = 25.0

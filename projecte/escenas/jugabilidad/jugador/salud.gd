@@ -22,6 +22,12 @@ func _physics_process(delta: float) -> void:
 	_tiempo_invulnerable -= delta
 
 
+func aumentar_vida_maxima(cantidad: float) -> void:
+	vida_maxima += cantidad
+	_vida += cantidad
+	vida_cambiada.emit(_vida, vida_maxima)
+
+
 func recibir_dano(cantidad: float) -> void:
 	if _vida <= 0.0 or _tiempo_invulnerable > 0.0:
 		return

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DatosPoolMejoras" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_pool_mejoras.gd" id="1_pool"]
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="2_datos_mejora"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/dano.tres" id="3_dano"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/cadencia.tres" id="4_cadencia"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/alcance.tres" id="5_alcance"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/velocidad.tres" id="6_velocidad"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/vida.tres" id="7_vida"]
+
+[resource]
+script = ExtResource("1_pool")
+mejoras = Array[ExtResource("2_datos_mejora")]([ExtResource("3_dano"), ExtResource("4_cadencia"), ExtResource("5_alcance"), ExtResource("6_velocidad"), ExtResource("7_vida")])

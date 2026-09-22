@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Overclock"
+descripcion = "+10% de velocidad de movimiento"
+efecto = 3
+valor = 0.10
