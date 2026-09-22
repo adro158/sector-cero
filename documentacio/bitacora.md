@@ -93,6 +93,13 @@ se mueve.
 - Cambio de temática y de nombre del proyecto.
 - Lista de assets para Alan y documento de contexto para su asistente de IA.
 - Lectura y análisis del enunciado completo.
+- Documentación de trabajo: esta bitácora, la planificación de las 6 fitas y la
+  propuesta de la Fase 1.
+- **Fita 2 completa por la parte de jugabilidad**: horda de enemigos con
+  MultiMesh y reciclaje, rejilla espacial y separación, daño por contacto y fin
+  de partida, armas data-driven, gemas de experiencia, niveles y mejoras, tres
+  tipos de enemigo, director de oleadas con dificultad creciente, desbloqueo de
+  armas al subir de nivel y panel de depuración.
 
 ### Decisiones técnicas y por qué
 
@@ -123,6 +130,56 @@ adicional. El cálculo va en `_physics_process` y no en `_process` porque
 los dos integrantes trabajan en sistemas operativos distintos, aparecen
 diferencias fantasma en ficheros que nadie ha tocado, precisamente en los `.tscn`,
 que es donde menos conviene.
+
+**Un enemigo de horda no es un nodo, es una posición en un array.** Un nodo por
+enemigo implicaría cientos de nodos procesándose y cientos de llamadas de dibujado.
+En su lugar hay arrays de posiciones y vidas de tamaño fijo, y un único
+`MultiMeshInstance2D` que los dibuja todos en una sola llamada. El *object
+pooling* no es un sistema aparte: el pool **es** el array, y crear o destruir un
+enemigo se reduce a mover un contador.
+
+**Al morir un enemigo, el último vivo ocupa su hueco.** Desplazar el resto del
+array costaría cientos de copias. Como el orden de los enemigos es irrelevante,
+traer el último al hueco cuesta una sola asignación y mantiene a los vivos
+compactados al principio, lo que a su vez permite dibujarlos con
+`visible_instance_count` sin esconder ninguno individualmente. Los recorridos que
+eliminan van hacia atrás, porque el elemento que llega al hueco ya se ha
+comprobado.
+
+**Rejilla espacial para las consultas de proximidad.** Separar a cada enemigo de
+sus vecinos comparándolo con todos los demás es cuadrático. La rejilla divide el
+mapa en celdas y solo se consultan las que cubren el radio pedido. Medido con 500
+enemigos: **4,36 ms de física por fotograma con rejilla frente a 19,17 ms sin
+ella**, cuando el presupuesto para 60 FPS es de 16,67 ms.
+
+**Las gemas no usan la rejilla.** Solo hay que saber qué gemas están cerca del
+jugador: una consulta por fotograma, no una por gema. Recorrer la lista es más
+simple y cuesta lo mismo. La rejilla existe para el problema cuadrático, no como
+solución por defecto.
+
+**El componente de salud no conoce el bus de eventos.** Emite señales locales y es
+la raíz de la jugabilidad quien las traslada al `BusEventos`. Así el mismo
+componente sirve para el jugador y para el jefe, y quien lo usa decide qué
+significan sus avisos.
+
+**Las mejoras se aplican como multiplicadores, nunca modificando el `.tres`.** Los
+recursos de Godot están compartidos y en caché: sumar un 20% de daño al recurso
+del arma dejaría ese 20% pegado para la siguiente partida. Es un fallo que no da
+error, solo comportamiento inexplicable.
+
+**Un gestor de enemigos por cada tipo.** No es una decisión de estilo: un
+`MultiMesh` solo puede dibujar una malla con un material, así que mezclar tipos
+impediría darles tamaño y aspecto distintos. Como cada gestor lee sus estadísticas
+de un `.tres` propio, los tres nodos comparten el mismo script sin un solo
+condicional por tipo.
+
+**La dificultad emerge de cuatro números, no de oleadas guionizadas.** El director
+interpola el intervalo de aparición entre un valor inicial y uno final, y cada
+tipo de enemigo declara en su recurso a partir de qué segundo entra en juego.
+
+**El panel de depuración se alimenta solo del bus.** Además de servir para
+testear, demuestra que el contrato acordado con Alan contiene toda la información
+que su interfaz necesitará.
 
 ### Cambios de rumbo y su justificación
 
@@ -172,18 +229,71 @@ que el contenido resultante era el correcto.
 
 ### Uso de IA
 
-Claude generó la conversión completa a 2D, el script de movimiento, la traducción
-del proyecto y la documentación. Aportó además el análisis del enunciado y
-propuestas de temática. Cada cambio se validó ejecutando Godot en headless
-(importación limpia y arranque de la escena principal) antes de commitear.
+Claude generó la conversión completa a 2D, todo el código de jugabilidad de la
+Fita 2, la traducción del proyecto y la documentación. Aportó además el análisis
+del enunciado y las propuestas de temática.
+
+Cada cambio se validó ejecutando Godot en headless antes de commitear, y la
+medición comparativa de la rejilla espacial se hizo sustituyendo la consulta por
+una comparación contra todos los enemigos y midiendo ambas versiones.
+
+**Una suposición implícita en la rejilla.** `indices_cerca()` consultaba siempre
+las ocho celdas contiguas, lo cual solo es correcto si el radio de búsqueda cabe
+en una celda. Con celdas de 26 píxeles y un arma de 90 de alcance se dejaba fuera
+la mayor parte del área. El fallo no estaba en el código nuevo sino en una
+suposición del código anterior, que solo se hizo visible al darle un uso distinto.
+Ahora el radio es un parámetro explícito.
+
+**Clases globales sin registrar.** Al añadir un `class_name` nuevo, los scripts
+que lo usan fallan al cargar hasta que Godot reconstruye su índice de clases. Se
+resuelve reimportando el proyecto.
+
+**Sospecha de que el jugador se movía solo.** En una prueba apareció desplazado
+contra el muro inferior sin haber tocado nada. Tras comprobarlo con el director de
+oleadas desactivado y con él activado, la posición se mantenía en el origen con
+velocidad cero en ambos casos. La causa real era que la ventana del juego roba el
+foco al abrirse, de modo que las pulsaciones de teclado llegaban al juego. No era
+un fallo del código.
+
+**Ordenación del dibujo.** El anillo que muestra el alcance del arma se dibujaba
+por debajo del suelo de la arena por llevar `z_index = -1`, lo que lo hacía
+invisible.
+
+### Métodos de test empleados
+
+Todo lo implementado se ha verificado ejecutando Godot sin interfaz gráfica
+(`--headless`), con tres técnicas:
+
+1. **Importación limpia** para detectar errores de análisis de los scripts.
+2. **Arranque de la escena principal** durante un número fijo de fotogramas, para
+   detectar errores en tiempo de ejecución.
+3. **Instrumentación temporal**: un autoload que se conecta a las señales del
+   `BusEventos` y registra lo que ocurre, eliminado siempre antes de commitear.
+
+Ejemplos de comprobaciones concretas: la vida baja de 8 en 8 espaciada por la
+invulnerabilidad hasta emitir el fin de partida; la experiencia acumulada a los
+150 segundos (451) cuadra exactamente con las muertes de cada tipo por su valor
+(191×1 + 106×2 + 12×4); los tipos de enemigo entran en el segundo que declaran; y
+la mejora de arma sale una única vez mientras las de porcentaje se repiten.
+
+Para lo visual se ha usado captura de pantalla desde el propio juego, guardando la
+imagen del viewport en un fotograma concreto.
 
 ### Estado al cerrar
 
-El jugador se mueve con aceleración y frenado, colisiona con los muros de la arena
-de pruebas y la cámara lo sigue con suavizado. Falta el prototipo de la mecánica
-principal completa (enemigos y armas) para poder cerrar la Fita 1.
+El bucle de juego está completo: te mueves, la horda te persigue y te hace daño,
+las armas atacan solas y matan, los enemigos sueltan experiencia, subes de nivel y
+eliges mejoras, la dificultad crece y morir termina la partida.
+
+La Fita 1 y la parte de jugabilidad de la Fita 2 quedan cerradas. No hay interfaz
+de ningún tipo —es trabajo de la Fita 3— y todo lo visual son formas geométricas
+de marcador de posición.
+
+Queda consciente a medias: el juego no se pausa al subir de nivel, porque el panel
+que lo reanudaría todavía no existe; y el balance está sin ajustar, que es trabajo
+de la Fita 5.
 
 ### Siguiente paso
 
-Sistema de enemigos: aparición, persecución del jugador, renderizado con
-`MultiMeshInstance2D` y reciclaje desde un array de tamaño fijo.
+Números de daño flotantes y sistema de proyectiles, que permitirá sustituir la
+segunda arma de área por el Ping previsto en la propuesta.
