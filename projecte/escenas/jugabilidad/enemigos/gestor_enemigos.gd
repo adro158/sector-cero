@@ -48,11 +48,33 @@ func aparecer(posicion: Vector2) -> void:
 	_vivos += 1
 
 
-func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> void:
+## Devuelve a cuántos enemigos ha alcanzado, que es lo que necesitan los
+## proyectiles para saber si han impactado.
+func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> int:
+	var alcanzados := 0
+
 	for i in _rejilla.indices_cerca(centro, radio):
 		if _posiciones[i].distance_to(centro) < radio:
 			_vidas[i] -= cantidad
 			enemigo_danado.emit(_posiciones[i], cantidad)
+			alcanzados += 1
+
+	return alcanzados
+
+
+## Posición del enemigo vivo más cercano dentro del radio, o Vector2.INF si no
+## hay ninguno.
+func mas_cercano(desde: Vector2, radio: float) -> Vector2:
+	var mejor := Vector2.INF
+	var mejor_distancia := radio
+
+	for i in _rejilla.indices_cerca(desde, radio):
+		var distancia := _posiciones[i].distance_to(desde)
+		if distancia < mejor_distancia:
+			mejor_distancia = distancia
+			mejor = _posiciones[i]
+
+	return mejor
 
 
 func _preparar_multimesh() -> void:

@@ -4,8 +4,11 @@
 
 [resource]
 script = ExtResource("1_datos_arma")
-nombre = "Escáner"
-tipo = 0
-dano = 22.0
-cadencia = 2.2
-radio = 200.0
+nombre = "Ping"
+tipo = 1
+dano = 9.0
+cadencia = 0.9
+radio = 14.0
+velocidad_proyectil = 430.0
+rebotes = 3
+vida_util = 2.5

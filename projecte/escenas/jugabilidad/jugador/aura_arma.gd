@@ -35,6 +35,9 @@ func _draw() -> void:
 
 	for i in armas.size():
 		var arma: DatosArma = armas[i]
+		if arma.tipo != DatosArma.Tipo.AREA:
+			continue
+
 		var radio: float = arma.radio * _gestor_armas.multiplicador_alcance
 		var encendido := i < _destellos.size() and _destellos[i] > 0.0
 

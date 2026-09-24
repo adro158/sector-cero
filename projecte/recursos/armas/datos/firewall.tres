@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_datos_arma")
 nombre = "Firewall"
+tipo = 0
 dano = 6.0
 cadencia = 0.6
 radio = 90.0

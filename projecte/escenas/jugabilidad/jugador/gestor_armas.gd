@@ -14,10 +14,12 @@ var multiplicador_alcance := 1.0
 var _tiempos := PackedFloat32Array()
 var _jugador: Node2D
 var _gestores: Array[GestorEnemigos] = []
+var _pool_proyectiles: Node2D
 
 
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
+	_pool_proyectiles = get_tree().get_first_node_in_group("pool_proyectiles")
 	_tiempos.resize(armas.size())
 
 	# Hay un gestor por tipo de enemigo, porque un MultiMesh solo puede dibujar
@@ -43,9 +45,12 @@ func _physics_process(delta: float) -> void:
 
 
 func _atacar(arma: DatosArma) -> void:
-	for gestor in _gestores:
-		gestor.danar_en_area(
-			_jugador.global_position,
-			arma.radio * multiplicador_alcance,
-			arma.dano * multiplicador_dano
-		)
+	var dano := arma.dano * multiplicador_dano
+	var radio := arma.radio * multiplicador_alcance
+
+	match arma.tipo:
+		DatosArma.Tipo.AREA:
+			for gestor in _gestores:
+				gestor.danar_en_area(_jugador.global_position, radio, dano)
+		DatosArma.Tipo.PROYECTIL:
+			_pool_proyectiles.lanzar(_jugador.global_position, arma, dano, radio)
