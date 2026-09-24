@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/proceso_colgado.tres" id="10_proceso"]
 [ext_resource type="Resource" path="res://recursos/oleadas/datos/config_principal.tres" id="11_config"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_depuracion.gd" id="12_depuracion"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_numeros_flotantes.gd" id="13_numeros"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -49,6 +50,10 @@ config = ExtResource("11_config")
 [node name="SistemaNiveles" type="Node" parent="."]
 script = ExtResource("6_niveles")
 pool_mejoras = ExtResource("7_pool_mejoras")
+
+[node name="PoolNumeros" type="Node2D" parent="."]
+z_index = 10
+script = ExtResource("13_numeros")
 
 [node name="CapaDepuracion" type="CanvasLayer" parent="."]
 layer = 100

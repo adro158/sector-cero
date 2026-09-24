@@ -1,6 +1,11 @@
 class_name GestorEnemigos
 extends Node2D
 
+## Señal local, no del BusEventos: se dispara decenas de veces por segundo y solo
+## interesa dentro de la jugabilidad. El bus queda para lo que cruza la frontera
+## con la interfaz.
+signal enemigo_danado(posicion: Vector2, cantidad: float)
+
 const MAXIMO_ENEMIGOS := 400
 
 @export var datos: DatosTipoEnemigo
@@ -47,6 +52,7 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> void:
 	for i in _rejilla.indices_cerca(centro, radio):
 		if _posiciones[i].distance_to(centro) < radio:
 			_vidas[i] -= cantidad
+			enemigo_danado.emit(_posiciones[i], cantidad)
 
 
 func _preparar_multimesh() -> void:
