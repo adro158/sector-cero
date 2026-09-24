@@ -79,14 +79,77 @@ ni un commit semanal con todo mezclado.
 
 ### Ramas
 
-- `main` siempre debe poder ejecutarse. No se trabaja directamente sobre ella.
-- Cada funcionalidad va en su rama: `feature/<ámbito>-<descripción-corta>`,
-  por ejemplo `feature/jugador-movimiento` o `feature/interfaz-hud`.
-- Cada uno trabaja solo en sus propias ramas.
-- Antes de fusionar: traer `main` a tu rama, resolver los conflictos **ahí**, y
-  después fusionar hacia `main` con `--no-ff` para que el historial muestre la
-  funcionalidad agrupada.
-- Fusionar hacia `main` cada día o dos, nunca una vez por semana.
+Hay un único repositorio. Cada uno trabaja en su propia rama y se fusiona a
+`main` cada día o dos. Así los dos podemos avanzar a la vez sin pisarnos.
+
+**Al empezar a trabajar**, traer lo que haya subido el otro y crear la rama del
+día:
+
+```
+git switch main
+git pull
+git switch -c feature/<ámbito>-<descripción-corta>
+```
+
+Por ejemplo `feature/jugador-proyectiles` o `feature/interfaz-hud`.
+
+**Mientras trabajas**, commits normales en tu rama. No molestan a nadie porque
+`main` no se entera.
+
+```
+git add <ficheros>
+git commit -m "feat(ámbito): descripción"
+```
+
+**Para subir la rama** la primera vez:
+
+```
+git push -u origin feature/<ámbito>-<descripción-corta>
+```
+
+**Cuando la funcionalidad ya va**, primero se trae `main` a tu rama y se
+resuelven ahí los conflictos, si los hay. Nunca al revés: así `main` nunca queda
+a medias.
+
+```
+git switch main
+git pull
+git switch feature/<tu-rama>
+git merge main
+```
+
+**Y por último se fusiona hacia `main`** con `--no-ff`, para que el historial
+muestre la funcionalidad agrupada en lugar de una fila de commits sueltos:
+
+```
+git switch main
+git merge --no-ff feature/<tu-rama>
+git push
+```
+
+Después, la rama ya fusionada se puede borrar con
+`git branch -d feature/<tu-rama>`.
+
+**Para ver en qué punto estáis**, este comando dibuja el historial de las dos
+ramas:
+
+```
+git log --graph --oneline --all
+```
+
+### Las tres reglas que importan
+
+1. **`main` siempre tiene que poder ejecutarse.** Es la versión buena: si
+   alguien fusiona algo roto, el otro se lo baja y se queda bloqueado.
+2. **Los conflictos se resuelven en tu rama, nunca en `main`.** Por eso se trae
+   `main` hacia tu rama antes de fusionar, y no al revés.
+3. **Fusionar cada día o dos.** Cuanto más tiempo vive una rama separada, más
+   diverge y más duele juntarla.
+
+### Sobre la autoría
+
+Los commits guardan quién los escribió, y eso no cambia aunque los suba o los
+fusione el otro. En el historial siempre queda registrado qué hizo cada uno.
 
 ### Regla de oro con las escenas
 
