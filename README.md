@@ -79,56 +79,53 @@ ni un commit semanal con todo mezclado.
 
 ### Ramas
 
-Hay un único repositorio. Cada uno trabaja en su propia rama y se fusiona a
-`main` cada día o dos. Así los dos podemos avanzar a la vez sin pisarnos.
+Hay un único repositorio con dos ramas fijas que no se borran nunca:
 
-**Al empezar a trabajar**, traer lo que haya subido el otro y crear la rama del
-día:
+- `main` — donde trabaja Adam. Es la versión del juego que se entrega.
+- `feature/alan-arena-hud` — donde trabaja Alan.
 
-```
-git switch main
-git pull
-git switch -c feature/<ámbito>-<descripción-corta>
-```
+Como cada uno tiene sus propios ficheros, las dos ramas casi nunca chocan.
 
-Por ejemplo `feature/jugador-proyectiles` o `feature/interfaz-hud`.
+**Al empezar la clase**, cada uno se baja lo que subió el otro.
 
-**Mientras trabajas**, commits normales en tu rama. No molestan a nadie porque
-`main` no se entera.
-
-```
-git add <ficheros>
-git commit -m "feat(ámbito): descripción"
-```
-
-**Para subir la rama** la primera vez:
-
-```
-git push -u origin feature/<ámbito>-<descripción-corta>
-```
-
-**Cuando la funcionalidad ya va**, primero se trae `main` a tu rama y se
-resuelven ahí los conflictos, si los hay. Nunca al revés: así `main` nunca queda
-a medias.
+Adam:
 
 ```
 git switch main
 git pull
-git switch feature/<tu-rama>
-git merge main
+git merge origin/feature/alan-arena-hud
 ```
 
-**Y por último se fusiona hacia `main`** con `--no-ff`, para que el historial
-muestre la funcionalidad agrupada en lugar de una fila de commits sueltos:
+Alan:
 
 ```
-git switch main
-git merge --no-ff feature/<tu-rama>
+git switch feature/alan-arena-hud
+git pull
+git merge origin/main
+```
+
+Adam comprueba que el juego arranca después de fusionar. Si lo de Alan rompe
+algo, no se sube: se avisa para que lo arregle en su rama.
+
+**Al terminar la clase**, cada uno commitea sus ficheros y sube su rama:
+
+```
+git status
+git add <tus ficheros>
+git commit -m "tipo(ámbito): descripción"
 git push
 ```
 
-Después, la rama ya fusionada se puede borrar con
-`git branch -d feature/<tu-rama>`.
+Antes del commit, mirar `git status`: Godot reescribe a veces ficheros al abrir
+el proyecto. Si sale modificado un fichero del otro que no has tocado, se
+descarta con `git restore <fichero>`.
+
+**Al cerrar cada fita**, Adam la marca en el historial con una etiqueta:
+
+```
+git tag fita-2
+git push --tags
+```
 
 **Para ver en qué punto estáis**, este comando dibuja el historial de las dos
 ramas:
@@ -139,12 +136,13 @@ git log --graph --oneline --all
 
 ### Las tres reglas que importan
 
-1. **`main` siempre tiene que poder ejecutarse.** Es la versión buena: si
-   alguien fusiona algo roto, el otro se lo baja y se queda bloqueado.
-2. **Los conflictos se resuelven en tu rama, nunca en `main`.** Por eso se trae
-   `main` hacia tu rama antes de fusionar, y no al revés.
-3. **Fusionar cada día o dos.** Cuanto más tiempo vive una rama separada, más
-   diverge y más duele juntarla.
+1. **`main` siempre tiene que poder ejecutarse.** Es la versión que se entrega:
+   si entra algo roto, el otro se lo baja y se queda bloqueado.
+2. **Cada uno commitea solo sus ficheros.** `projecte/escenas/juego.tscn` y
+   `projecte/project.godot` son de Adam: si Alan necesita cambiarlos, se lo pide.
+3. **Sincronizar en cada clase.** Bajar lo del otro al empezar y subir lo propio
+   al terminar. Cuanto más tiempo pasan las ramas sin juntarse, más duele
+   hacerlo.
 
 ### Sobre la autoría
 

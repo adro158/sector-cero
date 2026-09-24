@@ -297,3 +297,156 @@ de la Fita 5.
 
 Números de daño flotantes y sistema de proyectiles, que permitirá sustituir la
 segunda arma de área por el Ping previsto en la propuesta.
+
+---
+
+## Sesión 3 — 24/09/2026
+
+**Duración:** 2 h · **Fita:** 2 (Core del projecte) · **Participantes:** Adam
+
+**Horas acumuladas:** 6 h de las 60 sugeridas (10 %)
+
+### Qué se ha hecho
+
+- Integración en `main` de la arena que Alan subió a su rama: escena con los
+  grupos del contrato y shader de rejilla de neón para el fondo. La escena
+  principal usa ya su arena; la de pruebas se conserva para probar la
+  jugabilidad de forma aislada.
+- El jugador se mantiene dentro de la zona que marca `limites_arena`.
+- Números de daño flotantes.
+- Sistema de proyectiles y arma Ping, que salta de un enemigo a otro.
+- Recuperación del contexto en una conversación nueva con la IA, porque la
+  anterior se perdió al reinstalar la aplicación, y revisión del estado real del
+  código frente a esta bitácora.
+- Análisis del enunciado completo y de la plantilla del primer seguimiento, con
+  la lista de requisitos mínimos que faltan.
+- Nuevo flujo de Git con dos ramas fijas, documentado en el `README.md` y en
+  `GEMINI.md`, y creación de `CLAUDE.md`.
+- Actualización de las casillas de la planificación, que seguían sin marcar.
+
+### Decisiones técnicas y por qué
+
+**Los límites de la arena se aplican por código, no con muros.** La arena de Alan
+declara la zona jugable con un `Area2D`, sin colisiones propias, que es lo
+acordado: ella declara los límites y la jugabilidad los respeta. El jugador lee
+la forma al arrancar y recorta su posición, apartándose su propio radio del
+borde para no quedar medio fuera.
+
+**Los números de daño no usan MultiMesh.** Un MultiMesh repite una misma malla y
+cada número muestra un texto distinto. Se pintan todos desde un único nodo con
+`draw_string`, reutilizando un array fijo igual que los enemigos. Con un arma de
+área golpeando a decenas de enemigos, un tope de 150 números evita llenar la
+pantalla de texto.
+
+**El aviso de daño es una señal local, no del `BusEventos`.** Se dispara decenas
+de veces por segundo y no cruza la frontera con la interfaz. El bus queda para lo
+que Alan necesita saber.
+
+**El tipo de ataque es un dato del arma.** `DatosArma` declara si es de área o de
+proyectil y el gestor de armas reparte según ese campo. Añadir un arma nueva
+sigue siendo crear un `.tres`.
+
+**Los proyectiles reutilizan el patrón de la horda.** Arrays de tamaño fijo, un
+`MultiMeshInstance2D` y retirada trayendo el último al hueco. El Ping busca su
+siguiente objetivo con la misma rejilla espacial que ya usaban la separación y
+el daño. Tras impactar espera 0,08 s antes de poder volver a golpear: sin esa
+espera seguiría dentro del mismo enemigo al fotograma siguiente y lo golpearía
+sin parar en lugar de saltar al siguiente.
+
+**`CLAUDE.md` importa `GEMINI.md` en lugar de copiarlo.** Así el contrato con
+Alan está escrito en un único sitio y no puede quedar desincronizado entre las
+dos IA. `CLAUDE.md` solo añade lo propio de Claude: leer esta bitácora al
+empezar, validar en headless y el cierre de sesión.
+
+**Propiedad de los ficheros que no tenían dueño.** `bus_eventos.gd`,
+`estado_juego.gd`, `juego.tscn` y `project.godot` son de Adam; si Alan necesita
+cambiarlos, lo pide. En `documentacio/`, Adam mantiene la bitácora y la
+planificación y el resto es de Alan.
+
+**La pausa al subir de nivel la gestionará la jugabilidad.** Se pueden subir
+varios niveles en el mismo fotograma, así que habrá una cola de niveles
+pendientes y el panel de Alan solo tendrá que funcionar con el juego pausado.
+Pendiente de acordarlo con Alan.
+
+### Cambios de rumbo y su justificación
+
+**Prioridad: primero los mínimos.** Tras releer el enunciado se decide cubrir
+antes los requisitos mínimos y el MVP, y dejar el jefe, los élites y las
+evoluciones para cuando sobre tiempo. El enunciado valora más un proyecto
+pequeño y acabado que uno ambicioso a medias.
+
+**Flujo de Git: de ramas por tarea a dos ramas fijas.** Adam trabaja en `main` y
+Alan siempre en `feature/alan-arena-hud`. Al empezar cada clase, cada uno fusiona
+la rama del otro en la suya, y cada uno solo commitea sus ficheros. Motivo:
+crear y borrar una rama por tarea complicaba el trabajo de Alan, y como cada uno
+tiene sus ficheros las ramas casi nunca chocan. Al sincronizar en cada clase la
+integración sigue siendo continua, y cada fita se marcará con una etiqueta para
+que el historial muestre los hitos.
+
+**El Escáner no se ha sustituido.** El Ping se añadió como tercera arma y el
+Escáner sigue como pulso de área, aunque su descripción habla de un barrido.
+Decisión pendiente.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Pérdida de la conversación con la IA.** Al reinstalar la aplicación se perdió
+el chat con el que se había trabajado, y el trabajo de esta sesión no llegó a
+anotarse en la bitácora. Se detectó comparando la bitácora con `git log`, y el
+contexto se recuperó con la bitácora, `GEMINI.md` y el historial. Para que no
+vuelva a pasar se creó `CLAUDE.md`, que cualquier sesión nueva carga sola.
+
+**El editor reescribe `project.godot`.** Al abrir el proyecto, Godot reordena
+las secciones del fichero sin cambiar ningún ajuste. Se aceptó el formato
+canónico en un commit aparte, para que el cambio no se mezclara con trabajo real.
+El nuevo flujo de Git incluye revisar `git status` antes de cada commit por este
+motivo.
+
+**Problemas detectados en la revisión, pendientes de corregir:**
+
+- Nadie emite todavía `mejora_seleccionada`, que es la señal del panel de Alan.
+  En el juego real no se puede elegir ninguna mejora, así que el Ping y el
+  Escáner no se pueden conseguir; solo se han probado con instrumentación.
+- La rejilla espacial se construye antes de retirar a los enemigos muertos. Al
+  retirar uno, el último vivo cambia de índice y la rejilla sigue apuntando al
+  antiguo, así que durante un fotograma ese enemigo no recibe daño y aparece un
+  número fantasma.
+- La mejora de cadencia resta un porcentaje fijo sin límite. Tras nueve mejoras
+  el multiplicador se vuelve negativo y el arma dispara en cada fotograma.
+
+### Uso de IA
+
+Claude generó el límite de la arena, los números de daño flotantes y el sistema
+de proyectiles. En la conversación nueva reconstruyó el contexto a partir de la
+documentación y de Git, revisó el código y detectó los tres problemas
+pendientes, cruzó el enunciado con el estado real del proyecto y redactó los
+cambios del `README.md`, `GEMINI.md`, `CLAUDE.md` y esta entrada. Las decisiones
+de flujo de Git, propiedad de ficheros y prioridades las tomó Adam.
+
+### Métodos de test empleados
+
+- Límites de la arena: el jugador se detiene en (944, 524) y en (-944, -524),
+  que son las esquinas de una zona de 1920×1080 menos su radio.
+- Proyectiles: se observan en vuelo con 3, 2, 1 y 0 rebotes restantes, lo que
+  confirma que la cadena de saltos llega hasta agotarse.
+- Al cerrar la sesión: importación limpia y arranque de la escena principal
+  durante 600 fotogramas en headless, sin errores.
+
+### Estado al cerrar
+
+La arena de Alan está integrada, hay tres armas (dos de área y una de
+proyectil) y feedback de daño. El juego sigue sin interfaz, sin pausa al subir
+de nivel y sin condición de victoria.
+
+### Siguiente paso
+
+Cubrir lo mínimo de la jugabilidad, empezando por lo que desbloquea a Alan:
+
+1. Corregir los índices de la rejilla y poner un límite a la cadencia.
+2. Pausa al subir de nivel con cola, y elección provisional de mejoras con las
+   teclas 1, 2 y 3 desde el panel de depuración.
+3. Que la jugabilidad responda a `juego_pausado`.
+4. Victoria al sobrevivir 10 minutos y estadísticas completas en
+   `partida_terminada` (tiempo, nivel, eliminados, victoria o derrota).
+5. Destello en el jugador al recibir daño.
+6. Primera exportación de prueba del build.
+7. Elemento diferencial: resistencia adaptativa del malware.

@@ -30,7 +30,7 @@ sesión en [bitacora.md](bitacora.md).
 - [x] Proyecto de Godot configurado: autoloads, mapa de input, renderizador
 - [x] Escenas base y arena de pruebas
 - [x] Movimiento del jugador
-- [ ] **Prototipo de la mecánica principal**: enemigos que aparecen y persiguen
+- [x] **Prototipo de la mecánica principal**: enemigos que aparecen y persiguen
 
 **Alan**
 
@@ -47,15 +47,15 @@ de código.
 
 **Adam**
 
-- [ ] Sistema de enemigos con `MultiMeshInstance2D` y reciclaje desde array fijo
-- [ ] Rejilla espacial para consultas de proximidad
-- [ ] Fuerza de separación entre enemigos
-- [ ] Colisión y daño entre enemigo y jugador
-- [ ] Sistema de armas data-driven con Resources (`DatosArma`)
-- [ ] Primera arma funcional y daño a enemigos
-- [ ] Gemas de experiencia y recogida
-- [ ] Sistema de niveles y elección de mejoras
-- [ ] Director de oleadas y escalado de dificultad
+- [x] Sistema de enemigos con `MultiMeshInstance2D` y reciclaje desde array fijo
+- [x] Rejilla espacial para consultas de proximidad
+- [x] Fuerza de separación entre enemigos
+- [x] Colisión y daño entre enemigo y jugador
+- [x] Sistema de armas data-driven con Resources (`DatosArma`)
+- [x] Primera arma funcional y daño a enemigos
+- [x] Gemas de experiencia y recogida
+- [x] Sistema de niveles y elección de mejoras
+- [x] Director de oleadas y escalado de dificultad
 
 **Alan**
 
@@ -81,7 +81,7 @@ de código.
 **Adam**
 
 - [ ] Emisión de todas las señales del `BusEventos` que consume la interfaz
-- [ ] Números de daño flotantes
+- [x] Números de daño flotantes
 
 ---
 

@@ -130,6 +130,16 @@ Excepciones:
 
 Convención de commits y ramas: está en el `README.md` de la raíz.
 
-Resumen: `tipo(ámbito): descripción en imperativo`. Rama `main` siempre
-ejecutable, se trabaja en ramas `feature/<ámbito>-<descripción>`, y se fusiona a
-`main` cada día o dos con `--no-ff`.
+Resumen: `tipo(ámbito): descripción en imperativo`. Hay dos ramas fijas que no
+se borran: Adam trabaja en `main`, que siempre tiene que poder ejecutarse, y
+Alan trabaja siempre en `feature/alan-arena-hud`. No se crean ramas por tarea.
+
+- Al empezar la clase, Alan trae lo último de Adam a su rama:
+  `git switch feature/alan-arena-hud`, `git pull`, `git merge origin/main`.
+- Al terminar la clase, commit solo de sus propios ficheros y `git push`. Antes,
+  revisar `git status`: si Godot ha reescrito algún fichero de Adam al abrir el
+  proyecto, se descarta con `git restore <fichero>`.
+- Adam fusiona la rama de Alan en `main` al empezar cada clase.
+- `projecte/escenas/juego.tscn` y `projecte/project.godot` son de Adam. Si Alan
+  necesita cambiarlos (instanciar su HUD, cambiar la escena inicial, añadir la
+  tecla de pausa), se lo pide a Adam.
