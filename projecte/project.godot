@@ -1,10 +1,10 @@
-; Fichero de configuración del motor.
-; Conviene editarlo desde la interfaz del editor y no directamente,
-; porque no todos los parámetros que van aquí son evidentes.
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
 ;
-; Formato:
-;   [seccion] ; la sección va entre corchetes
-;   clave=valor ; se asigna un valor a cada clave
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -27,11 +27,6 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
 
 [input]
 
@@ -63,3 +58,8 @@ mover_derecha={
 , Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":0,"axis_value":1.0,"script":null)
 ]
 }
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
