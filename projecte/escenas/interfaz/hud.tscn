@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://d4u64f03bdnr"]
+
+[ext_resource type="Script" uid="uid://bvqnttb2u2e8f" path="res://escenas/interfaz/hud.gd" id="1_k8an1"]
+
+[node name="HUD" type="Control" unique_id=810412721]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k8an1")
+
+[node name="Margen" type="MarginContainer" parent="." unique_id=1479080662]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+
+[node name="ContenedorBarras" type="VBoxContainer" parent="Margen" unique_id=2021880176]
+layout_mode = 2
+
+[node name="BarraVida" type="ProgressBar" parent="Margen/ContenedorBarras" unique_id=1253165520]
+custom_minimum_size = Vector2(250, 24)
+layout_mode = 2
+value = 100.0
+
+[node name="EtiquetaNivel" type="Label" parent="Margen/ContenedorBarras" unique_id=535953573]
+layout_mode = 2
+text = "NIVEL: 1"
+
+[node name="MenuSubidaNivel" type="PanelContainer" parent="." unique_id=1882052938]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -434.5
+offset_top = -133.5
+offset_right = 434.5
+offset_bottom = 133.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ContenedorVertical" type="VBoxContainer" parent="MenuSubidaNivel" unique_id=631779007]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MenuSubidaNivel/ContenedorVertical" unique_id=1529101800]
+layout_mode = 2
+text = "SELECCIONA UNA ACTUALIZACIÓN"
+horizontal_alignment = 1
+
+[node name="ContenedorTarjetas" type="HBoxContainer" parent="MenuSubidaNivel/ContenedorVertical" unique_id=1724505952]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Tarjeta1" type="Button" parent="MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas" unique_id=253114357]
+custom_minimum_size = Vector2(180, 240)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PARCHE v1.1
++Daño de escaneo
+
+"
+
+[node name="Tarjeta2" type="Button" parent="MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas" unique_id=96915198]
+custom_minimum_size = Vector2(180, 240)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OPTIMIZAR RAM
++Velocidad de proceso"
+
+[node name="Tarjeta3" type="Button" parent="MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas" unique_id=203449152]
+custom_minimum_size = Vector2(180, 240)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FIREWALL
++Escudo protector"
