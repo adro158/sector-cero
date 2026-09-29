@@ -56,7 +56,11 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		DatosMejora.Efecto.DANO_ARMAS:
 			_gestor_armas.multiplicador_dano += mejora.valor
 		DatosMejora.Efecto.CADENCIA_ARMAS:
-			_gestor_armas.multiplicador_cadencia -= mejora.valor
+			# Se multiplica en lugar de restar: restando, tras unas cuantas
+			# mejoras el tiempo entre disparos llegaría a cero o a negativo y el
+			# arma dispararía en cada fotograma. Así cada mejora quita un
+			# porcentaje de lo que queda y nunca se llega a cero.
+			_gestor_armas.multiplicador_cadencia *= 1.0 - mejora.valor
 		DatosMejora.Efecto.ALCANCE_ARMAS:
 			_gestor_armas.multiplicador_alcance += mejora.valor
 		DatosMejora.Efecto.VELOCIDAD_JUGADOR:
