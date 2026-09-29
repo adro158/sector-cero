@@ -32,6 +32,12 @@ func _ready() -> void:
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 
 
+## Si hay mejoras pendientes de elegir. Mientras tanto el juego está pausado por
+## este motivo y nadie más debe quitar la pausa.
+func eligiendo() -> bool:
+	return _niveles_pendientes > 0
+
+
 func _al_ganar_experiencia(cantidad: int) -> void:
 	_experiencia += cantidad
 	var ya_estaba_eligiendo := _niveles_pendientes > 0

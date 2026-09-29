@@ -5,9 +5,11 @@ extends Label
 ## todo, está demostrado que la interfaz de Alan tiene la información que
 ## necesita. Se muestra y se oculta con F3.
 ##
-## Mientras el panel de mejoras de Alan no emita mejora_seleccionada, aquí se
-## puede elegir con las teclas 1, 2 y 3. Emite la misma señal que emitirá su
-## panel, así que la jugabilidad no distingue de dónde llega la elección.
+## Mientras la interfaz de Alan no esté terminada, este panel hace de sustituto
+## provisional: se elige mejora con las teclas 1, 2 y 3 y se pausa con la acción
+## pausar. Emite las mismas señales que emitirá su interfaz, así que la
+## jugabilidad no distingue de dónde llegan. Cuando su menú de pausa exista,
+## hay que quitar la pausa de aquí: si no, cada pulsación se aplicaría dos veces.
 
 var _vida := 0.0
 var _vida_maxima := 0.0
@@ -33,6 +35,10 @@ func _ready() -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
+	if evento.is_action_pressed("pausar") and not _terminada:
+		BusEventos.juego_pausado.emit(not get_tree().paused)
+		return
+
 	if not evento is InputEventKey or not evento.pressed or evento.echo:
 		return
 
@@ -75,6 +81,9 @@ func _process(delta: float) -> void:
 		lineas.append("SUBIDA DE NIVEL: elige con 1, 2 o 3")
 		for i in _opciones.size():
 			lineas.append("%d  %s" % [i + 1, _opciones[i].nombre])
+	elif get_tree().paused and not _terminada:
+		lineas.append("")
+		lineas.append("PAUSA: Esc o P para seguir")
 
 	text = "\n".join(lineas)
 
