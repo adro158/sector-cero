@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 256" width="64" height="256">
+  <!-- Placa base de la RAM (PCB oscura) -->
+  <rect x="8" y="8" width="48" height="240" rx="4" fill="#0b101b" stroke="#00e5ff" stroke-width="3"/>
+  <!-- Chips de memoria montados en la placa -->
+  <rect x="14" y="24" width="36" height="32" rx="2" fill="#141c2e" stroke="#007799" stroke-width="2"/>
+  <rect x="14" y="68" width="36" height="32" rx="2" fill="#141c2e" stroke="#007799" stroke-width="2"/>
+  <rect x="14" y="112" width="36" height="32" rx="2" fill="#141c2e" stroke="#007799" stroke-width="2"/>
+  <rect x="14" y="156" width="36" height="32" rx="2" fill="#141c2e" stroke="#007799" stroke-width="2"/>
+  <!-- Pines de contacto dorados/neón inferiores -->
+  <rect x="12" y="240" width="8" height="8" fill="#ffd700"/>
+  <rect x="24" y="240" width="8" height="8" fill="#ffd700"/>
+  <rect x="36" y="240" width="8" height="8" fill="#ffd700"/>
+  <rect x="48" y="240" width="8" height="8" fill="#ffd700"/>
+</svg>

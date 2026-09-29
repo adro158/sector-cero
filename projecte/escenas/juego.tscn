@@ -1,12 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://cfct68g7gwck7"]
 
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/arena_pruebas.tscn" id="1_arena"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/raiz_juego.tscn" id="2_jugabilidad"]
 
-[node name="Juego" type="Node2D"]
+[node name="Juego" type="Node2D" unique_id=285820193]
 
-[node name="ArenaPruebas" parent="." instance=ExtResource("1_arena")]
+[node name="ArenaPruebas" parent="." unique_id=1104252189 instance=ExtResource("1_arena")]
 
-[node name="RaizJuego" parent="." instance=ExtResource("2_jugabilidad")]
+[node name="RaizJuego" parent="." unique_id=1039076348 instance=ExtResource("2_jugabilidad")]
 
-[node name="Interfaz" type="CanvasLayer" parent="."]
+[node name="Interfaz" type="CanvasLayer" parent="." unique_id=732520496]
