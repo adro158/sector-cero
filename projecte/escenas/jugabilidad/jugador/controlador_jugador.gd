@@ -8,13 +8,35 @@ extends CharacterBody2D
 ## coincidir con su radio.
 @export var margen_limites: float = 16.0
 
+@export_group("Respuesta al recibir daño")
+@export var color_golpe: Color = Color(1.0, 0.25, 0.25, 1.0)
+@export var duracion_golpe: float = 0.3
+@export var sacudida_camara: float = 6.0
+
 var _limite_minimo := Vector2.ZERO
 var _limite_maximo := Vector2.ZERO
 var _hay_limites := false
+var _efecto_golpe: Tween
 
 
 func _ready() -> void:
 	_leer_limites_arena()
+	$Salud.danado.connect(_al_recibir_dano)
+
+
+func _al_recibir_dano(_cantidad: float) -> void:
+	# El jugador se tiñe de rojo y la cámara da un tirón, y los dos vuelven a
+	# su estado normal a la vez. Si llega otro golpe antes de acabar, se corta
+	# el efecto anterior para que no compitan dos animaciones por lo mismo.
+	if _efecto_golpe != null:
+		_efecto_golpe.kill()
+
+	$Sprite.modulate = color_golpe
+	$Camara.offset = Vector2.RIGHT.rotated(randf() * TAU) * sacudida_camara
+
+	_efecto_golpe = create_tween().set_parallel()
+	_efecto_golpe.tween_property($Sprite, "modulate", Color.WHITE, duracion_golpe)
+	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
 
 
 func _leer_limites_arena() -> void:

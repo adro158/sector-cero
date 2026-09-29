@@ -2,6 +2,8 @@ class_name Salud
 extends Node
 
 signal vida_cambiada(actual: float, maxima: float)
+## Solo cuando el golpe hace daño de verdad, no durante la invulnerabilidad.
+signal danado(cantidad: float)
 signal murio
 
 @export var vida_maxima: float = 100.0
@@ -35,6 +37,7 @@ func recibir_dano(cantidad: float) -> void:
 	_vida = maxf(_vida - cantidad, 0.0)
 	_tiempo_invulnerable = invulnerabilidad
 	vida_cambiada.emit(_vida, vida_maxima)
+	danado.emit(cantidad)
 
 	if _vida <= 0.0:
 		murio.emit()
