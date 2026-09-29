@@ -73,3 +73,17 @@ func _physics_process(delta: float) -> void:
 
 	if _hay_limites:
 		global_position = global_position.clamp(_limite_minimo, _limite_maximo)
+
+	_animar(direccion)
+
+
+func _animar(direccion: Vector2) -> void:
+	# El dibujo es de perfil y mira a la izquierda, así que para ir a la derecha
+	# se voltea. Las diagonales se voltean igual, por su parte horizontal. Al ir
+	# recto arriba o abajo se conserva hacia donde miraba, como en el resto del
+	# género. El umbral evita que un stick de mando empujado casi recto hacia
+	# arriba, que siempre deja algo de componente horizontal, lo haga girarse.
+	if absf(direccion.x) > 0.3:
+		$Sprite.flip_h = direccion.x > 0.0
+
+	$Sprite.play("andar" if direccion != Vector2.ZERO else "quieto")

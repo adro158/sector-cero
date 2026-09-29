@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/controlador_jugador.gd" id="1_controlador"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="2_salud"]
@@ -6,6 +6,51 @@
 [ext_resource type="Resource" path="res://recursos/armas/datos/firewall.tres" id="4_firewall"]
 [ext_resource type="Script" path="res://recursos/armas/datos_arma.gd" id="5_datos_arma"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/aura_arma.gd" id="6_aura"]
+[ext_resource type="Texture2D" uid="uid://cbiadfdpu60en" path="res://escenas/jugabilidad/jugador/proceso_antivirus.svg" id="7_dibujo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_quieto"]
+atlas = ExtResource("7_dibujo")
+region = Rect2(0, 0, 48, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_paso_izquierdo"]
+atlas = ExtResource("7_dibujo")
+region = Rect2(48, 0, 48, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_contacto"]
+atlas = ExtResource("7_dibujo")
+region = Rect2(96, 0, 48, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_paso_derecho"]
+atlas = ExtResource("7_dibujo")
+region = Rect2(144, 0, 48, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jugador"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_quieto")
+}],
+"loop": true,
+"name": &"quieto",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_quieto")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_paso_izquierdo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_contacto")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_paso_derecho")
+}],
+"loop": true,
+"name": &"andar",
+"speed": 8.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 16.0
@@ -13,9 +58,11 @@ radius = 16.0
 [node name="Jugador" type="CharacterBody2D" groups=["jugador"]]
 script = ExtResource("1_controlador")
 
-[node name="Sprite" type="Polygon2D" parent="."]
-color = Color(0.9, 0.85, 0.4, 1)
-polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jugador")
+animation = &"quieto"
+autoplay = "quieto"
+offset = Vector2(0, -14)
 
 [node name="FormaColision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_jugador")
