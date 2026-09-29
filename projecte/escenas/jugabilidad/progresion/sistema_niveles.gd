@@ -10,6 +10,10 @@ var _nivel := 1
 var _experiencia := 0
 var _objetivo: int
 
+# Niveles ganados cuyas mejoras aún no se han elegido. Se ofrecen de uno en uno:
+# el panel de mejoras solo puede mostrar tres tarjetas a la vez.
+var _niveles_pendientes := 0
+
 # Las mejoras de un solo uso, como desbloquear un arma, dejan de sortearse una
 # vez elegidas. Las de porcentaje se pueden repetir y se acumulan.
 var _agotadas: Array[DatosMejora] = []
@@ -30,6 +34,7 @@ func _ready() -> void:
 
 func _al_ganar_experiencia(cantidad: int) -> void:
 	_experiencia += cantidad
+	var ya_estaba_eligiendo := _niveles_pendientes > 0
 
 	# Un bucle y no un if: con muchos enemigos muriendo a la vez se puede subir
 	# más de un nivel de golpe.
@@ -37,7 +42,17 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_experiencia -= _objetivo
 		_nivel += 1
 		_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
-		BusEventos.jugador_subio_nivel.emit(_sortear_opciones())
+		_niveles_pendientes += 1
+
+	if _niveles_pendientes > 0 and not ya_estaba_eligiendo:
+		_ofrecer_mejoras()
+
+
+func _ofrecer_mejoras() -> void:
+	# La pausa la pone la jugabilidad y no el panel de mejoras: así la interfaz
+	# solo tiene que mostrar las opciones y avisar de la elegida.
+	get_tree().paused = true
+	BusEventos.jugador_subio_nivel.emit(_sortear_opciones())
 
 
 func _sortear_opciones() -> Array[DatosMejora]:
@@ -52,6 +67,21 @@ func _sortear_opciones() -> Array[DatosMejora]:
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
+	# Si no hay ningún nivel esperando, la elección llega repetida (por ejemplo,
+	# desde dos sitios a la vez) y no debe aplicarse otra vez.
+	if _niveles_pendientes == 0:
+		return
+
+	_aplicar(mejora)
+	_niveles_pendientes -= 1
+
+	if _niveles_pendientes > 0:
+		_ofrecer_mejoras()
+	else:
+		get_tree().paused = false
+
+
+func _aplicar(mejora: DatosMejora) -> void:
 	match mejora.efecto:
 		DatosMejora.Efecto.DANO_ARMAS:
 			_gestor_armas.multiplicador_dano += mejora.valor
