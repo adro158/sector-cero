@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -16,9 +16,26 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/armas/pool_proyectiles.gd" id="14_proyectiles"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/interfaz_provisional.gd" id="16_interfaz_provisional"]
+[ext_resource type="Shader" path="res://escenas/jugabilidad/depuracion/fondo_provisional.gdshader" id="17_fondo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fondo"]
+shader = ExtResource("17_fondo")
+shader_parameter/tamano_celda = 96.0
+shader_parameter/color_pista = Color(0.1, 0.6, 0.45, 0.28)
+shader_parameter/color_via = Color(0.2, 0.9, 0.7, 0.55)
+shader_parameter/color_chip = Color(0.04, 0.06, 0.1, 0.92)
+shader_parameter/color_borde_chip = Color(0.25, 0.45, 0.6, 0.8)
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
+
+[node name="FondoProvisional" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_fondo")
+offset_left = -3000.0
+offset_top = -3000.0
+offset_right = 3000.0
+offset_bottom = 3000.0
+mouse_filter = 2
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
 

@@ -120,6 +120,14 @@ pocos a la vez.
 
 La lista completa de assets está en `documentacio/assets.md`.
 
+### Aviso para los shaders
+
+En este proyecto (Godot 4.7.2, renderizador Compatibility) un número escrito en
+un shader con un cero justo detrás del punto llega mal: `0.05` se comporta como
+`0.5`, y `0.005` como `0.05`. `0.10` o `0.25` salen bien. Para valores así hay
+que escribirlos como división (`1.0 / 20.0`) o pasarlos como parámetros del
+material desde la escena.
+
 ## Idioma
 
 **Todo en castellano**: nombres de variables, funciones, clases, señales, grupos,
