@@ -22,8 +22,8 @@ Decididas por Adam el 24/09/2026:
 
 - En `documentacio/`, Adam mantiene `bitacora.md` y `planificacion.md`. El resto
   de la carpeta es de Alan.
-- `globales/bus_eventos.gd`, `globales/estado_juego.gd`, `escenas/juego.tscn` y
-  `project.godot` son de Adam. Cambiar una señal del bus o un grupo es cambiar el
+- `globales/bus_eventos.gd`, `globales/estado_juego.gd`, `escenas/juego.tscn`,
+  `project.godot`, `export_presets.cfg` y `herramientas/` son de Adam. Cambiar una señal del bus o un grupo es cambiar el
   contrato: se acuerda antes con Alan y se actualiza `GEMINI.md`.
 - Nunca editar ficheros de Alan. Si algo suyo debe cambiar, decírselo a Adam para
   que se lo pida.
@@ -51,6 +51,13 @@ cualquier línea. Ante la duda, la versión más fácil de explicar.
      `extends SceneTree` con `_initialize()`), borrada antes del commit
 - Si falla por una clase global nueva o por rutas antiguas: reimportar; si no
   basta, borrar `projecte/.godot/`.
+- Tras cualquier cambio de balance, medirlo con el simulador de partidas
+  (`projecte/herramientas/simular_partidas.gd`, instrucciones en su cabecera).
+  Las semillas son fijas: el mismo comando da las mismas partidas, así que se
+  puede comparar el antes y el después.
+- Build: `--headless --path projecte --export-release "Windows Desktop"
+  ../build/windows/SectorCero.exe` (igual con "Linux"). La exportación funciona
+  en headless aunque el driver gráfico de la VM esté caído.
 
 ## Git
 
