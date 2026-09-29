@@ -13,18 +13,25 @@ extends CharacterBody2D
 @export var duracion_golpe: float = 0.3
 @export var sacudida_camara: float = 6.0
 
-## El dibujo es una sola pose, sin fotogramas de paso: la sensación de andar la
-## pone un pequeño bote con un ligero vaivén.
-@export_group("Balanceo al andar")
-@export var altura_bote: float = 3.0
-@export var inclinacion: float = 0.08
-@export var velocidad_pasos: float = 10.0
+@export_group("Animación")
+@export var fotogramas_por_segundo: float = 10.0
+
+## La hoja del sprite tiene una fila por dirección y una columna por fotograma
+## del ciclo de andar.
+const FOTOGRAMAS_ANDAR := 6
+
+## Fila de la hoja para cada octavo de vuelta, empezando por la derecha y
+## girando en el sentido de las agujas del reloj (en pantalla, la y crece hacia
+## abajo). Las filas de la hoja van en otro orden: abajo, abajo-izquierda,
+## izquierda, arriba-izquierda, arriba, arriba-derecha, derecha, abajo-derecha.
+const FILA_POR_OCTANTE := [6, 7, 0, 1, 2, 3, 4, 5]
 
 var _limite_minimo := Vector2.ZERO
 var _limite_maximo := Vector2.ZERO
 var _hay_limites := false
 var _efecto_golpe: Tween
-var _fase_paso := 0.0
+var _fila := 0
+var _tiempo_andando := 0.0
 
 
 func _ready() -> void:
@@ -86,20 +93,16 @@ func _physics_process(delta: float) -> void:
 
 
 func _animar(direccion: Vector2, delta: float) -> void:
-	# El dibujo mira a la izquierda, así que para ir a la derecha se voltea. Las
-	# diagonales se voltean igual, por su parte horizontal. Al ir recto arriba o
-	# abajo se conserva hacia donde miraba, como en el resto del género. El
-	# umbral evita que un stick de mando empujado casi recto hacia arriba, que
-	# siempre deja algo de componente horizontal, lo haga girarse.
-	if absf(direccion.x) > 0.3:
-		$Sprite.flip_h = direccion.x > 0.0
-
-	if direccion != Vector2.ZERO:
-		_fase_paso += velocidad_pasos * delta
+	if direccion == Vector2.ZERO:
+		# Quieto: primer fotograma, mirando hacia donde iba.
+		_tiempo_andando = 0.0
 	else:
-		_fase_paso = 0.0
+		# El ángulo se redondea al octavo de vuelta más cercano: 0 es la
+		# derecha, 2 abajo, 4 la izquierda y 6 arriba. posmod lo deja entre 0 y
+		# 7 aunque el ángulo sea negativo, que es lo que pasa hacia arriba.
+		var octante := posmod(roundi(direccion.angle() / (TAU / 8.0)), 8)
+		_fila = FILA_POR_OCTANTE[octante]
+		_tiempo_andando += delta
 
-	# El valor absoluto del seno da un bote hacia arriba en cada paso; el seno
-	# sin él inclina a un lado en un paso y al otro en el siguiente.
-	$Sprite.position.y = -absf(sin(_fase_paso)) * altura_bote
-	$Sprite.rotation = sin(_fase_paso) * inclinacion
+	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
+	$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna

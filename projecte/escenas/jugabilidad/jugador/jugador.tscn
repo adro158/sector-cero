@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://recursos/armas/datos/firewall.tres" id="4_firewall"]
 [ext_resource type="Script" path="res://recursos/armas/datos_arma.gd" id="5_datos_arma"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/aura_arma.gd" id="6_aura"]
-[ext_resource type="Texture2D" uid="uid://ssfftvyx5m8v" path="res://escenas/jugabilidad/jugador/proceso_antivirus.png" id="7_dibujo"]
+[ext_resource type="Texture2D" uid="uid://drnre5tlbfi1u" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png" id="7_dibujo"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 16.0
@@ -15,8 +15,11 @@ radius = 16.0
 script = ExtResource("1_controlador")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
 texture = ExtResource("7_dibujo")
-offset = Vector2(0, -24)
+offset = Vector2(0, -22)
+hframes = 6
+vframes = 8
 
 [node name="FormaColision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_jugador")

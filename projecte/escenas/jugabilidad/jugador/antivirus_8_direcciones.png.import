@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ssfftvyx5m8v"
-path="res://.godot/imported/proceso_antivirus.png-ff646687ca401a3ccdf34d9e888480ee.ctex"
+uid="uid://drnre5tlbfi1u"
+path="res://.godot/imported/antivirus_8_direcciones.png-c59ccde74ebaae910c10a43116f2ea15.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://escenas/jugabilidad/jugador/proceso_antivirus.png"
-dest_files=["res://.godot/imported/proceso_antivirus.png-ff646687ca401a3ccdf34d9e888480ee.ctex"]
+source_file="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png"
+dest_files=["res://.godot/imported/antivirus_8_direcciones.png-c59ccde74ebaae910c10a43116f2ea15.ctex"]
 
 [params]
 
