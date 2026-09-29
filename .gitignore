@@ -2,6 +2,9 @@
 .godot/
 /android/
 
+# Builds exportados: se entregan aparte, no se versionan
+/build/
+
 # OS junk files
 .DS_Store
 Thumbs.db
