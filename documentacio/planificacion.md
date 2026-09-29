@@ -62,7 +62,7 @@ de código.
 - [ ] Escena de la arena definitiva con los grupos `aparicion_jugador` y
       `limites_arena`
 - [ ] Sprites de los enemigos de horda
-- [ ] Primera exportación de prueba del build
+- [x] Primera exportación de prueba del build (la hizo Adam el 29/09)
 
 ---
 
@@ -80,8 +80,14 @@ de código.
 
 **Adam**
 
-- [ ] Emisión de todas las señales del `BusEventos` que consume la interfaz
+- [x] Emisión de todas las señales del `BusEventos` que consume la interfaz
 - [x] Números de daño flotantes
+- [x] Pausa al subir de nivel, pausa desde el bus y fin de partida con victoria
+      y estadísticas
+- [x] Feedback de daño al jugador (tinte y sacudida de cámara)
+- [x] Personaje animado en ocho direcciones (sprite provisional)
+- [ ] Señales nuevas para el HUD: experiencia, tiempo y resistencia (propuestas,
+      pendientes de acordar con Alan)
 
 ---
 
@@ -91,12 +97,17 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 
 **Adam**
 
-- [ ] **Elemento diferencial**: resistencia adaptativa del malware al arma más
+- [x] **Elemento diferencial**: resistencia adaptativa del malware al arma más
       usada, que obliga a diversificar
+
+Desde el 24/09 la prioridad es cubrir primero los mínimos del enunciado. Estas
+tres pasan a ser ampliaciones, solo si sobra tiempo:
+
 - [ ] Enemigos élite con afijos procedurales (blindado, replicante, aura
       ralentizadora, explota al morir)
 - [ ] Evoluciones de armas
-- [ ] Jefe final
+- [ ] Jefe final (la propuesta lo incluye en el MVP: decidir antes de
+      entregarla)
 
 **Alan**
 
@@ -113,7 +124,8 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 **Ambos**
 
 - [ ] Corrección de errores detectados en testeo
-- [ ] Ajuste de balance y sensaciones de juego
+- [ ] Ajuste de balance y sensaciones de juego (primera pasada hecha el 29/09
+      con el simulador de partidas)
 - [ ] **Validación de rendimiento en una máquina con GPU real** (no en la máquina
       virtual, donde las mediciones no son fiables)
 - [ ] Testeo sistemático y registro de resultados

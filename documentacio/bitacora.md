@@ -450,3 +450,185 @@ Cubrir lo mínimo de la jugabilidad, empezando por lo que desbloquea a Alan:
 5. Destello en el jugador al recibir daño.
 6. Primera exportación de prueba del build.
 7. Elemento diferencial: resistencia adaptativa del malware.
+
+---
+
+## Sesión 4 — 29/09/2026
+
+**Duración:** 2 h · **Fitas:** 2, 3 y 4 · **Participantes:** Adam
+
+**Horas acumuladas:** 8 h de las 60 sugeridas (13,3 %)
+
+### Qué se ha hecho
+
+- Fusión en `main` de la rama de Alan: HUD básico con barra de vida, nivel y un
+  panel de mejoras.
+- Corrección de los dos fallos detectados en la sesión anterior: índices
+  caducados en la rejilla y cadencia que podía llegar a cero.
+- Pausa al subir de nivel, con cola cuando se suben varios niveles de golpe.
+- Pausa desde el bus (`juego_pausado`) y acción de input `pausar` (Esc, P y
+  Start del mando).
+- Victoria al sobrevivir 10 minutos y estadísticas completas al terminar la
+  partida.
+- Respuesta visual al recibir daño: el jugador se tiñe de rojo y la cámara da un
+  tirón.
+- **Elemento diferencial**: resistencia adaptativa del malware.
+- Primer build: plantillas de exportación instaladas y presets para Windows y
+  Linux. El ejecutable arranca sin abrir Godot.
+- Interfaz provisional (ventana de mejoras con click y teclas, y aviso de pausa)
+  mientras la de Alan no funciona con la pausa.
+- Personaje: tres versiones en la misma sesión. La definitiva de momento es una
+  hoja de ocho direcciones con seis fotogramas de andar cada una, recoloreada a
+  la estética del ordenador. Es un sprite provisional.
+- Simulador de partidas y primer ajuste de balance.
+- Fondo provisional de placa base.
+
+### Decisiones técnicas y por qué
+
+**La pausa al subir de nivel la pone la jugabilidad, no la interfaz.** Así el
+panel de mejoras solo tiene que mostrar opciones y avisar de la elegida. Si se
+suben varios niveles de golpe, quedan pendientes y se ofrecen de uno en uno: un
+panel solo puede mostrar tres tarjetas a la vez. Una elección que llega sin
+niveles pendientes se ignora, por si llega desde dos sitios.
+
+**El menú de pausa no puede quitar una pausa que no es suya.** La jugabilidad
+ignora `juego_pausado` mientras se elige mejora o tras el fin de partida.
+
+**Un solo reloj de partida.** El tiempo de las estadísticas sale del director de
+oleadas, que no avanza en pausa, en lugar de llevar un segundo reloj en la raíz.
+Las claves del diccionario de `partida_terminada` (`victoria`, `tiempo`,
+`nivel`, `eliminados`) quedan documentadas en el bus y en `GEMINI.md`, porque la
+pantalla de resultados de Alan las leerá por nombre.
+
+**La cadencia se multiplica en vez de restarse.** Cada mejora quita un
+porcentaje de lo que queda y nunca se llega a cero.
+
+**Diseño de la resistencia adaptativa.** Cada 20 s el malware mira qué arma le
+ha hecho más daño en ese ciclo y gana un 10 % de resistencia contra ella, hasta
+un 50 %; contra las demás pierde un 5 %. Con una sola arma la resistencia se
+acumula; con varias, la más usada va cambiando y ninguna acumula mucha. Así
+diversificar al subir de nivel es una decisión real, y la mecánica nace de la
+ambientación. Las armas registran el daño que hacen de verdad, ya descontada la
+resistencia; los proyectiles lo aplican al impactar, porque puede pasar un
+análisis mientras vuelan. Se ve en los números de daño, que se mezclan con rojo
+en la misma proporción que la resistencia, y en el anillo de las armas de área.
+
+**Un ejecutable sin ficheros sueltos.** Los presets incrustan el `.pck` en el
+ejecutable. La salida va a `build/`, que no se versiona: el build se entrega
+aparte.
+
+**La interfaz provisional solo usa el bus.** Igual que tendrá que hacer la de
+Alan. Vive en un único script para poder borrarla de golpe cuando la suya esté
+lista.
+
+**Ocho direcciones con una hoja y un número.** El ángulo del movimiento se
+redondea al octavo de vuelta más cercano y una tabla lo traduce a la fila de la
+hoja; mientras se anda, se avanza por las seis columnas. El pixel art se dibuja
+con filtro *nearest* para que no se difumine.
+
+**Las imágenes se preparan con scripts de Godot fuera del juego.** Para quitar
+el fondo de una ilustración se rellena por inundación desde los bordes, solo lo
+conectado con el exterior, para no tocar lo oscuro de dentro del personaje. Para
+recolorear la hoja se clasifica cada color por tono, saturación y brillo y se
+lleva a su equivalente de la paleta del ordenador, conservando el brillo.
+
+**El balance se decide con datos.** El simulador juega partidas enteras con un
+bot y semillas fijas, así que el mismo comando repite las mismas partidas y se
+puede comparar el antes y el después. Vive en `projecte/herramientas/` y se
+excluye de los builds.
+
+**Un fondo encima de la rejilla, no debajo.** El suelo de Alan es opaco, así que
+un fondo detrás solo se vería fuera de la arena. El provisional dibuja pistas
+sobre una base transparente, por encima de su rejilla y por debajo del juego.
+
+### Cambios de rumbo y su justificación
+
+**Interfaz provisional y HUD de Alan retirado temporalmente.** Su panel de
+mejoras no responde con el juego pausado ni emite `mejora_seleccionada`, y al
+elegir con teclas se quedaba en pantalla. El arreglo está en sus ficheros, así
+que se le ha pasado el código exacto y, mientras tanto, la interfaz provisional
+ocupa su lugar.
+
+**Balance.** Con los valores originales la partida era imposible (ver
+problemas). Se redujo a la mitad el daño por contacto, se empezó con una
+aparición por segundo en vez de dos y se añadió regeneración de vida.
+
+**Señales nuevas propuestas a Alan.** `experiencia_cambiada`, `tiempo_partida`
+y `resistencia_cambiada`. La primera es imprescindible: con
+`experiencia_ganada` su HUD no puede saber cuánto falta para el siguiente nivel.
+No se añaden hasta que él esté de acuerdo, porque cambian el contrato.
+
+### Problemas encontrados y cómo se resolvieron
+
+**La partida era imposible.** El simulador mostró que el bot moría en todas las
+partidas entre los 34 y los 44 segundos. Un solo enemigo quitaba 16 de vida por
+segundo mientras tocaba y la vida nunca se recuperaba. Se compararon variantes:
+bajar daño y apariciones llevaba la media a unos 4 minutos pero seguía sin
+ganar; reforzar el Firewall no mejoraba nada; lo que decidió fue la
+regeneración. Resultado final: 2 victorias de 5 y 7,5 minutos de media.
+
+**El driver gráfico de la máquina virtual se cayó.** Tras varias ejecuciones con
+ventana, cualquier ventana de Godot se cerraba al arrancar ("VMware: IOCTL
+failed", fallo en `vboxgl.dll`), incluso el ejecutable que antes funcionaba. No
+era el código: las pruebas sin ventana pasaban. Se resolvió reiniciando la
+máquina virtual. Mientras tanto se siguió trabajando en headless, que no usa la
+GPU.
+
+**Los shaders pierden el cero de detrás del punto.** En el fondo provisional las
+vías salían como círculos enormes. Con un shader mínimo que pinta varios valores
+y leyendo el píxel se comprobó que `0.05` y `5e-2` llegan como 0,5, mientras que
+`1.0 / 20.0` llega bien. Se escriben esos valores como divisiones y el aviso
+queda en `GEMINI.md` para los shaders de Alan.
+
+**Una prueba que no detectaba el fallo que buscaba.** La de la rejilla esperaba
+dos fotogramas y en el segundo la rejilla ya se había reconstruido, así que el
+código antiguo también pasaba. Se corrigió la espera y se ejecutó contra el
+código antiguo y el nuevo: antes el golpe contaba como impacto pero la vida no
+bajaba; ahora sí.
+
+**Recursos que se descargaban solos.** El simulador cambiaba valores de balance
+en memoria, pero no surtían efecto: al terminar la función nada referenciaba los
+recursos, Godot los descargaba y la escena los volvía a leer del disco. Se
+resolvió guardándolos en una variable.
+
+**Pruebas que miraban demasiado pronto.** En headless los fotogramas avanzan más
+rápido que el tiempo real, y el Firewall solo ataca cada 0,6 s. Las esperas se
+hicieron por tiempo o se alargaron.
+
+### Uso de IA
+
+Claude implementó todo el código de la sesión, los scripts para preparar las
+imágenes y el simulador, y diagnosticó los problemas anteriores con pruebas
+dirigidas. Las decisiones las tomó Adam: la variante de balance, la interfaz
+provisional, cómo hacer el fondo, mantener el Escáner y no tocar los ficheros de
+Alan. Los dibujos del personaje se generaron con herramientas de IA de imagen y
+son provisionales.
+
+### Métodos de test empleados
+
+- **Scripts temporales en headless** para cada cambio: pausa y cola, fin de
+  partida, destello, resistencia, las ocho direcciones. Se borran antes del
+  commit.
+- **Comparación antes y después** ejecutando la misma prueba contra el código
+  antiguo, para asegurar que detecta el fallo.
+- **Eventos reales de ratón y teclado con ventana** para la interfaz provisional,
+  con capturas de pantalla.
+- **Simulador de partidas** para el balance.
+- **Build exportado** ejecutado fuera del editor.
+
+### Estado al cerrar
+
+La jugabilidad mínima está completa: mecánica, pausa, victoria y derrota,
+feedback, elemento diferencial y build. Todo está commiteado en `main`, pero
+aún no se ha subido a GitHub.
+
+Pendiente de Alan: su panel de mejoras (código enviado), menú de pausa,
+pantallas de inicio y resultados, persistencia y audio. Pendiente de acordar con
+él: las tres señales nuevas.
+
+### Siguiente paso
+
+1. Subir los commits para que Alan pueda traerse la pausa y el fin de partida.
+2. Preparar el informe del primer seguimiento (2 de octubre).
+3. Decidir si el jefe final sale del MVP de la propuesta antes de entregarla.
+4. README: cómo ejecutar el juego, controles y tecnologías.
