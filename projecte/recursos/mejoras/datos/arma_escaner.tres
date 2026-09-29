@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_mejora")
 nombre = "Escáner de subred"
-descripcion = "Barrido lento de gran alcance que golpea fuerte"
+descripcion = "Pulso lento de gran alcance que golpea fuerte"
 efecto = 5
 valor = 0.0
 arma = ExtResource("2_escaner")
