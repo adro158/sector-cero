@@ -54,6 +54,12 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> int:
 	var alcanzados := 0
 
 	for i in _rejilla.indices_cerca(centro, radio):
+		# Uno que ya ha muerto en este fotograma sigue en el array hasta la
+		# próxima retirada. Sin esta comprobación recibiría más golpes y
+		# mostraría números de daño sobre un enemigo que ya no existe.
+		if _vidas[i] <= 0.0:
+			continue
+
 		if _posiciones[i].distance_to(centro) < radio:
 			_vidas[i] -= cantidad
 			enemigo_danado.emit(_posiciones[i], cantidad)
@@ -69,6 +75,9 @@ func mas_cercano(desde: Vector2, radio: float) -> Vector2:
 	var mejor_distancia := radio
 
 	for i in _rejilla.indices_cerca(desde, radio):
+		if _vidas[i] <= 0.0:
+			continue
+
 		var distancia := _posiciones[i].distance_to(desde)
 		if distancia < mejor_distancia:
 			mejor_distancia = distancia
@@ -92,10 +101,14 @@ func _preparar_multimesh() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Primero se retiran los muertos y después se reconstruye la rejilla. Al
+	# revés, la retirada cambiaría de índice a los enemigos que llegan a los
+	# huecos y la rejilla seguiría apuntando a los índices antiguos: las armas,
+	# que la consultan después, fallarían contra esos enemigos.
+	_retirar_muertos()
 	_reconstruir_rejilla()
 	_mover(delta)
 	_danar_jugador()
-	_retirar_muertos()
 	_volcar_al_multimesh()
 
 
