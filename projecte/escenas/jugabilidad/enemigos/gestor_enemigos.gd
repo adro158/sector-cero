@@ -3,8 +3,9 @@ extends Node2D
 
 ## Señal local, no del BusEventos: se dispara decenas de veces por segundo y solo
 ## interesa dentro de la jugabilidad. El bus queda para lo que cruza la frontera
-## con la interfaz.
-signal enemigo_danado(posicion: Vector2, cantidad: float)
+## con la interfaz. La resistencia viaja con el golpe para que el número de daño
+## pueda mostrar que el malware se está adaptando a esa arma.
+signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 
 const MAXIMO_ENEMIGOS := 400
 
@@ -49,8 +50,9 @@ func aparecer(posicion: Vector2) -> void:
 
 
 ## Devuelve a cuántos enemigos ha alcanzado, que es lo que necesitan los
-## proyectiles para saber si han impactado.
-func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> int:
+## proyectiles para saber si han impactado. La cantidad llega ya con la
+## resistencia descontada; la resistencia solo se usa para el aviso.
+func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia := 0.0) -> int:
 	var alcanzados := 0
 
 	for i in _rejilla.indices_cerca(centro, radio):
@@ -62,7 +64,7 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float) -> int:
 
 		if _posiciones[i].distance_to(centro) < radio:
 			_vidas[i] -= cantidad
-			enemigo_danado.emit(_posiciones[i], cantidad)
+			enemigo_danado.emit(_posiciones[i], cantidad, resistencia)
 			alcanzados += 1
 
 	return alcanzados

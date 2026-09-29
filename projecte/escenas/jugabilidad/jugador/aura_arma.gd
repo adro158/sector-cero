@@ -1,19 +1,23 @@
 extends Node2D
 
 ## Dibuja el alcance de cada arma y destella cuando esta se ejecuta, para que se
-## vea dónde golpea y en qué momento. Es un marcador de posición: cuando haya
-## shaders y partículas, este dibujo se sustituye.
+## vea dónde golpea y en qué momento. El anillo se tiñe de rojo según la
+## resistencia que el malware ha desarrollado contra esa arma. Es un marcador de
+## posición: cuando haya shaders y partículas, este dibujo se sustituye.
 
 @export var color: Color = Color(0.35, 0.8, 1.0, 1.0)
+@export var color_resistido: Color = Color(1.0, 0.0, 0.15, 1.0)
 @export var duracion_destello: float = 0.12
 
 var _gestor_armas: Node
+var _resistencia_malware: Node
 var _destellos := PackedFloat32Array()
 
 
 func _ready() -> void:
 	_gestor_armas = get_parent().get_node("GestorArmas")
 	_gestor_armas.arma_disparada.connect(_al_disparar)
+	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 
 
 func _al_disparar(indice: int) -> void:
@@ -40,8 +44,9 @@ func _draw() -> void:
 
 		var radio: float = arma.radio * _gestor_armas.multiplicador_alcance
 		var encendido := i < _destellos.size() and _destellos[i] > 0.0
+		var tinte := color.lerp(color_resistido, _resistencia_malware.resistencia(arma))
 
 		if encendido:
-			draw_circle(Vector2.ZERO, radio, Color(color, 0.12))
+			draw_circle(Vector2.ZERO, radio, Color(tinte, 0.12))
 
-		draw_arc(Vector2.ZERO, radio, 0.0, TAU, 64, Color(color, 0.85 if encendido else 0.25), 2.0, true)
+		draw_arc(Vector2.ZERO, radio, 0.0, TAU, 64, Color(tinte, 0.85 if encendido else 0.25), 2.0, true)

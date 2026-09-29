@@ -76,6 +76,10 @@ func _process(delta: float) -> void:
 		"ultimo golpe recibido  %.0f" % _ultimo_golpe,
 	]
 
+	var resistencias: Dictionary = get_tree().get_first_node_in_group("resistencia_malware").resistencias()
+	for arma in resistencias:
+		lineas.append("resiste a %-9s %d%%" % [arma.nombre, roundi(resistencias[arma] * 100.0)])
+
 	if not _opciones.is_empty():
 		lineas.append("")
 		lineas.append("SUBIDA DE NIVEL: elige con 1, 2 o 3")

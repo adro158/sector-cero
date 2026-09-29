@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_depuracion.gd" id="12_depuracion"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_numeros_flotantes.gd" id="13_numeros"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/armas/pool_proyectiles.gd" id="14_proyectiles"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -43,6 +44,9 @@ script = ExtResource("5_gemas")
 
 [node name="Gemas" type="MultiMeshInstance2D" parent="PoolGemas"]
 modulate = Color(0.4, 0.9, 0.85, 1)
+
+[node name="ResistenciaMalware" type="Node" parent="." groups=["resistencia_malware"]]
+script = ExtResource("15_resistencia")
 
 [node name="DirectorOleadas" type="Node" parent="."]
 script = ExtResource("4_oleadas")

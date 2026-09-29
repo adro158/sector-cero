@@ -15,11 +15,13 @@ var _tiempos := PackedFloat32Array()
 var _jugador: Node2D
 var _gestores: Array[GestorEnemigos] = []
 var _pool_proyectiles: Node2D
+var _resistencia_malware: Node
 
 
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_pool_proyectiles = get_tree().get_first_node_in_group("pool_proyectiles")
+	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 	_tiempos.resize(armas.size())
 
 	# Hay un gestor por tipo de enemigo, porque un MultiMesh solo puede dibujar
@@ -50,7 +52,15 @@ func _atacar(arma: DatosArma) -> void:
 
 	match arma.tipo:
 		DatosArma.Tipo.AREA:
+			var resistencia: float = _resistencia_malware.resistencia(arma)
+			var dano_final := dano * (1.0 - resistencia)
+			var alcanzados := 0
+
 			for gestor in _gestores:
-				gestor.danar_en_area(_jugador.global_position, radio, dano)
+				alcanzados += gestor.danar_en_area(_jugador.global_position, radio, dano_final, resistencia)
+
+			_resistencia_malware.registrar_dano(arma, alcanzados * dano_final)
 		DatosArma.Tipo.PROYECTIL:
+			# El proyectil aplica la resistencia al impactar, no al salir: puede
+			# pasar un análisis mientras vuela.
 			_pool_proyectiles.lanzar(_jugador.global_position, arma, dano, radio)

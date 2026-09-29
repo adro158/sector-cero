@@ -11,9 +11,12 @@ const MAXIMO_NUMEROS := 150
 @export var velocidad_subida: float = 70.0
 @export var tamano_fuente: int = 15
 @export var color: Color = Color(1.0, 0.95, 0.65, 1.0)
+## Hacia este color se tiñen los golpes de un arma a la que el malware resiste.
+@export var color_resistido: Color = Color(1.0, 0.0, 0.15, 1.0)
 
 var _posiciones := PackedVector2Array()
 var _cantidades := PackedFloat32Array()
+var _resistencias := PackedFloat32Array()
 var _tiempos := PackedFloat32Array()
 var _activos := 0
 var _fuente: Font
@@ -22,6 +25,7 @@ var _fuente: Font
 func _ready() -> void:
 	_posiciones.resize(MAXIMO_NUMEROS)
 	_cantidades.resize(MAXIMO_NUMEROS)
+	_resistencias.resize(MAXIMO_NUMEROS)
 	_tiempos.resize(MAXIMO_NUMEROS)
 	_fuente = ThemeDB.fallback_font
 
@@ -29,7 +33,7 @@ func _ready() -> void:
 		gestor.enemigo_danado.connect(_al_danar_enemigo)
 
 
-func _al_danar_enemigo(posicion: Vector2, cantidad: float) -> void:
+func _al_danar_enemigo(posicion: Vector2, cantidad: float, resistencia: float) -> void:
 	# Al llenarse se descartan los nuevos. Con un arma de área golpeando a
 	# decenas de enemigos a la vez, el tope evita llenar la pantalla de texto.
 	if _activos >= MAXIMO_NUMEROS:
@@ -37,6 +41,7 @@ func _al_danar_enemigo(posicion: Vector2, cantidad: float) -> void:
 
 	_posiciones[_activos] = posicion
 	_cantidades[_activos] = cantidad
+	_resistencias[_activos] = resistencia
 	_tiempos[_activos] = 0.0
 	_activos += 1
 
@@ -61,12 +66,16 @@ func _eliminar(indice: int) -> void:
 	_activos -= 1
 	_posiciones[indice] = _posiciones[_activos]
 	_cantidades[indice] = _cantidades[_activos]
+	_resistencias[indice] = _resistencias[_activos]
 	_tiempos[indice] = _tiempos[_activos]
 
 
 func _draw() -> void:
 	for i in _activos:
 		var desvanecido := 1.0 - _tiempos[i] / duracion
+		# Se mezcla con el rojo en la misma proporción que la resistencia: con
+		# un 50% de resistencia, el número queda a medio camino.
+		var tinte := color.lerp(color_resistido, _resistencias[i])
 		draw_string(
 			_fuente,
 			_posiciones[i],
@@ -74,5 +83,5 @@ func _draw() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT,
 			-1,
 			tamano_fuente,
-			Color(color, desvanecido)
+			Color(tinte, desvanecido)
 		)

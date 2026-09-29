@@ -18,8 +18,11 @@ var _radios := PackedFloat32Array()
 var _rebotes := PackedInt32Array()
 var _vidas := PackedFloat32Array()
 var _esperas := PackedFloat32Array()
+# Qué arma lanzó cada proyectil, para aplicar y registrar su resistencia.
+var _armas: Array[DatosArma] = []
 var _activos := 0
 var _gestores: Array[GestorEnemigos] = []
+var _resistencia_malware: Node
 
 @onready var _malla: MultiMeshInstance2D = $Proyectiles
 
@@ -33,9 +36,12 @@ func _ready() -> void:
 	_rebotes.resize(MAXIMO_PROYECTILES)
 	_vidas.resize(MAXIMO_PROYECTILES)
 	_esperas.resize(MAXIMO_PROYECTILES)
+	_armas.resize(MAXIMO_PROYECTILES)
 
 	for nodo in get_tree().get_nodes_in_group("gestor_enemigos"):
 		_gestores.append(nodo)
+
+	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 
 	_preparar_multimesh()
 
@@ -70,6 +76,7 @@ func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float) -> void
 	_rebotes[_activos] = arma.rebotes
 	_vidas[_activos] = arma.vida_util
 	_esperas[_activos] = 0.0
+	_armas[_activos] = arma
 	_activos += 1
 
 
@@ -94,12 +101,18 @@ func _physics_process(delta: float) -> void:
 
 ## Devuelve true si el proyectil debe desaparecer.
 func _impactar(indice: int) -> bool:
+	var arma := _armas[indice]
+	var resistencia: float = _resistencia_malware.resistencia(arma)
+	var dano := _danos[indice] * (1.0 - resistencia)
 	var alcanzados := 0
+
 	for gestor in _gestores:
-		alcanzados += gestor.danar_en_area(_posiciones[indice], _radios[indice], _danos[indice])
+		alcanzados += gestor.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia)
 
 	if alcanzados == 0:
 		return false
+
+	_resistencia_malware.registrar_dano(arma, alcanzados * dano)
 
 	if _rebotes[indice] <= 0:
 		return true
@@ -141,6 +154,7 @@ func _eliminar(indice: int) -> void:
 	_rebotes[indice] = _rebotes[_activos]
 	_vidas[indice] = _vidas[_activos]
 	_esperas[indice] = _esperas[_activos]
+	_armas[indice] = _armas[_activos]
 
 
 func _volcar_al_multimesh() -> void:
