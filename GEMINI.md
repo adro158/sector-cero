@@ -74,6 +74,22 @@ La interfaz **escucha** casi todas y **emite** dos: `mejora_seleccionada` (cuand
 el jugador pulsa una de las tres tarjetas al subir de nivel) y `juego_pausado`
 (desde el menú de pausa).
 
+Detalles que la interfaz tiene que respetar:
+
+- **Subir de nivel.** La jugabilidad pausa el juego antes de emitir
+  `jugador_subio_nivel` y lo reanuda al recibir `mejora_seleccionada`. El panel
+  de mejoras necesita `process_mode = Always` para funcionar en pausa, debe
+  emitir `mejora_seleccionada` con una de las `opciones` recibidas y mostrar sus
+  `nombre` y `descripcion`. Si se suben varios niveles de golpe, la señal vuelve
+  a llegar justo después de cada elección.
+- **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
+  jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o tras el
+  fin de partida. La acción de input es `pausar` (Esc, P y Start del mando).
+- **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
+  del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
+  (int), `eliminados` (int). Se gana sobreviviendo el tiempo que marca
+  `duracion_partida` en `recursos/oleadas/datos/config_principal.tres`.
+
 Nunca referenciar nodos de la otra persona por `NodePath`: se emite la señal.
 
 Otros autoloads registrados: `EstadoJuego`, `GestorAudio`, `GestorGuardado`.

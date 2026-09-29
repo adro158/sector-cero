@@ -9,3 +9,6 @@ extends Resource
 
 ## A qué distancia del jugador aparecen, para que lo hagan fuera de cámara.
 @export var distancia_aparicion: float = 700.0
+
+## Segundos que hay que sobrevivir para ganar la partida.
+@export var duracion_partida: float = 600.0

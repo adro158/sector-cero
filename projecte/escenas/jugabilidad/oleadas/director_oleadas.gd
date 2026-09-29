@@ -1,9 +1,13 @@
 extends Node
 
+## Se ha sobrevivido el tiempo que marca la configuración.
+signal partida_superada
+
 @export var config: DatosConfigOleada
 
 var _tiempo := 0.0
 var _tiempo_restante := 0.0
+var _superada := false
 var _jugador: Node2D
 var _gestores: Array[GestorEnemigos] = []
 
@@ -15,9 +19,20 @@ func _ready() -> void:
 		_gestores.append(nodo)
 
 
+## Segundos de partida jugados. Es el reloj de la partida: no avanza con el
+## juego en pausa, porque el director tampoco se procesa.
+func tiempo() -> float:
+	return _tiempo
+
+
 func _physics_process(delta: float) -> void:
 	_tiempo += delta
 	_tiempo_restante -= delta
+
+	if _tiempo >= config.duracion_partida and not _superada:
+		_superada = true
+		partida_superada.emit()
+		return
 
 	if _tiempo_restante > 0.0:
 		return

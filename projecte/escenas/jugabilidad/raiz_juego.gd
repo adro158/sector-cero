@@ -1,10 +1,11 @@
 extends Node2D
 
-var _tiempo := 0.0
+var _eliminados := 0
 var _terminada := false
 
 @onready var _salud_jugador: Salud = $Jugador/Salud
 @onready var _sistema_niveles: Node = $SistemaNiveles
+@onready var _director: Node = $DirectorOleadas
 
 
 func _ready() -> void:
@@ -12,16 +13,18 @@ func _ready() -> void:
 	$Jugador.global_position = aparicion.global_position
 
 	_salud_jugador.vida_cambiada.connect(_al_cambiar_vida)
-	_salud_jugador.murio.connect(_al_morir_jugador)
+	_salud_jugador.murio.connect(_terminar_partida.bind(false))
+	_director.partida_superada.connect(_terminar_partida.bind(true))
+	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.juego_pausado.connect(_al_pausar)
-
-
-func _process(delta: float) -> void:
-	_tiempo += delta
 
 
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
 	BusEventos.salud_jugador_cambiada.emit(actual, maxima)
+
+
+func _al_morir_enemigo(_posicion: Vector2, _tipo: String) -> void:
+	_eliminados += 1
 
 
 func _al_pausar(en_pausa: bool) -> void:
@@ -33,7 +36,19 @@ func _al_pausar(en_pausa: bool) -> void:
 	get_tree().paused = en_pausa
 
 
-func _al_morir_jugador() -> void:
+func _terminar_partida(victoria: bool) -> void:
+	# Morir y superar el tiempo en el mismo fotograma no debe dar dos finales.
+	if _terminada:
+		return
+
 	_terminada = true
-	BusEventos.partida_terminada.emit({"tiempo": _tiempo})
 	get_tree().paused = true
+
+	# Las claves de este diccionario son parte del contrato con la interfaz:
+	# la pantalla de resultados y los récords de Alan las leen por nombre.
+	BusEventos.partida_terminada.emit({
+		"victoria": victoria,
+		"tiempo": _director.tiempo(),
+		"nivel": _sistema_niveles.nivel(),
+		"eliminados": _eliminados,
+	})

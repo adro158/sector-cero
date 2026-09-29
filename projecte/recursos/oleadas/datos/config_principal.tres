@@ -8,3 +8,4 @@ intervalo_inicial = 0.5
 intervalo_final = 0.08
 tiempo_hasta_dificultad_maxima = 600.0
 distancia_aparicion = 700.0
+duracion_partida = 600.0
