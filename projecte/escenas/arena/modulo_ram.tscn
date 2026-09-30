@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://7q088j4xga0i"]
+
+[ext_resource type="Texture2D" uid="uid://dn0qkbjbgaqq" path="res://medios/modulo_ram.svg.svg" id="1_54fse"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ud5j"]
+size = Vector2(54, 245)
+
+[node name="ModuloRAM" type="StaticBody2D" unique_id=249005895]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=412153907]
+position = Vector2(151, 211)
+texture = ExtResource("1_54fse")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1060364237]
+position = Vector2(151, 211.5)
+shape = SubResource("RectangleShape2D_5ud5j")
