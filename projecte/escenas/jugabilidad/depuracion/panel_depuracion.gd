@@ -19,6 +19,8 @@ func _ready() -> void:
 	# Sigue actualizándose con el juego pausado, para poder consultarlo mientras
 	# se elige una mejora.
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Empieza oculto para no taparse con el HUD de Alan; F3 lo muestra.
+	visible = false
 
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)

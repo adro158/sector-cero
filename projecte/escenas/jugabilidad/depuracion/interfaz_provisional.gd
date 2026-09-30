@@ -1,44 +1,28 @@
 extends Control
 
-## Sustituto provisional de la interfaz de Alan: panel de mejoras al subir de
-## nivel y aviso de pausa. Existe para poder jugar y enseñar el juego mientras
-## su interfaz no esté terminada; cuando lo esté, se borra este nodo entero.
+## Sustituto provisional del menú de pausa de Alan: al pulsar la acción pausar
+## oscurece el juego y muestra un aviso. Cuando su menú exista, se borra este
+## nodo entero; si no, cada pulsación se aplicaría dos veces.
 ##
-## Solo usa señales del BusEventos, igual que tendrá que hacer su interfaz: si
-## esto funciona, el contrato tiene todo lo necesario.
+## Solo usa señales del BusEventos, igual que tendrá que hacer su menú.
 
-const OPCIONES_POR_NIVEL := 3
 const COLOR_NEON := Color(0.0, 0.85, 0.95)
 
-var _opciones: Array = []
-var _botones: Array[Button] = []
 var _en_pausa := false
 var _terminada := false
-var _ventana_mejoras: ColorRect
 var _ventana_pausa: ColorRect
 
 
 func _ready() -> void:
-	# Se usa precisamente con el juego pausado.
+	# Tiene que atender al teclado precisamente con el juego pausado.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	for i in OPCIONES_POR_NIVEL:
-		var boton := Button.new()
-		boton.custom_minimum_size = Vector2(460, 56)
-		boton.pressed.connect(_elegir.bind(i))
-		_botones.append(boton)
-
-	_ventana_mejoras = _crear_ventana("SUBIDA DE NIVEL", "Elige una mejora: click o teclas 1, 2 y 3", _botones)
-	_ventana_pausa = _crear_ventana("PAUSA", "Esc o P para continuar", [])
-
-	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
+	_ventana_pausa = _crear_ventana("PAUSA", "Esc o P para continuar")
 	BusEventos.partida_terminada.connect(_al_terminar)
 
 
-## Un fondo que oscurece el juego con una ventana centrada encima: título,
-## subtítulo y, debajo, los controles que se le pasen.
-func _crear_ventana(titulo: String, subtitulo: String, contenido: Array) -> ColorRect:
+## Un fondo que oscurece el juego con una ventana centrada encima.
+func _crear_ventana(titulo: String, subtitulo: String) -> ColorRect:
 	var fondo := ColorRect.new()
 	fondo.color = Color(0.0, 0.0, 0.0, 0.6)
 	fondo.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -67,10 +51,6 @@ func _crear_ventana(titulo: String, subtitulo: String, contenido: Array) -> Colo
 
 	caja.add_child(_crear_etiqueta(titulo, 40, COLOR_NEON))
 	caja.add_child(_crear_etiqueta(subtitulo, 16, Color(0.8, 0.85, 0.9)))
-
-	for control in contenido:
-		caja.add_child(control)
-
 	return fondo
 
 
@@ -83,42 +63,15 @@ func _crear_etiqueta(texto: String, tamano: int, color: Color) -> Label:
 	return etiqueta
 
 
-func _al_subir_nivel(opciones: Array) -> void:
-	_opciones = opciones
-
-	for i in _botones.size():
-		_botones[i].visible = i < opciones.size()
-		if i < opciones.size():
-			_botones[i].text = "%d.  %s\n%s" % [i + 1, opciones[i].nombre, opciones[i].descripcion]
-
-	_ventana_mejoras.visible = true
-
-
-func _elegir(indice: int) -> void:
-	if indice >= _opciones.size():
-		return
-
-	# Primero se cierra y después se avisa: si quedan niveles pendientes, la
-	# respuesta a la señal vuelve a abrir la ventana con las opciones del
-	# siguiente, y cerrarla después la dejaría oculta.
-	var mejora: DatosMejora = _opciones[indice]
-	_opciones = []
-	_ventana_mejoras.visible = false
-	BusEventos.mejora_seleccionada.emit(mejora)
-
-
 func _unhandled_input(evento: InputEvent) -> void:
 	if evento.is_action_pressed("pausar"):
 		_alternar_pausa()
-	elif not _opciones.is_empty() and evento is InputEventKey and evento.pressed and not evento.echo:
-		if evento.keycode in [KEY_1, KEY_2, KEY_3]:
-			_elegir(evento.keycode - KEY_1)
 
 
 func _alternar_pausa() -> void:
-	# No se pausa encima de la elección de mejora ni tras el fin de partida: el
-	# juego ya está parado por otro motivo y el aviso confundiría.
-	if _terminada or not _opciones.is_empty():
+	# Si el juego ya está pausado y no lo he pausado yo, es otra pausa (elegir
+	# mejora o fin de partida): el aviso confundiría y no hay que tocarla.
+	if _terminada or (get_tree().paused and not _en_pausa):
 		return
 
 	_en_pausa = not _en_pausa
@@ -128,5 +81,4 @@ func _alternar_pausa() -> void:
 
 func _al_terminar(_estadisticas: Dictionary) -> void:
 	_terminada = true
-	_ventana_mejoras.visible = false
 	_ventana_pausa.visible = false

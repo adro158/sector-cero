@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://escenas/arena/arena.tscn" id="1_arena"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/raiz_juego.tscn" id="2_jugabilidad"]
+[ext_resource type="PackedScene" uid="uid://d4u64f03bdnr" path="res://escenas/interfaz/hud.tscn" id="3_hud"]
 
 [node name="Juego" type="Node2D"]
 
@@ -10,3 +11,5 @@
 [node name="RaizJuego" parent="." instance=ExtResource("2_jugabilidad")]
 
 [node name="Interfaz" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="Interfaz" instance=ExtResource("3_hud")]
