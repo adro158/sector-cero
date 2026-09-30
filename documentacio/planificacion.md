@@ -3,8 +3,8 @@
 Reparto de las 6 fitas del enunciado entre los dos integrantes, con estimación de
 horas sobre las 60 sugeridas.
 
-- **Adam** — núcleo de jugabilidad
-- **Alan** — interfaz, persistencia, audio, arena, assets y pulido visual
+- **Adam** — núcleo de jugabilidad; desde el 30/09, también interfaz, persistencia, arena y arte
+- **Alan** — audio (hasta el 30/09 llevaba también interfaz, persistencia, arena y arte)
 
 Las horas son una estimación inicial. Las horas reales se registran sesión a
 sesión en [bitacora.md](bitacora.md).
@@ -70,13 +70,13 @@ de código.
 
 **Alan**
 
-- [ ] Pantalla inicial
-- [ ] HUD: barra de vida, barra de experiencia, temporizador, contador
-- [ ] Panel de elección de mejoras al subir de nivel
-- [ ] Menú de pausa
-- [ ] Pantalla de resultados
+- [x] Pantalla inicial con las reglas (Adam, 30/09)
+- [x] HUD: barra de vida, barra de experiencia, temporizador, mejoras (Adam, 30/09)
+- [x] Panel de elección de mejoras al subir de nivel (Adam, 30/09)
+- [x] Menú de pausa (Adam, 30/09)
+- [x] Pantalla de resultados (Adam, 30/09)
 - [ ] Transiciones entre escenas
-- [ ] Flujo general: menú → partida → resultados → menú
+- [x] Flujo general: menú → partida → resultados → menú (Adam, 30/09)
 
 **Adam**
 
@@ -86,8 +86,8 @@ de código.
       y estadísticas
 - [x] Feedback de daño al jugador (tinte y sacudida de cámara)
 - [x] Personaje animado en ocho direcciones (sprite provisional)
-- [ ] Señales nuevas para el HUD: experiencia, tiempo y resistencia (propuestas,
-      pendientes de acordar con Alan)
+- [x] Señales nuevas para el HUD: experiencia y tiempo (la de resistencia no
+      hace falta: el F3 la lee directamente)
 
 ---
 
@@ -106,8 +106,8 @@ tres pasan a ser ampliaciones, solo si sobra tiempo:
 - [ ] Enemigos élite con afijos procedurales (blindado, replicante, aura
       ralentizadora, explota al morir)
 - [ ] Evoluciones de armas
-- [ ] Jefe final (la propuesta lo incluye en el MVP: decidir antes de
-      entregarla)
+- [x] Jefe final (hecho el 30/09 con el sprite que aportó Adam; la
+      propuesta lo incluye en el MVP)
 
 **Alan**
 

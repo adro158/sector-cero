@@ -632,3 +632,136 @@ pantallas de inicio y resultados, persistencia y audio. Pendiente de acordar con
 2. Preparar el informe del primer seguimiento (2 de octubre).
 3. Decidir si el jefe final sale del MVP de la propuesta antes de entregarla.
 4. README: cómo ejecutar el juego, controles y tecnologías.
+
+---
+
+## Sesión 5 — 30/09/2026
+
+**Duración:** 2 h · **Fitas:** 3 y 4 · **Participantes:** Adam
+
+**Horas acumuladas:** 10 h de las 60 sugeridas (16,7 %)
+
+### Qué se ha hecho
+
+- Fusión del arreglo del panel de mejoras de Alan y de su módulo RAM.
+- Jefe final: aparece a los 10 minutos, deja de salir horda y se gana al
+  derrotarlo.
+- Sprites para los tres tipos de la horda e iconos para las mejoras.
+- Primera release en GitHub (v0.1) con los ejecutables de Windows y Linux,
+  para que Alan pueda jugar sin abrir Godot.
+- Nuevo reparto: la interfaz, la persistencia, la arena y el arte pasan a
+  Adam; Alan se queda el audio.
+- Interfaz completa: menú de inicio con las reglas, HUD (nivel, experiencia,
+  reloj, cuenta atrás del jefe y columna de mejoras con su nivel), panel de
+  mejoras con teclas 1, 2 y 3, menú de pausa, pantalla final de victoria o
+  derrota, barra de vida sobre el personaje y panel técnico (F3) rediseñado.
+- Cambio de personaje durante la partida (espadachín, mago y segador).
+- Acceso directo `.bat` en el escritorio para probar el juego desde el
+  proyecto.
+
+### Decisiones técnicas y por qué
+
+**El jefe es un objetivo más para las armas.** Todo lo que puede recibir daño
+está en el grupo `objetivos` y tiene `danar_en_area` y `mas_cercano`: los tres
+gestores de la horda y el jefe. Las armas, los proyectiles y los números de
+daño recorren ese grupo sin saber qué es cada uno, y la resistencia del
+malware se aplica igual contra él. El jefe reutiliza el componente `Salud`.
+
+**El jefe se puede esquivar.** Persigue despacio y cada 7 s se tiñe de rojo
+durante 0,8 s antes de embestir en línea recta hacia donde estaba el jugador:
+el aviso da tiempo a reaccionar.
+
+**La tabla de ocho direcciones se comparte.** `Direcciones8` traduce una
+dirección a la fila de la hoja de sprites y la usan el jugador y el jefe, en
+lugar de repetir la tabla en los dos.
+
+**Los sprites de la horda y los iconos se generan con un script.** Se dibujan
+a partir de formas simples, al tamaño exacto de cada uno para que salgan
+nítidos, y el contorno de neón se calcula solo desde la silueta. Retocar uno es
+cambiar unos números. Cada tipo de enemigo y cada mejora enlaza su imagen desde
+su `.tres`, así que sigue siendo data-driven.
+
+**La interfaz comparte un estilo.** `EstiloInterfaz` reúne los colores neón, la
+fuente monoespaciada y el aspecto de paneles y botones, para que todas las
+pantallas se vean iguales sin repetir la configuración. Cada pantalla es un
+script pequeño y solo usa el bus.
+
+**Dos señales nuevas para el HUD.** `experiencia_cambiada` (sin ella no se
+puede dibujar la barra de experiencia, porque `experiencia_ganada` no dice
+cuánto falta) y `tiempo_partida`, una vez por segundo.
+
+**Solo dispara el arma del personaje activo.** Así el cambio de personaje es
+la respuesta a la resistencia del malware y el elemento diferencial se
+convierte en una decisión del jugador. Por eso las armas dejan de salir como
+mejoras: llegan con los personajes. Hay 10 s de espera entre cambios para que
+no se pulse sin parar.
+
+**Los ejecutables se publican como release.** El de Windows pesa 109 MB y
+GitHub no admite ficheros de más de 100 MB en el repositorio; además, meter
+binarios en Git haría crecer el historial con cada versión. Comprimido ocupa
+36 MB y se adjunta a una release.
+
+### Cambios de rumbo y su justificación
+
+**Reparto de trabajo.** Adam se queda la interfaz, la persistencia, la arena y
+el arte; Alan, el audio. Acordado entre los dos: la interfaz estaba muy ligada
+a la jugabilidad (pausa, mejoras, fin de partida) y hacerla uno solo evita
+esperas y conflictos. Lo que Alan ya hizo sigue siendo suyo en el historial.
+
+**Las armas ya no se desbloquean al subir de nivel**, por el cambio de
+personaje.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Los sprites de la horda salían boca abajo.** El `QuadMesh` que dibuja el
+`MultiMesh` tiene la textura invertida respecto al 2D. Se detectó en la primera
+captura y se corrige dibujando cada instancia con escala vertical -1.
+
+**El módulo RAM rompía la exportación.** Su escena apuntaba a
+`modulo_ram.svg.svg`, que no existía. Se corrigió la ruta y la importación.
+
+**Conflictos al fusionar la rama de Alan.** Su rama partía de un `main`
+antiguo y Godot le había reescrito `juego.tscn` y `project.godot`. Se conservó
+la versión de `main`, porque sus cambios ahí no eran intencionados.
+
+**El panel F3 ocupaba toda la pantalla.** Al anclarlo arriba a la derecha,
+Godot mantuvo su borde izquierdo en la posición anterior. Se fijaron los dos
+bordes en el mismo punto para que crezca solo lo que mide su texto.
+
+**Un commit mezclado.** El commit de los iconos se llevó por error el borrado
+de la interfaz provisional, que ya estaba preparado, y quedaba un estado que no
+arrancaba. Como no se había subido, se rehízo solo con los iconos.
+
+### Uso de IA
+
+Claude implementó el jefe, la interfaz, el cambio de personaje, los scripts
+que generan los sprites y los iconos, y la release. Las decisiones las tomó
+Adam: el nuevo reparto con Alan, la forma del cambio de personaje y cómo
+distribuir el ejecutable. Los sprites de los personajes y del jefe son de
+herramientas de IA de imagen y son provisionales.
+
+### Métodos de test empleados
+
+- Scripts temporales en headless para el jefe (aparición, daño, estados y
+  victoria) y para el cambio de personaje.
+- Pruebas con ventana y eventos reales de teclado y ratón por toda la
+  interfaz, con captura de cada pantalla.
+- Simulador de partidas para la vida del jefe: con 2500 el combate duraba
+  35 s; con 5000 dura unos 65 s.
+- Ejecutable exportado arrancado fuera del editor.
+
+### Estado al cerrar
+
+El juego tiene su flujo completo: menú, partida, pausa, jefe y pantalla final.
+Faltan los requisitos que no son de jugabilidad: audio (Alan) y persistencia.
+El cambio de personaje funciona, pero su balance está sin medir: el bot del
+simulador aún no cambia de personaje.
+
+### Siguiente paso
+
+1. Mapa infinito, como en Vampire Survivors: el fondo sigue a la cámara y
+   desaparecen los límites de la arena.
+2. Enseñar al bot del simulador a cambiar de personaje y medir el balance.
+3. Informe del primer seguimiento (2 de octubre).
+4. Persistencia: récords y configuración.
+5. README y release v0.2.
