@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/controlador_jugador.gd" id="1_controlador"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="2_salud"]
@@ -8,6 +8,11 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/aura_arma.gd" id="6_aura"]
 [ext_resource type="Texture2D" uid="uid://drnre5tlbfi1u" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png" id="7_dibujo"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/barra_vida.gd" id="8_barra_vida"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/cambio_personaje.gd" id="9_cambio"]
+[ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="10_datos_personaje"]
+[ext_resource type="Resource" path="res://recursos/personajes/datos/espadachin.tres" id="11_espadachin"]
+[ext_resource type="Resource" path="res://recursos/personajes/datos/mago.tres" id="12_mago"]
+[ext_resource type="Resource" path="res://recursos/personajes/datos/segador.tres" id="13_segador"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 16.0
@@ -44,3 +49,7 @@ script = ExtResource("6_aura")
 position = Vector2(0, -66)
 z_index = 5
 script = ExtResource("8_barra_vida")
+
+[node name="CambioPersonaje" type="Node" parent="."]
+script = ExtResource("9_cambio")
+personajes = Array[ExtResource("10_datos_personaje")]([ExtResource("11_espadachin"), ExtResource("12_mago"), ExtResource("13_segador")])

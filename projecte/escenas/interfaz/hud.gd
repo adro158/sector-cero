@@ -16,6 +16,27 @@ var _etiqueta_tiempo: Label
 var _etiqueta_jefe: Label
 var _columna: VBoxContainer
 var _iconos := {}
+var _personaje: Label
+var _actual: DatosPersonaje
+var _siguiente: DatosPersonaje
+var _espera := 0.0
+
+
+func _process(delta: float) -> void:
+	if _actual == null:
+		return
+	# Cuenta atrás propia: se sabe cuánto faltaba al cambiar y el HUD, como el
+	# juego, no avanza en pausa.
+	_espera = maxf(_espera - delta, 0.0)
+	var estado := "[Q] cambiar a %s" % _siguiente.nombre if _espera <= 0.0 else "%s en %d s" % [_siguiente.nombre, ceili(_espera)]
+	_personaje.text = "%s · %s      %s" % [_actual.nombre.to_upper(), _actual.arma.nombre, estado]
+
+
+func _al_cambiar_personaje(actual: DatosPersonaje, siguiente: DatosPersonaje, espera: float) -> void:
+	_actual = actual
+	_siguiente = siguiente
+	_espera = espera
+	_personaje.add_theme_color_override("font_color", actual.color)
 
 
 func _ready() -> void:
@@ -29,7 +50,16 @@ func _ready() -> void:
 	_columna.add_theme_constant_override("separation", 6)
 	add_child(_columna)
 
+	_personaje = EstiloInterfaz.etiqueta("", 16)
+	_personaje.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_personaje.offset_left = -300.0
+	_personaje.offset_right = 300.0
+	_personaje.offset_top = -44.0
+	_personaje.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(_personaje)
+
 	$PanelMejoras.niveles = niveles_mejora
+	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)

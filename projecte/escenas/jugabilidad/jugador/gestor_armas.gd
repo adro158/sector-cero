@@ -31,6 +31,13 @@ func _ready() -> void:
 	_objetivos = get_tree().get_nodes_in_group("objetivos")
 
 
+## Sustituye todas las armas por una: la del personaje que entra.
+func cambiar_arma(arma: DatosArma) -> void:
+	armas.clear()
+	armas.append(arma)
+	_tiempos = PackedFloat32Array([0.0])
+
+
 func anadir_arma(arma: DatosArma) -> void:
 	armas.append(arma)
 	_tiempos.append(0.0)

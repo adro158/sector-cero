@@ -7,6 +7,9 @@ signal experiencia_ganada(cantidad: int)
 signal experiencia_cambiada(actual: int, necesaria: int, nivel: int)
 ## Una vez por segundo de partida. duracion es cuándo llega el jefe.
 signal tiempo_partida(segundos: float, duracion: float)
+## Al empezar y en cada cambio de personaje. espera: segundos hasta poder
+## volver a cambiar.
+signal personaje_cambiado(actual: DatosPersonaje, siguiente: DatosPersonaje, espera: float)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
 signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
