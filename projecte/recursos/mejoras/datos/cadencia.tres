@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="DatosMejora" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" uid="uid://c1hojxf4ml6v" path="res://recursos/mejoras/iconos/cadencia.png" id="9_icono"]
 
 [resource]
 script = ExtResource("1_mejora")
 nombre = "Multihilo"
+icono = ExtResource("9_icono")
 descripcion = "-12% de tiempo entre ejecuciones"
 efecto = 1
 valor = 0.12

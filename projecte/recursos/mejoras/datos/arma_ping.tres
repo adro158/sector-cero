@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" uid="uid://dovqhvd2gljhg" path="res://recursos/mejoras/iconos/arma_ping.png" id="9_icono"]
 [ext_resource type="Resource" path="res://recursos/armas/datos/ping.tres" id="2_ping"]
 
 [resource]
 script = ExtResource("1_mejora")
 nombre = "Ping de rastreo"
+icono = ExtResource("9_icono")
 descripcion = "Paquete que salta de un objetivo a otro"
 efecto = 5
 valor = 0.0

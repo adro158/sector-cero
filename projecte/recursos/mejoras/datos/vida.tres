@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="DatosMejora" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" uid="uid://c5fd8asuukfux" path="res://recursos/mejoras/iconos/vida.png" id="9_icono"]
 
 [resource]
 script = ExtResource("1_mejora")
 nombre = "Memoria redundante"
+icono = ExtResource("9_icono")
 descripcion = "+25 de integridad máxima"
 efecto = 4
 valor = 25.0

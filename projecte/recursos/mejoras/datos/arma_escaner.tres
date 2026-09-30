@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" uid="uid://1r540qhty72v" path="res://recursos/mejoras/iconos/arma_escaner.png" id="9_icono"]
 [ext_resource type="Resource" path="res://recursos/armas/datos/escaner.tres" id="2_escaner"]
 
 [resource]
 script = ExtResource("1_mejora")
 nombre = "Escáner de subred"
+icono = ExtResource("9_icono")
 descripcion = "Pulso lento de gran alcance que golpea fuerte"
 efecto = 5
 valor = 0.0
