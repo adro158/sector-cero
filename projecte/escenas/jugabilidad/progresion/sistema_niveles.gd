@@ -30,6 +30,8 @@ func _ready() -> void:
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
+	# Diferido para que la interfaz, que está lista después, ya esté conectada.
+	_avisar_experiencia.call_deferred()
 
 
 func nivel() -> int:
@@ -54,8 +56,13 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
 		_niveles_pendientes += 1
 
+	_avisar_experiencia()
 	if _niveles_pendientes > 0 and not ya_estaba_eligiendo:
 		_ofrecer_mejoras()
+
+
+func _avisar_experiencia() -> void:
+	BusEventos.experiencia_cambiada.emit(_experiencia, _objetivo, _nivel)
 
 
 func _ofrecer_mejoras() -> void:

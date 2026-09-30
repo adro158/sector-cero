@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/controlador_jugador.gd" id="1_controlador"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="2_salud"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://recursos/armas/datos_arma.gd" id="5_datos_arma"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/aura_arma.gd" id="6_aura"]
 [ext_resource type="Texture2D" uid="uid://drnre5tlbfi1u" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png" id="7_dibujo"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/barra_vida.gd" id="8_barra_vida"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 16.0
@@ -38,3 +39,8 @@ armas = Array[ExtResource("5_datos_arma")]([ExtResource("4_firewall")])
 
 [node name="AuraArma" type="Node2D" parent="."]
 script = ExtResource("6_aura")
+
+[node name="BarraVida" type="Node2D" parent="."]
+position = Vector2(0, -66)
+z_index = 5
+script = ExtResource("8_barra_vida")

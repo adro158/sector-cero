@@ -1,9 +1,12 @@
 extends Label
 
-## Panel de desarrollo, no es la interfaz del juego. Se alimenta únicamente de
-## las señales del BusEventos, sin tocar ningún nodo: si aquí se puede pintar
-## todo, está demostrado que la interfaz de Alan tiene la información que
-## necesita. Se muestra y se oculta con F3.
+## Panel técnico, no es la interfaz del juego: datos internos para probar y
+## enseñar el sistema, sobre todo la resistencia del malware. Se muestra y se
+## oculta con F3. Se alimenta de las señales del BusEventos y, para lo que no
+## viaja por el bus (enemigos en pantalla, resistencias), de los grupos.
+
+const COLOR := Color(0.45, 1.0, 0.65)
+const ANCHO_BARRA := 10
 
 var _vida := 0.0
 var _vida_maxima := 0.0
@@ -19,8 +22,20 @@ func _ready() -> void:
 	# Sigue actualizándose con el juego pausado, para poder consultarlo mientras
 	# se elige una mejora.
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	# Empieza oculto para no taparse con el HUD de Alan; F3 lo muestra.
 	visible = false
+
+	theme = EstiloInterfaz.tema()
+	add_theme_stylebox_override("normal", EstiloInterfaz.caja(COLOR, 12))
+	add_theme_color_override("font_color", COLOR)
+	add_theme_font_size_override("font_size", 14)
+	# Arriba a la derecha, bajo el reloj: la izquierda es del HUD.
+	# Los dos bordes en el mismo punto y creciendo hacia la izquierda: el panel
+	# ocupa solo lo que mide su texto.
+	set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	offset_left = -16.0
+	offset_right = -16.0
+	offset_top = 16.0
 
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
@@ -37,24 +52,44 @@ func _unhandled_input(evento: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if not _terminada and not get_tree().paused:
 		_tiempo += delta
+	if not visible:
+		return
 
 	var lineas := [
-		"F3 oculta este panel",
-		"tiempo      %d:%02d" % [int(_tiempo) / 60, int(_tiempo) % 60],
-		"vida        %.0f / %.0f" % [_vida, _vida_maxima],
+		"PANEL TÉCNICO          F3",
+		"",
+		"── SISTEMA ─────────────",
+		"tiempo      %02d:%02d" % [int(_tiempo) / 60, int(_tiempo) % 60],
+		"fps         %d" % Engine.get_frames_per_second(),
+		"",
+		"── ANTIVIRUS ───────────",
+		"vida        %s %3.0f" % [_barra(_vida / maxf(_vida_maxima, 1.0)), _vida],
 		"nivel       %d" % _nivel,
 		"experiencia %d" % _experiencia,
-		"eliminados  %d" % _muertos,
+		"último golpe  -%.0f" % _ultimo_golpe,
+		"",
+		"── HORDA ───────────────",
 		"en pantalla %d" % _enemigos_vivos(),
-		"fps         %d" % Engine.get_frames_per_second(),
-		"ultimo golpe recibido  %.0f" % _ultimo_golpe,
+		"eliminados  %d" % _muertos,
+		"",
+		"── RESISTENCIA MALWARE ─",
 	]
 
 	var resistencias: Dictionary = get_tree().get_first_node_in_group("resistencia_malware").resistencias()
+	if resistencias.is_empty():
+		lineas.append("ninguna todavía")
 	for arma in resistencias:
-		lineas.append("resiste a %-9s %d%%" % [arma.nombre, roundi(resistencias[arma] * 100.0)])
+		# La barra llega a la mitad con el 50%, que es el máximo.
+		var valor: float = resistencias[arma]
+		lineas.append("%-9s %s %2d%%" % [arma.nombre, _barra(valor), roundi(valor * 100.0)])
 
 	text = "\n".join(lineas)
+
+
+## Barra de texto: bloques llenos y vacíos en proporción al valor, de 0 a 1.
+func _barra(valor: float) -> String:
+	var llenos := roundi(clampf(valor, 0.0, 1.0) * ANCHO_BARRA)
+	return "█".repeat(llenos) + "░".repeat(ANCHO_BARRA - llenos)
 
 
 func _enemigos_vivos() -> int:

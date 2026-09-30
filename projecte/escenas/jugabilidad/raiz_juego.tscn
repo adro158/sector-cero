@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -15,7 +15,6 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_numeros_flotantes.gd" id="13_numeros"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/armas/pool_proyectiles.gd" id="14_proyectiles"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
-[ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/interfaz_provisional.gd" id="16_interfaz_provisional"]
 [ext_resource type="Shader" path="res://escenas/jugabilidad/depuracion/fondo_provisional.gdshader" id="17_fondo"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe.tscn" id="18_jefe"]
 
@@ -91,20 +90,5 @@ script = ExtResource("13_numeros")
 layer = 100
 
 [node name="PanelDepuracion" type="Label" parent="CapaDepuracion"]
-offset_left = 12.0
-offset_top = 10.0
-offset_right = 320.0
-offset_bottom = 200.0
-theme_override_colors/font_color = Color(0.55, 0.95, 0.7, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
 script = ExtResource("12_depuracion")
 
-[node name="InterfazProvisional" type="Control" parent="CapaDepuracion"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("16_interfaz_provisional")

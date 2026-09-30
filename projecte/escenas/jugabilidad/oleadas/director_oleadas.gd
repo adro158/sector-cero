@@ -27,8 +27,13 @@ func tiempo() -> float:
 
 
 func _physics_process(delta: float) -> void:
+	var segundo_anterior := int(_tiempo)
 	_tiempo += delta
 	_tiempo_restante -= delta
+
+	# Una vez por segundo basta para un reloj en pantalla.
+	if int(_tiempo) != segundo_anterior:
+		BusEventos.tiempo_partida.emit(_tiempo, config.duracion_partida)
 
 	# Con el jefe en juego ya no aparece más horda: el final es contra él.
 	if _jefe_en_juego:

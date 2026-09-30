@@ -1,51 +1,107 @@
 extends Control
 
-@onready var barra_vida: ProgressBar = $Margen/ContenedorBarras/BarraVida
-@onready var etiqueta_nivel: Label = $Margen/ContenedorBarras/EtiquetaNivel
+## HUD de la partida: nivel y experiencia arriba a la izquierda, reloj y cuenta
+## atrás hasta el jefe arriba en el centro, y la columna de mejoras elegidas a
+## la izquierda. La vida va en una barra sobre el propio personaje.
+##
+## Solo escucha señales del BusEventos. Los niveles de cada mejora los anota el
+## panel de mejoras al elegir, en un diccionario que comparten los dos.
 
-@onready var menu_subida_nivel: PanelContainer = $MenuSubidaNivel
-@onready var tarjeta_1: Button = $MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas/Tarjeta1
-@onready var tarjeta_2: Button = $MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas/Tarjeta2
-@onready var tarjeta_3: Button = $MenuSubidaNivel/ContenedorVertical/ContenedorTarjetas/Tarjeta3
+var niveles_mejora := {}
 
-var nivel_actual: int = 1
-var _opciones: Array = []
+var _etiqueta_nivel: Label
+var _barra_experiencia: ProgressBar
+var _etiqueta_experiencia: Label
+var _etiqueta_tiempo: Label
+var _etiqueta_jefe: Label
+var _columna: VBoxContainer
+var _iconos := {}
+
 
 func _ready() -> void:
-	# Permite que la UI siga recibiendo clics aunque el juego este pausado
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	
-	menu_subida_nivel.visible = false
-	
-	# Conexión a eventos globales
-	BusEventos.salud_jugador_cambiada.connect(_on_salud_jugador_cambiada)
-	BusEventos.jugador_subio_nivel.connect(_on_jugador_subio_nivel)
-	
-	# Conexión a los botones de mejora
-	tarjeta_1.pressed.connect(func(): _elegir_mejora(0))
-	tarjeta_2.pressed.connect(func(): _elegir_mejora(1))
-	tarjeta_3.pressed.connect(func(): _elegir_mejora(2))
+	theme = EstiloInterfaz.tema()
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_crear_experiencia()
+	_crear_reloj()
 
-func _on_salud_jugador_cambiada(actual: float, maxima: float) -> void:
-	barra_vida.max_value = maxima
-	barra_vida.value = actual
+	_columna = VBoxContainer.new()
+	_columna.position = Vector2(16, 104)
+	_columna.add_theme_constant_override("separation", 6)
+	add_child(_columna)
 
-func _on_jugador_subio_nivel(opciones: Array) -> void:
-	_opciones = opciones
-	nivel_actual += 1
-	etiqueta_nivel.text = "NIVEL: %d" % nivel_actual
-	
-	var tarjetas := [tarjeta_1, tarjeta_2, tarjeta_3]
-	for i in tarjetas.size():
-		tarjetas[i].visible = i < opciones.size()
-		if i < opciones.size():
-			tarjetas[i].text = "%s\n\n%s" % [opciones[i].nombre, opciones[i].descripcion]
-	
-	menu_subida_nivel.visible = true
-	get_tree().paused = true
+	$PanelMejoras.niveles = niveles_mejora
+	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
+	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
+	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 
-func _elegir_mejora(indice: int) -> void:
-	menu_subida_nivel.visible = false
-	get_tree().paused = false
-	if indice < _opciones.size():
-		BusEventos.mejora_seleccionada.emit(_opciones[indice])
+
+func _crear_experiencia() -> void:
+	var panel := PanelContainer.new()
+	panel.position = Vector2(16, 16)
+	panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(EstiloInterfaz.NEON, 10))
+	add_child(panel)
+
+	var caja := VBoxContainer.new()
+	panel.add_child(caja)
+	_etiqueta_nivel = EstiloInterfaz.etiqueta("NIVEL 1", 20, EstiloInterfaz.NEON)
+	caja.add_child(_etiqueta_nivel)
+
+	_barra_experiencia = ProgressBar.new()
+	_barra_experiencia.custom_minimum_size = Vector2(240, 10)
+	_barra_experiencia.show_percentage = false
+	var fondo := StyleBoxFlat.new()
+	fondo.bg_color = Color(0.1, 0.15, 0.2)
+	var relleno := StyleBoxFlat.new()
+	relleno.bg_color = EstiloInterfaz.NEON
+	_barra_experiencia.add_theme_stylebox_override("background", fondo)
+	_barra_experiencia.add_theme_stylebox_override("fill", relleno)
+	caja.add_child(_barra_experiencia)
+
+	_etiqueta_experiencia = EstiloInterfaz.etiqueta("EXP 0 / 0", 12, EstiloInterfaz.TEXTO_SUAVE)
+	caja.add_child(_etiqueta_experiencia)
+
+
+func _crear_reloj() -> void:
+	var caja := VBoxContainer.new()
+	# Anclado al centro de arriba: los offsets son relativos a ese punto.
+	caja.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	caja.offset_left = -100.0
+	caja.offset_right = 100.0
+	caja.offset_top = 12.0
+	add_child(caja)
+
+	_etiqueta_tiempo = EstiloInterfaz.etiqueta("00:00", 30, EstiloInterfaz.TEXTO)
+	_etiqueta_tiempo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(_etiqueta_tiempo)
+	_etiqueta_jefe = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
+	_etiqueta_jefe.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(_etiqueta_jefe)
+
+
+func _al_cambiar_experiencia(actual: int, necesaria: int, nivel: int) -> void:
+	_etiqueta_nivel.text = "NIVEL %d" % nivel
+	_barra_experiencia.max_value = necesaria
+	_barra_experiencia.value = actual
+	_etiqueta_experiencia.text = "EXP %d / %d" % [actual, necesaria]
+
+
+func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
+	_etiqueta_tiempo.text = _formato(segundos)
+	if segundos < duracion:
+		_etiqueta_jefe.text = "JEFE EN %s" % _formato(duracion - segundos)
+	else:
+		_etiqueta_jefe.text = "¡JEFE FINAL!"
+		_etiqueta_jefe.add_theme_color_override("font_color", EstiloInterfaz.DERROTA)
+
+
+func _al_elegir_mejora(mejora: DatosMejora) -> void:
+	if not _iconos.has(mejora):
+		var icono := IconoMejora.new()
+		icono.mejora = mejora
+		_columna.add_child(icono)
+		_iconos[mejora] = icono
+	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
+
+
+static func _formato(segundos: float) -> String:
+	return "%02d:%02d" % [int(segundos) / 60, int(segundos) % 60]
