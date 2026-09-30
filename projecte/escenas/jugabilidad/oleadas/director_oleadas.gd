@@ -1,13 +1,14 @@
 extends Node
 
-## Se ha sobrevivido el tiempo que marca la configuración.
-signal partida_superada
+## Se ha sobrevivido el tiempo que marca la configuración: llega el jefe, desde
+## fuera de la pantalla como la horda.
+signal llega_el_jefe(posicion: Vector2)
 
 @export var config: DatosConfigOleada
 
 var _tiempo := 0.0
 var _tiempo_restante := 0.0
-var _superada := false
+var _jefe_en_juego := false
 var _jugador: Node2D
 var _gestores: Array[GestorEnemigos] = []
 
@@ -29,9 +30,13 @@ func _physics_process(delta: float) -> void:
 	_tiempo += delta
 	_tiempo_restante -= delta
 
-	if _tiempo >= config.duracion_partida and not _superada:
-		_superada = true
-		partida_superada.emit()
+	# Con el jefe en juego ya no aparece más horda: el final es contra él.
+	if _jefe_en_juego:
+		return
+
+	if _tiempo >= config.duracion_partida:
+		_jefe_en_juego = true
+		llega_el_jefe.emit(_posicion_fuera_de_pantalla())
 		return
 
 	if _tiempo_restante > 0.0:

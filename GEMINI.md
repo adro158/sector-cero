@@ -87,8 +87,9 @@ Detalles que la interfaz tiene que respetar:
   fin de partida. La acción de input es `pausar` (Esc, P y Start del mando).
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
-  (int), `eliminados` (int). Se gana sobreviviendo el tiempo que marca
-  `duracion_partida` en `recursos/oleadas/datos/config_principal.tres`.
+  (int), `eliminados` (int). Al cumplirse `duracion_partida`
+  (`recursos/oleadas/datos/config_principal.tres`, 10 minutos) deja de
+  aparecer horda y llega el jefe final; se gana al derrotarlo.
 
 Nunca referenciar nodos de la otra persona por `NodePath`: se emite la señal.
 

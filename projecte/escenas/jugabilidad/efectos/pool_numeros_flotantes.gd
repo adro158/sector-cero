@@ -29,8 +29,8 @@ func _ready() -> void:
 	_tiempos.resize(MAXIMO_NUMEROS)
 	_fuente = ThemeDB.fallback_font
 
-	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
-		gestor.enemigo_danado.connect(_al_danar_enemigo)
+	for objetivo in get_tree().get_nodes_in_group("objetivos"):
+		objetivo.enemigo_danado.connect(_al_danar_enemigo)
 
 
 func _al_danar_enemigo(posicion: Vector2, cantidad: float, resistencia: float) -> void:

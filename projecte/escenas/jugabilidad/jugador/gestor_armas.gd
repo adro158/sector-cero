@@ -13,7 +13,7 @@ var multiplicador_alcance := 1.0
 
 var _tiempos := PackedFloat32Array()
 var _jugador: Node2D
-var _gestores: Array[GestorEnemigos] = []
+var _objetivos: Array = []
 var _pool_proyectiles: Node2D
 var _resistencia_malware: Node
 
@@ -24,10 +24,11 @@ func _ready() -> void:
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 	_tiempos.resize(armas.size())
 
-	# Hay un gestor por tipo de enemigo, porque un MultiMesh solo puede dibujar
-	# una malla y un material. El arma golpea a todos.
-	for nodo in get_tree().get_nodes_in_group("gestor_enemigos"):
-		_gestores.append(nodo)
+	# Todo lo que puede recibir daño está en el grupo objetivos: un gestor por
+	# tipo de enemigo de la horda (un MultiMesh solo dibuja una malla y un
+	# material) y el jefe. Todos tienen danar_en_area, así que el arma no
+	# necesita saber qué es cada uno.
+	_objetivos = get_tree().get_nodes_in_group("objetivos")
 
 
 func anadir_arma(arma: DatosArma) -> void:
@@ -56,8 +57,8 @@ func _atacar(arma: DatosArma) -> void:
 			var dano_final := dano * (1.0 - resistencia)
 			var alcanzados := 0
 
-			for gestor in _gestores:
-				alcanzados += gestor.danar_en_area(_jugador.global_position, radio, dano_final, resistencia)
+			for objetivo in _objetivos:
+				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia)
 
 			_resistencia_malware.registrar_dano(arma, alcanzados * dano_final)
 		DatosArma.Tipo.PROYECTIL:

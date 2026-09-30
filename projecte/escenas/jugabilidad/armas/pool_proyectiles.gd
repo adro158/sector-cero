@@ -21,7 +21,7 @@ var _esperas := PackedFloat32Array()
 # Qué arma lanzó cada proyectil, para aplicar y registrar su resistencia.
 var _armas: Array[DatosArma] = []
 var _activos := 0
-var _gestores: Array[GestorEnemigos] = []
+var _objetivos: Array = []
 var _resistencia_malware: Node
 
 @onready var _malla: MultiMeshInstance2D = $Proyectiles
@@ -38,8 +38,8 @@ func _ready() -> void:
 	_esperas.resize(MAXIMO_PROYECTILES)
 	_armas.resize(MAXIMO_PROYECTILES)
 
-	for nodo in get_tree().get_nodes_in_group("gestor_enemigos"):
-		_gestores.append(nodo)
+	# La horda y el jefe: todo lo que tiene danar_en_area y mas_cercano.
+	_objetivos = get_tree().get_nodes_in_group("objetivos")
 
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 
@@ -106,8 +106,8 @@ func _impactar(indice: int) -> bool:
 	var dano := _danos[indice] * (1.0 - resistencia)
 	var alcanzados := 0
 
-	for gestor in _gestores:
-		alcanzados += gestor.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia)
+	for objetivo in _objetivos:
+		alcanzados += objetivo.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia)
 
 	if alcanzados == 0:
 		return false
@@ -131,8 +131,8 @@ func _buscar_objetivo(desde: Vector2, radio: float) -> Vector2:
 	var mejor := Vector2.INF
 	var mejor_distancia := radio
 
-	for gestor in _gestores:
-		var candidato := gestor.mas_cercano(desde, radio)
+	for objetivo in _objetivos:
+		var candidato: Vector2 = objetivo.mas_cercano(desde, radio)
 		if candidato == Vector2.INF:
 			continue
 

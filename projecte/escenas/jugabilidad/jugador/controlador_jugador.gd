@@ -14,17 +14,12 @@ extends CharacterBody2D
 @export var sacudida_camara: float = 6.0
 
 @export_group("Animación")
-@export var fotogramas_por_segundo: float = 10.0
+## Las hojas de los personajes están hechas para 130 ms por fotograma.
+@export var fotogramas_por_segundo: float = 7.7
 
 ## La hoja del sprite tiene una fila por dirección y una columna por fotograma
 ## del ciclo de andar.
 const FOTOGRAMAS_ANDAR := 6
-
-## Fila de la hoja para cada octavo de vuelta, empezando por la derecha y
-## girando en el sentido de las agujas del reloj (en pantalla, la y crece hacia
-## abajo). Las filas de la hoja van en otro orden: abajo, abajo-izquierda,
-## izquierda, arriba-izquierda, arriba, arriba-derecha, derecha, abajo-derecha.
-const FILA_POR_OCTANTE := [6, 7, 0, 1, 2, 3, 4, 5]
 
 var _limite_minimo := Vector2.ZERO
 var _limite_maximo := Vector2.ZERO
@@ -97,11 +92,7 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		# Quieto: primer fotograma, mirando hacia donde iba.
 		_tiempo_andando = 0.0
 	else:
-		# El ángulo se redondea al octavo de vuelta más cercano: 0 es la
-		# derecha, 2 abajo, 4 la izquierda y 6 arriba. posmod lo deja entre 0 y
-		# 7 aunque el ángulo sea negativo, que es lo que pasa hacia arriba.
-		var octante := posmod(roundi(direccion.angle() / (TAU / 8.0)), 8)
-		_fila = FILA_POR_OCTANTE[octante]
+		_fila = Direcciones8.fila(direccion)
 		_tiempo_andando += delta
 
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR

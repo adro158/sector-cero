@@ -14,7 +14,9 @@ func _ready() -> void:
 
 	_salud_jugador.vida_cambiada.connect(_al_cambiar_vida)
 	_salud_jugador.murio.connect(_terminar_partida.bind(false))
-	_director.partida_superada.connect(_terminar_partida.bind(true))
+	# Al cumplirse el tiempo llega el jefe, y se gana al derrotarlo.
+	_director.llega_el_jefe.connect($Jefe.aparecer)
+	$Jefe.derrotado.connect(_terminar_partida.bind(true))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.juego_pausado.connect(_al_pausar)
 

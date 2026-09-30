@@ -35,6 +35,10 @@ func _physics_process(delta: float) -> void:
 			vida_cambiada.emit(_vida, vida_maxima)
 
 
+func vida() -> float:
+	return _vida
+
+
 func aumentar_vida_maxima(cantidad: float) -> void:
 	vida_maxima += cantidad
 	_vida += cantidad

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/interfaz_provisional.gd" id="16_interfaz_provisional"]
 [ext_resource type="Shader" path="res://escenas/jugabilidad/depuracion/fondo_provisional.gdshader" id="17_fondo"]
+[ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe.tscn" id="18_jefe"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fondo"]
 shader = ExtResource("17_fondo")
@@ -39,19 +40,19 @@ mouse_filter = 2
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
 
-[node name="BitCorrupto" type="Node2D" parent="." groups=["gestor_enemigos"]]
+[node name="BitCorrupto" type="Node2D" parent="." groups=["gestor_enemigos", "objetivos"]]
 script = ExtResource("3_enemigos")
 datos = ExtResource("8_bit")
 
 [node name="Horda" type="MultiMeshInstance2D" parent="BitCorrupto"]
 
-[node name="PaquetePerdido" type="Node2D" parent="." groups=["gestor_enemigos"]]
+[node name="PaquetePerdido" type="Node2D" parent="." groups=["gestor_enemigos", "objetivos"]]
 script = ExtResource("3_enemigos")
 datos = ExtResource("9_paquete")
 
 [node name="Horda" type="MultiMeshInstance2D" parent="PaquetePerdido"]
 
-[node name="ProcesoColgado" type="Node2D" parent="." groups=["gestor_enemigos"]]
+[node name="ProcesoColgado" type="Node2D" parent="." groups=["gestor_enemigos", "objetivos"]]
 script = ExtResource("3_enemigos")
 datos = ExtResource("10_proceso")
 
@@ -65,6 +66,8 @@ modulate = Color(0.4, 0.9, 0.85, 1)
 
 [node name="ResistenciaMalware" type="Node" parent="." groups=["resistencia_malware"]]
 script = ExtResource("15_resistencia")
+
+[node name="Jefe" parent="." instance=ExtResource("18_jefe")]
 
 [node name="DirectorOleadas" type="Node" parent="."]
 script = ExtResource("4_oleadas")

@@ -93,6 +93,15 @@ func _mover_bot() -> void:
 			if distancia > 0.0 and distancia < RADIO_PELIGRO:
 				huida += diferencia / (distancia * distancia)
 
+	# Del jefe se aparta con más fuerza, pero solo cuando se acerca: a media
+	# distancia las armas de alcance le siguen dando.
+	var jefe: Node2D = _raiz.get_node("Jefe")
+	if jefe._activo:
+		var diferencia := posicion - jefe.global_position
+		var distancia := diferencia.length()
+		if distancia > 0.0 and distancia < 170.0:
+			huida += diferencia / (distancia * distancia) * 6.0
+
 	var direccion := huida.normalized()
 	if huida == Vector2.ZERO:
 		direccion = Vector2(-posicion.y, posicion.x).normalized() * 0.6
