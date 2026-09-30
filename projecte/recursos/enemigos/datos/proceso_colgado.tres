@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="Texture2D" uid="uid://06rnwfdq88sc" path="res://recursos/enemigos/sprites/proceso_colgado.png" id="2_textura"]
 
 [resource]
 script = ExtResource("1_tipo")
@@ -8,6 +9,7 @@ tipo = "proceso_colgado"
 vida = 70.0
 velocidad = 95.0
 tamano = 40.0
+textura = ExtResource("2_textura")
 color = Color(0.6, 0.35, 0.85, 1)
 dano_contacto = 7.0
 experiencia = 4

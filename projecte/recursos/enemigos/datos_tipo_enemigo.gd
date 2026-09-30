@@ -5,6 +5,9 @@ extends Resource
 @export var vida: float = 20.0
 @export var velocidad: float = 90.0
 @export var tamano: float = 24.0
+## Sprite de este tipo. Todos los enemigos de un tipo lo comparten, porque se
+## dibujan con un único MultiMesh. Sin sprite, se dibuja un cuadrado del color.
+@export var textura: Texture2D
 @export var color: Color = Color.WHITE
 @export var dano_contacto: float = 8.0
 @export var experiencia: int = 1

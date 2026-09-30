@@ -99,7 +99,9 @@ func _preparar_multimesh() -> void:
 	multimesh.visible_instance_count = 0
 
 	_horda.multimesh = multimesh
-	_horda.modulate = datos.color
+	_horda.texture = datos.textura
+	_horda.modulate = Color.WHITE if datos.textura else datos.color
+	_horda.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func _physics_process(delta: float) -> void:
@@ -191,7 +193,8 @@ func _eliminar(indice: int) -> void:
 func _volcar_al_multimesh() -> void:
 	var multimesh := _horda.multimesh
 
+	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	for i in _vivos:
-		multimesh.set_instance_transform_2d(i, Transform2D(0.0, _posiciones[i]))
+		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
 
 	multimesh.visible_instance_count = _vivos
