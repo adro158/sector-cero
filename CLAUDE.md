@@ -18,13 +18,14 @@ Ignorar `projecte/.godot/`: es caché regenerable.
 
 ## Propiedad de ficheros: precisiones a GEMINI.md
 
-Decididas por Adam el 24/09/2026:
+Desde el 30/09/2026 Alan solo lleva el audio (`globales/gestor_audio.gd` y
+`medios/audio/`). Todo lo demás de `projecte/`, incluida la interfaz, los menús,
+la arena y el arte, es de Adam.
 
 - En `documentacio/`, Adam mantiene `bitacora.md` y `planificacion.md`. El resto
   de la carpeta es de Alan.
-- `globales/bus_eventos.gd`, `globales/estado_juego.gd`, `escenas/juego.tscn`,
-  `project.godot`, `export_presets.cfg` y `herramientas/` son de Adam. Cambiar una señal del bus o un grupo es cambiar el
-  contrato: se acuerda antes con Alan y se actualiza `GEMINI.md`.
+- Cambiar o quitar una señal del bus afecta al audio de Alan: se le avisa y se
+  actualiza `GEMINI.md`. Añadir una señal nueva no le rompe nada.
 - Nunca editar ficheros de Alan. Si algo suyo debe cambiar, decírselo a Adam para
   que se lo pida.
 
