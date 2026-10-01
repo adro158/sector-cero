@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/armas/pool_proyectiles.gd" id="14_proyectiles"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe.tscn" id="18_jefe"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_particulas.gd" id="19_particulas"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -64,6 +65,12 @@ script = ExtResource("14_proyectiles")
 
 [node name="Proyectiles" type="MultiMeshInstance2D" parent="PoolProyectiles"]
 modulate = Color(0.5, 1, 0.9, 1)
+
+[node name="PoolParticulas" type="Node2D" parent="."]
+z_index = 5
+script = ExtResource("19_particulas")
+
+[node name="Particulas" type="MultiMeshInstance2D" parent="PoolParticulas"]
 
 [node name="PoolNumeros" type="Node2D" parent="."]
 z_index = 10

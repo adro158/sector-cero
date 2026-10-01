@@ -8,6 +8,9 @@ extends Node2D
 signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 
 const MAXIMO_ENEMIGOS := 400
+## Segundos que un enemigo se queda en blanco al recibir un golpe.
+const DURACION_DESTELLO := 0.1
+const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
 
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
@@ -18,6 +21,7 @@ const MAXIMO_ENEMIGOS := 400
 
 var _posiciones := PackedVector2Array()
 var _vidas := PackedFloat32Array()
+var _destellos := PackedFloat32Array()
 var _vivos := 0
 var _jugador: Node2D
 var _salud_jugador: Salud
@@ -31,6 +35,7 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
+	_destellos.resize(MAXIMO_ENEMIGOS)
 	_rejilla = RejillaEspacial.new(radio_separacion)
 	_preparar_multimesh()
 
@@ -49,6 +54,7 @@ func aparecer(posicion: Vector2) -> void:
 
 	_posiciones[_vivos] = posicion
 	_vidas[_vivos] = datos.vida
+	_destellos[_vivos] = 0.0
 	_vivos += 1
 
 
@@ -67,6 +73,7 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia :
 
 		if _posiciones[i].distance_to(centro) < radio:
 			_vidas[i] -= cantidad
+			_destellos[i] = DURACION_DESTELLO
 			enemigo_danado.emit(_posiciones[i], cantidad, resistencia)
 			alcanzados += 1
 
@@ -97,11 +104,15 @@ func _preparar_multimesh() -> void:
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
+	# El dato propio de cada enemigo es su destello, que lee el shader. Hay que
+	# activarlo antes de fijar el número de instancias.
+	multimesh.use_custom_data = true
 	multimesh.mesh = malla
 	multimesh.instance_count = MAXIMO_ENEMIGOS
 	multimesh.visible_instance_count = 0
 
 	_horda.multimesh = multimesh
+	_horda.material = MATERIAL_HORDA
 	_horda.texture = datos.textura
 	_horda.modulate = Color.WHITE if datos.textura else datos.color
 	_horda.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -116,7 +127,7 @@ func _physics_process(delta: float) -> void:
 	_reconstruir_rejilla()
 	_mover(delta)
 	_danar_jugador()
-	_volcar_al_multimesh()
+	_volcar_al_multimesh(delta)
 
 
 func _reconstruir_rejilla() -> void:
@@ -196,13 +207,16 @@ func _eliminar(indice: int) -> void:
 	_vivos -= 1
 	_posiciones[indice] = _posiciones[_vivos]
 	_vidas[indice] = _vidas[_vivos]
+	_destellos[indice] = _destellos[_vivos]
 
 
-func _volcar_al_multimesh() -> void:
+func _volcar_al_multimesh(delta: float) -> void:
 	var multimesh := _horda.multimesh
 
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	for i in _vivos:
 		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
+		_destellos[i] = maxf(_destellos[i] - delta, 0.0)
+		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, 0.0, 0.0, 0.0))
 
 	multimesh.visible_instance_count = _vivos

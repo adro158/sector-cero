@@ -20,6 +20,7 @@ BusEventos="*res://globales/bus_eventos.gd"
 GestorGuardado="*res://globales/gestor_guardado.gd"
 GestorAudio="*res://globales/gestor_audio.gd"
 Transicion="*res://globales/transicion.gd"
+EfectoCRT="*res://globales/efecto_crt.gd"
 
 [display]
 
