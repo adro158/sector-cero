@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_personaje")
 nombre = "Espadachín"
+descripcion = "Firewall: golpea todo lo que tiene alrededor cada 0,6 s. Es el mejor cuando te rodea la horda, sobre todo bits corruptos. No llega lejos: hay que dejar que se acerquen. Evoluciona a Firewall perimetral con Heurística agresiva ×3."
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
 color = Color(0.4, 1, 0.5, 1)

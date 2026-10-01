@@ -1,25 +1,18 @@
 extends Control
 
-## Menú de inicio: título, reglas del juego, las amenazas que hay, los controles
-## y la mejor partida guardada. Enter empieza la partida y Esc sale del juego.
+## Menú de inicio: título, un resumen de cómo se juega, la mejor partida
+## guardada y los botones. Las reglas completas (personajes, mejoras y
+## enemigos) están en su propia ventana. Enter empieza la partida y Esc sale.
 
 const PARTIDA := "res://escenas/juego.tscn"
 
-const REGLAS := [
+const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
-	"El malware suelta fragmentos de datos: recógelos para subir de nivel y elegir mejoras.",
-	"Repetir una mejora tres veces hace evolucionar la herramienta de un personaje.",
-	"El malware se adapta a la herramienta que más daño le hace: sus números salen en rojo.",
-	"Cambia de personaje para atacarle con otra herramienta. Hay 10 s de espera entre cambios.",
-	"Cada minuto llega un élite con afijos al azar. A los 10 minutos, el jefe final.",
+	"Aguanta 10 minutos contra el malware y derrota al jefe final.",
+	"El malware se adapta a tu herramienta: cambia de personaje con Q para sorprenderle.",
 ]
 
-const AMENAZAS := [
-	["res://recursos/enemigos/sprites/bit_corrupto.png", "Bit corrupto", "numeroso"],
-	["res://recursos/enemigos/sprites/paquete_perdido.png", "Paquete perdido", "rápido"],
-	["res://recursos/enemigos/sprites/proceso_colgado.png", "Proceso colgado", "resistente"],
-]
-
+var _reglas: PanelReglas
 var _opciones: PanelOpciones
 
 
@@ -31,7 +24,7 @@ func _ready() -> void:
 	centro.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(centro)
 	var caja := VBoxContainer.new()
-	caja.add_theme_constant_override("separation", 14)
+	caja.add_theme_constant_override("separation", 18)
 	centro.add_child(caja)
 
 	var titulo := EstiloInterfaz.etiqueta("SECTOR CERO", 64, EstiloInterfaz.NEON)
@@ -45,7 +38,7 @@ func _ready() -> void:
 	latido.tween_property(titulo, "modulate:a", 0.6, 1.2)
 	latido.tween_property(titulo, "modulate:a", 1.0, 1.2)
 
-	caja.add_child(_panel_reglas())
+	caja.add_child(_panel_resumen())
 
 	var record := EstiloInterfaz.etiqueta(_texto_record(), 15, EstiloInterfaz.VICTORIA)
 	record.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -53,14 +46,19 @@ func _ready() -> void:
 
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
-	botones.add_theme_constant_override("separation", 16)
-	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 220)
-	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 220)
-	botones.add_child(jugar)
-	botones.add_child(opciones)
-	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 220))
+	botones.add_theme_constant_override("separation", 14)
+	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 200)
+	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 200)
+	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 200)
+	for boton in [jugar, reglas, opciones]:
+		botones.add_child(boton)
+	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 200))
 	caja.add_child(botones)
 
+	# Al cerrar cada ventana, el foco vuelve al botón que la abrió.
+	_reglas = PanelReglas.new()
+	_reglas.cerrado.connect(reglas.grab_focus)
+	add_child(_reglas)
 	_opciones = PanelOpciones.new()
 	_opciones.cerrado.connect(opciones.grab_focus)
 	add_child(_opciones)
@@ -75,33 +73,16 @@ func _crear_fondo() -> void:
 	add_child(suelo)
 
 
-func _panel_reglas() -> PanelContainer:
+func _panel_resumen() -> PanelContainer:
 	var panel := PanelContainer.new()
 	var caja := VBoxContainer.new()
 	caja.add_theme_constant_override("separation", 6)
 	panel.add_child(caja)
 
 	caja.add_child(EstiloInterfaz.etiqueta("CÓMO SE JUEGA", 20, EstiloInterfaz.NEON))
-	for regla in REGLAS:
-		caja.add_child(EstiloInterfaz.etiqueta(regla, 15))
-
-	caja.add_child(EstiloInterfaz.etiqueta("AMENAZAS", 20, EstiloInterfaz.NEON))
-	var fila := HBoxContainer.new()
-	fila.add_theme_constant_override("separation", 28)
-	for amenaza in AMENAZAS:
-		var icono := TextureRect.new()
-		icono.texture = load(amenaza[0])
-		icono.custom_minimum_size = Vector2(40, 40)
-		icono.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		fila.add_child(icono)
-		fila.add_child(EstiloInterfaz.etiqueta("%s\n%s" % [amenaza[1], amenaza[2]], 14))
-	caja.add_child(fila)
-
-	caja.add_child(EstiloInterfaz.etiqueta("CONTROLES", 20, EstiloInterfaz.NEON))
-	caja.add_child(EstiloInterfaz.etiqueta("Moverse: WASD, flechas o stick   ·   Cambiar de personaje: Q, Tab o Y", 15))
-	caja.add_child(EstiloInterfaz.etiqueta("Pausa: Esc, P o Start   ·   Mejoras: click o 1, 2, 3", 15))
+	for linea in RESUMEN:
+		caja.add_child(EstiloInterfaz.etiqueta(linea, 15))
+	caja.add_child(EstiloInterfaz.etiqueta("En REGLAS tienes qué hace cada personaje, cada mejora y cada enemigo.", 14, EstiloInterfaz.TEXTO_SUAVE))
 	return panel
 
 
@@ -116,12 +97,19 @@ func _texto_record() -> String:
 		GestorGuardado.record("victorias"), partidas]
 
 
+func _abrir_reglas() -> void:
+	_reglas.abrir()
+
+
 func _abrir_opciones() -> void:
 	_opciones.abrir()
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if _opciones.visible or not evento is InputEventKey or not evento.pressed:
+	# Con una ventana abierta, Enter y Esc son de ella.
+	if _reglas.visible or _opciones.visible:
+		return
+	if not evento is InputEventKey or not evento.pressed:
 		return
 	if evento.keycode == KEY_ENTER or evento.keycode == KEY_KP_ENTER:
 		_jugar()

@@ -13,6 +13,8 @@ enum Efecto {
 }
 
 @export var nombre: String = ""
+## Para la ventana de reglas.
+@export_multiline var descripcion: String = ""
 @export var efecto: Efecto = Efecto.BLINDADO
 ## Color con el que se dibuja su anillo alrededor del élite.
 @export var color: Color = Color.WHITE

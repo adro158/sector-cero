@@ -6,6 +6,8 @@
 [resource]
 script = ExtResource("1_tipo")
 tipo = "proceso_colgado"
+nombre = "Proceso colgado"
+descripcion = "Lento, grande y resistente. Aparece desde el 2:00 y es el que más daño hace por contacto. Mejor el Escáner, que le pega fuerte desde lejos. Da 4 de experiencia."
 vida = 70.0
 velocidad = 95.0
 tamano = 40.0

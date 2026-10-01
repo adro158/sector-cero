@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_afijo")
 nombre = "Blindado"
+descripcion = "Recibe la mitad de daño. Tarda el doble en caer: aléjate y sigue pegándole."
 efecto = 0
 color = Color(0.55, 0.75, 1, 1)
 valor = 0.5

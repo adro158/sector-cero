@@ -6,6 +6,8 @@
 [resource]
 script = ExtResource("1_tipo")
 tipo = "paquete_perdido"
+nombre = "Paquete perdido"
+descripcion = "Rápido y frágil. Aparece desde el 0:45 y te alcanza aunque huyas, así que no sirve escapar: el Ping lo caza a distancia y da el doble de experiencia que un bit."
 vida = 10.0
 velocidad = 230.0
 tamano = 20.0

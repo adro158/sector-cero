@@ -1,7 +1,11 @@
 class_name DatosTipoEnemigo
 extends Resource
 
+## Identificador interno, el que viaja en la señal enemigo_muerto.
 @export var tipo: String = ""
+## Nombre y descripción para la ventana de reglas.
+@export var nombre: String = ""
+@export_multiline var descripcion: String = ""
 @export var vida: float = 20.0
 @export var velocidad: float = 90.0
 @export var tamano: float = 24.0

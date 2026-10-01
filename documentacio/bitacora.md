@@ -806,6 +806,14 @@ casa)
   planificación y estado de requisitos al día.
 - Limpieza de código muerto: el autoload vacío `EstadoJuego`, las mejoras de
   desbloquear arma, `anadir_arma` y `actual()`.
+- Acceso directo `Jugar Sector Cero.bat` en el escritorio de casa (abre el
+  proyecto sin el editor; no está en el repositorio porque lleva rutas de este
+  PC).
+- Tras probar el juego, Adam pidió dos cambios: las opciones de la pausa salían
+  arriba a la izquierda (corregido) y un botón **REGLAS** en el menú con una
+  ventana de cuatro pestañas: cómo se juega, personajes y cuándo conviene cada
+  uno, mejoras y evoluciones, y enemigos con los afijos. El menú se queda con un
+  resumen corto y las reglas completas pasan a esa ventana.
 
 ### Decisiones técnicas y por qué
 
@@ -852,6 +860,12 @@ recursos `.tres`.
 personaje se guarda en `CambioPersonaje`. La evolución es otro recurso de arma,
 así que el malware empieza sin resistencia contra ella. Se ofrece cuando una
 mejora concreta se ha elegido tres veces, y sale siempre la primera.
+
+**Las reglas se leen de los datos.** Personajes, enemigos y afijos tienen ahora
+un campo `descripcion` en su recurso, y la ventana de reglas recorre esos
+recursos y el pool de mejoras. Si se cambia un personaje o se añade un enemigo,
+las reglas se actualizan sin tocar la ventana. Solo el jefe, que no tiene
+recurso de datos, lleva su texto en el script.
 
 **Un único estilo de botón.** `EstiloInterfaz.boton()` sustituye a las tres
 copias de `_boton()` que había en el menú, la pausa y la pantalla final.
@@ -917,6 +931,12 @@ jugador; queda anotado en `CLAUDE.md` como aviso conocido.
 `partida_terminada` escribió en el fichero de récords real del jugador. Las
 herramientas desconectan `GestorGuardado` del bus, en diferido porque en
 `_initialize` los autoloads todavía no se han conectado.
+
+**Las opciones de la pausa salían arriba a la izquierda.** El panel fijaba sus
+anclajes a pantalla completa con `set_anchors_preset`, pero su tamaño seguía en
+0×0, así que la ventana se centraba en la esquina. Lo vio Adam al jugar; se
+confirmó midiendo el tamaño del panel y se corrigió con
+`set_anchors_and_offsets_preset`, que fija anclajes y tamaño a la vez.
 
 **El nombre de dos afijos no cabía** sobre el élite. Se vio en las capturas y
 se ensanchó la caja de texto.

@@ -6,6 +6,8 @@ extends Resource
 ## esquivar la resistencia que el malware va ganando contra esa arma.
 
 @export var nombre: String = ""
+## Para la ventana de reglas: qué hace su herramienta y cuándo conviene.
+@export_multiline var descripcion: String = ""
 
 ## Hoja de sprites de 6 columnas (pasos) por 8 filas (direcciones), como la del
 ## personaje original.

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_afijo")
 nombre = "Replicante"
+descripcion = "Al morir suelta seis bits corruptos a su alrededor. Mátalo con espacio para huir."
 efecto = 1
 color = Color(0.4, 1, 0.5, 1)
 valor = 6.0

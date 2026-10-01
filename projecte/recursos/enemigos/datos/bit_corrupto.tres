@@ -6,6 +6,8 @@
 [resource]
 script = ExtResource("1_tipo")
 tipo = "bit_corrupto"
+nombre = "Bit corrupto"
+descripcion = "El más numeroso: sale desde el principio y en grupos grandes. Es frágil y hace poco daño, pero si te rodea te va desgastando. Cualquier herramienta sirve; el Firewall los barre de cerca."
 vida = 20.0
 velocidad = 150.0
 tamano = 24.0

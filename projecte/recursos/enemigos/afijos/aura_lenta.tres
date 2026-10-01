@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_afijo")
 nombre = "Aura lenta"
+descripcion = "Si estás dentro de su aura morada, te mueves un 25 % más lento. Sal de ella antes de que te rodeen."
 efecto = 2
 color = Color(0.75, 0.45, 1, 1)
 valor = 0.25

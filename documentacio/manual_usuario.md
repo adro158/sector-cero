@@ -59,7 +59,11 @@ Los menús también se usan con el ratón.
 
 ## Pantallas
 
-- **Menú principal:** reglas, controles, tu mejor partida y opciones.
+- **Menú principal:** resumen de cómo se juega, tu mejor partida y los botones
+  Jugar, Reglas, Opciones y Salir.
+- **Reglas:** cuatro pestañas (cómo se juega, personajes, mejoras y enemigos)
+  que explican qué hace cada cosa y qué personaje conviene en cada situación.
+  Se cambia de pestaña con click o con las flechas.
 - **Opciones:** volumen de la música y de los efectos, pantalla completa y
   filtro CRT. Se guardan solas.
 - **Pausa:** continuar, opciones o volver al menú.

@@ -48,6 +48,16 @@ static func tema() -> Theme:
 	_tema.set_stylebox("grabber_area", "HSlider", lleno)
 	_tema.set_stylebox("grabber_area_highlight", "HSlider", lleno)
 	_tema.set_color("font_color", "CheckButton", TEXTO)
+
+	# Pestañas de la ventana de reglas.
+	_tema.set_stylebox("panel", "TabContainer", caja(Color(NEON, 0.35), 18))
+	_tema.set_stylebox("tab_selected", "TabContainer", caja(NEON, 8))
+	_tema.set_stylebox("tab_unselected", "TabContainer", caja(Color(NEON, 0.25), 8))
+	_tema.set_stylebox("tab_hovered", "TabContainer", caja(Color(NEON, 0.6), 8))
+	_tema.set_stylebox("tab_focus", "TabContainer", StyleBoxEmpty.new())
+	_tema.set_color("font_selected_color", "TabContainer", NEON)
+	_tema.set_color("font_unselected_color", "TabContainer", TEXTO_SUAVE)
+	_tema.set_color("font_hovered_color", "TabContainer", TEXTO)
 	return _tema
 
 
