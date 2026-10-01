@@ -8,11 +8,24 @@ solo para Claude. Quien trabaja contigo es Adam.
 
 ## Al empezar cada sesión
 
+Adam trabaja desde dos sitios (instituto y casa) y cada chat nuevo empieza sin
+memoria. Todo el contexto vive en este repositorio: léelo entero antes de nada.
+
 1. Leer `documentacio/bitacora.md` entera: decisiones con su porqué, problemas
    resueltos, métodos de test y en qué punto se quedó.
-2. Contrastarla con `git log --graph --oneline --all` y `git status`. Si hay
+2. Leer `documentacio/requisitos_y_estado.md`: qué pide el profesor, qué está
+   hecho, qué falta y las decisiones vigentes. El texto original del enunciado
+   está en `documentacio/enunciat.md` (fuente de verdad) y la plantilla del primer
+   informe en `documentacio/primer_seguiment.md`: leerlos cuando la tarea toque
+   requisitos, entregables o el informe.
+3. Leer `documentacio/planificacion.md` (reparto de fitas y casillas).
+4. Contrastarlo todo con `git log --graph --oneline --all` y `git status`. Si hay
    commits que la bitácora no recoge, decírselo a Adam.
-3. Convención de commits y flujo de Git: `README.md`.
+5. Convención de commits y flujo de Git: `README.md`.
+
+Después, si Adam no ha pedido otra cosa concreta, darle un informe corto de
+arranque: qué piden, qué está hecho, qué falta (por prioridad), el siguiente
+paso y cualquier discrepancia entre bitácora, planificación y Git.
 
 Ignorar `projecte/.godot/`: es caché regenerable.
 
@@ -22,8 +35,9 @@ Desde el 30/09/2026 Alan solo lleva el audio (`globales/gestor_audio.gd` y
 `medios/audio/`). Todo lo demás de `projecte/`, incluida la interfaz, los menús,
 la arena y el arte, es de Adam.
 
-- En `documentacio/`, Adam mantiene `bitacora.md` y `planificacion.md`. El resto
-  de la carpeta es de Alan.
+- En `documentacio/`, Adam mantiene `bitacora.md`, `planificacion.md`,
+  `requisitos_y_estado.md` y `primer_seguiment.md`. `enunciat.md` es el texto del
+  profesor y no se edita. El resto de la carpeta es de Alan.
 - Cambiar o quitar una señal del bus afecta al audio de Alan: se le avisa y se
   actualiza `GEMINI.md`. Añadir una señal nueva no le rompe nada.
 - Nunca editar ficheros de Alan. Si algo suyo debe cambiar, decírselo a Adam para
@@ -40,6 +54,11 @@ Adam defiende el código ante un tribunal que puede pedirle explicar o modificar
 cualquier línea. Ante la duda, la versión más fácil de explicar.
 
 ## Entorno y validación
+
+Lo de este apartado describe la máquina del **instituto**. Adam también trabaja
+desde casa, donde la ruta de Godot, el sistema operativo y la GPU pueden ser
+distintos: si no sabes en cuál estás, pregúntaselo antes de lanzar Godot y no
+asumas estas rutas.
 
 - VM de VirtualBox con GPU virtualizada (OpenGL 4.1 por Mesa SVGA3D). Los FPS
   medidos aquí no son fiables: nunca rediseñar por rendimiento con estos números.
@@ -69,11 +88,22 @@ cualquier línea. Ante la duda, la versión más fácil de explicar.
 - Commitear solo ficheros de Adam. Si `git status` muestra ficheros de Alan
   modificados sin que se hayan tocado (Godot los reescribe al abrir), avisar a
   Adam en vez de commitearlos.
-- No hacer push sin que Adam lo diga.
+- No hacer push sin que Adam lo diga. Al cerrar la sesión, preguntarle si quiere
+  subir: sin push, lo hecho aquí no llega al otro sitio (instituto o casa).
 
 ## Al cerrar cada sesión
 
 Entrada nueva en `bitacora.md` con el formato de las anteriores: qué se ha hecho,
 decisiones técnicas y por qué, cambios de rumbo, problemas y solución, uso de IA,
 métodos de test, estado al cerrar y siguiente paso. Preguntar a Adam las horas de
-la sesión y actualizar las acumuladas. Después, commit.
+la sesión y actualizar las acumuladas.
+
+Además, para que el siguiente chat no pierda nada:
+
+- Marcar las casillas que toquen en `planificacion.md`.
+- Actualizar `requisitos_y_estado.md`: estados, lista de pendientes y decisiones
+  vigentes si ha cambiado alguna.
+- Todo decidido en la conversación con su porqué tiene que quedar escrito en la
+  bitácora: lo que solo está en el chat se pierde al abrir uno nuevo.
+
+Después, commit.
