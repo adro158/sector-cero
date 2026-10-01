@@ -13,6 +13,9 @@ signal personaje_cambiado(actual: DatosPersonaje, siguiente: DatosPersonaje, esp
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
 signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
+## Cada vez que la herramienta del personaje ataca. Para el sonido.
+signal herramienta_usada(arma: DatosArma)
+signal jefe_aparecio
 ## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
 ## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
 signal partida_terminada(estadisticas: Dictionary)

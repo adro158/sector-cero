@@ -54,6 +54,7 @@ func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	visible = true
 	_activo = true
+	BusEventos.jefe_aparecio.emit()
 
 
 ## Misma forma que en los gestores de la horda: devuelve a cuántos alcanza.

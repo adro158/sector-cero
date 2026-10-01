@@ -15,6 +15,9 @@ enum Tipo {
 ## con el que impactan.
 @export var radio: float = 90.0
 
+## Nombre del efecto de medios/audio/ que suena cada vez que ataca.
+@export var sonido: String = "firewall"
+
 @export_group("Solo proyectiles")
 @export var velocidad_proyectil: float = 420.0
 

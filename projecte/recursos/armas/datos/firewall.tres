@@ -9,3 +9,4 @@ tipo = 0
 dano = 6.0
 cadencia = 0.6
 radio = 90.0
+sonido = "firewall"

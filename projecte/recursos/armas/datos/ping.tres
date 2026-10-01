@@ -9,6 +9,7 @@ tipo = 1
 dano = 9.0
 cadencia = 0.9
 radio = 14.0
+sonido = "ping"
 velocidad_proyectil = 430.0
 rebotes = 3
 vida_util = 2.5

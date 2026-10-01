@@ -52,6 +52,7 @@ func _physics_process(delta: float) -> void:
 		_tiempos[i] = armas[i].cadencia * multiplicador_cadencia
 		_atacar(armas[i])
 		arma_disparada.emit(i)
+		BusEventos.herramienta_usada.emit(armas[i])
 
 
 func _atacar(arma: DatosArma) -> void:

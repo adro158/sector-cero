@@ -9,3 +9,4 @@ tipo = 0
 dano = 22.0
 cadencia = 2.2
 radio = 200.0
+sonido = "escaner"
