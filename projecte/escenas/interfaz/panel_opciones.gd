@@ -14,7 +14,9 @@ var _primero: Control
 func _ready() -> void:
 	# Desde el menú de pausa se abre con el juego pausado.
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Anclajes y tamaño a la vez: con solo set_anchors_preset el panel se quedaba
+	# en 0x0 y la ventana salía centrada en la esquina de arriba a la izquierda.
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var caja := VBoxContainer.new()
@@ -73,5 +75,7 @@ func _casilla(rejilla: GridContainer, texto: String, clave: String) -> void:
 	rejilla.add_child(EstiloInterfaz.etiqueta(texto, 18))
 	var casilla := CheckButton.new()
 	casilla.button_pressed = GestorGuardado.opcion(clave)
+	# Solo el interruptor, sin estirarse a lo ancho de la columna.
+	casilla.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	casilla.toggled.connect(func(activa: bool): GestorGuardado.cambiar_opcion(clave, activa))
 	rejilla.add_child(casilla)
