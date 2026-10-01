@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="1_afijo"]
+
+[resource]
+script = ExtResource("1_afijo")
+nombre = "Aura lenta"
+efecto = 2
+color = Color(0.75, 0.45, 1, 1)
+valor = 0.45

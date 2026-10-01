@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="1_afijo"]
+
+[resource]
+script = ExtResource("1_afijo")
+nombre = "Replicante"
+efecto = 1
+color = Color(0.4, 1, 0.5, 1)
+valor = 6.0

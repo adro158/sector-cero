@@ -41,6 +41,7 @@ func _ready() -> void:
 
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
+	BusEventos.elite_exploto.connect(func(posicion): estallido(posicion, Color(1.0, 0.5, 0.15), 90, 450.0))
 	_jugador.get_node("Salud").danado.connect(_al_danar_jugador)
 
 
@@ -75,10 +76,10 @@ func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 	match tipo:
 		"jefe":
 			estallido(posicion, Color(0.75, 0.3, 1.0), 160, 520.0)
-		"elite":
-			estallido(posicion, Color(1.0, 0.85, 0.3), 50, 360.0)
 		_:
-			estallido(posicion, _color_por_tipo.get(tipo, Color.WHITE), 7, 200.0)
+			# El élite tiene datos, como la horda, pero estalla más grande.
+			var cantidad := 50 if tipo == "elite" else 7
+			estallido(posicion, _color_por_tipo.get(tipo, Color.WHITE), cantidad, 200.0 + cantidad * 3.0)
 
 
 func _al_subir_nivel(_opciones: Array) -> void:

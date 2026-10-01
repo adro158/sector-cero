@@ -20,6 +20,8 @@ const FOTOGRAMAS_ANDAR := 6
 var _efecto_golpe: Tween
 var _fila := 0
 var _tiempo_andando := 0.0
+var _lentitud := 0.0
+var _tiempo_lento := 0.0
 
 
 func _ready() -> void:
@@ -41,13 +43,26 @@ func _al_recibir_dano(_cantidad: float) -> void:
 	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
 
 
+## Lo llama el aura de un élite en cada fotograma que el jugador está dentro:
+## la velocidad baja esa fracción mientras siga dentro.
+func ralentizar(fraccion: float) -> void:
+	_lentitud = fraccion
+	# Un poco más que un fotograma: al salir del aura, el efecto se acaba solo.
+	_tiempo_lento = 0.1
+
+
 func _physics_process(delta: float) -> void:
 	var direccion := Input.get_vector(
 		"mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo"
 	)
 
+	var maxima := velocidad_maxima
+	if _tiempo_lento > 0.0:
+		_tiempo_lento -= delta
+		maxima *= 1.0 - _lentitud
+
 	if direccion != Vector2.ZERO:
-		velocity = velocity.move_toward(direccion * velocidad_maxima, aceleracion * delta)
+		velocity = velocity.move_toward(direccion * maxima, aceleracion * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, frenado * delta)
 

@@ -16,6 +16,10 @@ signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 ## Cada vez que la herramienta del personaje ataca. Para el sonido.
 signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
+## descripcion: los nombres de sus afijos, como "BLINDADO + EXPLOSIVO".
+signal elite_aparecio(descripcion: String)
+## Un élite explosivo ha estallado al terminar su aviso.
+signal elite_exploto(posicion: Vector2)
 ## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
 ## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
 signal partida_terminada(estadisticas: Dictionary)

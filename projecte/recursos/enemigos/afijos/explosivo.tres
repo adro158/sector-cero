@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="1_afijo"]
+
+[resource]
+script = ExtResource("1_afijo")
+nombre = "Explosivo"
+efecto = 3
+color = Color(1, 0.5, 0.15, 1)
+valor = 25.0

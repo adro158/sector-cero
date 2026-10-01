@@ -39,6 +39,8 @@ func _ready() -> void:
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
 	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
+	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
+	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.juego_pausado.connect(_al_pausar)
 	BusEventos.partida_terminada.connect(_al_terminar)
 	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)

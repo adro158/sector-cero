@@ -9,12 +9,16 @@ signal llega_el_jefe(posicion: Vector2)
 var _tiempo := 0.0
 var _tiempo_restante := 0.0
 var _jefe_en_juego := false
+var _siguiente_elite := 0.0
 var _jugador: Node2D
 var _gestores: Array[GestorEnemigos] = []
+var _elites: Array[Node] = []
 
 
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
+	_elites = get_tree().get_nodes_in_group("elites")
+	_siguiente_elite = config.primer_elite
 
 	for nodo in get_tree().get_nodes_in_group("gestor_enemigos"):
 		_gestores.append(nodo)
@@ -44,6 +48,10 @@ func _physics_process(delta: float) -> void:
 		llega_el_jefe.emit(_posicion_fuera_de_pantalla())
 		return
 
+	if _tiempo >= _siguiente_elite:
+		_siguiente_elite += config.intervalo_elites
+		_aparecer_elite()
+
 	if _tiempo_restante > 0.0:
 		return
 
@@ -72,6 +80,22 @@ func _elegir_tipo() -> GestorEnemigos:
 		return null
 
 	return disponibles.pick_random()
+
+
+## Activa el primer élite libre. Si están todos en juego, este turno se pierde:
+## con tres a la vez ya hay presión de sobra.
+func _aparecer_elite() -> void:
+	for elite in _elites:
+		if not elite.activo():
+			elite.aparecer(_posicion_fuera_de_pantalla(), _sortear_afijos())
+			return
+
+
+func _sortear_afijos() -> Array[DatosAfijoElite]:
+	var afijos := config.afijos_elite.duplicate()
+	afijos.shuffle()
+	var cantidad := 2 if _tiempo >= config.tiempo_dos_afijos else 1
+	return afijos.slice(0, cantidad)
 
 
 func _posicion_fuera_de_pantalla() -> Vector2:

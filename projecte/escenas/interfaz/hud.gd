@@ -17,6 +17,8 @@ var _etiqueta_jefe: Label
 var _columna: VBoxContainer
 var _iconos := {}
 var _personaje: Label
+var _aviso: Label
+var _efecto_aviso: Tween
 var _actual: DatosPersonaje
 var _siguiente: DatosPersonaje
 var _espera := 0.0
@@ -58,7 +60,18 @@ func _ready() -> void:
 	_personaje.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_personaje)
 
+	_aviso = EstiloInterfaz.etiqueta("", 26)
+	_aviso.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_aviso.offset_left = -400.0
+	_aviso.offset_right = 400.0
+	_aviso.offset_top = 100.0
+	_aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_aviso.modulate.a = 0.0
+	add_child(_aviso)
+
 	$PanelMejoras.niveles = niveles_mejora
+	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
+	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
 	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
@@ -131,6 +144,19 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		_columna.add_child(icono)
 		_iconos[mejora] = icono
 	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
+
+
+## Mensaje grande arriba en el centro que se desvanece a los pocos segundos.
+func _avisar(texto: String, color: Color) -> void:
+	_aviso.text = texto
+	_aviso.add_theme_color_override("font_color", color)
+	# Un aviso nuevo sustituye al anterior aunque no se haya apagado.
+	if _efecto_aviso != null:
+		_efecto_aviso.kill()
+	_aviso.modulate.a = 1.0
+	_efecto_aviso = create_tween()
+	_efecto_aviso.tween_interval(2.0)
+	_efecto_aviso.tween_property(_aviso, "modulate:a", 0.0, 1.0)
 
 
 static func _formato(segundos: float) -> String:

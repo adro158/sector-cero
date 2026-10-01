@@ -23,6 +23,7 @@ func _initialize() -> void:
 	_bit_corrupto().save_png(ENEMIGOS + "bit_corrupto.png")
 	_paquete_perdido().save_png(ENEMIGOS + "paquete_perdido.png")
 	_proceso_colgado().save_png(ENEMIGOS + "proceso_colgado.png")
+	_rootkit().save_png(ENEMIGOS + "rootkit.png")
 
 	_icono_dano().save_png(ICONOS + "dano.png")
 	_icono_cadencia().save_png(ICONOS + "cadencia.png")
@@ -31,6 +32,7 @@ func _initialize() -> void:
 	_icono_vida().save_png(ICONOS + "vida.png")
 	_icono_escaner().save_png(ICONOS + "arma_escaner.png")
 	_icono_ping().save_png(ICONOS + "arma_ping.png")
+	_icono_firewall().save_png(ICONOS + "arma_firewall.png")
 	print("sprites e iconos generados")
 	quit()
 
@@ -95,6 +97,32 @@ func _proceso_colgado() -> Image:
 	var boca := [Vector2(12, 28), Vector2(15, 26), Vector2(18, 28), Vector2(21, 26), Vector2(24, 28), Vector2(27, 26)]
 	for i in boca.size() - 1:
 		_linea(img, boca[i], boca[i + 1], cara)
+	return img
+
+
+## Rootkit, el élite: un rombo dorado con ojos rojos y el símbolo # de la
+## consola de administrador, que es lo que busca un rootkit. Una franja
+## desplazada, como el bit corrupto.
+func _rootkit() -> Image:
+	var img := _lienzo(48)
+	for y in 48:
+		var media := 21.0 - absf(y - 23.5)
+		if media > 0.0:
+			_linea(img, Vector2(23.5 - media, y), Vector2(23.5 + media, y), Color(0.3, 0.2, 0.03))
+	_contorno(img, Color(1.0, 0.85, 0.3))
+
+	var ojo := Color(1.0, 0.3, 0.2)
+	_rect(img, Rect2i(14, 17, 6, 3), ojo)
+	_rect(img, Rect2i(28, 17, 6, 3), ojo)
+
+	var simbolo := Color(1.0, 0.9, 0.6)
+	_linea(img, Vector2(20, 24), Vector2(19, 34), simbolo)
+	_linea(img, Vector2(27, 24), Vector2(26, 34), simbolo)
+	_linea(img, Vector2(16, 27), Vector2(31, 27), simbolo)
+	_linea(img, Vector2(16, 31), Vector2(31, 31), simbolo)
+
+	_desplazar_fila(img, 21, 3)
+	_desplazar_fila(img, 22, 3)
 	return img
 
 
@@ -165,6 +193,20 @@ func _icono_escaner() -> Image:
 	_anillo(img, Vector2(7.5, 7.5), 6.5, radar)
 	_linea(img, Vector2(7.5, 7.5), Vector2(12, 3), Color.WHITE)
 	_rect(img, Rect2i(4, 9, 2, 2), radar)
+	return img
+
+
+## Firewall (arma): un muro de ladrillos.
+func _icono_firewall() -> Image:
+	var img := _lienzo(16)
+	var ladrillo := Color(1.0, 0.45, 0.2)
+	for fila in 4:
+		var y := 2 + fila * 3
+		_linea(img, Vector2(1, y), Vector2(14, y), ladrillo)
+		# Las juntas verticales se alternan, como en una pared de verdad.
+		for x in ([1, 7, 13] if fila % 2 == 0 else [4, 10]):
+			_linea(img, Vector2(x, y), Vector2(x, y + 3), ladrillo)
+	_linea(img, Vector2(1, 14), Vector2(14, 14), ladrillo)
 	return img
 
 

@@ -1,6 +1,11 @@
-[gd_resource type="Resource" script_class="DatosConfigOleada" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosConfigOleada" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://recursos/oleadas/datos_config_oleada.gd" id="1_config"]
+[ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="2_afijo"]
+[ext_resource type="Resource" path="res://recursos/enemigos/afijos/blindado.tres" id="3_blindado"]
+[ext_resource type="Resource" path="res://recursos/enemigos/afijos/replicante.tres" id="4_replicante"]
+[ext_resource type="Resource" path="res://recursos/enemigos/afijos/aura_lenta.tres" id="5_aura"]
+[ext_resource type="Resource" path="res://recursos/enemigos/afijos/explosivo.tres" id="6_explosivo"]
 
 [resource]
 script = ExtResource("1_config")
@@ -9,3 +14,7 @@ intervalo_final = 0.15
 tiempo_hasta_dificultad_maxima = 600.0
 distancia_aparicion = 700.0
 duracion_partida = 600.0
+primer_elite = 90.0
+intervalo_elites = 60.0
+tiempo_dos_afijos = 300.0
+afijos_elite = Array[ExtResource("2_afijo")]([ExtResource("3_blindado"), ExtResource("4_replicante"), ExtResource("5_aura"), ExtResource("6_explosivo")])

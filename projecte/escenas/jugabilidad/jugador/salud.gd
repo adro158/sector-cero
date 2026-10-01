@@ -39,6 +39,14 @@ func vida() -> float:
 	return _vida
 
 
+## Vuelve a llenar la vida con un máximo nuevo. Para los élites, que se
+## reutilizan de una aparición a la siguiente.
+func reiniciar(maxima: float) -> void:
+	vida_maxima = maxima
+	_vida = maxima
+	vida_cambiada.emit(_vida, vida_maxima)
+
+
 func aumentar_vida_maxima(cantidad: float) -> void:
 	vida_maxima += cantidad
 	_vida += cantidad

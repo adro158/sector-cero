@@ -25,8 +25,11 @@ func _ready() -> void:
 	_valores.resize(MAXIMO_GEMAS)
 	_preparar_multimesh()
 
-	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
-		_experiencia_por_tipo[gestor.datos.tipo] = gestor.datos.experiencia
+	# Cada gestor de la horda y cada élite trae sus datos, con la experiencia
+	# que vale su tipo. El jefe no tiene: al derrotarlo se acaba la partida.
+	for objetivo in get_tree().get_nodes_in_group("objetivos"):
+		if "datos" in objetivo:
+			_experiencia_por_tipo[objetivo.datos.tipo] = objetivo.datos.experiencia
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 
 

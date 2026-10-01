@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/resistencia_malware.gd" id="15_resistencia"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe.tscn" id="18_jefe"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_particulas.gd" id="19_particulas"]
+[ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/enemigo_elite.tscn" id="20_elite"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -51,6 +52,12 @@ modulate = Color(0.4, 0.9, 0.85, 1)
 script = ExtResource("15_resistencia")
 
 [node name="Jefe" parent="." instance=ExtResource("18_jefe")]
+
+[node name="Elite1" parent="." instance=ExtResource("20_elite")]
+
+[node name="Elite2" parent="." instance=ExtResource("20_elite")]
+
+[node name="Elite3" parent="." instance=ExtResource("20_elite")]
 
 [node name="DirectorOleadas" type="Node" parent="."]
 script = ExtResource("4_oleadas")

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/enemigo_elite.gd" id="1_elite"]
+[ext_resource type="Resource" path="res://recursos/enemigos/datos/elite.tres" id="2_datos"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="3_salud"]
+
+[node name="Elite" type="Node2D" groups=["elites", "objetivos"]]
+script = ExtResource("1_elite")
+datos = ExtResource("2_datos")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+
+[node name="Salud" type="Node" parent="."]
+script = ExtResource("3_salud")
+invulnerabilidad = 0.0
