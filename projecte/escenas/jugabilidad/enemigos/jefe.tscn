@@ -16,5 +16,5 @@ vframes = 8
 
 [node name="Salud" type="Node" parent="."]
 script = ExtResource("3_salud")
-vida_maxima = 5000.0
+vida_maxima = 2500.0
 invulnerabilidad = 0.0

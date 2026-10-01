@@ -10,7 +10,7 @@
 [resource]
 script = ExtResource("1_config")
 intervalo_inicial = 1.0
-intervalo_final = 0.15
+intervalo_final = 0.1
 tiempo_hasta_dificultad_maxima = 600.0
 distancia_aparicion = 700.0
 duracion_partida = 600.0

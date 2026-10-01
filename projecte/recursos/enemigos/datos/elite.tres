@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_tipo")
 tipo = "elite"
-vida = 700.0
+vida = 450.0
 velocidad = 120.0
 tamano = 48.0
 textura = ExtResource("2_textura")

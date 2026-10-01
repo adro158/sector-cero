@@ -36,7 +36,7 @@ position_smoothing_speed = 8.0
 
 [node name="Salud" type="Node" parent="."]
 script = ExtResource("2_salud")
-regeneracion = 0.5
+regeneracion = 0.35
 
 [node name="GestorArmas" type="Node" parent="."]
 script = ExtResource("3_armas")
