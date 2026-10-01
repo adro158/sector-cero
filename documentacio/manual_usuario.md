@@ -15,6 +15,10 @@ personaje) llega a cero, pierdes.
 
 No hace falta instalar nada ni abrir Godot.
 
+**Actualizaciones:** al abrir el juego, debajo de los botones del menú aparece
+la versión. Si hay una nueva, aparece el botón **ACTUALIZAR**: la descarga y
+reinicia el juego. Sin conexión a internet el juego funciona igual.
+
 ## Controles
 
 | Acción | Teclado | Mando |

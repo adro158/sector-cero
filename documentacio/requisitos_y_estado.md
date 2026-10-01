@@ -90,8 +90,10 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 1. **Entregar el informe del primer seguimiento** (2 de octubre):
    `informe_primer_seguimiento.md`.
-2. **Publicar la release v0.2** en GitHub con los ejecutables y **probarla en un
-   ordenador limpio** (sin Godot instalado).
+2. **Publicar la release v0.2** subiendo la etiqueta `v0.2` (la GitHub Action la
+   exporta y la publica; mirar que termine bien la primera vez) y **probarla en
+   un ordenador limpio** (sin Godot instalado), incluido el botón ACTUALIZAR con
+   una v0.3.
 3. **Vídeo demostrativo** (2-4 min).
 4. **Ensayar la defensa** con `presentacion.md`.
 5. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
@@ -125,5 +127,7 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   (sesión 4).
 - **Mapa infinito** sin límites de arena (sesión 6).
 - **Audio sintetizado por código**, sin assets de terceros (sesión 6).
+- **Actualizaciones:** el juego busca solo y se actualiza al pulsar el botón;
+  una release por etiqueta `vX.Y`, no por commit (sesión 6).
 - **Élites y jefe son nodos ocultos en la escena desde el principio**, porque
   las armas buscan sus objetivos al empezar (sesiones 5 y 6).

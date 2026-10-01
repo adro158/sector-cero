@@ -27,6 +27,10 @@ tienes que ir cambiando de personaje para atacarle con otra.
 2. Descomprime el `.zip`.
 3. Abre `SectorCero.exe` (Windows) o `SectorCero.x86_64` (Linux).
 
+No hace falta volver a descargarlo para tener la última versión: al abrirse, el
+menú comprueba si hay una nueva y, si la hay, aparece el botón **ACTUALIZAR**.
+Descarga solo el contenido nuevo (alrededor de 1 MB) y reinicia el juego.
+
 ### Desde el código
 
 1. Instala [Godot 4.7.2](https://godotengine.org/download) (versión estándar,
@@ -36,8 +40,28 @@ tienes que ir cambiando de personaje para atacarle con otra.
 3. En Godot, *Importar* y elige `projecte/project.godot`.
 4. Pulsa F5.
 
-Para exportar el ejecutable hacen falta las plantillas de exportación de
-Godot 4.7.2. Desde la carpeta `projecte/`:
+### Publicar una versión
+
+Las releases las crea una GitHub Action
+(`.github/workflows/publicar_release.yml`) al subir una etiqueta:
+
+```
+git tag v0.3
+git push origin v0.3
+```
+
+La Action pone la versión de la etiqueta en el juego, exporta Windows y Linux,
+y publica la release con el juego completo (`.zip`), el contenido para el botón
+ACTUALIZAR (`sector_cero_windows.pck` y `sector_cero_linux.pck`) y
+`version.json`.
+
+Si una versión cambia algo de `project.godot` (autoloads, controles, ventana) o
+añade un `class_name` nuevo, hay que subir `EJECUTABLE_MINIMO` en
+`projecte/globales/version.gd` a esa versión: eso no viaja en el `.pck` y el
+juego pedirá descargar el ejecutable entero.
+
+Para exportar a mano hacen falta las plantillas de exportación de Godot 4.7.2.
+Desde la carpeta `projecte/`:
 
 ```
 Godot --headless --path . --export-release "Windows Desktop" ../build/windows/SectorCero.exe
@@ -73,6 +97,8 @@ Las instrucciones completas están en el
 - **Jefe final** con embestida telegrafiada.
 - **Mapa infinito** con un suelo de placa base hecho por shader.
 - **Récords y opciones guardados** (volumen, pantalla completa y filtro CRT).
+- **Actualización desde el propio juego**: busca la última release en GitHub
+  y se descarga solo el contenido nuevo.
 - **Audio propio** sintetizado por código: 17 efectos y 3 músicas.
 - **Feedback**: números de daño, partículas, destellos, glitch de la horda por
   shader, sacudida de cámara, filtro CRT y fundidos entre pantallas.
@@ -118,8 +144,8 @@ los exige literalmente así. Todo lo demás está en castellano.
 
 ### Dentro de `projecte/`
 
-- `globales/` — autoloads: bus de eventos, guardado, audio, transiciones y
-  filtro CRT
+- `globales/` — autoloads: actualizador, bus de eventos, guardado, audio,
+  transiciones y filtro CRT, y la versión del juego
 - `escenas/` — escenas del juego: arena, jugabilidad, interfaz y menú
 - `recursos/` — clases de Resource y los `.tres` de datos (armas, mejoras,
   enemigos, afijos, personajes y oleadas)

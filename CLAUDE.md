@@ -132,6 +132,22 @@ de lanzar Godot.
   `GestorGuardado` del bus (diferido, porque en `_initialize` los autoloads aún
   no han hecho su `_ready`) para no ensuciar los récords del jugador.
 - Rendimiento: `projecte/herramientas/medir_rendimiento.gd`, con ventana.
+
+## Versiones y actualizaciones
+
+- Una release se publica subiendo una etiqueta (`git tag v0.3` y
+  `git push origin v0.3`): la GitHub Action
+  `.github/workflows/publicar_release.yml` exporta y la publica. Subir etiquetas
+  es publicar: solo cuando Adam lo pida.
+- En el código, `Version.ACTUAL` y `config/version` de `project.godot` valen
+  `"desarrollo"`: la Action los sustituye por la etiqueta. No cambiarlos a mano.
+- `Actualizador` tiene que ser el primer autoload y no puede nombrar la clase
+  `Version` (la cargaría antes de aplicar la actualización).
+- Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
+  `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
+  que se va a publicar: el `.pck` de actualización no lleva esas cosas.
+- Probado de punta a punta con un servidor local que imita la API de GitHub
+  (bitácora, sesión 6).
 - Tras cualquier cambio de balance, medirlo con el simulador de partidas
   (`projecte/herramientas/simular_partidas.gd`, instrucciones en su cabecera).
   Las semillas son fijas: el mismo comando da las mismas partidas, así que se

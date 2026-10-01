@@ -814,6 +814,10 @@ casa)
   ventana de cuatro pestañas: cómo se juega, personajes y cuándo conviene cada
   uno, mejoras y evoluciones, y enemigos con los afijos. El menú se queda con un
   resumen corto y las reglas completas pasan a esa ventana.
+- **Actualización desde el propio juego:** al abrir el menú busca la última
+  release en GitHub y, si hay una nueva, el botón ACTUALIZAR descarga solo el
+  `.pck` y reinicia el juego. Una GitHub Action exporta y publica la release al
+  subir una etiqueta `vX.Y`.
 
 ### Decisiones técnicas y por qué
 
@@ -866,6 +870,34 @@ un campo `descripcion` en su recurso, y la ventana de reglas recorre esos
 recursos y el pool de mejoras. Si se cambia un personaje o se añade un enemigo,
 las reglas se actualizan sin tocar la ventana. Solo el jefe, que no tiene
 recurso de datos, lleva su texto en el script.
+
+**Cómo se actualiza el juego sin bajar el ejecutable.** Windows no deja
+reemplazar un `.exe` mientras está abierto, así que se actualiza solo el
+contenido. El ejecutable lleva el juego dentro; la actualización es un `.pck`
+que se guarda en `user://` y, al arrancar, el autoload `Actualizador` lo carga
+encima con `ProjectSettings.load_resource_pack`. Tiene que ser el primer
+autoload, porque solo lo que se carga después sale de la versión nueva, y no
+puede nombrar la clase `Version` (Godot la cargaría al compilarlo, antes de
+aplicar el parche). Lo que Godot lee antes de cualquier script (`project.godot`
+y la lista de `class_name`) no se puede actualizar así: cada release publica en
+`version.json` el ejecutable mínimo que necesita y, si el de jugador es más
+viejo, el botón abre la página para descargar el juego entero.
+
+**Busca solo, pero no se instala solo** (decisión de Adam, a propuesta de
+Claude). La consulta es automática al abrir el menú, pero se actualiza al pulsar
+el botón: así no cambia el juego justo antes de una demo ni falla a medias sin
+avisar. Mientras descarga, JUGAR se desactiva, porque al terminar se reinicia.
+
+**Una release por etiqueta, no por commit** (decisión de Adam). Muchos commits
+no cambian el juego (la bitácora, por ejemplo). Con `git tag v0.3` se decide
+qué llega a los jugadores. La versión sale de la etiqueta: la Action la escribe
+en `version.gd` y en `project.godot` antes de exportar. En el código vale
+"desarrollo", y jugando desde el proyecto no se busca nada.
+
+**Protecciones.** La descarga se guarda con otro nombre y solo se renombra si
+llega completa (se comprueba el tamaño). Si el ejecutable es igual o más nuevo
+que el parche guardado (porque se descargó el juego entero después), el parche
+se borra en lugar de cargarse.
 
 **Un único estilo de botón.** `EstiloInterfaz.boton()` sustituye a las tres
 copias de `_boton()` que había en el menú, la pausa y la pantalla final.
@@ -938,6 +970,17 @@ anclajes a pantalla completa con `set_anchors_preset`, pero su tamaño seguía e
 confirmó midiendo el tamaño del panel y se corrigió con
 `set_anchors_and_offsets_preset`, que fija anclajes y tamaño a la vez.
 
+**Probar el actualizador sin publicar nada.** Se montó un servidor local en
+PowerShell que imita la API de releases de GitHub, se exportó un juego «0.2» y
+un parche «0.3» desde una copia del proyecto con la dirección cambiada, y se
+comprobó en el registro del juego: encuentra la 0.3, la descarga (del 0 al
+100 %), se reinicia y arranca como «Versión 0.3 · al día». También: sin
+conexión dice que no ha podido comprobar, un ejecutable más nuevo borra el
+parche viejo, y contra la API real (que hoy da 404 porque la v0.1 es una
+*prerelease*) dice «al día». Leer como JSON una respuesta vacía daba un error
+en la consola: ahora se mira el código antes. Las expresiones `sed` de la
+Action se probaron con el `sed` de Git.
+
 **El nombre de dos afijos no cabía** sobre el élite. Se vio en las capturas y
 se ensanchó la caja de texto.
 
@@ -982,11 +1025,16 @@ Claude creó las cuatro hojas de sprites.
 
 Los 13 requisitos mínimos están cubiertos, y también el MVP y las ampliaciones.
 Todo está commiteado en `main` pero **no se ha subido a GitHub** (Adam lo hará
-después), y la release v0.2 está exportada en `build/` sin publicar.
+después). La release v0.2 la publicará la GitHub Action al subir la etiqueta
+`v0.2`, ya con el actualizador dentro.
 
 ### Siguiente paso
 
-1. Subir `main` y publicar la release v0.2 con los dos `.zip` de `build/`.
+1. Subir `main` y publicar la release v0.2 subiendo la etiqueta (`git tag v0.2`
+   y `git push origin v0.2`): la Action la exporta y la publica. Comprobar en la
+   pestaña Actions de GitHub que termina bien, porque es la primera vez que se
+   ejecuta. Los `.zip` que se exportaron a mano se borraron: no llevaban el
+   actualizador.
 2. Entregar el informe del primer seguimiento (2 de octubre).
 3. Vídeo demostrativo (Adam pidió que se le recuerde).
 4. Probar el ejecutable en un ordenador sin Godot.

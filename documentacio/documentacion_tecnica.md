@@ -149,6 +149,17 @@ victorias y las opciones (volumen de música y efectos, pantalla completa y
 filtro CRT). El menú muestra el récord y la pantalla final avisa si se ha
 batido.
 
+**Actualizaciones desde el juego.** Al abrir el menú, el autoload
+`Actualizador` pregunta a la API de GitHub cuál es la última release. Si es más
+nueva, aparece el botón ACTUALIZAR, que descarga solo el `.pck` (el contenido
+del juego, alrededor de 1 MB, frente a los 110 MB del ejecutable) en `user://`
+y reinicia el juego. Al arrancar, el `Actualizador`, que es el primer autoload,
+carga ese `.pck` encima del original con `ProjectSettings.load_resource_pack`,
+antes de que se cargue nada más. Las releases las publica una GitHub Action al
+subir una etiqueta de versión. Lo que Godot lee antes de cualquier script
+(`project.godot` y la lista de clases) no viaja en el `.pck`: si cambia, la
+release lo indica y el juego pide descargar el ejecutable entero.
+
 **Audio.** Todo el audio se genera con un script propio que suma ondas simples,
 como un chip de sonido antiguo: 17 efectos y 3 músicas en bucle. `GestorAudio`
 escucha el bus y los cambios de escena. Un efecto no puede repetirse antes de
@@ -227,7 +238,8 @@ Godot avisa de una fuga del reproductor de audio. Se comprobó que es del motor
 
 ## 7. Herramientas y assets
 
-- **Godot 4.7.2** con el renderizador Compatibility, **Git y GitHub**.
+- **Godot 4.7.2** con el renderizador Compatibility, **Git y GitHub**, y
+  **GitHub Actions** para exportar y publicar cada versión.
 - **Gráficos:** la horda, el élite y los iconos los dibuja un script propio a
   partir de formas simples. El suelo, el glitch y el CRT son shaders propios.
   Los personajes y el jefe se hicieron con IA a partir de un ejemplo del

@@ -111,8 +111,10 @@ Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 escena y decide qué suena. **La persistencia** (`GestorGuardado`) escucha
 `partida_terminada` para los récords y guarda las opciones.
 
-Autoloads registrados: `BusEventos`, `GestorGuardado`, `GestorAudio`,
-`Transicion` (fundido entre escenas) y `EfectoCRT` (filtro de pantalla).
+Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
+actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
+`GestorAudio`, `Transicion` (fundido entre escenas) y `EfectoCRT` (filtro de
+pantalla).
 
 ### 2. Nombres de grupo
 
