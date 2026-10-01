@@ -1,9 +1,16 @@
 extends Control
 
 ## Pantalla de victoria o derrota. Aparece con un fundido al terminar la
-## partida, con el resumen y dos salidas: reintentar o volver al menú.
+## partida, con el resumen, los récords batidos y dos salidas: reintentar o
+## volver al menú.
 
 const MENU_PRINCIPAL := "res://escenas/menu_principal/menu_principal.tscn"
+
+const NOMBRES_RECORD := {
+	"tiempo": "tiempo",
+	"nivel": "nivel",
+	"eliminados": "malware eliminado",
+}
 
 var _ventana: ColorRect
 
@@ -12,10 +19,12 @@ func _ready() -> void:
 	# La partida termina con el juego pausado, y aun así hay que poder pulsar.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	BusEventos.partida_terminada.connect(_al_terminar)
+	# Diferido: así el gestor de guardado ya ha anotado la partida cuando se
+	# pregunta qué récords se han batido, conecte quien conecte antes.
+	BusEventos.partida_terminada.connect(_mostrar, CONNECT_DEFERRED)
 
 
-func _al_terminar(estadisticas: Dictionary) -> void:
+func _mostrar(estadisticas: Dictionary) -> void:
 	var victoria: bool = estadisticas.victoria
 	var color := EstiloInterfaz.VICTORIA if victoria else EstiloInterfaz.DERROTA
 
@@ -41,11 +50,22 @@ func _al_terminar(estadisticas: Dictionary) -> void:
 	centro.add_child(datos)
 	caja.add_child(centro)
 
+	if not GestorGuardado.records_batidos.is_empty():
+		var nombres := []
+		for clave in GestorGuardado.records_batidos:
+			nombres.append(NOMBRES_RECORD[clave])
+		var record := EstiloInterfaz.etiqueta("¡NUEVO RÉCORD! " + ", ".join(nombres), 20, EstiloInterfaz.NEON)
+		caja.add_child(record)
+		# Parpadea para que se vea que es una novedad.
+		var latido := create_tween().set_loops()
+		latido.tween_property(record, "modulate:a", 0.4, 0.5)
+		latido.tween_property(record, "modulate:a", 1.0, 0.5)
+
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 16)
-	botones.add_child(_boton("REINTENTAR  [Enter]", _reintentar))
-	botones.add_child(_boton("MENÚ  [Esc]", _ir_al_menu))
+	botones.add_child(EstiloInterfaz.boton("REINTENTAR  [Enter]", _reintentar, 220))
+	botones.add_child(EstiloInterfaz.boton("MENÚ  [Esc]", _ir_al_menu, 220))
 	caja.add_child(botones)
 
 	for hijo in caja.get_children():
@@ -61,14 +81,6 @@ func _al_terminar(estadisticas: Dictionary) -> void:
 	botones.get_child(0).grab_focus()
 
 
-func _boton(texto: String, accion: Callable) -> Button:
-	var boton := Button.new()
-	boton.text = texto
-	boton.custom_minimum_size = Vector2(220, 44)
-	boton.pressed.connect(accion)
-	return boton
-
-
 func _unhandled_input(evento: InputEvent) -> void:
 	if _ventana == null or not evento is InputEventKey or not evento.pressed:
 		return
@@ -79,10 +91,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _reintentar() -> void:
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	# Ruta vacía: recargar la escena actual.
+	Transicion.cambiar_a("")
 
 
 func _ir_al_menu() -> void:
-	get_tree().paused = false
-	get_tree().change_scene_to_file(MENU_PRINCIPAL)
+	Transicion.cambiar_a(MENU_PRINCIPAL)

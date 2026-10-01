@@ -36,7 +36,28 @@ static func tema() -> Theme:
 	_tema.set_stylebox("focus", "Button", caja(NEON, 10))
 	_tema.set_color("font_color", "Button", TEXTO)
 	_tema.set_color("font_hover_color", "Button", Color.WHITE)
+
+	# Deslizadores de volumen: carril oscuro que se llena de neón.
+	var carril := StyleBoxFlat.new()
+	carril.bg_color = Color(0.1, 0.15, 0.2)
+	carril.content_margin_top = 4
+	carril.content_margin_bottom = 4
+	var lleno := carril.duplicate() as StyleBoxFlat
+	lleno.bg_color = NEON
+	_tema.set_stylebox("slider", "HSlider", carril)
+	_tema.set_stylebox("grabber_area", "HSlider", lleno)
+	_tema.set_stylebox("grabber_area_highlight", "HSlider", lleno)
+	_tema.set_color("font_color", "CheckButton", TEXTO)
 	return _tema
+
+
+## Botón con el tamaño común de los menús. La acción se conecta a pressed.
+static func boton(texto: String, accion: Callable, ancho: float = 240.0) -> Button:
+	var nuevo := Button.new()
+	nuevo.text = texto
+	nuevo.custom_minimum_size = Vector2(ancho, 44)
+	nuevo.pressed.connect(accion)
+	return nuevo
 
 
 ## Panel oscuro con borde de neón del color dado.

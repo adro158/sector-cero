@@ -1,17 +1,17 @@
 extends Control
 
-## Menú de inicio: título, reglas del juego, las amenazas que hay y los
-## controles. Enter empieza la partida y Esc sale del juego.
+## Menú de inicio: título, reglas del juego, las amenazas que hay, los controles
+## y la mejor partida guardada. Enter empieza la partida y Esc sale del juego.
 
 const PARTIDA := "res://escenas/juego.tscn"
 
 const REGLAS := [
-	"Eres un proceso antivirus. Te mueves; tus herramientas atacan solas.",
-	"El malware suelta fragmentos de datos: recógelos para subir de nivel.",
-	"Al subir de nivel eliges una mejora o una herramienta nueva.",
-	"El malware se adapta a la herramienta que más daño le hace: sus",
-	"números salen en rojo. Combina varias para que no se haga fuerte.",
-	"Aguanta 10 minutos y aparecerá el jefe final. Derrótalo para ganar.",
+	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
+	"El malware suelta fragmentos de datos: recógelos para subir de nivel y elegir mejoras.",
+	"Repetir una mejora tres veces hace evolucionar la herramienta de un personaje.",
+	"El malware se adapta a la herramienta que más daño le hace: sus números salen en rojo.",
+	"Cambia de personaje para atacarle con otra herramienta. Hay 10 s de espera entre cambios.",
+	"Cada minuto llega un élite con afijos al azar. A los 10 minutos, el jefe final.",
 ]
 
 const AMENAZAS := [
@@ -19,6 +19,8 @@ const AMENAZAS := [
 	["res://recursos/enemigos/sprites/paquete_perdido.png", "Paquete perdido", "rápido"],
 	["res://recursos/enemigos/sprites/proceso_colgado.png", "Proceso colgado", "resistente"],
 ]
+
+var _opciones: PanelOpciones
 
 
 func _ready() -> void:
@@ -29,7 +31,7 @@ func _ready() -> void:
 	centro.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(centro)
 	var caja := VBoxContainer.new()
-	caja.add_theme_constant_override("separation", 18)
+	caja.add_theme_constant_override("separation", 14)
 	centro.add_child(caja)
 
 	var titulo := EstiloInterfaz.etiqueta("SECTOR CERO", 64, EstiloInterfaz.NEON)
@@ -45,34 +47,32 @@ func _ready() -> void:
 
 	caja.add_child(_panel_reglas())
 
+	var record := EstiloInterfaz.etiqueta(_texto_record(), 15, EstiloInterfaz.VICTORIA)
+	record.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(record)
+
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 16)
-	var jugar := _boton("JUGAR  [Enter]", _jugar)
+	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 220)
+	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 220)
 	botones.add_child(jugar)
-	botones.add_child(_boton("SALIR  [Esc]", get_tree().quit))
+	botones.add_child(opciones)
+	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 220))
 	caja.add_child(botones)
+
+	_opciones = PanelOpciones.new()
+	_opciones.cerrado.connect(opciones.grab_focus)
+	add_child(_opciones)
 	jugar.grab_focus()
 
 
 func _crear_fondo() -> void:
-	var base := ColorRect.new()
-	base.color = Color(0.015, 0.02, 0.04)
-	base.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(base)
-
-	# La misma placa base que en la partida, con sus mismos colores.
-	var material := ShaderMaterial.new()
-	material.shader = load("res://escenas/jugabilidad/depuracion/fondo_provisional.gdshader")
-	material.set_shader_parameter("tamano_celda", 96.0)
-	material.set_shader_parameter("color_pista", Color(0.1, 0.6, 0.45, 0.28))
-	material.set_shader_parameter("color_via", Color(0.2, 0.9, 0.7, 0.55))
-	material.set_shader_parameter("color_chip", Color(0.04, 0.06, 0.1, 0.92))
-	material.set_shader_parameter("color_borde_chip", Color(0.25, 0.45, 0.6, 0.8))
-	var placa := ColorRect.new()
-	placa.material = material
-	placa.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(placa)
+	# El mismo suelo de placa base que en la partida, con el mismo material.
+	var suelo := ColorRect.new()
+	suelo.material = load("res://escenas/arena/suelo.tres")
+	suelo.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(suelo)
 
 
 func _panel_reglas() -> PanelContainer:
@@ -100,20 +100,28 @@ func _panel_reglas() -> PanelContainer:
 	caja.add_child(fila)
 
 	caja.add_child(EstiloInterfaz.etiqueta("CONTROLES", 20, EstiloInterfaz.NEON))
-	caja.add_child(EstiloInterfaz.etiqueta("Moverse: WASD, flechas o stick   ·   Pausa: Esc o P   ·   Mejoras: click o 1, 2, 3", 15))
+	caja.add_child(EstiloInterfaz.etiqueta("Moverse: WASD, flechas o stick   ·   Cambiar de personaje: Q, Tab o Y", 15))
+	caja.add_child(EstiloInterfaz.etiqueta("Pausa: Esc, P o Start   ·   Mejoras: click o 1, 2, 3", 15))
 	return panel
 
 
-func _boton(texto: String, accion: Callable) -> Button:
-	var boton := Button.new()
-	boton.text = texto
-	boton.custom_minimum_size = Vector2(220, 48)
-	boton.pressed.connect(accion)
-	return boton
+func _texto_record() -> String:
+	var partidas := int(GestorGuardado.record("partidas"))
+	if partidas == 0:
+		return "Todavía no hay récords: ¡a por la primera partida!"
+
+	var tiempo := int(GestorGuardado.record("tiempo"))
+	return "MEJOR PARTIDA  %02d:%02d  ·  nivel %d  ·  %d eliminados  ·  %d victorias en %d partidas" % [
+		tiempo / 60, tiempo % 60, GestorGuardado.record("nivel"), GestorGuardado.record("eliminados"),
+		GestorGuardado.record("victorias"), partidas]
+
+
+func _abrir_opciones() -> void:
+	_opciones.abrir()
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if not evento is InputEventKey or not evento.pressed:
+	if _opciones.visible or not evento is InputEventKey or not evento.pressed:
 		return
 	if evento.keycode == KEY_ENTER or evento.keycode == KEY_KP_ENTER:
 		_jugar()
@@ -122,4 +130,4 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _jugar() -> void:
-	get_tree().change_scene_to_file(PARTIDA)
+	Transicion.cambiar_a(PARTIDA)

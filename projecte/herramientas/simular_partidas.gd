@@ -14,7 +14,6 @@ extends SceneTree
 ## Lee campos internos de los nodos (los que empiezan por _) porque necesita
 ## ver lo mismo que vería un jugador; en el código del juego eso no se hace.
 
-const LIMITES := Vector2(944.0, 524.0)
 const RADIO_PELIGRO := 260.0
 
 var _partidas := 3
@@ -36,6 +35,9 @@ func _initialize() -> void:
 			_partidas = int(argumento.split("=")[1])
 
 	_bus = root.get_node("BusEventos")
+	# Las partidas simuladas no son del jugador: no deben entrar en sus récords.
+	var guardado := root.get_node("GestorGuardado")
+	_bus.partida_terminada.disconnect(guardado._al_terminar_partida)
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
@@ -102,18 +104,13 @@ func _mover_bot() -> void:
 		if distancia > 0.0 and distancia < 170.0:
 			huida += diferencia / (distancia * distancia) * 6.0
 
+	# El mapa no tiene bordes: sin peligro cerca, da vueltas alrededor del
+	# origen para no alejarse sin fin.
 	var direccion := huida.normalized()
 	if huida == Vector2.ZERO:
 		direccion = Vector2(-posicion.y, posicion.x).normalized() * 0.6
 		if posicion.length() < 50.0:
 			direccion = Vector2.RIGHT
-
-	# Empuje hacia el centro que solo pesa de verdad cerca de los bordes.
-	var borde := Vector2(
-		-signf(posicion.x) * pow(absf(posicion.x) / LIMITES.x, 4.0),
-		-signf(posicion.y) * pow(absf(posicion.y) / LIMITES.y, 4.0)
-	)
-	direccion = (direccion + borde * 2.0).limit_length(1.0)
 
 	for accion in ["mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo"]:
 		Input.action_release(accion)

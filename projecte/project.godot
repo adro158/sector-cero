@@ -17,9 +17,9 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 [autoload]
 
 BusEventos="*res://globales/bus_eventos.gd"
-EstadoJuego="*res://globales/estado_juego.gd"
 GestorAudio="*res://globales/gestor_audio.gd"
 GestorGuardado="*res://globales/gestor_guardado.gd"
+Transicion="*res://globales/transicion.gd"
 
 [display]
 
