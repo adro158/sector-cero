@@ -161,4 +161,5 @@ func _draw() -> void:
 	var origen := Vector2(-ancho * 0.5, -radio - 16.0)
 	draw_rect(Rect2(origen, Vector2(ancho, 5.0)), Color(0.05, 0.05, 0.1, 0.9))
 	draw_rect(Rect2(origen, Vector2(ancho * _salud.vida() / _salud.vida_maxima, 5.0)), datos.color)
-	draw_string(ThemeDB.fallback_font, origen + Vector2(-40.0, -6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, ancho + 80.0, 12, datos.color)
+	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
+	draw_string(ThemeDB.fallback_font, Vector2(-120.0, origen.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
