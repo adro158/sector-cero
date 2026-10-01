@@ -1,0 +1,67 @@
+# Manual de usuario — Sector Cero
+
+## Objetivo
+
+Eres un proceso antivirus dentro de un ordenador infectado. Oleadas de malware
+vienen hacia ti desde todas partes. **Aguanta 10 minutos** y aparecerá el jefe
+final: **derrótalo para ganar**. Si tu integridad (la barra de vida sobre tu
+personaje) llega a cero, pierdes.
+
+## Cómo arrancar el juego
+
+- **Windows:** descomprime el `.zip` y abre `SectorCero.exe`.
+- **Linux:** descomprime y ejecuta `SectorCero.x86_64` (si hace falta, dale
+  permiso de ejecución con `chmod +x SectorCero.x86_64`).
+
+No hace falta instalar nada ni abrir Godot.
+
+## Controles
+
+| Acción | Teclado | Mando |
+|---|---|---|
+| Moverse | WASD o flechas | Stick izquierdo |
+| Cambiar de personaje | Q o Tab | Y |
+| Pausa | Esc o P | Start |
+| Elegir mejora | 1, 2, 3 o click | Cruceta y A |
+| Empezar / reintentar | Enter | A |
+| Panel técnico | F3 | — |
+
+Los menús también se usan con el ratón.
+
+## Cómo se juega
+
+1. **Solo te mueves.** Tu herramienta ataca sola cada pocos segundos. Tu
+   decisión es dónde colocarte.
+2. **Recoge los fragmentos de datos** que suelta el malware al morir. Te dan
+   experiencia.
+3. **Al subir de nivel**, el juego se pausa y eliges una de tres mejoras: más
+   daño, más cadencia, más alcance, más velocidad o más integridad.
+4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
+   herramienta que más daño le ha hecho. Lo verás porque los números de daño y
+   el anillo de tu herramienta se vuelven rojos.
+5. **Cambia de personaje** para atacarle con otra herramienta. Hay tres:
+   - **Espadachín · Firewall:** golpea todo lo que tienes alrededor.
+   - **Mago · Ping:** dispara un paquete que salta de un enemigo a otro.
+   - **Segador · Escáner:** un pulso lento y muy amplio.
+
+   Después de cambiar hay que esperar 10 segundos para volver a hacerlo.
+6. **Evoluciones.** Si eliges tres veces la misma mejora de daño, cadencia o
+   alcance, aparece la evolución de una herramienta. Es mucho más fuerte y el
+   malware todavía no ha aprendido a resistirla.
+7. **Élites.** Cada minuto llega un Rootkit con uno o dos afijos, escritos
+   sobre su cabeza:
+   - **Blindado:** recibe la mitad de daño.
+   - **Replicante:** al morir suelta más malware.
+   - **Aura lenta:** si estás cerca, te frena.
+   - **Explosivo:** al morir estalla. Aléjate del anillo naranja.
+8. **El jefe final** llega a los 10 minutos. Cuando se pone rojo va a embestir
+   en línea recta: apártate.
+
+## Pantallas
+
+- **Menú principal:** reglas, controles, tu mejor partida y opciones.
+- **Opciones:** volumen de la música y de los efectos, pantalla completa y
+  filtro CRT. Se guardan solas.
+- **Pausa:** continuar, opciones o volver al menú.
+- **Resultados:** tiempo, nivel y malware eliminado. Avisa si has batido un
+  récord.

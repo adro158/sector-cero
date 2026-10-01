@@ -1,29 +1,112 @@
 # Sector Cero
 
-Proyecto académico para la asignatura "Demostra el teu talent": una experiencia
-interactiva que demuestra nuestras capacidades como desarrolladores de
-videojuegos.
+Proyecto académico para la asignatura "Demostra el teu talent": un
+*survivors-like* en 2D hecho con Godot 4.7.2.
 
-## Descripción
+Eres un proceso antivirus dentro de un ordenador infectado y defiendes el
+sector de arranque de oleadas de malware. Solo te mueves: tu herramienta ataca
+sola. **El malware se adapta a la herramienta que más daño le hace**, así que
+tienes que ir cambiando de personaje para atacarle con otra.
 
-Un "survivors-like" en 2D con vista cenital, ambientado dentro de un ordenador
-infectado. Encarnas un proceso antivirus que defiende el sector de arranque de
-oleadas de malware: bits corruptos, paquetes perdidos, gusanos y procesos
-colgados.
+![Partida en marcha](documentacio/capturas/partida.png)
 
-El jugador solo controla el movimiento; las armas atacan solas. Los enemigos
-sueltan fragmentos de datos que dan experiencia, se sube de nivel y se eligen
-mejoras. Partida cronometrada de 10-15 minutos que termina con un jefe final.
+## Capturas
 
-Estética: geométrica y de neón sobre fondo oscuro, con post-proceso de CRT y
-tipografía monoespaciada.
+| Menú principal | Subida de nivel |
+|---|---|
+| ![Menú](documentacio/capturas/menu.png) | ![Mejoras](documentacio/capturas/mejoras.png) |
+| **Élite con afijos** | **Jefe final** |
+| ![Élite](documentacio/capturas/elite.png) | ![Jefe](documentacio/capturas/jefe.png) |
 
-## Equipo
+## Cómo ejecutarlo
 
-- **Adam** — núcleo de jugabilidad (movimiento, cámara, enemigos, armas, daño,
-  experiencia y niveles, director de oleadas)
-- **Alan** — interfaz y menús, persistencia, audio, escena de la arena e
-  iluminación, recursos artísticos, partículas, shaders, documentación y testeo
+### Con el ejecutable (sin instalar nada)
+
+1. Descarga la última versión desde
+   [Releases](https://github.com/adro158/sector-cero/releases).
+2. Descomprime el `.zip`.
+3. Abre `SectorCero.exe` (Windows) o `SectorCero.x86_64` (Linux).
+
+### Desde el código
+
+1. Instala [Godot 4.7.2](https://godotengine.org/download) (versión estándar,
+   no la de .NET).
+2. Clona el repositorio:
+   `git clone https://github.com/adro158/sector-cero`
+3. En Godot, *Importar* y elige `projecte/project.godot`.
+4. Pulsa F5.
+
+Para exportar el ejecutable hacen falta las plantillas de exportación de
+Godot 4.7.2. Desde la carpeta `projecte/`:
+
+```
+Godot --headless --path . --export-release "Windows Desktop" ../build/windows/SectorCero.exe
+Godot --headless --path . --export-release "Linux" ../build/linux/SectorCero.x86_64
+```
+
+## Controles
+
+| Acción | Teclado | Mando |
+|---|---|---|
+| Moverse | WASD o flechas | Stick izquierdo |
+| Cambiar de personaje | Q o Tab | Y |
+| Pausa | Esc o P | Start |
+| Elegir mejora | 1, 2, 3 o click | Cruceta y A |
+| Panel técnico | F3 | — |
+
+Las instrucciones completas están en el
+[manual de usuario](documentacio/manual_usuario.md).
+
+## Qué tiene
+
+- **Horda de cientos de enemigos** dibujada con `MultiMeshInstance2D` (una
+  llamada de dibujado por tipo) y una rejilla espacial propia para las
+  colisiones. Medido en una RTX 5070: 1200 enemigos a más de 700 FPS, con
+  la física en 9 ms de los 16,7 ms que hay por fotograma a 60 FPS.
+- **Resistencia adaptativa del malware** (el elemento diferencial): cada 20 s
+  gana resistencia contra la herramienta que más daño le ha hecho.
+- **Tres personajes** con su herramienta (Firewall, Ping y Escáner) y cambio en
+  plena partida.
+- **Evoluciones** de cada herramienta al repetir una mejora.
+- **Élites con afijos procedurales**: blindado, replicante, aura lenta y
+  explosivo, combinados al azar.
+- **Jefe final** con embestida telegrafiada.
+- **Mapa infinito** con un suelo de placa base hecho por shader.
+- **Récords y opciones guardados** (volumen, pantalla completa y filtro CRT).
+- **Audio propio** sintetizado por código: 17 efectos y 3 músicas.
+- **Feedback**: números de daño, partículas, destellos, glitch de la horda por
+  shader, sacudida de cámara, filtro CRT y fundidos entre pantallas.
+
+## Tecnologías
+
+- **Godot Engine 4.7.2**, GDScript, renderizador Compatibility (OpenGL).
+- Plataformas: Windows y Linux.
+- Shaders propios en el lenguaje de shaders de Godot.
+- Git y GitHub para el control de versiones y las releases.
+- Claude (Anthropic) como asistente de programación. Su uso está explicado en
+  la documentación técnica.
+
+## Autores
+
+- **Adam** — jugabilidad, enemigos, élites y jefe, armas y evoluciones,
+  progresión, interfaz y menús, persistencia, audio, arena, efectos,
+  herramientas de testeo y documentación.
+- **Alan** — primera versión de la arena con su shader de rejilla, primer HUD
+  y panel de mejoras, y módulo RAM.
+
+## Créditos
+
+Todos los gráficos, sonidos y la música son propios o generados por código,
+salvo los sprites de los personajes y del jefe, hechos con IA (Gemini y Claude)
+a partir de un ejemplo del profesor. El detalle está en
+[créditos](documentacio/creditos.md).
+
+## Documentación
+
+- [Manual de usuario](documentacio/manual_usuario.md)
+- [Documentación técnica](documentacio/documentacion_tecnica.md)
+- [Créditos de los assets](documentacio/creditos.md)
+- [Bitácora de desarrollo](documentacio/bitacora.md)
 
 ## Estructura del repositorio
 
@@ -35,16 +118,14 @@ los exige literalmente así. Todo lo demás está en castellano.
 
 ### Dentro de `projecte/`
 
-- `globales/` — autoloads: bus de eventos, estado del juego, audio y guardado
-- `escenas/` — escenas del juego, separadas por responsable
+- `globales/` — autoloads: bus de eventos, guardado, audio, transiciones y
+  filtro CRT
+- `escenas/` — escenas del juego: arena, jugabilidad, interfaz y menú
 - `recursos/` — clases de Resource y los `.tres` de datos (armas, mejoras,
-  enemigos, oleadas)
-- `medios/` — sprites, texturas, audio y shaders
-
-## Motor
-
-Godot 4.7.2 (GDScript). Plataforma objetivo: PC (Windows/Linux).
-Renderizador: **Compatibility** (OpenGL), no Forward+.
+  enemigos, afijos, personajes y oleadas)
+- `medios/` — audio y shaders
+- `herramientas/` — scripts que no forman parte del juego: generan los sprites
+  y el audio, simulan partidas para el balance y miden el rendimiento
 
 ## Flujo de trabajo
 
@@ -63,7 +144,7 @@ Los tipos se mantienen en inglés porque son etiquetas estándar reconocibles en
 cualquier repositorio; la descripción va en castellano.
 
 Ámbitos: `jugador`, `enemigos`, `armas`, `progresion`, `oleadas`, `interfaz`,
-`audio`, `guardado`, `arena`, `godot`.
+`audio`, `guardado`, `arena`, `efectos`, `godot`.
 
 Ejemplos:
 
