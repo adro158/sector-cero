@@ -14,7 +14,12 @@ pulido que uno ambicioso e incompleto.
 de un ordenador infectado. El jugador es un proceso antivirus que defiende el
 sector de arranque de oleadas de malware. Solo se controla el movimiento; las
 armas atacan solas. Los enemigos sueltan fragmentos de datos que dan experiencia,
-se sube de nivel y se eligen mejoras. Partida de 10-15 minutos con un jefe final.
+se sube de nivel y se eligen mejoras. Partida de 10 minutos más un jefe final.
+
+Elementos propios: el malware se hace resistente a la herramienta que más daño
+le hace (resistencia adaptativa), tres personajes con una herramienta cada uno
+que se intercambian en plena partida, evoluciones de las herramientas, élites
+con afijos al azar y un mapa infinito.
 
 Estética: geométrica y de neón sobre fondo oscuro, con post-proceso de CRT y
 tipografía monoespaciada.
@@ -27,44 +32,53 @@ tipografía monoespaciada.
 
 Son dos personas y **cada una tiene sus ficheros**.
 
-**Adam** — todo el juego salvo el audio: jugabilidad (jugador, enemigos, jefe,
-armas, experiencia, oleadas), interfaz y menús (HUD, panel de mejoras, menú de
-inicio, pausa, pantalla final), persistencia, escena de la arena y arte.
+**Adam** — todo `projecte/`: jugabilidad (jugador, enemigos, élites, jefe,
+armas, experiencia, oleadas), interfaz y menús, persistencia, audio, arena,
+efectos y arte.
 
-**Alan** — audio: música y efectos de sonido, reproducidos desde
-`GestorAudio` escuchando las señales del `BusEventos`.
+**Alan** — sin ficheros en `projecte/` desde el 01/10/2026. Lo que lleve a
+partir de ahora está pendiente de acordar.
 
-El reparto cambió el 30/09/2026: hasta entonces Alan llevaba también la
-interfaz, la persistencia, la arena y el arte. Lo que ya hizo (la arena, el
-shader de la rejilla, el primer HUD, el módulo RAM) sigue siendo suyo en el
-historial de Git, pero desde esa fecha esos ficheros los mantiene Adam.
+Historia del reparto: hasta el 30/09/2026 Alan llevaba la interfaz, la
+persistencia, la arena, el arte y el audio; ese día la interfaz, la
+persistencia, la arena y el arte pasaron a Adam, y el 01/10/2026 también el
+audio, que estaba sin empezar y es un requisito mínimo. Lo que Alan hizo (la
+primera arena, el shader de la rejilla, el primer HUD, el módulo RAM) sigue
+siendo suyo en el historial de Git.
 
 ### Ficheros de Alan
 
-- `projecte/globales/gestor_audio.gd`
-- `projecte/medios/audio/`
-- `documentacio/`, salvo `bitacora.md` y `planificacion.md`
+- `documentacio/assets.md` y `documentacio/propuesta.md`
 
 ### Regla dura
 
-**No editar ficheros del otro.** Todo lo demás de `projecte/` es de Adam. Si
-algo de ahí necesita cambiar, se pide, no se toca.
+**No editar ficheros del otro.** Si algo del otro necesita cambiar, se pide, no
+se toca.
 
 Motivo: los ficheros `.tscn` de Godot se fusionan muy mal en Git. Nunca se edita
 la misma escena a la vez.
 
-## La frontera entre las dos partes
+## La frontera entre sistemas
 
-No nos llamamos directamente entre sistemas. La comunicación pasa por dos sitios.
+Los sistemas no se llaman directamente entre ellos. La comunicación pasa por
+dos sitios.
 
 ### 1. El autoload `BusEventos`
 
 ```gdscript
 signal salud_jugador_cambiada(actual: float, maxima: float)
 signal experiencia_ganada(cantidad: int)
+signal experiencia_cambiada(actual: int, necesaria: int, nivel: int)
+signal tiempo_partida(segundos: float, duracion: float)
+signal personaje_cambiado(actual: DatosPersonaje, arma: DatosArma, siguiente: DatosPersonaje, espera: float)
+signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
 signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
+signal herramienta_usada(arma: DatosArma)
+signal jefe_aparecio
+signal elite_aparecio(descripcion: String)
+signal elite_exploto(posicion: Vector2)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 ```
@@ -80,7 +94,8 @@ Detalles que la interfaz tiene que respetar:
   de mejoras necesita `process_mode = Always` para funcionar en pausa, debe
   emitir `mejora_seleccionada` con una de las `opciones` recibidas y mostrar sus
   `nombre` y `descripcion`. Si se suben varios niveles de golpe, la señal vuelve
-  a llegar justo después de cada elección.
+  a llegar justo después de cada elección. Si hay una evolución disponible,
+  llega la primera.
 - **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
   jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o tras el
   fin de partida. La acción de input es `pausar` (Esc, P y Start del mando).
@@ -90,41 +105,42 @@ Detalles que la interfaz tiene que respetar:
   (`recursos/oleadas/datos/config_principal.tres`, 10 minutos) deja de
   aparecer horda y llega el jefe final; se gana al derrotarlo.
 
-Nunca referenciar nodos de la otra persona por `NodePath`: se emite la señal.
+Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 
-**Para el audio**, el bus es la única frontera: `GestorAudio` se conecta a las
-señales (`enemigo_muerto`, `experiencia_ganada`, `jugador_subio_nivel`,
-`mejora_seleccionada`, `salud_jugador_cambiada`, `partida_terminada`,
-`juego_pausado`) y reproduce el sonido que toque. No necesita tocar ninguna
-escena.
+**El audio** (`GestorAudio`) no lo llama nadie: escucha el bus y los cambios de
+escena y decide qué suena. **La persistencia** (`GestorGuardado`) escucha
+`partida_terminada` para los récords y guarda las opciones.
 
-Otros autoloads registrados: `EstadoJuego`, `GestorAudio`, `GestorGuardado`.
+Autoloads registrados: `BusEventos`, `GestorGuardado`, `GestorAudio`,
+`Transicion` (fundido entre escenas) y `EfectoCRT` (filtro de pantalla).
 
-### 2. Nombres de grupo en la escena de la arena
+### 2. Nombres de grupo
 
-La escena de la arena debe contener:
+- `aparicion_jugador` — un `Marker2D` en la escena de la arena: dónde aparece el
+  jugador. El mapa es infinito: la arena ya no declara límites.
+- `jugador` — el jugador.
+- `objetivos` — todo lo que recibe daño de las armas: los tres gestores de la
+  horda, los élites y el jefe. Todos tienen `danar_en_area` y `mas_cercano`.
+- `gestor_enemigos` — los tres gestores de la horda.
+- `elites` — los élites, ocultos hasta que el director los activa.
 
-- Un `Marker2D` en el grupo **`aparicion_jugador`** — dónde aparece el jugador
-- Un `Area2D` con `CollisionShape2D` en el grupo **`limites_arena`** — la zona
-  jugable
-
-El código de Adam los busca con `get_tree().get_first_node_in_group(...)`, así
-que solo importa el nombre del grupo, no dónde estén colocados.
-
-Hay un ejemplo montado en `projecte/escenas/jugabilidad/arena_pruebas.tscn`.
+El código los busca con `get_tree().get_first_node_in_group(...)`, así que solo
+importa el nombre del grupo, no dónde estén colocados.
 
 ## Restricción técnica que afecta al arte
 
-Los enemigos de horda se dibujan con `MultiMeshInstance2D` para poder tener 300+
-en pantalla a 60 FPS con una sola llamada de dibujado. Eso implica que **todas
-las instancias de un tipo comparten una textura y un material**: un solo sprite
-por tipo de enemigo, sin fotogramas de animación, todos del mismo tamaño. El
-movimiento visual lo pone un shader, no una animación dibujada.
+Los enemigos de horda se dibujan con `MultiMeshInstance2D` para poder tener
+cientos en pantalla con una sola llamada de dibujado por tipo. Eso implica que
+**todas las instancias de un tipo comparten una textura y un material**: un
+solo sprite por tipo de enemigo, sin fotogramas de animación, todos del mismo
+tamaño. El movimiento visual lo pone un shader (`medios/shaders/horda.gdshader`:
+destello al recibir daño y glitch), no una animación dibujada.
 
 Los élites y el jefe sí son nodos normales y pueden llevar animación, porque hay
 pocos a la vez.
 
-La lista completa de assets está en `documentacio/assets.md`.
+La lista original de assets está en `documentacio/assets.md` y la procedencia de
+los que se usan, en `documentacio/creditos.md`.
 
 ### Aviso para los shaders
 
@@ -170,6 +186,3 @@ Alan trabaja siempre en `feature/alan-arena-hud`. No se crean ramas por tarea.
   revisar `git status`: si Godot ha reescrito algún fichero de Adam al abrir el
   proyecto, se descarta con `git restore <fichero>`.
 - Adam fusiona la rama de Alan en `main` al empezar cada clase.
-- `projecte/escenas/juego.tscn` y `projecte/project.godot` son de Adam. Si Alan
-  necesita cambiarlos (instanciar su HUD, cambiar la escena inicial, añadir la
-  tecla de pausa), se lo pide a Adam.

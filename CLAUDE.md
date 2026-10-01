@@ -68,22 +68,26 @@ Dejar todo guardado y **subido a GitHub, sin preguntar**:
 
 ## Propiedad de ficheros: precisiones a GEMINI.md
 
-Desde el 30/09/2026 Alan solo lleva el audio (`globales/gestor_audio.gd` y
-`medios/audio/`). Todo lo demás de `projecte/`, incluida la interfaz, los menús,
-la arena y el arte, es de Adam.
+Desde el 01/10/2026 todo `projecte/` es de Adam, también el audio
+(`globales/gestor_audio.gd` y `medios/audio/`), que pasó de Alan a Adam porque
+estaba sin empezar y es un requisito mínimo. Lo que lleve Alan a partir de
+ahora está pendiente de acordar.
 
-- En `documentacio/`, Adam mantiene `bitacora.md`, `planificacion.md`,
-  `requisitos_y_estado.md` y `primer_seguiment.md`. `enunciat.md` es el texto del
-  profesor y no se edita. El resto de la carpeta es de Alan.
-- Cambiar o quitar una señal del bus afecta al audio de Alan: se le avisa y se
-  actualiza `GEMINI.md`. Añadir una señal nueva no le rompe nada.
+- En `documentacio/`, Alan tiene `assets.md` y `propuesta.md`. `enunciat.md` es
+  el texto del profesor y no se edita. Todo lo demás es de Adam: `bitacora.md`,
+  `planificacion.md`, `requisitos_y_estado.md`, `primer_seguiment.md`, los
+  entregables (`documentacion_tecnica.md`, `manual_usuario.md`, `creditos.md`,
+  el informe del seguimiento, el guion de la presentación) y `capturas/`.
+- Al cambiar o quitar una señal del bus, actualizar la lista de `GEMINI.md`.
 - Nunca editar ficheros de Alan. Si algo suyo debe cambiar, decírselo a Adam para
   que se lo pida.
 
 ## Prioridad
 
-Primero los requisitos mínimos del enunciado y el MVP de la propuesta. Las
-ampliaciones (jefe, élites, evoluciones, más armas) solo si sobra tiempo.
+Desde el 01/10/2026 están hechos los requisitos mínimos, el MVP y las
+ampliaciones (jefe, élites, evoluciones, mapa infinito). No añadir más
+contenido sin que Adam lo pida: el tiempo que queda es para la entrega (vídeo,
+release, defensa), pulir y corregir lo que salga al probar.
 
 ## Estilo, además de lo de GEMINI.md
 
@@ -92,14 +96,22 @@ cualquier línea. Ante la duda, la versión más fácil de explicar.
 
 ## Entorno y validación
 
-Lo de este apartado describe la máquina del **instituto**. Adam también trabaja
-desde casa, donde la ruta de Godot, el sistema operativo y la GPU pueden ser
-distintos: si no sabes en cuál estás, pregúntaselo antes de lanzar Godot y no
-asumas estas rutas.
+Adam trabaja desde dos máquinas. Si no sabes en cuál estás, pregúntaselo antes
+de lanzar Godot.
 
-- VM de VirtualBox con GPU virtualizada (OpenGL 4.1 por Mesa SVGA3D). Los FPS
-  medidos aquí no son fiables: nunca rediseñar por rendimiento con estos números.
-- Godot: `C:\Users\Adam\Desktop\Godot_v4.7.2-stable_win64.exe` (no está en el PATH).
+- **Instituto:** VM de VirtualBox con GPU virtualizada (OpenGL 4.1 por Mesa
+  SVGA3D). Los FPS medidos allí no son fiables: nunca rediseñar por rendimiento
+  con esos números. El clon está en la carpeta de trabajo de la sesión.
+- **Casa:** Windows 11 con una NVIDIA GeForce RTX 5070 (GPU real: aquí sí se
+  puede medir el rendimiento). El clon está en
+  `C:\Users\Adam\Desktop\proyecto\sector-cero`. `git` no está en el PATH: se usa
+  el de GitHub Desktop,
+  `C:\Users\Adam\AppData\Local\GitHubDesktop\app-3.6.6\resources\app\git\cmd\git.exe`
+  (la carpeta `app-3.6.6` cambia al actualizarse GitHub Desktop).
+- Godot, en las dos: `C:\Users\Adam\Desktop\Godot_v4.7.2-stable_win64.exe` (no
+  está en el PATH).
+- En PowerShell, los argumentos con comas van entre comillas
+  (`'capturas=60,150'`); si no, PowerShell los parte en varios.
 - Comprobar la API de Godot 4.7.2 antes de usarla.
 - Nada se da por bueno sin ejecutarlo en headless:
   1. `--headless --path projecte --import` → errores de análisis
@@ -108,6 +120,18 @@ asumas estas rutas.
      `extends SceneTree` con `_initialize()`), borrada antes del commit
 - Si falla por una clase global nueva o por rutas antiguas: reimportar; si no
   basta, borrar `projecte/.godot/`.
+- Aviso conocido y aceptado: al cerrar Godot con la música sonando sale
+  `ObjectDB instances were leaked` y `resources still in use`
+  (AudioStreamPlaybackWAV). Es del motor: aparece con cualquier sonido que no
+  haya terminado, aunque se pare justo antes de salir, y desaparece si la
+  música se para unos fotogramas antes con audio real. No afecta al jugador.
+  Cualquier otro error al salir sí hay que investigarlo.
+- Los shaders no se compilan en headless: cualquier cambio de shader se
+  comprueba con ventana (en casa) y con una captura del viewport.
+- Las partidas simuladas, las pruebas y las capturas desconectan
+  `GestorGuardado` del bus (diferido, porque en `_initialize` los autoloads aún
+  no han hecho su `_ready`) para no ensuciar los récords del jugador.
+- Rendimiento: `projecte/herramientas/medir_rendimiento.gd`, con ventana.
 - Tras cualquier cambio de balance, medirlo con el simulador de partidas
   (`projecte/herramientas/simular_partidas.gd`, instrucciones en su cabecera).
   Las semillas son fijas: el mismo comando da las mismas partidas, así que se

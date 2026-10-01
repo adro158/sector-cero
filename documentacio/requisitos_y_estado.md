@@ -4,9 +4,9 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 01/10/2026** contra la bitácora (hasta la sesión 5, 10 h de
-60) y contra el código del repositorio. Se actualiza al cerrar cada sesión, junto
-con la bitácora y las casillas de `planificacion.md`.
+**Estado verificado el 01/10/2026** contra la bitácora (hasta la sesión 6,
+12 h de 60) y contra el código del repositorio. Se actualiza al
+cerrar cada sesión, junto con la bitácora y las casillas de `planificacion.md`.
 
 ## Qué es esto, en tres líneas
 
@@ -20,7 +20,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 ## Fechas
 
 - **2 de octubre de 2026:** entrega de la propuesta (Fase 1) e informe del primer
-  seguimiento (plantilla en `primer_seguiment.md`).
+  seguimiento (redactado en `informe_primer_seguimiento.md`).
 - Entrega final y defensa: la fecha no consta en el enunciado ni en el repositorio.
   Preguntar a Adam si hace falta.
 
@@ -28,58 +28,55 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 
 | # | Requisito | Estado | Detalle |
 |---|---|---|---|
-| 1 | Pantalla inicial | Hecho | Menú de inicio con las reglas (`escenas/menu_principal/`) |
-| 2 | Al menos dos escenas o estados | Hecho | Menú, partida, pausa y pantalla de resultados |
-| 3 | Mecánica principal funcional | Hecho | Esquivar mientras las armas atacan solas; horda, jefe, experiencia y mejoras |
-| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe y mejoras; panel de mejoras |
-| 5 | Controles coherentes | Hecho | Teclado (WASD/flechas) y mando; pausa con Esc, P o Start; mejoras con las teclas 1, 2 y 3 |
-| 6 | Pausa o menú equivalente | Hecho | Menú de pausa y pausa automática al subir de nivel |
-| 7 | **Persistencia** | **Pendiente** | `globales/gestor_guardado.gd` es solo un esqueleto (`extends Node`). Previsto: récords y configuración |
-| 8 | **Audio** (música o ambiente y al menos 3 efectos) | **Pendiente** | `globales/gestor_audio.gd` es un esqueleto y `medios/audio/` está vacío. Es lo único que lleva Alan |
-| 9 | Animaciones o transiciones | Parcial | Hay animaciones con `Tween` en menú y pantalla final y el personaje anda en 8 direcciones. Faltan transiciones entre escenas |
-| 10 | Feedback en las acciones importantes | Parcial | Visual hecho: números de daño, tinte rojo y sacudida de cámara al recibir daño. Falta el sonoro (depende del audio) y no hay partículas |
-| 11 | Código estructurado | En curso | Arquitectura con bus de eventos, recursos `.tres` y escenas por responsable. Ningún script del juego pasa de 200 líneas (solo una herramienta de desarrollo, `generar_sprites.gd`, llega a 244). Revisar al final nombres y duplicados |
-| 12 | Git con evolución real | En curso | Commits progresivos con convención `tipo(ámbito)` y dos ramas fijas (`main` y `feature/alan-arena-hud`) |
-| 13 | Build ejecutable sin abrir el editor | Parcial | Release v0.1 en GitHub con Windows y Linux (30/09). Falta la v0.2 y probar el build final en una máquina limpia |
+| 1 | Pantalla inicial | Hecho | Menú con reglas, controles, récord y opciones (`escenas/menu_principal/`) |
+| 2 | Al menos dos escenas o estados | Hecho | Menú, partida, pausa, opciones, subida de nivel y resultados |
+| 3 | Mecánica principal funcional | Hecho | Esquivar mientras la herramienta ataca sola; horda, élites, jefe, experiencia, mejoras y evoluciones |
+| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe, mejoras, personaje activo y avisos |
+| 5 | Controles coherentes | Hecho | Teclado, ratón en los menús y mando. Explicados en el menú, el manual y el README |
+| 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
+| 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias) y opciones en `user://sector_cero.cfg` |
+| 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
+| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones, glitch de la horda, tweens en menús y avisos |
+| 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, tinte y sacudida de cámara, sonidos y avisos |
+| 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (222 líneas); se ha quitado el código muerto |
+| 12 | Git con evolución real | Hecho | Más de 70 commits progresivos con la convención `tipo(ámbito)` |
+| 13 | Build ejecutable sin abrir el editor | Casi | Release v0.1 (30/09) y builds v0.2 exportadas el 01/10. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
 - **Hecho:** resistencia adaptativa del malware. Cada 20 s el malware gana un 10 %
-  de resistencia (máximo 50 %) al arma que más daño le hizo y pierde un 5 % contra
-  las demás. Obliga a diversificar y, desde la sesión 5, a cambiar de personaje.
-- **Ampliación sin hacer:** élites con afijos procedurales
-  (`enemigo_elite.gd` y `datos_afijo_elite.gd` son esqueletos).
-- **Pendiente de pulido (suma en experiencia de usuario):** shader de CRT a
-  pantalla completa y shader de glitch para la horda. Existen solo los shaders de
-  la rejilla de la arena y del fondo provisional.
+  de resistencia (máximo 50 %) a la herramienta que más daño le hizo y pierde un
+  5 % contra las demás. La respuesta es cambiar de personaje.
+- **Hecho:** élites con afijos procedurales (blindado, replicante, aura lenta y
+  explosivo).
+- **Hecho:** shaders propios (suelo infinito, glitch de la horda, CRT) y audio
+  sintetizado.
 
 ## Entregables (los 7 del enunciado)
 
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
-| 1 | Repositorio Git con historial | En curso | Seguir con commits progresivos y sincronizar al cerrar cada sesión |
-| 2 | Build ejecutable | Parcial | Ver requisito 13 |
-| 3 | `README.md` | Parcial | Tiene descripción, equipo, estructura, motor y flujo de Git. **Faltan** capturas de pantalla, instrucciones para ejecutarlo, controles, lista de tecnologías y créditos de assets externos |
-| 4 | Documentación técnica (3-5 págs.) | Pendiente | Se redacta a partir de la bitácora. Debe cubrir arquitectura, organización del código, mecánicas, decisiones, problemas y soluciones, herramientas y assets, y **uso de la IA** |
-| 5 | Manual de usuario (1 pág.) | Pendiente | Objetivo, controles e instrucciones básicas |
-| 6 | Vídeo demostrativo (2-4 min) | Pendiente | |
-| 7 | Presentación y defensa | Pendiente | Ver "Qué tiene que contar la presentación" |
+| 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
+| 2 | Build ejecutable | Casi | Publicar la release v0.2 y probarla en un ordenador limpio |
+| 3 | `README.md` | Hecho | Capturas, ejecución, controles, tecnologías, autores y créditos |
+| 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md` |
+| 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md` |
+| 6 | Vídeo demostrativo (2-4 min) | **Pendiente** | Adam quiere que se le recuerde más adelante. Opción propuesta: grabarlo con el Movie Maker de Godot y un guion automático |
+| 7 | Presentación y defensa | En curso | Guion y preguntas probables en `presentacion.md`. Falta ensayar |
 
-Además, el enunciado exige **indicar la procedencia y licencia de los assets
-externos**. No existe aún un fichero de créditos. Los sprites de los personajes y
-del jefe se generaron con herramientas de IA de imagen y son provisionales
-(bitácora, sesiones 4 y 5): tienen que quedar declarados.
+Créditos de los assets: `creditos.md`. Todo es propio o generado por código,
+salvo los sprites de los personajes y del jefe, hechos con IA (Gemini y Claude) a partir de un ejemplo del profesor.
 
 ## Criterios de evaluación (100 puntos)
 
 | Apartado | Puntos | Dónde estamos |
 |---|---|---|
-| Funcionamiento y MVP | 25 | Jugabilidad completa. Faltan persistencia y audio del MVP |
-| Programación, arquitectura y calidad del código | 20 | Buena base. Hay que poder defender cada línea |
-| Experiencia de usuario, UI y pulido | 15 | Interfaz completa y sin pulir. Faltan transiciones, partículas y CRT |
-| Elemento diferencial y creatividad | 15 | Resistencia adaptativa hecha |
-| Robustez, testing y rendimiento | 10 | Tests en headless y simulador de partidas. **Rendimiento sin validar en GPU real** |
-| Documentación y capacidad de explicar | 10 | Bitácora muy completa. Faltan README, documentación técnica y manual |
+| Funcionamiento y MVP | 25 | MVP completo, más las ampliaciones |
+| Programación, arquitectura y calidad del código | 20 | Buena base. Hay que poder defender cada línea (`presentacion.md`) |
+| Experiencia de usuario, UI y pulido | 15 | Interfaz completa, opciones, transiciones, partículas, CRT y audio |
+| Elemento diferencial y creatividad | 15 | Resistencia adaptativa, cambio de personaje, élites con afijos |
+| Robustez, testing y rendimiento | 10 | Pruebas en headless, simulador de partidas y rendimiento medido en GPU real |
+| Documentación y capacidad de explicar | 10 | README, documentación técnica, manual, créditos y bitácora |
 | Git, proceso y entrega | 5 | Historial progresivo. Falta la entrega final |
 
 ## Qué tiene que contar la presentación
@@ -87,25 +84,18 @@ del jefe se generaron con herramientas de IA de imagen y son provisionales
 Idea original; qué se ha construido; mecánica principal; decisiones técnicas;
 **el problema técnico más difícil**; qué diferencia al proyecto; qué se mejoraría
 con más tiempo; y una **demostración** en vivo. El tribunal puede preguntar por
-cualquier fragmento del código.
+cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-Primero lo que cubre los mínimos que faltan, después lo demás.
-
-1. **Informe del primer seguimiento** (2 de octubre).
-2. **Persistencia:** récords y configuración (requisito 7).
-3. **Audio:** música y al menos 3 efectos (requisito 8, Alan).
-4. **README completo** (capturas, ejecución, controles, tecnologías, créditos) y
-   **release v0.2**.
-5. **Fichero de créditos** de assets con procedencia y licencia.
-6. **Pulido de feedback:** transiciones entre escenas, partículas y shader de CRT.
-7. **Mapa infinito** (decidido como siguiente paso en la sesión 5).
-8. **Bot del simulador** que cambie de personaje y medir el balance.
-9. **Validar el rendimiento en una máquina con GPU real** (objetivo: 300+ enemigos
-   a 60 FPS) y probar el build en una máquina limpia.
-10. **Documentación técnica, manual de usuario, vídeo y defensa.**
-11. Ampliaciones, solo si sobra tiempo: élites con afijos, evoluciones de armas.
+1. **Entregar el informe del primer seguimiento** (2 de octubre):
+   `informe_primer_seguimiento.md`.
+2. **Publicar la release v0.2** en GitHub con los ejecutables y **probarla en un
+   ordenador limpio** (sin Godot instalado).
+3. **Vídeo demostrativo** (2-4 min).
+4. **Ensayar la defensa** con `presentacion.md`.
+5. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+6. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
@@ -116,20 +106,24 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
 - **Temática:** un ordenador infectado donde el jugador es un antivirus (sesión 2).
 - **Idioma:** todo en castellano salvo `projecte/` y `documentacio/`, que el
   enunciado exige en catalán, y los términos técnicos sin traducción (sesión 2).
+  También el informe del seguimiento y la documentación (sesión 6).
 - **Horda con `MultiMeshInstance2D`, arrays de tamaño fijo y rejilla espacial.**
   Un enemigo de horda no es un nodo (sesión 2).
 - **Las mejoras son multiplicadores y nunca modifican el `.tres`** del arma, porque
-  los recursos están compartidos y en caché (sesión 2).
-- **El `BusEventos` es la única frontera** con el audio de Alan (sesión 1).
-- **Prioridad a los mínimos del enunciado**; élites y evoluciones son ampliaciones
-  (sesión 3).
+  los recursos están compartidos y en caché (sesión 2). Igual con las
+  evoluciones, que se guardan en `CambioPersonaje` (sesión 6).
+- **El `BusEventos` es la única frontera** entre sistemas (sesión 1).
 - **Git:** dos ramas fijas, `main` para Adam y `feature/alan-arena-hud` para Alan,
   sin ramas por tarea; `main` siempre tiene que arrancar (sesión 3).
-- **Reparto desde el 30/09:** Adam lleva todo menos el audio; Alan, solo el audio
-  (sesión 5).
+- **Reparto desde el 01/10:** Adam lleva todo `projecte/`, también el audio
+  (sesión 6).
 - **Solo dispara el arma del personaje activo**, con 10 s de espera entre cambios.
-  Las armas ya no salen como mejoras (sesión 5).
+  Las armas no salen como mejoras (sesión 5).
 - **Los ejecutables se publican como release de GitHub**, no dentro del
-  repositorio, porque pesan 109 MB (sesión 5).
+  repositorio, porque pesan más de 100 MB (sesión 5).
 - **El balance se decide con el simulador de partidas**, con semillas fijas
   (sesión 4).
+- **Mapa infinito** sin límites de arena (sesión 6).
+- **Audio sintetizado por código**, sin assets de terceros (sesión 6).
+- **Élites y jefe son nodos ocultos en la escena desde el principio**, porque
+  las armas buscan sus objetivos al empezar (sesiones 5 y 6).

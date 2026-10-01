@@ -765,3 +765,209 @@ simulador aún no cambia de personaje.
 3. Informe del primer seguimiento (2 de octubre).
 4. Persistencia: récords y configuración.
 5. README y release v0.2.
+
+---
+
+## Sesión 6 — 01/10/2026
+
+**Duración:** 2 h · **Fitas:** 3, 4, 5 y 6 · **Participantes:** Adam (desde
+casa)
+
+**Horas acumuladas:** 12 h de las 60 sugeridas (20 %)
+
+### Qué se ha hecho
+
+- Clon nuevo del repositorio en el PC de casa
+  (`C:\Users\Adam\Desktop\proyecto\sector-cero`). La rama de Alan no traía nada
+  nuevo: estaba toda dentro de `main`.
+- **Mapa infinito:** el suelo sigue a la cámara y se quitan los límites, la
+  arena de pruebas y los dos fondos antiguos.
+- **Persistencia:** récords (tiempo, nivel, eliminados, partidas y victorias) y
+  opciones (volumen de música y de efectos, pantalla completa y filtro CRT).
+  Panel de opciones en el menú y en la pausa, récord en el menú y aviso de
+  récord batido en la pantalla final.
+- **Fundidos a negro** entre escenas.
+- **Audio:** 17 efectos y 3 músicas en bucle (menú, partida y jefe),
+  sintetizados por un script propio, y `GestorAudio` escuchando el bus.
+- **Feedback visual:** partículas, destello del enemigo golpeado, glitch de la
+  horda por shader y filtro CRT a pantalla completa.
+- **Élites con afijos procedurales** (blindado, replicante, aura lenta y
+  explosivo), con su sprite (Rootkit) y avisos en el HUD de élites, jefe y
+  evoluciones.
+- **Evoluciones** de las tres herramientas.
+- **Bot del simulador** que cambia de personaje, elige evoluciones y va a por el
+  jefe, y **reequilibrio** del juego con él.
+- **Medida de rendimiento** en GPU real con una herramienta nueva.
+- **Builds v0.2** de Windows y Linux exportadas y comprimidas en `build/` (sin
+  publicar todavía).
+- **Documentación:** README completo con capturas, documentación técnica,
+  manual de usuario, créditos, informe del primer seguimiento, guion de la
+  presentación con preguntas probables, y `GEMINI.md`, `CLAUDE.md`,
+  planificación y estado de requisitos al día.
+- Limpieza de código muerto: el autoload vacío `EstadoJuego`, las mejoras de
+  desbloquear arma, `anadir_arma` y `actual()`.
+
+### Decisiones técnicas y por qué
+
+**El audio pasa a Adam y se genera por código.** Era lo único de Alan y estaba
+sin empezar, y es un requisito mínimo. Generarlo con un script (ondas cuadrada,
+triángulo, sierra, seno y ruido con una envolvente) da un sonido de chip antiguo
+que encaja con la estética, es propio y no hay licencias que acreditar. El
+script tarda 2 s en generar todo.
+
+**El bucle de la música va en la importación.** `save_to_wav` no guarda los
+puntos de bucle, así que se marca `edit/loop_mode=2` en el `.import` de cada
+música. Regenerar los WAV no toca los `.import`.
+
+**La persistencia usa `ConfigFile` en `user://`.** Es el formato de Godot para
+pares clave-valor, se lee y escribe con una llamada y el fichero es legible.
+`res://` no sirve: dentro del ejecutable es de solo lectura.
+
+**Saber si hay récord sin depender del orden de las señales.** La pantalla final
+se conecta a `partida_terminada` en diferido, así el gestor de guardado ya ha
+anotado la partida cuando ella pregunta qué récords se han batido.
+
+**El mapa infinito es un rectángulo que sigue a la cámara.** Su shader dibuja
+con la posición en el mundo (`MODEL_MATRIX * VERTEX`), no con la del
+rectángulo, así que el dibujo se queda quieto. Los enemigos que se alejan más de
+1200 px se reflejan al otro lado del jugador y las gemas a más de 1800 px se
+descartan, para que no llenen su pool.
+
+**Destello y glitch por shader.** El MultiMesh no permite animación. El destello
+llega por enemigo como dato propio de la instancia (`INSTANCE_CUSTOM`) y el
+glitch es un número al azar por enemigo (`INSTANCE_ID`) y por instante.
+
+**Las partículas reutilizan el patrón de la horda.** Arrays de tamaño fijo y un
+MultiMesh, con un color por instancia (`use_colors`).
+
+**Filtro CRT y fundidos como autoloads.** Así están en todas las escenas sin
+añadirlos a cada una, y el fundido sobrevive al cambio de escena.
+
+**Élites como nodos ocultos desde el principio.** Igual que el jefe: las armas
+buscan sus objetivos al empezar la partida y no verían un nodo creado después.
+Hay tres y el director activa uno libre cada minuto desde el 1:30. Los afijos son
+recursos `.tres`.
+
+**Las evoluciones no tocan los `.tres`.** La herramienta actual de cada
+personaje se guarda en `CambioPersonaje`. La evolución es otro recurso de arma,
+así que el malware empieza sin resistencia contra ella. Se ofrece cuando una
+mejora concreta se ha elegido tres veces, y sale siempre la primera.
+
+**Un único estilo de botón.** `EstiloInterfaz.boton()` sustituye a las tres
+copias de `_boton()` que había en el menú, la pausa y la pantalla final.
+
+### Cambios de rumbo y su justificación
+
+**Reparto: el audio pasa de Alan a Adam** (decisión de Adam). Desde hoy, Alan no
+tiene ficheros en `projecte/`. Hay que acordar con él qué parte de la entrega
+asume.
+
+**Se hacen las ampliaciones** (élites y evoluciones), que estaban "solo si sobra
+tiempo": los mínimos ya estaban cubiertos.
+
+**Dificultad: 3-4 victorias de 5 del bot** (decisión de Adam). Más que las 2 de
+5 de la sesión 4, para que la demo ante el tribunal se pueda ganar jugando bien.
+
+**Idioma de la documentación:** castellano, también el informe del seguimiento,
+aunque la plantilla esté en catalán (decisión de Adam).
+
+### Problemas encontrados y cómo se resolvieron
+
+**El juego se volvió fácil con el mapa infinito y el jefe, imposible.** Sin
+bordes, el bot huía de todo, no mataba (nivel 10 en 10 minutos) y nunca
+encontraba al jefe, que es más lento que el jugador: una partida llegó a los
+200 minutos de juego. Se arregló el bot (deja entrar a los enemigos en el anillo
+del Firewall y va a por el jefe) y se le puso un tiempo máximo contra el jefe.
+Mediciones con 5 partidas y semillas fijas:
+
+| Cambio | Victorias |
+|---|---|
+| Bot cerca de los enemigos, jefe con 5000 de vida | 1 de 5 (4 no acaban) |
+| Jefe con 2500 | 1 de 5 (el bot no encuentra al jefe) |
+| El bot va a por el jefe | 5 de 5, sin peligro |
+| Horda final cada 0,10 s y regeneración 0,35 | 1 de 5 |
+| Élite de 700 a 450 de vida, el bot huye de las explosiones | 2 de 5 |
+| Aura lenta del 45 % al 25 % | **4 de 5** |
+
+**El aura lenta mataba sin remedio.** Con un 45 % de frenado el jugador quedaba
+más lento que el bit corrupto, que se le pegaba y le quitaba 4 de vida cada
+medio segundo. Se encontró registrando cada golpe de la partida que moría al
+1:51. Regla: el aura nunca puede dejar al jugador más lento que la horda básica.
+
+**El jefe tenía demasiada vida.** Los 5000 se calcularon cuando disparaban todas
+las armas; con solo la del personaje activo, el combate pasaba de 4 minutos.
+
+**Una resistencia que no bajaba a cero.** 0,1 − 0,05 − 0,05 no da 0 exacto en
+coma flotante y el arma se quedaba en la lista con un 0 %. Se usa
+`is_zero_approx`.
+
+**Un tirón de 217 ms que no existía.** La medida de rendimiento marcaba un pico
+al empezar. Registrando la hora de cada paso de física se vio que llegaban cada
+16 ms sin huecos: el monitor de Godot repite el mismo valor durante el primer
+segundo, que incluye la carga de la escena. Se espera 2 s antes de medir y se
+da la mediana.
+
+**Aviso de fuga de audio al cerrar.** Godot avisa de que se queda un
+`AudioStreamPlaybackWAV` si se cierra con la música sonando. Se comprobó que es
+del motor: pasa con cualquier sonido sin terminar, aunque se pare justo antes, y
+solo desaparece si se para unos fotogramas antes con audio real. No afecta al
+jugador; queda anotado en `CLAUDE.md` como aviso conocido.
+
+**Las pruebas ensuciaban los récords.** Una prueba que emitía
+`partida_terminada` escribió en el fichero de récords real del jugador. Las
+herramientas desconectan `GestorGuardado` del bus, en diferido porque en
+`_initialize` los autoloads todavía no se han conectado.
+
+**El nombre de dos afijos no cabía** sobre el élite. Se vio en las capturas y
+se ensanchó la caja de texto.
+
+**PowerShell partía los argumentos con comas** (`capturas=60,150` llegaba como
+tres argumentos). Van entre comillas.
+
+**En casa no había `git` en el PATH ni plantillas de exportación.** Se usa el
+`git` de GitHub Desktop y se descargaron las plantillas oficiales de Godot
+4.7.2 (solo se instalaron las de Windows y Linux de 64 bits).
+
+### Uso de IA
+
+Claude implementó todo lo de la sesión: mapa infinito, persistencia, opciones,
+fundidos, el sintetizador de audio y `GestorAudio`, partículas, shaders, élites,
+evoluciones, los cambios del simulador, la medida de rendimiento y la
+documentación. Diagnosticó con pruebas dirigidas el aura lenta, el falso tirón y
+el aviso de audio. Las decisiones las tomó Adam: hacer él el audio y generarlo
+por código, hacer las ampliaciones, el objetivo de dificultad, el idioma de la
+documentación y dejar el push y la release para más tarde.
+
+Procedencia de los sprites de los personajes y del jefe, aclarada hoy: el
+profesor compartió unos sprites de nigromantes hechos con Claude; Adam generó
+con Gemini una ilustración parecida con la temática del juego, y a partir de ella
+Claude creó las cuatro hojas de sprites.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless tras cada cambio.
+- Scripts temporales (borrados antes de cada commit): récords y opciones en
+  disco, transición entre escenas, reproducción de cada sonido y música por
+  escena, los cuatro afijos (aura, blindaje, replicante y explosión con su
+  daño), evoluciones sin tocar los `.tres`, y la navegación entre pausa y
+  opciones con teclas reales (Esc, P y Enter).
+- Capturas con ventana de una partida que juega sola, para comprobar los
+  shaders, que no se compilan en headless.
+- Simulador de partidas: seis tandas de 5 partidas para el balance.
+- `medir_rendimiento.gd` en la RTX 5070: 300 enemigos a 1549 FPS (física
+  2,02 ms) y 1200 a 733 FPS (física 9,27 ms; peor paso 10,51 ms).
+- El ejecutable de Windows exportado arranca sin errores fuera del editor.
+
+### Estado al cerrar
+
+Los 13 requisitos mínimos están cubiertos, y también el MVP y las ampliaciones.
+Todo está commiteado en `main` pero **no se ha subido a GitHub** (Adam lo hará
+después), y la release v0.2 está exportada en `build/` sin publicar.
+
+### Siguiente paso
+
+1. Subir `main` y publicar la release v0.2 con los dos `.zip` de `build/`.
+2. Entregar el informe del primer seguimiento (2 de octubre).
+3. Vídeo demostrativo (Adam pidió que se le recuerde).
+4. Probar el ejecutable en un ordenador sin Godot.
+5. Ensayar la defensa con `presentacion.md` y acordar con Alan su parte.
