@@ -1,10 +1,12 @@
 extends SceneTree
 
 ## Herramienta de testeo, no forma parte del juego: juega partidas enteras sin
-## nadie delante para medir el balance. Un bot huye de los enemigos cercanos, se
-## aparta de los bordes, da vueltas cuando no hay peligro y elige mejoras al
-## azar. Cada minuto de partida anota vida, nivel, enemigos, armas y
-## resistencias, y al final resume victorias y duración media.
+## nadie delante para medir el balance. Un bot huye de los enemigos cercanos,
+## de los élites y del jefe, da vueltas cuando no hay peligro, elige mejoras al
+## azar (o la evolución, si sale) y cambia de personaje cuando el malware se ha
+## hecho resistente a su herramienta. Cada minuto de partida anota vida, nivel,
+## enemigos, herramienta y resistencias, y al final resume victorias, duración
+## media y cambios de personaje.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -14,12 +16,25 @@ extends SceneTree
 ## Lee campos internos de los nodos (los que empiezan por _) porque necesita
 ## ver lo mismo que vería un jugador; en el código del juego eso no se hace.
 
-const RADIO_PELIGRO := 260.0
+## Solo huye de los enemigos más cerca que esto: un poco más que el alcance del
+## Firewall, para dejar que entren en su anillo. Con el mapa sin bordes, un bot
+## que huye de todo lo que ve no mata nada y no sube de nivel.
+const RADIO_PELIGRO := 120.0
+## Lo mismo con el jefe y los élites: lo justo para no tocarlos y seguir dentro
+## del alcance del Firewall, que llega a 90 más el radio del enemigo.
+const RADIO_PELIGRO_GRANDES := 100.0
+## Resistencia de la herramienta activa a partir de la cual el bot cambia.
+const RESISTENCIA_PARA_CAMBIAR := 0.3
+## Si el jefe sigue vivo tanto tiempo después de aparecer, la partida se da por
+## perdida. Sin bordes, un bot podría huir de él para siempre.
+const TIEMPO_MAXIMO_JEFE := 240.0
 
 var _partidas := 3
 var _partida := 0
 var _victorias := 0
 var _duraciones: Array[float] = []
+var _cambios := 0
+var _evoluciones := 0
 var _bus: Node
 var _juego: Node
 var _raiz: Node
@@ -36,9 +51,12 @@ func _initialize() -> void:
 
 	_bus = root.get_node("BusEventos")
 	# Las partidas simuladas no son del jugador: no deben entrar en sus récords.
+	# Diferido porque los autoloads aún no han hecho su _ready ni se han
+	# conectado al bus.
 	var guardado := root.get_node("GestorGuardado")
-	_bus.partida_terminada.disconnect(guardado._al_terminar_partida)
+	_bus.partida_terminada.disconnect.call_deferred(guardado._al_terminar_partida)
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
+	_bus.arma_evolucionada.connect(func(_arma): _evoluciones += 1)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
 	_empezar_partida()
@@ -61,7 +79,11 @@ func _empezar_partida() -> void:
 
 
 func _al_subir_nivel(opciones: Array) -> void:
-	_elegir.call_deferred(opciones.pick_random())
+	# Si sale una evolución, siempre es la primera opción y siempre la coge.
+	var elegida: DatosMejora = opciones.pick_random()
+	if opciones[0].efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA:
+		elegida = opciones[0]
+	_elegir.call_deferred(elegida)
 
 
 func _elegir(mejora: DatosMejora) -> void:
@@ -76,11 +98,24 @@ func _paso() -> void:
 	if _terminada or paused:
 		return
 
-	if _raiz.get_node("DirectorOleadas").tiempo() >= _siguiente_informe:
+	var director := _raiz.get_node("DirectorOleadas")
+	if director.tiempo() >= _siguiente_informe:
 		_informe("t=%3ds" % int(_siguiente_informe))
 		_siguiente_informe += 60.0
+	if director.tiempo() > director.config.duracion_partida + TIEMPO_MAXIMO_JEFE:
+		print("TIEMPO AGOTADO contra el jefe")
+		_raiz._terminar_partida(false)
+		return
 
+	_cambiar_si_resiste()
 	_mover_bot()
+
+
+func _cambiar_si_resiste() -> void:
+	var arma: DatosArma = _jugador.get_node("GestorArmas").armas[0]
+	if _raiz.get_node("ResistenciaMalware").resistencia(arma) >= RESISTENCIA_PARA_CAMBIAR:
+		if _jugador.get_node("CambioPersonaje").cambiar():
+			_cambios += 1
 
 
 func _mover_bot() -> void:
@@ -95,19 +130,28 @@ func _mover_bot() -> void:
 			if distancia > 0.0 and distancia < RADIO_PELIGRO:
 				huida += diferencia / (distancia * distancia)
 
-	# Del jefe se aparta con más fuerza, pero solo cuando se acerca: a media
-	# distancia las armas de alcance le siguen dando.
-	var jefe: Node2D = _raiz.get_node("Jefe")
-	if jefe._activo:
-		var diferencia := posicion - jefe.global_position
+	# De los élites y del jefe se aparta con más fuerza, pero solo cuando se
+	# acercan: a media distancia las armas de alcance les siguen dando.
+	var grandes: Array = get_nodes_in_group("elites")
+	grandes.append(_raiz.get_node("Jefe"))
+	for enemigo in grandes:
+		var diferencia: Vector2 = posicion - enemigo.global_position
 		var distancia := diferencia.length()
-		if distancia > 0.0 and distancia < 170.0:
+		# Un élite explosivo que ya ha muerto avisa con su anillo: sale de él.
+		var explotando: bool = "_cuenta_atras" in enemigo and enemigo._cuenta_atras > 0.0
+		if explotando and distancia > 0.0 and distancia < 160.0:
+			huida += diferencia / (distancia * distancia) * 12.0
+		elif enemigo._activo and distancia > 0.0 and distancia < RADIO_PELIGRO_GRANDES:
 			huida += diferencia / (distancia * distancia) * 6.0
 
 	# El mapa no tiene bordes: sin peligro cerca, da vueltas alrededor del
-	# origen para no alejarse sin fin.
+	# origen para no alejarse sin fin. Con el jefe en juego, va a por él: el
+	# jefe es más lento que el jugador y, si no, no se encontrarían nunca.
 	var direccion := huida.normalized()
-	if huida == Vector2.ZERO:
+	var jefe: Node2D = _raiz.get_node("Jefe")
+	if huida == Vector2.ZERO and jefe._activo:
+		direccion = (jefe.global_position - posicion).normalized()
+	elif huida == Vector2.ZERO:
 		direccion = Vector2(-posicion.y, posicion.x).normalized() * 0.6
 		if posicion.length() < 50.0:
 			direccion = Vector2.RIGHT
@@ -129,19 +173,15 @@ func _informe(etiqueta: String) -> void:
 	for gestor in _gestores:
 		vivos += gestor.vivos()
 
-	var armas := []
-	for arma in _jugador.get_node("GestorArmas").armas:
-		armas.append(arma.nombre)
-
 	var resistencias := []
 	var tabla: Dictionary = _raiz.get_node("ResistenciaMalware").resistencias()
 	for arma in tabla:
 		resistencias.append("%s %d%%" % [arma.nombre, roundi(tabla[arma] * 100.0)])
 
 	var salud = _jugador.get_node("Salud")
-	print("%s vida=%3.0f/%3.0f nivel=%2d en_pantalla=%3d armas=%s resiste=%s" % [
+	print("%s vida=%3.0f/%3.0f nivel=%2d en_pantalla=%3d arma=%s resiste=%s" % [
 		etiqueta, salud._vida, salud.vida_maxima, _raiz.get_node("SistemaNiveles").nivel(),
-		vivos, armas, resistencias])
+		vivos, _jugador.get_node("GestorArmas").armas[0].nombre, resistencias])
 
 
 func _al_terminar(estadisticas: Dictionary) -> void:
@@ -167,5 +207,6 @@ func _siguiente() -> void:
 	var suma := 0.0
 	for duracion in _duraciones:
 		suma += duracion
-	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs" % [_victorias, _partidas, suma / _partidas])
+	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d" % [
+		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones])
 	quit()
