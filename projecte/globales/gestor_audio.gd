@@ -12,6 +12,13 @@ const MUSICA_POR_ESCENA := {
 	"res://escenas/juego.tscn": "musica_partida",
 }
 
+## Todos los efectos, por el nombre de su fichero en medios/audio/.
+const EFECTOS := [
+	"muerte", "gema", "subir_nivel", "elegir", "dano", "victoria", "derrota",
+	"pausa", "clic", "cambio", "evolucion", "explosion", "firewall", "ping",
+	"escaner", "alarma_jefe", "alarma_elite",
+]
+
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de
 ## enemigos muriendo a la vez, sonar en cada muerte sería solo ruido.
 const ESPERA_MINIMA := 0.05
@@ -30,6 +37,18 @@ func _ready() -> void:
 	_musica = AudioStreamPlayer.new()
 	_musica.bus = "Musica"
 	add_child(_musica)
+
+	# Un reproductor por efecto, todos cargados al arrancar el juego: cargar un
+	# sonido la primera vez que suena daría un tirón en mitad de la partida.
+	for nombre in EFECTOS:
+		var reproductor := AudioStreamPlayer.new()
+		reproductor.stream = load(RUTA + nombre + ".wav")
+		reproductor.bus = "Efectos"
+		# Hasta cuatro copias del mismo efecto a la vez; si no, cada una
+		# cortaría a la anterior.
+		reproductor.max_polyphony = 4
+		add_child(reproductor)
+		_reproductores[nombre] = reproductor
 
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.experiencia_ganada.connect(func(_cantidad): sonar("gema"))
@@ -59,17 +78,6 @@ func sonar(nombre: String, tono := 1.0) -> void:
 	if ahora - _ultima_vez.get(nombre, -1.0) < ESPERA_MINIMA:
 		return
 	_ultima_vez[nombre] = ahora
-
-	# Un reproductor por efecto, creado la primera vez que suena.
-	if not _reproductores.has(nombre):
-		var nuevo := AudioStreamPlayer.new()
-		nuevo.stream = load(RUTA + nombre + ".wav")
-		nuevo.bus = "Efectos"
-		# Hasta cuatro copias del mismo efecto a la vez; si no, cada una
-		# cortaría a la anterior.
-		nuevo.max_polyphony = 4
-		add_child(nuevo)
-		_reproductores[nombre] = nuevo
 	_reproductores[nombre].pitch_scale = tono
 	_reproductores[nombre].play()
 
