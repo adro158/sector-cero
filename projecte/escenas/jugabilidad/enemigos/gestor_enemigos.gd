@@ -12,6 +12,9 @@ const MAXIMO_ENEMIGOS := 400
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
 @export var fuerza_separacion: float = 1.8
+## El mapa no tiene fin: un enemigo que se queda a más de esta distancia del
+## jugador reaparece al otro lado, en lugar de quedarse rezagado para siempre.
+@export var distancia_reciclaje: float = 1200.0
 
 var _posiciones := PackedVector2Array()
 var _vidas := PackedFloat32Array()
@@ -130,6 +133,11 @@ func _mover(delta: float) -> void:
 	var destino := _jugador.global_position
 
 	for i in _vivos:
+		# Se refleja al otro lado del jugador, algo más cerca: si el jugador
+		# huía de él, ahora lo tiene delante, fuera de la pantalla.
+		if _posiciones[i].distance_to(destino) > distancia_reciclaje:
+			_posiciones[i] = destino + (destino - _posiciones[i]) * 0.6
+
 		var hacia_jugador := (destino - _posiciones[i]).normalized()
 		var empuje := _separacion(i) * fuerza_separacion
 

@@ -6,6 +6,9 @@ const MAXIMO_GEMAS := 800
 @export var radio_iman: float = 100.0
 @export var radio_recogida: float = 18.0
 @export var velocidad_iman: float = 420.0
+## En un mapa sin fin, las gemas que se quedan muy atrás no se van a recoger y
+## llenarían el pool: a partir de esta distancia se descartan.
+@export var distancia_olvido: float = 1800.0
 
 var _posiciones := PackedVector2Array()
 var _valores := PackedInt32Array()
@@ -63,6 +66,8 @@ func _physics_process(delta: float) -> void:
 			_eliminar(i)
 		elif distancia < radio_iman:
 			_posiciones[i] = _posiciones[i].move_toward(objetivo, velocidad_iman * delta)
+		elif distancia > distancia_olvido:
+			_eliminar(i)
 
 		i -= 1
 
