@@ -94,8 +94,8 @@ func _al_subir_nivel(opciones: Array) -> void:
 
 
 func _texto_nivel(mejora: DatosMejora) -> String:
-	if mejora.efecto == DatosMejora.Efecto.NUEVA_ARMA:
-		return "ARMA NUEVA"
+	if mejora.efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA:
+		return "EVOLUCIÓN"
 	var actual: int = niveles.get(mejora, 0)
 	if actual == 0:
 		return "NUEVA"

@@ -20,6 +20,7 @@ var _personaje: Label
 var _aviso: Label
 var _efecto_aviso: Tween
 var _actual: DatosPersonaje
+var _arma: DatosArma
 var _siguiente: DatosPersonaje
 var _espera := 0.0
 
@@ -31,11 +32,12 @@ func _process(delta: float) -> void:
 	# juego, no avanza en pausa.
 	_espera = maxf(_espera - delta, 0.0)
 	var estado := "[Q] cambiar a %s" % _siguiente.nombre if _espera <= 0.0 else "%s en %d s" % [_siguiente.nombre, ceili(_espera)]
-	_personaje.text = "%s · %s      %s" % [_actual.nombre.to_upper(), _actual.arma.nombre, estado]
+	_personaje.text = "%s · %s      %s" % [_actual.nombre.to_upper(), _arma.nombre, estado]
 
 
-func _al_cambiar_personaje(actual: DatosPersonaje, siguiente: DatosPersonaje, espera: float) -> void:
+func _al_cambiar_personaje(actual: DatosPersonaje, arma: DatosArma, siguiente: DatosPersonaje, espera: float) -> void:
 	_actual = actual
+	_arma = arma
 	_siguiente = siguiente
 	_espera = espera
 	_personaje.add_theme_color_override("font_color", actual.color)
@@ -72,6 +74,7 @@ func _ready() -> void:
 	$PanelMejoras.niveles = niveles_mejora
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
+	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)

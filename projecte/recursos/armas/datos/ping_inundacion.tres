@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DatosArma" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://recursos/armas/datos_arma.gd" id="1_datos_arma"]
+
+[resource]
+script = ExtResource("1_datos_arma")
+nombre = "Ping de inundación"
+tipo = 1
+dano = 13.0
+cadencia = 0.45
+radio = 16.0
+sonido = "ping"
+velocidad_proyectil = 520.0
+rebotes = 6
+vida_util = 3.0

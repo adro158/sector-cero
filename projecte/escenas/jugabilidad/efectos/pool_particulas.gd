@@ -42,6 +42,7 @@ func _ready() -> void:
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
 	BusEventos.elite_exploto.connect(func(posicion): estallido(posicion, Color(1.0, 0.5, 0.15), 90, 450.0))
+	BusEventos.arma_evolucionada.connect(func(_arma): estallido(_jugador.global_position, EstiloInterfaz.VICTORIA, 80, 500.0))
 	_jugador.get_node("Salud").danado.connect(_al_danar_jugador)
 
 

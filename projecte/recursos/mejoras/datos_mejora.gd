@@ -7,7 +7,7 @@ enum Efecto {
 	ALCANCE_ARMAS,
 	VELOCIDAD_JUGADOR,
 	VIDA_MAXIMA,
-	NUEVA_ARMA,
+	EVOLUCIONAR_ARMA,
 }
 
 @export var nombre: String = ""
@@ -17,5 +17,10 @@ enum Efecto {
 @export var efecto: Efecto = Efecto.DANO_ARMAS
 @export var valor: float = 0.15
 
-## Solo para el efecto NUEVA_ARMA: el arma que se añade al elegir esta mejora.
+@export_group("Solo evoluciones")
+## La herramienta que evoluciona y en cuál se convierte.
+@export var arma_base: DatosArma
 @export var arma: DatosArma
+## La evolución se ofrece cuando esta mejora se ha elegido nivel_requisito veces.
+@export var requisito: DatosMejora
+@export var nivel_requisito: int = 3

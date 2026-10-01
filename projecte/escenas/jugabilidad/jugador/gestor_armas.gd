@@ -38,11 +38,6 @@ func cambiar_arma(arma: DatosArma) -> void:
 	_tiempos = PackedFloat32Array([0.0])
 
 
-func anadir_arma(arma: DatosArma) -> void:
-	armas.append(arma)
-	_tiempos.append(0.0)
-
-
 func _physics_process(delta: float) -> void:
 	for i in armas.size():
 		_tiempos[i] -= delta

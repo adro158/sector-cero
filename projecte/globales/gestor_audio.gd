@@ -41,6 +41,7 @@ func _ready() -> void:
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
+	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.juego_pausado.connect(_al_pausar)
 	BusEventos.partida_terminada.connect(_al_terminar)
 	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)
@@ -110,8 +111,9 @@ func _al_cambiar_vida(actual: float, _maxima: float) -> void:
 	_vida_anterior = actual
 
 
-func _al_cambiar_personaje(actual: DatosPersonaje, _siguiente: DatosPersonaje, _espera: float) -> void:
-	# La señal llega también al empezar la partida: solo suena si cambia.
+func _al_cambiar_personaje(actual: DatosPersonaje, _arma: DatosArma, _siguiente: DatosPersonaje, _espera: float) -> void:
+	# La señal llega también al empezar la partida y al evolucionar la
+	# herramienta: solo suena si de verdad cambia el personaje.
 	if _personaje_anterior != null and actual != _personaje_anterior:
 		sonar("cambio")
 	_personaje_anterior = actual

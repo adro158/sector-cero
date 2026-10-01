@@ -14,11 +14,14 @@ var _objetivo: int
 # el panel de mejoras solo puede mostrar tres tarjetas a la vez.
 var _niveles_pendientes := 0
 
-# Las mejoras de un solo uso, como desbloquear un arma, dejan de sortearse una
-# vez elegidas. Las de porcentaje se pueden repetir y se acumulan.
+# Veces que se ha elegido cada mejora: las evoluciones piden un mínimo.
+var _veces := {}
+# Las evoluciones son de un solo uso: una vez elegidas no vuelven a salir. Las
+# de porcentaje se pueden repetir y se acumulan.
 var _agotadas: Array[DatosMejora] = []
 var _jugador: Node2D
 var _gestor_armas: Node
+var _cambio_personaje: Node
 var _salud: Salud
 
 
@@ -26,6 +29,7 @@ func _ready() -> void:
 	_objetivo = experiencia_primer_nivel
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_gestor_armas = _jugador.get_node("GestorArmas")
+	_cambio_personaje = _jugador.get_node("CambioPersonaje")
 	_salud = _jugador.get_node("Salud")
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
@@ -73,14 +77,21 @@ func _ofrecer_mejoras() -> void:
 
 
 func _sortear_opciones() -> Array[DatosMejora]:
-	var disponibles: Array[DatosMejora] = []
+	var opciones: Array[DatosMejora] = []
 
-	for mejora in pool_mejoras.mejoras:
-		if mejora not in _agotadas:
-			disponibles.append(mejora)
+	# Una evolución que ya se puede elegir sale siempre, y la primera: es el
+	# premio por haber repetido su mejora. Si hay varias, de una en una.
+	for evolucion in pool_mejoras.evoluciones:
+		if evolucion not in _agotadas and _veces.get(evolucion.requisito, 0) >= evolucion.nivel_requisito:
+			opciones.append(evolucion)
+			break
 
-	disponibles.shuffle()
-	return disponibles.slice(0, mini(OPCIONES_POR_NIVEL, disponibles.size()))
+	var normales := pool_mejoras.mejoras.duplicate()
+	normales.shuffle()
+	for mejora in normales:
+		if opciones.size() < OPCIONES_POR_NIVEL:
+			opciones.append(mejora)
+	return opciones
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
@@ -99,6 +110,8 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 
 
 func _aplicar(mejora: DatosMejora) -> void:
+	_veces[mejora] = _veces.get(mejora, 0) + 1
+
 	match mejora.efecto:
 		DatosMejora.Efecto.DANO_ARMAS:
 			_gestor_armas.multiplicador_dano += mejora.valor
@@ -114,6 +127,6 @@ func _aplicar(mejora: DatosMejora) -> void:
 			_jugador.velocidad_maxima *= 1.0 + mejora.valor
 		DatosMejora.Efecto.VIDA_MAXIMA:
 			_salud.aumentar_vida_maxima(mejora.valor)
-		DatosMejora.Efecto.NUEVA_ARMA:
-			_gestor_armas.anadir_arma(mejora.arma)
+		DatosMejora.Efecto.EVOLUCIONAR_ARMA:
+			_cambio_personaje.evolucionar(mejora.arma_base, mejora.arma)
 			_agotadas.append(mejora)

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" path="res://recursos/mejoras/iconos/arma_ping.png" id="2_icono"]
+[ext_resource type="Resource" path="res://recursos/armas/datos/ping.tres" id="3_base"]
+[ext_resource type="Resource" path="res://recursos/armas/datos/ping_inundacion.tres" id="4_arma"]
+[ext_resource type="Resource" path="res://recursos/mejoras/datos/cadencia.tres" id="5_requisito"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Ping de inundación"
+icono = ExtResource("2_icono")
+descripcion = "El Ping del Mago evoluciona: más rápido y salta hasta seis veces. El malware no tiene resistencia contra él."
+efecto = 5
+valor = 0.0
+arma_base = ExtResource("3_base")
+arma = ExtResource("4_arma")
+requisito = ExtResource("5_requisito")
+nivel_requisito = 3
