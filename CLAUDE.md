@@ -29,6 +29,43 @@ paso y cualquier discrepancia entre bitácora, planificación y Git.
 
 Ignorar `projecte/.godot/`: es caché regenerable.
 
+## Frases clave de Adam
+
+Estas dos frases son órdenes completas: Adam no tiene que explicar nada más.
+
+### "Es un día nuevo" (o "empezamos", "nueva sesión")
+
+Bajar lo de Adam y lo de Alan y ponerse al día:
+
+1. `git status`: si hay cambios sin commitear, avisar a Adam antes de seguir.
+2. `git switch main`, `git pull origin main` (lo de Adam, por si trabajó en el otro
+   sitio) y `git fetch origin`.
+3. Mirar qué ha subido Alan: `git log main..origin/feature/alan-arena-hud --stat`.
+4. Fusionar su rama en `main`: `git merge origin/feature/alan-arena-hud`. Si hay
+   conflictos, en los ficheros de Adam (`juego.tscn`, `project.godot`, y en general
+   todo lo que no sea el audio) se queda la versión de `main`: los cambios ahí
+   son reescrituras no intencionadas de Godot. En los de Alan se queda la suya.
+5. Validar en headless (ver "Entorno y validación"). Si lo de Alan rompe algo,
+   **no se sube**: se avisa a Adam para que Alan lo arregle en su rama.
+6. No hacer push en este paso: lo fusionado subirá con el cierre de la sesión.
+7. Seguir con la lectura de arriba y dar el informe de arranque, incluyendo qué
+   ha aportado Alan.
+
+### "Ya he acabado" (o "no me queda más tiempo de clase", "cierra la sesión")
+
+Dejar todo guardado y **subido a GitHub, sin preguntar**:
+
+1. Hacer todo lo de "Al cerrar cada sesión" (bitácora, planificación,
+   `requisitos_y_estado.md`).
+2. `git status` y commit **solo de los ficheros de Adam**, con la convención del
+   README. Si Godot ha reescrito ficheros de Alan, no se commitean: avisar.
+3. `git push origin main`. Esta frase autoriza ese push.
+4. Comprobar con `git status` y `git log` que no queda nada sin subir, y decírselo
+   a Adam en una línea.
+
+**Nunca**, al cerrar: tocar ni commitear ficheros de Alan, hacer push a
+`feature/alan-arena-hud` ni fusionarla. Lo de Alan solo se baja al empezar.
+
 ## Propiedad de ficheros: precisiones a GEMINI.md
 
 Desde el 30/09/2026 Alan solo lleva el audio (`globales/gestor_audio.gd` y
@@ -83,13 +120,15 @@ asumas estas rutas.
 
 - Adam trabaja directamente en `main`. Alan, en su rama fija
   `feature/alan-arena-hud`. No se crean ramas por tarea.
-- Al empezar la sesión, si Adam lo pide, fusionar `origin/feature/alan-arena-hud`
-  en `main` y validar en headless antes de subir nada.
+- Al empezar la sesión ("es un día nuevo"), fusionar `origin/feature/alan-arena-hud`
+  en `main` y validar en headless, como se detalla en "Frases clave de Adam".
 - Commitear solo ficheros de Adam. Si `git status` muestra ficheros de Alan
   modificados sin que se hayan tocado (Godot los reescribe al abrir), avisar a
   Adam en vez de commitearlos.
-- No hacer push sin que Adam lo diga. Al cerrar la sesión, preguntarle si quiere
-  subir: sin push, lo hecho aquí no llega al otro sitio (instituto o casa).
+- El único push permitido es `git push origin main`, y solo cuando Adam cierra la
+  sesión con "ya he acabado" o equivalente, o lo pide expresamente. Sin push, lo
+  hecho aquí no llega al otro sitio (instituto o casa). Nunca se hace push a
+  `feature/alan-arena-hud`.
 
 ## Al cerrar cada sesión
 
@@ -106,4 +145,5 @@ Además, para que el siguiente chat no pierda nada:
 - Todo decidido en la conversación con su porqué tiene que quedar escrito en la
   bitácora: lo que solo está en el chat se pierde al abrir uno nuevo.
 
-Después, commit.
+Después, commit y push a `main`, como indica "Ya he acabado" en "Frases clave de
+Adam".
