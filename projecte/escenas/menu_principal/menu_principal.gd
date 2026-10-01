@@ -14,6 +14,9 @@ const RESUMEN := [
 
 var _reglas: PanelReglas
 var _opciones: PanelOpciones
+var _version: Label
+var _actualizar: Button
+var _jugar_boton: Button
 
 
 func _ready() -> void:
@@ -48,12 +51,14 @@ func _ready() -> void:
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 14)
 	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 200)
+	_jugar_boton = jugar
 	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 200)
 	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 200)
 	for boton in [jugar, reglas, opciones]:
 		botones.add_child(boton)
 	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 200))
 	caja.add_child(botones)
+	_crear_version(caja)
 
 	# Al cerrar cada ventana, el foco vuelve al botón que la abrió.
 	_reglas = PanelReglas.new()
@@ -71,6 +76,32 @@ func _crear_fondo() -> void:
 	suelo.material = load("res://escenas/arena/suelo.tres")
 	suelo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(suelo)
+
+
+## Versión del juego y, si hay una nueva, el botón para actualizar. La consulta
+## a GitHub la hace el Actualizador; aquí solo se enseña lo que va diciendo.
+func _crear_version(caja: VBoxContainer) -> void:
+	_version = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
+	_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(_version)
+	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", Actualizador.actualizar, 260)
+	_actualizar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	caja.add_child(_actualizar)
+
+	Actualizador.estado_cambiado.connect(_mostrar_version)
+	_mostrar_version()
+	Actualizador.buscar()
+
+
+func _mostrar_version() -> void:
+	_version.text = Actualizador.texto()
+	var estado := Actualizador.estado
+	_actualizar.visible = estado in [Actualizador.Estado.HAY_ACTUALIZACION, Actualizador.Estado.HAY_JUEGO_NUEVO]
+	_actualizar.text = "DESCARGAR EL JUEGO" if estado == Actualizador.Estado.HAY_JUEGO_NUEVO else "ACTUALIZAR"
+	if estado == Actualizador.Estado.HAY_ACTUALIZACION:
+		_version.add_theme_color_override("font_color", EstiloInterfaz.VICTORIA)
+	# Al acabar la descarga el juego se reinicia: no se puede empezar partida.
+	_jugar_boton.disabled = estado == Actualizador.Estado.DESCARGANDO
 
 
 func _panel_resumen() -> PanelContainer:
@@ -118,4 +149,6 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _jugar() -> void:
+	if _jugar_boton.disabled:
+		return
 	Transicion.cambiar_a(PARTIDA)

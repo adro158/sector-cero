@@ -1,0 +1,75 @@
+# Publica una release del juego cada vez que se sube una etiqueta de versión:
+#
+#   git tag v0.3
+#   git push origin v0.3
+#
+# Exporta el juego completo para Windows y Linux (para quien lo descarga por
+# primera vez) y el .pck de cada plataforma (para que el botón ACTUALIZAR del
+# menú se baje solo eso), y lo sube todo a una release de GitHub.
+name: Publicar release
+
+on:
+  push:
+    tags: ["v*"]
+
+# Para poder crear la release en el propio repositorio.
+permissions:
+  contents: write
+
+env:
+  GODOT: Godot_v4.7.2-stable_linux.x86_64
+  URL_GODOT: https://github.com/godotengine/godot/releases/download/4.7.2-stable
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Godot 4.7.2 y sus plantillas de exportación
+        run: |
+          wget -q "$URL_GODOT/$GODOT.zip"
+          unzip -q "$GODOT.zip"
+          wget -q "$URL_GODOT/Godot_v4.7.2-stable_export_templates.tpz"
+          unzip -q Godot_v4.7.2-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/4.7.2.stable
+          mv templates/* ~/.local/share/godot/export_templates/4.7.2.stable/
+
+      # La versión sale de la etiqueta: v0.3 da 0.3. Se escribe en el
+      # contenido (version.gd) y en el ejecutable (project.godot), y se publica
+      # en version.json junto con el ejecutable mínimo que necesita.
+      - name: Poner la versión de la etiqueta
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/const ACTUAL := \"desarrollo\"/const ACTUAL := \"$VERSION\"/" projecte/globales/version.gd
+          sed -i "s/config\/version=\"desarrollo\"/config\/version=\"$VERSION\"/" projecte/project.godot
+          MINIMO=$(sed -n 's/^const EJECUTABLE_MINIMO := "\(.*\)"$/\1/p' projecte/globales/version.gd)
+          echo "{\"version\": \"$VERSION\", \"ejecutable_minimo\": \"$MINIMO\"}" > version.json
+          cat version.json
+
+      - name: Exportar
+        run: |
+          mkdir -p build/windows build/linux
+          ./$GODOT --headless --path projecte --import
+          ./$GODOT --headless --path projecte --export-release "Windows Desktop" ../build/windows/SectorCero.exe
+          ./$GODOT --headless --path projecte --export-release "Linux" ../build/linux/SectorCero.x86_64
+          ./$GODOT --headless --path projecte --export-pack "Windows Desktop" ../build/sector_cero_windows.pck
+          ./$GODOT --headless --path projecte --export-pack "Linux" ../build/sector_cero_linux.pck
+          cd build
+          zip -j "SectorCero_${GITHUB_REF_NAME}_windows.zip" windows/SectorCero.exe
+          zip -j "SectorCero_${GITHUB_REF_NAME}_linux.zip" linux/SectorCero.x86_64
+          ls -l
+
+      - name: Publicar la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Sector Cero $GITHUB_REF_NAME" \
+            --generate-notes \
+            build/SectorCero_*_windows.zip \
+            build/SectorCero_*_linux.zip \
+            build/sector_cero_windows.pck \
+            build/sector_cero_linux.pck \
+            version.json
