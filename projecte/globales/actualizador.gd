@@ -91,7 +91,8 @@ static func comparar(a: String, b: String) -> int:
 ## Pregunta a GitHub por la última release. Solo la primera vez que se llama:
 ## volver al menú no repite la consulta.
 func buscar() -> void:
-	if not OS.has_feature("template") or estado != Estado.SIN_BUSCAR:
+	# En la web el juego se baja entero cada vez: no hay nada que actualizar.
+	if not OS.has_feature("template") or OS.has_feature("web") or estado != Estado.SIN_BUSCAR:
 		return
 	_cambiar(Estado.BUSCANDO)
 

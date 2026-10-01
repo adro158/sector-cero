@@ -1,0 +1,46 @@
+# Publica la versión web del juego (para jugar desde el móvil) en la rama
+# gh-pages cada vez que se sube algo a demo-movil, o a mano desde la pestaña
+# Actions. Para verla: Settings > Pages > Source: "Deploy from a branch",
+# rama gh-pages, carpeta / (root).
+name: Publicar demo web
+
+on:
+  push:
+    branches: [demo-movil]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GODOT: Godot_v4.7.2-stable_linux.x86_64
+  URL_GODOT: https://github.com/godotengine/godot/releases/download/4.7.2-stable
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Godot 4.7.2 y sus plantillas de exportación
+        run: |
+          wget -q "$URL_GODOT/$GODOT.zip"
+          unzip -q "$GODOT.zip"
+          wget -q "$URL_GODOT/Godot_v4.7.2-stable_export_templates.tpz"
+          unzip -q Godot_v4.7.2-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/4.7.2.stable
+          mv templates/* ~/.local/share/godot/export_templates/4.7.2.stable/
+
+      - name: Exportar a web
+        run: |
+          mkdir -p build/web
+          ./$GODOT --headless --path projecte --import
+          ./$GODOT --headless --path projecte --export-release "Web" ../build/web/index.html
+          touch build/web/.nojekyll
+
+      - name: Publicar en gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web

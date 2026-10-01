@@ -56,7 +56,9 @@ func _ready() -> void:
 	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 200)
 	for boton in [jugar, reglas, opciones]:
 		botones.add_child(boton)
-	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 200))
+	# En el navegador no se puede cerrar el juego.
+	if not OS.has_feature("web"):
+		botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 200))
 	caja.add_child(botones)
 	_crear_version(caja)
 

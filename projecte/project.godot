@@ -23,6 +23,7 @@ GestorGuardado="*res://globales/gestor_guardado.gd"
 GestorAudio="*res://globales/gestor_audio.gd"
 Transicion="*res://globales/transicion.gd"
 EfectoCRT="*res://globales/efecto_crt.gd"
+ControlTactil="*res://globales/control_tactil.gd"
 
 [display]
 
