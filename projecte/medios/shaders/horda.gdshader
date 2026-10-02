@@ -31,7 +31,10 @@ void vertex() {
 }
 
 void fragment() {
-	vec4 color = texture(TEXTURE, UV);
+	// En Godot 4, COLOR ya llega con la textura aplicada (el color del nodo
+	// por el de la textura). Antes se volvía a multiplicar por la textura y
+	// toda la horda salía más oscura que sus sprites.
+	vec4 color = COLOR;
 	if (glitch > 0.5) {
 		// Rojo y azul se leen un poco desplazados: los colores se separan.
 		vec2 separacion = vec2(TEXTURE_PIXEL_SIZE.x * 1.5, 0.0);
@@ -39,5 +42,5 @@ void fragment() {
 		color.b = texture(TEXTURE, UV - separacion).b;
 	}
 	color.rgb = mix(color.rgb, vec3(1.0), destello);
-	COLOR = color * COLOR;
+	COLOR = color;
 }
