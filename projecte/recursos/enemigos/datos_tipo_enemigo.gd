@@ -22,3 +22,17 @@ extends Resource
 ## los tanques como el ransomware: lentos y con mucha vida, sin límite se
 ## acumulan detrás del jugador.
 @export var maximo_vivos: int = 0
+
+@export_group("Embestida")
+## Si es true, además de perseguir embiste como el jefe (ver embestida_horda.gd).
+## Los valores de abajo solo cuentan para los tipos que embisten.
+@export var embiste: bool = false
+## A qué distancia del jugador empieza el aviso.
+@export var distancia_embestida: float = 220.0
+## Segundos quieto y parpadeando antes de salir disparado.
+@export var duracion_aviso: float = 0.4
+@export var duracion_embestida: float = 0.6
+## Cuántas veces su velocidad normal lleva mientras embiste.
+@export var multiplicador_embestida: float = 3.0
+## Segundos que tiene que pasar persiguiendo antes de poder embestir otra vez.
+@export var espera_embestida: float = 2.5

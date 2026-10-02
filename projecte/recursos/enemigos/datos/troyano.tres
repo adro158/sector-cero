@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="Texture2D" path="res://recursos/enemigos/sprites/troyano.png" id="2_textura"]
+
+[resource]
+script = ExtResource("1_tipo")
+tipo = "troyano"
+nombre = "Troyano"
+descripcion = "Aparece desde el 4:00. Persigue como los demás, pero cuando está cerca se para, parpadea en rojo y embiste en línea recta hacia donde estabas, al triple de velocidad. Al verlo parpadear, apártate de lado: la embestida no gira. Después tarda unos segundos en poder repetirla. El Ping lo derriba antes de que llegue."
+vida = 45.0
+velocidad = 110.0
+tamano = 32.0
+textura = ExtResource("2_textura")
+color = Color(0.35, 0.85, 0.5, 1)
+dano_contacto = 8.0
+experiencia = 3
+tiempo_aparicion = 240.0
+embiste = true

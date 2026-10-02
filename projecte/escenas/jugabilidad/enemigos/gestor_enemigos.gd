@@ -11,6 +11,7 @@ const MAXIMO_ENEMIGOS := 400
 ## Segundos que un enemigo se queda en blanco al recibir un golpe.
 const DURACION_DESTELLO := 0.1
 const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
+const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_horda.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
@@ -26,6 +27,8 @@ var _vivos := 0
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
+## Solo en los tipos que embisten (el troyano). En los demás se queda en null.
+var _embestida: EmbestidaHorda
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -37,6 +40,8 @@ func _ready() -> void:
 	_vidas.resize(MAXIMO_ENEMIGOS)
 	_destellos.resize(MAXIMO_ENEMIGOS)
 	_rejilla = RejillaEspacial.new(radio_separacion)
+	if datos.embiste:
+		_embestida = EmbestidaHorda.new(datos, MAXIMO_ENEMIGOS)
 	_preparar_multimesh()
 
 
@@ -60,6 +65,8 @@ func aparecer(posicion: Vector2) -> void:
 	_posiciones[_vivos] = posicion
 	_vidas[_vivos] = datos.vida
 	_destellos[_vivos] = 0.0
+	if _embestida != null:
+		_embestida.reiniciar(_vivos)
 	_vivos += 1
 
 
@@ -109,8 +116,9 @@ func _preparar_multimesh() -> void:
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
-	# El dato propio de cada enemigo es su destello, que lee el shader. Hay que
-	# activarlo antes de fijar el número de instancias.
+	# Los datos propios de cada enemigo son su destello y, en los que embisten,
+	# el aviso. Los lee el shader. Hay que activarlo antes de fijar el número de
+	# instancias.
 	multimesh.use_custom_data = true
 	multimesh.mesh = malla
 	multimesh.instance_count = MAXIMO_ENEMIGOS
@@ -153,6 +161,13 @@ func _mover(delta: float) -> void:
 		# huía de él, ahora lo tiene delante, fuera de la pantalla.
 		if _posiciones[i].distance_to(destino) > distancia_reciclaje:
 			_posiciones[i] = destino + (destino - _posiciones[i]) * 0.6
+
+		# Mientras avisa o embiste, no persigue: se mueve por su cuenta.
+		if _embestida != null:
+			_embestida.actualizar(i, _posiciones[i], destino, delta)
+			if not _embestida.persigue(i):
+				_posiciones[i] += _embestida.avance(i, delta)
+				continue
 
 		var hacia_jugador := (destino - _posiciones[i]).normalized()
 		var empuje := _separacion(i) * fuerza_separacion
@@ -213,6 +228,8 @@ func _eliminar(indice: int) -> void:
 	_posiciones[indice] = _posiciones[_vivos]
 	_vidas[indice] = _vidas[_vivos]
 	_destellos[indice] = _destellos[_vivos]
+	if _embestida != null:
+		_embestida.copiar(_vivos, indice)
 
 
 func _volcar_al_multimesh(delta: float) -> void:
@@ -222,6 +239,7 @@ func _volcar_al_multimesh(delta: float) -> void:
 	for i in _vivos:
 		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
 		_destellos[i] = maxf(_destellos[i] - delta, 0.0)
-		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, 0.0, 0.0, 0.0))
+		var aviso := _embestida.avisando(i) if _embestida != null else 0.0
+		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, 0.0, 0.0))
 
 	multimesh.visible_instance_count = _vivos

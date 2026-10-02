@@ -20,6 +20,7 @@ const ENEMIGOS := [
 	"res://recursos/enemigos/datos/bit_corrupto.tres",
 	"res://recursos/enemigos/datos/paquete_perdido.tres",
 	"res://recursos/enemigos/datos/proceso_colgado.tres",
+	"res://recursos/enemigos/datos/troyano.tres",
 	"res://recursos/enemigos/datos/ransomware.tres",
 	"res://recursos/enemigos/datos/elite.tres",
 ]
