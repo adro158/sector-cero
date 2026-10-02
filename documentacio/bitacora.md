@@ -1256,8 +1256,11 @@ bien, `version.json` dice versión 0.3 con ejecutable mínimo 0.2 (quien tenga
 la v0.2 se actualiza con el botón) y el ejecutable de Windows que exportó
 arranca sin errores.
 
-Después de la v0.3 entraron los sprites de la experiencia y del Ping, ya
-subidos a `main`. Saldrán en la próxima versión.
+Después de la v0.3 entraron los sprites de la experiencia y del Ping. Adam los
+vio con el `.bat` pero no en el juego descargado: el `.bat` ejecuta el
+proyecto tal cual y el juego solo cambia con una release. Se publicó la
+**v0.4** con ellos (Action correcta, ejecutable mínimo 0.2 y el ejecutable de
+Windows arranca sin errores).
 
 ### Siguiente paso
 
