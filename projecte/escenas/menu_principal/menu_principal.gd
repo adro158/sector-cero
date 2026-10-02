@@ -2,9 +2,10 @@ extends Control
 
 ## Menú de inicio: título, un resumen de cómo se juega, la mejor partida
 ## guardada y los botones. Las reglas completas (personajes, mejoras y
-## enemigos) están en su propia ventana. Enter empieza la partida y Esc sale.
+## enemigos) y el ranking están en sus propias ventanas. Enter empieza la partida y Esc sale.
 
 const PARTIDA := "res://escenas/juego.tscn"
+const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -14,6 +15,7 @@ const RESUMEN := [
 
 var _reglas: PanelReglas
 var _opciones: PanelOpciones
+var _ranking: PanelRanking
 var _version: Label
 var _actualizar: Button
 var _jugar_boton: Button
@@ -50,13 +52,14 @@ func _ready() -> void:
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 14)
-	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 200)
+	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 180)
 	_jugar_boton = jugar
-	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 200)
-	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 200)
-	for boton in [jugar, reglas, opciones]:
+	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 160)
+	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 160)
+	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 160)
+	for boton in [jugar, reglas, ranking, opciones]:
 		botones.add_child(boton)
-	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 200))
+	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 160))
 	caja.add_child(botones)
 	_crear_version(caja)
 
@@ -67,6 +70,9 @@ func _ready() -> void:
 	_opciones = PanelOpciones.new()
 	_opciones.cerrado.connect(opciones.grab_focus)
 	add_child(_opciones)
+	_ranking = PanelRanking.new()
+	_ranking.cerrado.connect(ranking.grab_focus)
+	add_child(_ranking)
 	jugar.grab_focus()
 
 
@@ -136,9 +142,13 @@ func _abrir_opciones() -> void:
 	_opciones.abrir()
 
 
+func _abrir_ranking() -> void:
+	_ranking.abrir()
+
+
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return

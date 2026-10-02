@@ -53,4 +53,5 @@ func _terminar_partida(victoria: bool) -> void:
 		"tiempo": _director.tiempo(),
 		"nivel": _sistema_niveles.nivel(),
 		"eliminados": _eliminados,
+		"personaje": $Jugador/CambioPersonaje.personaje_actual().nombre,
 	})

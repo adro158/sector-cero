@@ -22,6 +22,8 @@ const OPCIONES_POR_DEFECTO := {
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves
 ## que trae el diccionario de partida_terminada.
 const RECORDS := ["tiempo", "nivel", "eliminados"]
+## Partidas que caben en el ranking.
+const MAXIMO_RANKING := 10
 
 ## Los récords que ha batido la última partida, para que la pantalla final los
 ## anuncie. Vacío en la primera partida: cualquier resultado sería un récord.
@@ -54,6 +56,48 @@ func cambiar_opcion(clave: String, valor: Variant) -> void:
 ## contadores partidas y victorias. Cero si todavía no hay ninguno.
 func record(clave: String) -> float:
 	return _fichero.get_value("records", clave, 0)
+
+
+## Las mejores partidas de este ordenador, ya ordenadas. Cada una es un
+## diccionario con nombre, victoria, tiempo, nivel, eliminados, personaje y
+## fecha. No hay servidor: el ranking es local.
+func ranking() -> Array:
+	return _fichero.get_value("ranking", "partidas", [])
+
+
+## Si la partida entraría en el ranking: para pedir el nombre solo entonces.
+func entra_en_ranking(estadisticas: Dictionary) -> bool:
+	var lista := ranking()
+	return lista.size() < MAXIMO_RANKING or _va_antes(estadisticas, lista.back())
+
+
+## Guarda la partida con el nombre y devuelve el puesto en que ha quedado.
+func anadir_al_ranking(estadisticas: Dictionary, nombre: String) -> int:
+	var entrada := {
+		"nombre": nombre,
+		"victoria": estadisticas.victoria,
+		"tiempo": estadisticas.tiempo,
+		"nivel": estadisticas.nivel,
+		"eliminados": estadisticas.eliminados,
+		"personaje": estadisticas.personaje,
+		"fecha": Time.get_date_string_from_system(),
+	}
+	var lista := ranking()
+	lista.append(entrada)
+	lista.sort_custom(_va_antes)
+	_fichero.set_value("ranking", "partidas", lista.slice(0, MAXIMO_RANKING))
+	_fichero.save(RUTA)
+	return lista.find(entrada) + 1
+
+
+## El orden del ranking: primero las victorias, de la más rápida a la más
+## lenta; después las derrotas, de la que más aguantó a la que menos.
+static func _va_antes(a: Dictionary, b: Dictionary) -> bool:
+	if a.victoria != b.victoria:
+		return a.victoria
+	if a.victoria:
+		return a.tiempo < b.tiempo
+	return a.tiempo > b.tiempo
 
 
 func _al_terminar_partida(estadisticas: Dictionary) -> void:

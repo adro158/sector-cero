@@ -13,6 +13,10 @@ const NOMBRES_RECORD := {
 }
 
 var _ventana: ColorRect
+var _estadisticas: Dictionary
+var _fila_nombre: HBoxContainer
+var _nombre: LineEdit
+var _boton_reintentar: Button
 
 
 func _ready() -> void:
@@ -61,10 +65,15 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		latido.tween_property(record, "modulate:a", 0.4, 0.5)
 		latido.tween_property(record, "modulate:a", 1.0, 0.5)
 
+	_estadisticas = estadisticas
+	if GestorGuardado.entra_en_ranking(estadisticas):
+		caja.add_child(_crear_fila_nombre())
+
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 16)
-	botones.add_child(EstiloInterfaz.boton("REINTENTAR  [Enter]", _reintentar, 220))
+	_boton_reintentar = EstiloInterfaz.boton("REINTENTAR  [Enter]", _reintentar, 220)
+	botones.add_child(_boton_reintentar)
 	botones.add_child(EstiloInterfaz.boton("MENÚ  [Esc]", _ir_al_menu, 220))
 	caja.add_child(botones)
 
@@ -78,7 +87,40 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	# Fundido de entrada: la pantalla aparece poco a poco en lugar de golpe.
 	_ventana.modulate.a = 0.0
 	create_tween().tween_property(_ventana, "modulate:a", 1.0, 0.6)
-	botones.get_child(0).grab_focus()
+	if _nombre != null:
+		_nombre.grab_focus()
+	else:
+		_boton_reintentar.grab_focus()
+
+
+## La partida entra en el top 10: se pide un nombre para el ranking. Enter en
+## el campo de texto guarda, igual que el botón.
+func _crear_fila_nombre() -> HBoxContainer:
+	_fila_nombre = HBoxContainer.new()
+	_fila_nombre.alignment = BoxContainer.ALIGNMENT_CENTER
+	_fila_nombre.add_theme_constant_override("separation", 12)
+	_fila_nombre.add_child(EstiloInterfaz.etiqueta("¡Entras en el ranking! Tu nombre:", 16, EstiloInterfaz.NEON))
+	_nombre = LineEdit.new()
+	_nombre.max_length = 14
+	_nombre.placeholder_text = "Anónimo"
+	_nombre.custom_minimum_size = Vector2(200, 0)
+	_nombre.text_submitted.connect(func(_texto): _guardar_en_ranking())
+	_fila_nombre.add_child(_nombre)
+	_fila_nombre.add_child(EstiloInterfaz.boton("GUARDAR", _guardar_en_ranking, 130))
+	return _fila_nombre
+
+
+func _guardar_en_ranking() -> void:
+	var nombre := _nombre.text.strip_edges()
+	if nombre.is_empty():
+		nombre = "Anónimo"
+	var puesto := GestorGuardado.anadir_al_ranking(_estadisticas, nombre)
+	# La fila se cambia por el resultado y el foco pasa a reintentar.
+	for hijo in _fila_nombre.get_children():
+		hijo.queue_free()
+	_fila_nombre.add_child(EstiloInterfaz.etiqueta("Guardado en el ranking: puesto %d" % puesto, 16, EstiloInterfaz.VICTORIA))
+	_nombre = null
+	_boton_reintentar.grab_focus()
 
 
 func _unhandled_input(evento: InputEvent) -> void:

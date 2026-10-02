@@ -50,6 +50,11 @@ func cambiar() -> bool:
 	return true
 
 
+## El personaje que lleva el jugador ahora. Para el ranking.
+func personaje_actual() -> DatosPersonaje:
+	return personajes[_indice]
+
+
 ## La mejora Cambio en caliente: quita un porcentaje de la espera. Cuenta a
 ## partir del siguiente cambio, no acorta el que ya está en marcha.
 func reducir_espera(fraccion: float) -> void:
