@@ -2,9 +2,10 @@ extends SceneTree
 
 ## Herramienta de testeo, no forma parte del juego: juega partidas enteras sin
 ## nadie delante para medir el balance. Un bot huye de los enemigos cercanos,
-## de los élites y del jefe, da vueltas cuando no hay peligro, elige mejoras al
-## azar (o la evolución, si sale) y cambia de personaje cuando el malware se ha
-## hecho resistente a su herramienta. Cada minuto de partida anota vida, nivel,
+## de los élites y del jefe, da vueltas cuando no hay peligro, elige mejoras
+## como un jugador (la evolución si sale y, si no, una de ataque si la hay) y
+## cambia de personaje cuando el malware se ha hecho resistente a su
+## herramienta. Cada minuto de partida anota vida, nivel,
 ## enemigos (en total y por tipo), herramienta y resistencias, y al final
 ## resume victorias, duración media, cambios de personaje y eliminados por tipo.
 ##
@@ -28,6 +29,10 @@ const RESISTENCIA_PARA_CAMBIAR := 0.3
 ## Si el jefe sigue vivo tanto tiempo después de aparecer, la partida se da por
 ## perdida. Sin bordes, un bot podría huir de él para siempre.
 const TIEMPO_MAXIMO_JEFE := 240.0
+## Las mejoras que prefiere el bot. Hasta el 02/10/2026 elegía al azar, pero
+## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
+## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
+const MEJORAS_DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
 
 var _partidas := 3
 var _partida := 0
@@ -82,8 +87,10 @@ func _empezar_partida() -> void:
 
 
 func _al_subir_nivel(opciones: Array) -> void:
-	# Si sale una evolución, siempre es la primera opción y siempre la coge.
-	var elegida: DatosMejora = opciones.pick_random()
+	# Si sale una evolución, siempre es la primera opción y siempre la coge. Si
+	# no, una de ataque si hay alguna, y si no, cualquiera.
+	var de_ataque := opciones.filter(func(mejora): return mejora.efecto in MEJORAS_DE_ATAQUE)
+	var elegida: DatosMejora = de_ataque.pick_random() if not de_ataque.is_empty() else opciones.pick_random()
 	if opciones[0].efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA:
 		elegida = opciones[0]
 	_elegir.call_deferred(elegida)
