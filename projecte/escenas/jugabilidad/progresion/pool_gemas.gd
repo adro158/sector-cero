@@ -10,7 +10,12 @@ const MAXIMO_GEMAS := 800
 @export var velocidad_iman: float = 420.0
 ## En un mapa sin fin, las gemas que se quedan muy atrás no se van a recoger y
 ## llenarían el pool: a partir de esta distancia se descartan.
-@export var distancia_olvido: float = 1800.0
+@export var distancia_olvido: float = 1200.0
+## Segundos que dura una gema sin recoger. Con el mapa infinito se quedaban
+## cientos por el camino; así nunca se acumulan y además hay que ir a por ellas.
+@export var duracion: float = 30.0
+## En los últimos segundos parpadea para avisar de que se va a perder.
+@export var aviso: float = 3.0
 
 @export_group("Colores por valor")
 ## Hasta valor_medio - 1 de experiencia, color_bajo; hasta valor_alto - 1,
@@ -23,6 +28,8 @@ const MAXIMO_GEMAS := 800
 
 var _posiciones := PackedVector2Array()
 var _valores := PackedInt32Array()
+## Segundos que le quedan a cada gema antes de desaparecer.
+var _restantes := PackedFloat32Array()
 var _vivas := 0
 var _experiencia_por_tipo := {}
 var _jugador: Node2D
@@ -34,6 +41,7 @@ func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_posiciones.resize(MAXIMO_GEMAS)
 	_valores.resize(MAXIMO_GEMAS)
+	_restantes.resize(MAXIMO_GEMAS)
 	_preparar_multimesh()
 
 	# Cada gestor de la horda y cada élite trae sus datos, con la experiencia
@@ -68,6 +76,7 @@ func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 
 	_posiciones[_vivas] = posicion
 	_valores[_vivas] = _experiencia_por_tipo.get(tipo, 1)
+	_restantes[_vivas] = duracion
 	_vivas += 1
 
 
@@ -79,13 +88,16 @@ func _physics_process(delta: float) -> void:
 
 	while i >= 0:
 		var distancia := _posiciones[i].distance_to(objetivo)
+		_restantes[i] -= delta
 
 		if distancia < radio_recogida:
 			BusEventos.experiencia_ganada.emit(_valores[i])
 			_eliminar(i)
 		elif distancia < radio_iman:
+			# Si ya vuela hacia el jugador no caduca: perderla en el último
+			# momento parecería un fallo.
 			_posiciones[i] = _posiciones[i].move_toward(objetivo, velocidad_iman * delta)
-		elif distancia > distancia_olvido:
+		elif distancia > distancia_olvido or _restantes[i] <= 0.0:
 			_eliminar(i)
 
 		i -= 1
@@ -97,6 +109,7 @@ func _eliminar(indice: int) -> void:
 	_vivas -= 1
 	_posiciones[indice] = _posiciones[_vivas]
 	_valores[indice] = _valores[_vivas]
+	_restantes[indice] = _restantes[_vivas]
 
 
 func _volcar_al_multimesh() -> void:
@@ -107,7 +120,12 @@ func _volcar_al_multimesh() -> void:
 	# la última pasa a su hueco y cambia de índice.
 	for i in _vivas:
 		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
-		multimesh.set_instance_color(i, _color(_valores[i]))
+		var color := _color(_valores[i])
+		# Parpadeo de aviso: cinco veces por segundo, medio tiempo casi
+		# transparente.
+		if _restantes[i] < aviso and fmod(_restantes[i], 0.2) < 0.1:
+			color.a = 0.2
+		multimesh.set_instance_color(i, color)
 
 	multimesh.visible_instance_count = _vivas
 
