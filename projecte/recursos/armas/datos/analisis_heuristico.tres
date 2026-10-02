@@ -6,7 +6,7 @@
 script = ExtResource("1_datos_arma")
 nombre = "Análisis heurístico"
 tipo = 0
-dano = 38.0
-cadencia = 1.8
-radio = 270.0
+dano = 35.0
+cadencia = 2.0
+radio = 190.0
 sonido = "escaner"

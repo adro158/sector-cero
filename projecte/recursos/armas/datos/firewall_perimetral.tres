@@ -6,7 +6,7 @@
 script = ExtResource("1_datos_arma")
 nombre = "Firewall perimetral"
 tipo = 0
-dano = 11.0
+dano = 11.2
 cadencia = 0.5
-radio = 130.0
+radio = 125.0
 sonido = "firewall"

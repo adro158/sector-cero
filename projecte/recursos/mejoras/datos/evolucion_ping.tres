@@ -10,7 +10,7 @@
 script = ExtResource("1_mejora")
 nombre = "Ping de inundación"
 icono = ExtResource("2_icono")
-descripcion = "El Ping del Mago evoluciona: más rápido y salta hasta seis veces. El malware no tiene resistencia contra él."
+descripcion = "El Ping del Mago evoluciona: más rápido y salta hasta cinco veces. El malware no tiene resistencia contra él."
 efecto = 5
 valor = 0.0
 arma_base = ExtResource("3_base")

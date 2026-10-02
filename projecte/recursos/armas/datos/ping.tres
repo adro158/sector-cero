@@ -6,10 +6,10 @@
 script = ExtResource("1_datos_arma")
 nombre = "Ping"
 tipo = 1
-dano = 9.0
+dano = 13.8
 cadencia = 0.9
 radio = 14.0
 sonido = "ping"
 velocidad_proyectil = 430.0
-rebotes = 3
+rebotes = 4
 vida_util = 2.5

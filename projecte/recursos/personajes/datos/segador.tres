@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_personaje")
 nombre = "Segador"
-descripcion = "Escáner: un pulso muy amplio y fuerte, pero lento (cada 2,2 s). El mejor contra grupos grandes y enemigos duros como el proceso colgado. Entre pulso y pulso estás desprotegido. Evoluciona a Análisis heurístico con Ampliar subred ×3."
+descripcion = "Escáner: un pulso amplio y fuerte, pero lento (cada 2,5 s). El mejor contra grupos grandes y enemigos duros como el proceso colgado. Entre pulso y pulso estás desprotegido. Evoluciona a Análisis heurístico con Ampliar subred ×3."
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
 color = Color(1, 0.35, 0.35, 1)

@@ -7,6 +7,6 @@
 script = ExtResource("1_mejora")
 nombre = "Heurística agresiva"
 icono = ExtResource("9_icono")
-descripcion = "+20% de daño de todas las herramientas"
+descripcion = "+12% de daño de todas las herramientas"
 efecto = 0
-valor = 0.20
+valor = 0.12

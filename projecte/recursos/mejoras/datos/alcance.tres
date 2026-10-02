@@ -7,6 +7,6 @@
 script = ExtResource("1_mejora")
 nombre = "Ampliar subred"
 icono = ExtResource("9_icono")
-descripcion = "+15% de alcance de todas las herramientas"
+descripcion = "+10% de alcance de todas las herramientas"
 efecto = 2
-valor = 0.15
+valor = 0.10
