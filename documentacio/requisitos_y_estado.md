@@ -59,9 +59,9 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
 | 2 | Build ejecutable | Casi | v0.5 publicada el 02/10. Falta probarla en un ordenador limpio |
-| 3 | `README.md` | Hecho | Capturas, ejecución, controles, tecnologías, autores y créditos |
-| 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md` |
-| 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md` |
+| 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
+| 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
+| 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
 | 6 | Vídeo demostrativo (2-4 min) | **Pendiente** | Adam quiere que se le recuerde más adelante. Opción propuesta: grabarlo con el Movie Maker de Godot y un guion automático |
 | 7 | Presentación y defensa | En curso | Guion y preguntas probables en `presentacion.md`. Falta ensayar |
 

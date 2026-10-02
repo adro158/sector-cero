@@ -21,7 +21,9 @@ memoria. Todo el contexto vive en este repositorio: léelo entero antes de nada.
 3. Leer `documentacio/planificacion.md` (reparto de fitas y casillas).
 4. Contrastarlo todo con `git log --graph --oneline --all` y `git status`. Si hay
    commits que la bitácora no recoge, decírselo a Adam.
-5. Convención de commits y flujo de Git: `README.md`.
+5. Convención de commits y flujo de Git: `documentacio/flujo_de_trabajo.md`
+   (estaba en el `README.md` hasta el 02/10/2026; el README es ahora la portada
+   para el profesor).
 
 Después, si Adam no ha pedido otra cosa concreta, darle un informe corto de
 arranque: qué piden, qué está hecho, qué falta (por prioridad), el siguiente
@@ -58,7 +60,8 @@ Dejar todo guardado y **subido a GitHub, sin preguntar**:
 1. Hacer todo lo de "Al cerrar cada sesión" (bitácora, planificación,
    `requisitos_y_estado.md`).
 2. `git status` y commit **solo de los ficheros de Adam**, con la convención del
-   README. Si Godot ha reescrito ficheros de Alan, no se commitean: avisar.
+   `flujo_de_trabajo.md`. Si Godot ha reescrito ficheros de Alan, no se
+   commitean: avisar.
 3. `git push origin main`. Esta frase autoriza ese push.
 4. Comprobar con `git status` y `git log` que no queda nada sin subir, y decírselo
    a Adam en una línea.

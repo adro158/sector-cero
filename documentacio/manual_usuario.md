@@ -2,22 +2,16 @@
 
 ## Objetivo
 
-Eres un proceso antivirus dentro de un ordenador infectado. Oleadas de malware
-vienen hacia ti desde todas partes. **Aguanta 10 minutos** y aparecerá el jefe
-final: **derrótalo para ganar**. Si tu integridad (la barra de vida sobre tu
-personaje) llega a cero, pierdes.
+Eres un antivirus dentro de un ordenador infectado. **Aguanta 10 minutos**
+contra el malware y **derrota al jefe final** para ganar. Si tu integridad (la
+barra sobre tu personaje) llega a cero, pierdes.
 
-## Cómo arrancar el juego
+## Instalar y abrir
 
-- **Windows:** descomprime el `.zip` y abre `SectorCero.exe`.
-- **Linux:** descomprime y ejecuta `SectorCero.x86_64` (si hace falta, dale
-  permiso de ejecución con `chmod +x SectorCero.x86_64`).
-
-No hace falta instalar nada ni abrir Godot.
-
-**Actualizaciones:** al abrir el juego, debajo de los botones del menú aparece
-la versión. Si hay una nueva, aparece el botón **ACTUALIZAR**: la descarga y
-reinicia el juego. Sin conexión a internet el juego funciona igual.
+Descarga el `.zip` de [Releases](https://github.com/adro158/sector-cero/releases),
+descomprímelo y abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`; si no
+arranca, dale permiso con `chmod +x SectorCero.x86_64`). No hay que instalar
+nada. Si hay una versión nueva, en el menú aparece el botón **ACTUALIZAR**.
 
 ## Controles
 
@@ -27,72 +21,43 @@ reinicia el juego. Sin conexión a internet el juego funciona igual.
 | Cambiar de personaje | Q o Tab | Y |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
-| Empezar / reintentar | Enter | A |
 | Ficha de un enemigo | Click (click derecho la cierra) | — |
+| Empezar / reintentar | Enter | A |
 | Panel técnico | F3 | — |
-
-Los menús también se usan con el ratón.
 
 ## Cómo se juega
 
-1. **Solo te mueves.** Tu herramienta ataca sola cada pocos segundos. Tu
-   decisión es dónde colocarte.
-2. **Recoge los fragmentos de datos** que suelta el malware al morir. Te dan
-   experiencia (cian, verde o dorado según lo que valen). A los 30 segundos
-   parpadean y se pierden. Cada nivel cuesta más que el anterior y los enemigos
-   ganan vida con cada nivel que subes.
-3. **Al subir de nivel**, el juego se pausa y eliges una de tres mejoras: más
-   daño, más cadencia, más alcance, más velocidad, más integridad, que el
-   malware se adapte más despacio (Actualizar firmas), menos espera entre
-   cambios de personaje (Cambio en caliente) o recoger los fragmentos desde más
-   lejos (Caché ampliada).
+1. **Solo te mueves.** Tu herramienta ataca sola; tú decides dónde colocarte.
+2. **Recoge los fragmentos de datos** que suelta el malware (cian, verdes o
+   dorados según lo que valen). A los 30 segundos parpadean y se pierden.
+3. **Al subir de nivel** el juego se pausa y eliges una de tres mejoras. Cada
+   nivel cuesta más, y los enemigos ganan vida con cada nivel que subes.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
-   herramienta que más daño le ha hecho. Lo verás porque los números de daño y
-   el anillo de tu herramienta se vuelven rojos. Actualizar firmas hace que se
-   adapte más despacio.
-5. **Cambia de personaje** para atacarle con otra herramienta. Hay tres:
+   herramienta que más le ha dañado: tus números de daño se vuelven rojos.
+5. **Cambia de personaje** para atacarle con otra herramienta (10 s de espera
+   entre cambios):
    - **Espadachín · Firewall:** golpea todo lo que tienes alrededor.
-   - **Mago · Ping:** dispara un paquete que salta de un enemigo a otro.
-   - **Segador · Escáner:** un pulso lento y muy amplio.
+   - **Mago · Ping:** un paquete que salta de un enemigo a otro, a distancia.
+   - **Segador · Escáner:** un pulso fuerte y amplio, pero lento.
+6. **Evoluciones.** Elige tres veces la misma mejora de daño, cadencia o
+   alcance y tu herramienta evoluciona.
+7. **Cuidado con:** el **troyano** (caballo verde), que parpadea en rojo y
+   embiste en línea recta (apártate de lado), y el **ransomware** (candado
+   rojo), lento pero muy duro.
+8. **Élites.** Cada minuto llega uno con habilidades escritas encima
+   (blindado, replicante, aura lenta o explosivo). Al matarlo recuperas la
+   mitad de la vida y eliges una mejora gratis.
+9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo, va a
+   embestir: apártate.
 
-   Después de cambiar hay que esperar 10 segundos para volver a hacerlo (menos
-   con Cambio en caliente, hasta un mínimo de 4).
-6. **Evoluciones.** Si eliges tres veces la misma mejora de daño, cadencia o
-   alcance, aparece la evolución de una herramienta. Es mucho más fuerte y el
-   malware todavía no ha aprendido a resistirla.
-7. **La horda.** Casi todo el malware solo te persigue y hace daño al tocarte,
-   pero hay dos que piden atención:
-   - **Troyano** (caballo verde, desde el 4:00): cuando está cerca se para,
-     parpadea en rojo y embiste en línea recta. Al verlo parpadear, apártate de
-     lado.
-   - **Ransomware** (candado rojo, desde el 6:00): muy lento, pero aguanta
-     mucho y pega fuerte. Como mucho hay ocho a la vez; no dejes que te
-     acorralen.
-8. **Élites.** Cada minuto llega un Rootkit con uno o dos afijos, escritos
-   sobre su cabeza:
-   - **Blindado:** recibe la mitad de daño.
-   - **Replicante:** al morir suelta más malware.
-   - **Aura lenta:** si estás cerca, te frena.
-   - **Explosivo:** al morir estalla. Aléjate del anillo naranja.
-
-   Al matar un élite recuperas la mitad de la vida y eliges una mejora extra.
-9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo va a embestir
-   en línea recta: apártate.
-
-Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace
-y cuánto resiste a tu herramienta.
+Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
+herramienta.
 
 ## Pantallas
 
-- **Menú principal:** resumen de cómo se juega, tu mejor partida y los botones
-  Jugar, Reglas, Ranking, Opciones y Salir.
-- **Ranking:** las 10 mejores partidas de ese ordenador: primero las victorias
-  más rápidas y después las derrotas que más aguantaron.
-- **Reglas:** cuatro pestañas (cómo se juega, personajes, mejoras y enemigos)
-  que explican qué hace cada cosa y qué personaje conviene en cada situación.
-  Se cambia de pestaña con click o con las flechas.
-- **Opciones:** volumen de la música y de los efectos, pantalla completa y
-  filtro CRT. Se guardan solas.
-- **Pausa:** continuar, opciones o volver al menú.
-- **Resultados:** tiempo, nivel y malware eliminado. Avisa si has batido un
-  récord y, si la partida entra en el ranking, te pide un nombre.
+- **Menú:** jugar, reglas (qué hace cada personaje, mejora y enemigo),
+  ranking, opciones y salir.
+- **Ranking:** las 10 mejores partidas del ordenador. Si tu partida entra, al
+  acabar te pide un nombre.
+- **Opciones:** volumen, pantalla completa y filtro CRT. Se guardan solas.
+- **Resultados:** tiempo, nivel y malware eliminado, y si has batido un récord.

@@ -185,7 +185,7 @@ Excepciones:
 
 ## Flujo de trabajo
 
-Convención de commits y ramas: está en el `README.md` de la raíz.
+Convención de commits y ramas: está en `documentacio/flujo_de_trabajo.md`.
 
 Resumen: `tipo(ámbito): descripción en imperativo`. Hay dos ramas fijas que no
 se borran: Adam trabaja en `main`, que siempre tiene que poder ejecutarse, y
