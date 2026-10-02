@@ -4,8 +4,8 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 02/10/2026** contra la bitácora (hasta la sesión 7,
-14 h de 60) y contra el código del repositorio. Se actualiza al
+**Estado verificado el 02/10/2026** contra la bitácora (hasta la sesión 8,
+15 h de 60) y contra el código del repositorio. Se actualiza al
 cerrar cada sesión, junto con la bitácora y las casillas de `planificacion.md`.
 
 ## Qué es esto, en tres líneas
@@ -34,13 +34,13 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe, mejoras, personaje activo y avisos |
 | 5 | Controles coherentes | Hecho | Teclado, ratón en los menús y mando. Explicados en el menú, el manual y el README |
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
-| 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias) y opciones en `user://sector_cero.cfg` |
+| 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
 | 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
 | 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones, glitch de la horda, suelo animado (pulsos, LEDs, ventiladores), tweens en menús y avisos |
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10), v0.3 y v0.4 (02/10, con el contenido nuevo) publicadas por la GitHub Action. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10) y v0.3 a v0.5 (02/10, con el contenido nuevo y los cambios tras las pruebas de Adam y Alan) publicadas por la GitHub Action. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v0.4 publicada el 02/10. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v0.5 publicada el 02/10. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Capturas, ejecución, controles, tecnologías, autores y créditos |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md` |
@@ -95,7 +95,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
 2. **Probar en un ordenador limpio** (sin Godot) la v0.2 y el botón
-   ACTUALIZAR hacia la v0.4, publicada el 02/10 con ejecutable mínimo 0.2.
+   ACTUALIZAR hacia la v0.5, publicada el 02/10 con ejecutable mínimo 0.2.
 3. **Vídeo demostrativo** (2-4 min).
 4. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
@@ -129,9 +129,13 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
 - **Los ejecutables se publican como release de GitHub**, no dentro del
   repositorio, porque pesan más de 100 MB (sesión 5).
 - **El balance se decide con el simulador de partidas**, con semillas fijas
-  (sesión 4). Objetivo: 3-4 victorias de 5 (sesión 6), medido desde la sesión 7
-  con el bot que elige mejoras como un jugador (evolución y, si no, ataque) y
-  con 10 partidas. Hoy da 8 de 10.
+  (sesión 4). Objetivo: **2-3 victorias de 5** desde la sesión 8 (antes 3-4),
+  medido con el bot que elige mejoras como un jugador (evolución y, si no,
+  ataque) y con 10 partidas. Hoy da 6 de 10.
+- **Presión de la sesión 8** (decisiones de Adam): el doble de enemigos, +4 %
+  de vida por nivel del jugador, cada nivel un 50 % más caro, experiencia que
+  caduca a los 30 s, y élites que curan el 50 % y regalan una mejora.
+- **Ranking local con nombre**, sin servidor (sesión 8).
 - **Un tipo de horda puede limitar cuántos hay vivos a la vez**
   (`maximo_vivos`), en lugar de repartir las apariciones con pesos: el
   ransomware, 8 (sesión 7, decisión de Adam).

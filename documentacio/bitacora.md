@@ -1272,3 +1272,164 @@ Windows arranca sin errores).
 4. Vídeo demostrativo (Adam pidió que se le recuerde).
 5. Ensayar la defensa con `presentacion.md` y acordar con Alan su parte.
 6. Decidir qué se hace con las ramas `demo-movil` y `gh-pages`.
+
+---
+
+## Sesión 8 — 02/10/2026
+
+**Duración:** 1 h · **Fitas:** 4 y 5 · **Participantes:** Adam y Alan (pruebas
+de juego), Adam (con Claude)
+
+**Horas acumuladas:** 15 h de las 60 sugeridas (25 %)
+
+### Qué se ha hecho
+
+Adam y Alan jugaron la v0.4 y trajeron una lista de mejoras. Todas están
+hechas:
+
+- **Equilibrio de personajes.** El "amarillo" era el Segador (Escáner), muy
+  por encima. Ahora llega a 150 px (antes 200) y pega cada 2,5 s (antes 2,2);
+  el Firewall llega a 110 px (antes 90) y el Ping salta una vez más y pega más.
+- **Habilidades rebajadas:** mejora de daño del +20 % al +12 %, de alcance del
+  +15 % al +10 % y evoluciones más flojas.
+- **Los enemigos ganan vida con el nivel del jugador:** un 4 % por nivel.
+- **El doble de enemigos**, para que el juego sea más frenético.
+- **Cuesta más subir de nivel:** cada nivel pide un 50 % más que el anterior
+  (antes un 35 %).
+- **Los élites recompensan:** al matarlos curan el 50 % de la vida y regalan
+  una mejora.
+- **Barras de vida con borde** en élites, jefe y ransomware.
+- **Ficha del enemigo al hacer click**, arriba a la derecha, como en el League
+  of Legends.
+- **La experiencia sin recoger caduca a los 30 s**, parpadeando los tres
+  últimos.
+- **Ranking** de las 10 mejores partidas con nombre, con su botón en el menú.
+- Se publicó la **v0.5** con todo.
+
+### Decisiones técnicas y por qué
+
+Todas las preguntas se hicieron a Adam con opciones; eligió casi siempre la
+recomendada.
+
+**Bajar al Segador y subir a los otros** (decisión de Adam), en lugar de
+tocar solo uno: así cada personaje tiene su sitio (Firewall cuerpo a cuerpo,
+Ping a distancia, Escáner contra grupos) y no se cambia tanto la dificultad.
+
+**La vida por nivel, en los datos del enemigo.** `vida_extra_por_nivel` y
+`vida_para_nivel(nivel)` en `DatosTipoEnemigo`, que usan igual la horda y los
+élites. El nivel les llega por `experiencia_cambiada`, una señal del bus que ya
+existía. El jefe no cambia: está equilibrado aparte. Cada enemigo de horda
+guarda además su vida máxima (`_vidas_maximas`), porque depende del nivel al
+que apareció; la usan las barras y la ficha.
+
+**La mejora del élite, en la cola de las mejoras.** El sistema de niveles
+escucha `enemigo_muerto` y, si es un élite, suma una mejora pendiente sin
+subir de nivel. El contador pasó a llamarse `_mejoras_pendientes`. La curación
+la hace el propio élite al morir, con `Salud.curar(fraccion)`. El panel
+técnico calculaba el nivel contando paneles de mejora; ahora lo lee de
+`experiencia_cambiada`.
+
+**Experiencia que caduca a los 30 s** (decisión de Adam, frente a 15 s o a
+fusionar gemas). Cada gema guarda los segundos que le quedan; si ya vuela hacia
+el jugador no caduca, porque perderla en el último momento parecería un fallo.
+El parpadeo baja la transparencia del color de la instancia. También se
+olvidan antes al alejarse (1800 → 1200 px).
+
+**Barras con doble borde** en un script compartido (`barra_vida_enemigo.gd`)
+que usan el élite, el jefe y el gestor del ransomware. Solo para tipos con
+`mostrar_vida`: con el proceso colgado (cientos a la vez) sería ruido. La horda
+se dibuja detrás de su gestor (`show_behind_parent`) para que no tape las
+barras.
+
+**Ficha del enemigo.** Cada objetivo tiene `ficha_en(punto, radio)` y
+`ficha(id)`; la interfaz recorre el grupo `objetivos`, como hacen las armas.
+Para seguir a un enemigo de horda, que cambia de índice al morir otro, cada uno
+lleva un id único que se copia en `_eliminar`. El panel técnico (F3) bajó a la
+esquina inferior para dejar sitio.
+
+**Ranking local con nombre** (decisión de Adam: ni online, que necesitaría
+servidor, ni sin nombres). Lista de diccionarios en el mismo `ConfigFile`,
+ordenada con `sort_custom`: victorias de la más rápida a la más lenta y
+después derrotas de la que más aguantó. El nombre solo se pide si la partida
+entra. `partida_terminada` lleva ahora también el personaje.
+
+**Sin `class_name` en los tres scripts nuevos** (barras, ficha y ranking), para
+que la v0.5 se instale con el botón ACTUALIZAR. Se comprobó que siguen siendo
+16 clases globales.
+
+### Cambios de rumbo y su justificación
+
+**Objetivo de dificultad: de 3-4 a 2-3 victorias de 5** (decisión de Adam),
+para que se sienta la presión y se pueda morir.
+
+**De +8 % a +4 % de vida por nivel, y un 25 % más de daño base** (decisión de
+Adam tras ver los datos). Con todo lo pedido tal cual, el bot no ganaba nunca.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Todo junto era imposible.** Cuatro cambios que endurecen el juego a la vez
+(el doble de enemigos, la vida por nivel, menos niveles y mejoras más flojas)
+dejaban al bot en 0 victorias de 10: a los 9 minutos tenía más de mil enemigos
+alrededor. Simulador, 10 partidas por variante:
+
+| Variante | Victorias de 10 |
+|---|---|
+| Todo lo pedido (+8 % por nivel) | 0 |
+| Con 1,5 veces los enemigos en lugar del doble | 1 |
+| Con +5 % por nivel | 0 |
+| Curva del 42 % y mejora de daño del +15 % | 0 |
+| Herramientas con un 40 % más de daño | 1 |
+| Algo menos de densidad al final | 1 |
+| Enemigos con un 40 % menos de vida base | 2 |
+| Lo anterior y menos densidad al final | 2 |
+| 1,5 veces los enemigos con un 25 % menos de vida | 2 |
+| Jugador con 150 de vida y más regeneración | 1 de 4 |
+| **+4 % por nivel y herramientas con un 25 % más de daño** | **6** |
+
+Lo que más pesaba era la vida por nivel. Con la última fila el juego queda en
+el objetivo y las partidas tienen el doble de eliminados (2500-2900 en las
+victorias, antes unos 1400).
+
+**El filtro de seguridad bloqueó un comando** que editaba el manual con
+reemplazos en PowerShell (lo tomó por un borrado). Se hizo con el editor.
+
+### Uso de IA
+
+Claude programó todos los cambios, propuso las opciones de cada pregunta,
+buscó con el simulador una combinación que cumpliera el objetivo y actualizó la
+documentación. Las ideas salieron de la partida de prueba de Adam y Alan y las
+decisiones las tomó Adam.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless tras cada cambio, y recuento de clases
+  globales.
+- Gemas: una gema lejos de un jugador quieto parpadea a partir de los 27 s y
+  desaparece a los 30,0 s.
+- Élite y vida por nivel: al nivel 5, un bit sale con 26,4 de vida y un élite
+  con 594 (los dos ×1,32 con el 8 % que se probó primero); matar al élite cura
+  100 de 200, abre el panel sin subir de nivel y al elegir se quita la pausa.
+- Ficha, con ventana y clicks de ratón simulados: enseña la vida del ransomware
+  pinchado, lo sigue cuando muere otro y cambia de hueco, se cierra al morir
+  él, funciona con el élite y se cierra con click derecho. Captura de las
+  barras con borde.
+- Ranking, con copia de seguridad del fichero de guardado del jugador (se
+  restauró después): pide el nombre con el foco puesto, recorta los espacios,
+  ordena 12 partidas inventadas y se queda con 10, solo pide nombre si la
+  partida entra, y la ventana del menú enseña 10 filas. Capturas de las dos
+  pantallas.
+- Simulador: once variantes de 10 partidas (tabla de arriba) y la final en el
+  repositorio: 6 de 10.
+
+### Estado al cerrar
+
+Todo commiteado y subido a `main`, y publicado como **v0.5**.
+
+### Siguiente paso
+
+1. Que Adam y Alan jueguen la v0.5 y digan si la presión y el equilibrio entre
+   personajes se notan como querían.
+2. Probar en un ordenador sin Godot la actualización desde la v0.2.
+3. Vídeo demostrativo (Adam pidió que se le recuerde).
+4. Ensayar la defensa con `presentacion.md`, que tiene las preguntas nuevas.
+5. Decidir qué se hace con las ramas `demo-movil` y `gh-pages`.

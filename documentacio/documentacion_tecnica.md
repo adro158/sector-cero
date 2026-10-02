@@ -134,10 +134,20 @@ a otro). Los proyectiles usan el mismo patrón de arrays y MultiMesh que la
 horda; su sprite apunta a la derecha y cada uno se gira con el ángulo de su
 dirección, así que al rebotar se gira solo. Las gemas también son un MultiMesh,
 con un sprite en grises que cada gema tiñe con un color propio de la instancia
-(`use_colors`) según lo que vale: cian, verde o dorado. Cada personaje lleva una herramienta y solo dispara la del activo. Se
-cambia con Q, con 10 s de espera entre cambios (la mejora Cambio en caliente
-la acorta un 20 % cada vez, hasta un mínimo de 4 s: sin espera se podría
-cambiar sin parar y la resistencia no obligaría a decidir nada).
+(`use_colors`) según lo que vale: cian, verde o dorado. Una gema dura 30 s:
+los tres últimos parpadea (el color de la instancia baja su transparencia) y
+después desaparece, para que con el mapa infinito no se queden cientos por el
+camino.
+
+Cada personaje lleva una herramienta y solo dispara la del activo. Se cambia
+con Q, con 10 s de espera entre cambios (la mejora Cambio en caliente la acorta
+un 20 % cada vez, hasta un mínimo de 4 s: sin espera se podría cambiar sin
+parar y la resistencia no obligaría a decidir nada). Los tres hacen un daño por
+segundo parecido; lo que los diferencia es dónde: el Firewall golpea a todo lo
+que tiene alrededor (110 px), el Ping va de un enemigo a otro a distancia (hasta
+cinco) y el Escáner da un pulso fuerte y lento (150 px). El Escáner tenía 200 px
+y era claramente el mejor, porque con el mismo daño alcanzaba casi cinco veces
+el área del Firewall.
 
 **Resistencia adaptativa.** Cada arma avisa del daño que hace de verdad. Cada
 20 s, el malware mira cuál le ha hecho más daño y gana un 10 % de resistencia
@@ -153,20 +163,25 @@ de nivel el juego se pausa y se ofrecen tres de las ocho mejoras: cinco suben
 el ataque o la defensa (daño, cadencia, alcance, velocidad e integridad) y tres
 actúan sobre otros sistemas (Actualizar firmas, sobre la resistencia; Cambio en
 caliente, sobre la espera entre personajes; y Caché ampliada, que agranda un
-30 % el radio en el que las gemas vuelan hacia el jugador). Si se suben varios
-niveles de golpe quedan en cola y se eligen de uno en uno. Elegir tres veces
+30 % el radio en el que las gemas vuelan hacia el jugador). Cada nivel pide un
+50 % más de experiencia que el anterior. Matar un **élite** cura la mitad de
+la vida y regala una mejora: entra en la misma cola que las de subir de nivel,
+pero sin subir de nivel. Si se acumulan varias, se eligen de una en una. Elegir tres veces
 una mejora concreta ofrece la **evolución** de una herramienta, que es otro
 recurso de arma, así que el malware empieza sin resistencia contra ella.
 
 **Director de oleadas.** La dificultad sale de pocos números: el intervalo
-entre apariciones se interpola de 1 s a 0,1 s a lo largo de 10 minutos y cada
+entre apariciones se interpola de 0,5 s a 0,05 s a lo largo de 10 minutos (el
+doble de enemigos que hasta la sesión 7, para que haya más presión) y cada
 tipo de enemigo declara en qué segundo empieza a salir (bit corrupto desde el
 principio, paquete perdido desde el 0:45, proceso colgado desde el 2:00,
 troyano desde el 4:00 y ransomware desde el 6:00). En cada aparición el tipo se
 elige al azar entre los disponibles. Un tipo puede limitar además cuántos hay
 vivos a la vez (`maximo_vivos`): el ransomware, como mucho 8. Sin ese límite
 salían unos 250 por partida, lentos y con mucha vida, que se acumulaban detrás
-del jugador. Cada minuto desde el
+del jugador. Además, cada enemigo aparece con un 4 % más de vida por cada
+nivel del jugador (`vida_para_nivel` en `DatosTipoEnemigo`); sin eso, al subir
+de nivel los enemigos morían de un golpe. Cada minuto desde el
 1:30 activa un **élite** con uno o dos **afijos** sorteados (blindado,
 replicante, aura lenta y explosivo): con cuatro afijos salen diez élites
 distintos sin diseñarlos uno a uno. A los 10 minutos deja de salir horda y llega
@@ -196,7 +211,11 @@ en la partida siguiente.
 la mejor partida (tiempo, nivel y eliminados), el número de partidas y de
 victorias y las opciones (volumen de música y efectos, pantalla completa y
 filtro CRT). El menú muestra el récord y la pantalla final avisa si se ha
-batido.
+batido. También guarda el **ranking**: las 10 mejores partidas con el nombre
+que se escribe en la pantalla final (solo se pide si la partida entra),
+ordenadas con una función de comparación: primero las victorias, de la más
+rápida a la más lenta, y después las derrotas, de la que más aguantó. Es local
+de cada ordenador; uno compartido necesitaría un servidor.
 
 **Actualizaciones desde el juego.** Al abrir el menú, el autoload
 `Actualizador` pregunta a la API de GitHub cuál es la última release. Si es más
@@ -218,7 +237,17 @@ escucha el bus y los cambios de escena. Un efecto no puede repetirse antes de
 destello blanco del enemigo golpeado, parpadeo rojo del troyano antes de
 embestir y glitch de la horda por shader (sustituyen a la animación, que un
 MultiMesh no permite), tinte y sacudida de cámara al
-recibir daño, avisos en el HUD, filtro CRT y fundidos entre escenas.
+recibir daño, avisos en el HUD, filtro CRT y fundidos entre escenas. Los élites,
+el jefe y el ransomware llevan una barra de vida con doble borde (oscuro por
+fuera, claro por dentro) para que se lea sobre cualquier fondo.
+
+**Ficha del enemigo.** Al hacer click en un enemigo sale arriba a la derecha su
+ficha, como en el League of Legends: vida, daño, velocidad y resistencia a la
+herramienta actual. La pantalla se pasa al mundo con la inversa de la
+transformación de la cámara y se pregunta a todo el grupo `objetivos` con
+`ficha_en`: el más cercano gana. Un enemigo de horda cambia de índice cuando
+muere otro, así que cada uno lleva un número único (`_ids`) que viaja con él, y
+la ficha lo sigue con `ficha(id)` en cada fotograma hasta que muere.
 
 ## 5. Problemas y soluciones
 
@@ -291,6 +320,15 @@ Godot avisa de una fuga del reproductor de audio. Se comprobó que es del motor
   así que ahora el bot coge la evolución si sale y, si no, una de ataque si la
   hay. Con ese bot, el juego pasa de **9 victorias de 10** antes del contenido
   nuevo a **8 de 10** después.
+
+  Después de jugarlo, Adam y Alan pidieron un juego más frenético: el doble de
+  enemigos, más vida por nivel, subir de nivel más despacio y rebajar las
+  mejoras, con un objetivo nuevo de 2-3 victorias de 5. Todo junto dejaba al
+  bot en 0 de 10: a los 9 minutos tenía más de mil enemigos encima. Se
+  probaron nueve variantes. Bajar la vida de cada enemigo o subir solo el daño
+  no bastaba (0-2 de 10). Lo que más pesaba era la vida por nivel. Con un 4 %
+  por nivel en lugar de un 8 % y un 25 % más de daño base en las herramientas,
+  el resultado es **6 de 10**.
 - **Medida de rendimiento** (`medir_rendimiento.gd`), en una NVIDIA GeForce
   RTX 5070, sin sincronización vertical. La física es la mediana de lo que
   tarda cada paso; el presupuesto a 60 FPS son 16,67 ms:

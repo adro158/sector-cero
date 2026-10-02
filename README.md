@@ -76,6 +76,7 @@ Godot --headless --path . --export-release "Linux" ../build/linux/SectorCero.x86
 | Cambiar de personaje | Q o Tab | Y |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
+| Ficha de un enemigo | Click (click derecho la cierra) | — |
 | Panel técnico | F3 | — |
 
 Las instrucciones completas están en el
@@ -103,7 +104,12 @@ Las instrucciones completas están en el
 - **Mapa infinito** con un suelo de placa base animado: baldosas de pixel art
   que encajan sin costuras y un shader con pulsos de datos que se aceleran
   durante la partida y se vuelven rojos con el jefe.
-- **Récords y opciones guardados** (volumen, pantalla completa y filtro CRT).
+- **Récords, ranking y opciones guardados**: las 10 mejores partidas con
+  nombre, volumen, pantalla completa y filtro CRT.
+- **Ficha del enemigo**: click en cualquier enemigo para ver su vida, su daño y
+  cuánto resiste a tu herramienta, como en el League of Legends.
+- **Élites que recompensan**: al matarlos curan la mitad de la vida y regalan
+  una mejora.
 - **Actualización desde el propio juego**: busca la última release en GitHub
   y se descarga solo el contenido nuevo.
 - **Audio propio** sintetizado por código: 17 efectos y 3 músicas.

@@ -115,6 +115,9 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 - [x] Contenido nuevo pedido por Adam (02/10): suelo de placa base animado,
       enemigos redibujados, troyano (embiste), ransomware (tanque, 8 a la vez)
       y tres mejoras (Actualizar firmas, Cambio en caliente y Caché ampliada)
+- [x] Mejoras tras las pruebas de Adam y Alan (02/10): equilibrio de
+      personajes, más presión, recompensa de los élites, barras de vida,
+      ficha del enemigo, experiencia que caduca y ranking
 
 **Asignado a Alan, hecho por Adam**
 

@@ -36,8 +36,10 @@ cambias de personaje**.
 4. Pulsar **F3**: el panel técnico enseña la resistencia del malware subiendo.
    Cuando los números salgan rojos, cambiar de personaje con **Q** y ver que
    vuelven a salir blancos.
-5. Esperar al primer élite (1:30): leer sus afijos sobre la cabeza.
-6. Pausa con Esc y volver al menú. Enseñar que el récord se ha guardado.
+5. Esperar al primer élite (1:30): leer sus afijos sobre la cabeza, pinchar en
+   él para ver su ficha y matarlo para enseñar la recompensa.
+6. Pausa con Esc y volver al menú. Enseñar que el récord se ha guardado y el
+   ranking.
 
 Si el tiempo es corto, tener preparado el vídeo para enseñar el jefe.
 
@@ -148,6 +150,30 @@ El director elige el tipo al azar entre los disponibles: sin límite salían uno
 250 por partida, lentos y con mucha vida, que se acumulaban detrás del jugador,
 y el bot pasaba de ganar 4 de 5 a 1 de 5. `maximo_vivos` en su `.tres` y
 `cabe_otro()` en el gestor: si ya hay ocho, ese turno sale otro tipo.
+
+**¿Cómo funciona la ficha al pinchar en un enemigo?**
+`ficha_enemigo.gd`: pasa el click de la pantalla al mundo con la inversa de la
+transformación de la cámara y pregunta a todo el grupo `objetivos` con
+`ficha_en(punto, radio)`; se queda con el más cercano. Como un enemigo de
+horda cambia de índice cuando muere otro, cada uno lleva un número único en
+`_ids` que se copia en `_eliminar` igual que su vida, y la ficha lo sigue con
+`ficha(id)` en cada fotograma.
+
+**¿Cómo se ordena el ranking? ¿Es online?**
+`gestor_guardado.gd`: lista de diccionarios en el mismo `ConfigFile`, ordenada
+con `sort_custom(_va_antes)`: primero las victorias, de la más rápida a la más
+lenta; luego las derrotas, de la que más aguantó. Se queda con 10. Es local:
+uno compartido necesitaría un servidor y cuentas.
+
+**¿Por qué los enemigos ganan vida al subir de nivel?**
+Porque las mejoras se acumulan y llegaba un momento en que todo moría de un
+golpe. `vida_para_nivel(nivel)` en `DatosTipoEnemigo`: un 4 % más por nivel. Se
+probó un 8 % y el bot no ganaba ninguna partida.
+
+**¿Por qué desaparece la experiencia?**
+En un mapa infinito se quedaban cientos de gemas por el camino. Cada una guarda
+cuánto le queda (`_restantes`) y a los 30 s se elimina como si se recogiera;
+los tres últimos segundos parpadea bajando la transparencia de su color.
 
 **¿Cómo decide el malware a qué resistir?**
 `resistencia_malware.gd`: las armas le avisan del daño que hacen. Cada 20 s

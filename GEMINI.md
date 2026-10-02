@@ -101,7 +101,8 @@ Detalles que la interfaz tiene que respetar:
   fin de partida. La acción de input es `pausar` (Esc, P y Start del mando).
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
-  (int), `eliminados` (int). Al cumplirse `duracion_partida`
+  (int), `eliminados` (int) y `personaje` (String, el que llevaba al acabar;
+  para el ranking). Al cumplirse `duracion_partida`
   (`recursos/oleadas/datos/config_principal.tres`, 10 minutos) deja de
   aparecer horda y llega el jefe final; se gana al derrotarlo.
 
@@ -109,7 +110,8 @@ Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 
 **El audio** (`GestorAudio`) no lo llama nadie: escucha el bus y los cambios de
 escena y decide qué suena. **La persistencia** (`GestorGuardado`) escucha
-`partida_terminada` para los récords y guarda las opciones.
+`partida_terminada` para los récords, guarda las opciones y el ranking (las 10
+mejores partidas con nombre, que se escribe en la pantalla final).
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
@@ -121,9 +123,11 @@ pantalla).
 - `aparicion_jugador` — un `Marker2D` en la escena de la arena: dónde aparece el
   jugador. El mapa es infinito: la arena ya no declara límites.
 - `jugador` — el jugador.
-- `objetivos` — todo lo que recibe daño de las armas: los tres gestores de la
-  horda, los élites y el jefe. Todos tienen `danar_en_area` y `mas_cercano`.
-- `gestor_enemigos` — los tres gestores de la horda.
+- `objetivos` — todo lo que recibe daño de las armas: los cinco gestores de la
+  horda, los élites y el jefe. Todos tienen `danar_en_area` y `mas_cercano`, y
+  también `ficha_en` y `ficha`, que usa la ficha del enemigo de la interfaz
+  (click en un enemigo).
+- `gestor_enemigos` — los cinco gestores de la horda.
 - `elites` — los élites, ocultos hasta que el director los activa.
 
 El código los busca con `get_tree().get_first_node_in_group(...)`, así que solo

@@ -28,6 +28,7 @@ reinicia el juego. Sin conexión a internet el juego funciona igual.
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Empezar / reintentar | Enter | A |
+| Ficha de un enemigo | Click (click derecho la cierra) | — |
 | Panel técnico | F3 | — |
 
 Los menús también se usan con el ratón.
@@ -37,7 +38,9 @@ Los menús también se usan con el ratón.
 1. **Solo te mueves.** Tu herramienta ataca sola cada pocos segundos. Tu
    decisión es dónde colocarte.
 2. **Recoge los fragmentos de datos** que suelta el malware al morir. Te dan
-   experiencia.
+   experiencia (cian, verde o dorado según lo que valen). A los 30 segundos
+   parpadean y se pierden. Cada nivel cuesta más que el anterior y los enemigos
+   ganan vida con cada nivel que subes.
 3. **Al subir de nivel**, el juego se pausa y eliges una de tres mejoras: más
    daño, más cadencia, más alcance, más velocidad, más integridad, que el
    malware se adapte más despacio (Actualizar firmas), menos espera entre
@@ -71,13 +74,20 @@ Los menús también se usan con el ratón.
    - **Replicante:** al morir suelta más malware.
    - **Aura lenta:** si estás cerca, te frena.
    - **Explosivo:** al morir estalla. Aléjate del anillo naranja.
+
+   Al matar un élite recuperas la mitad de la vida y eliges una mejora extra.
 9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo va a embestir
    en línea recta: apártate.
+
+Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace
+y cuánto resiste a tu herramienta.
 
 ## Pantallas
 
 - **Menú principal:** resumen de cómo se juega, tu mejor partida y los botones
-  Jugar, Reglas, Opciones y Salir.
+  Jugar, Reglas, Ranking, Opciones y Salir.
+- **Ranking:** las 10 mejores partidas de ese ordenador: primero las victorias
+  más rápidas y después las derrotas que más aguantaron.
 - **Reglas:** cuatro pestañas (cómo se juega, personajes, mejoras y enemigos)
   que explican qué hace cada cosa y qué personaje conviene en cada situación.
   Se cambia de pestaña con click o con las flechas.
@@ -85,4 +95,4 @@ Los menús también se usan con el ratón.
   filtro CRT. Se guardan solas.
 - **Pausa:** continuar, opciones o volver al menú.
 - **Resultados:** tiempo, nivel y malware eliminado. Avisa si has batido un
-  récord.
+  récord y, si la partida entra en el ranking, te pide un nombre.
