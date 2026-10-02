@@ -1256,9 +1256,8 @@ bien, `version.json` dice versión 0.3 con ejecutable mínimo 0.2 (quien tenga
 la v0.2 se actualiza con el botón) y el ejecutable de Windows que exportó
 arranca sin errores.
 
-Después de la v0.3 entraron los sprites de la experiencia y del Ping:
-commiteados en `main`, pendientes de subir hasta que Adam diga "ya he
-acabado". Saldrán en la próxima versión.
+Después de la v0.3 entraron los sprites de la experiencia y del Ping, ya
+subidos a `main`. Saldrán en la próxima versión.
 
 ### Siguiente paso
 
