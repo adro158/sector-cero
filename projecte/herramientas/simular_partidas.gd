@@ -5,8 +5,8 @@ extends SceneTree
 ## de los élites y del jefe, da vueltas cuando no hay peligro, elige mejoras al
 ## azar (o la evolución, si sale) y cambia de personaje cuando el malware se ha
 ## hecho resistente a su herramienta. Cada minuto de partida anota vida, nivel,
-## enemigos, herramienta y resistencias, y al final resume victorias, duración
-## media y cambios de personaje.
+## enemigos (en total y por tipo), herramienta y resistencias, y al final
+## resume victorias, duración media, cambios de personaje y eliminados por tipo.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -35,6 +35,8 @@ var _victorias := 0
 var _duraciones: Array[float] = []
 var _cambios := 0
 var _evoluciones := 0
+## Eliminados de cada tipo, sumando todas las partidas.
+var _eliminados_por_tipo := {}
 var _bus: Node
 var _juego: Node
 var _raiz: Node
@@ -57,6 +59,7 @@ func _initialize() -> void:
 	_bus.partida_terminada.disconnect.call_deferred(guardado._al_terminar_partida)
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
 	_bus.arma_evolucionada.connect(func(_arma): _evoluciones += 1)
+	_bus.enemigo_muerto.connect(func(_posicion, tipo): _eliminados_por_tipo[tipo] = _eliminados_por_tipo.get(tipo, 0) + 1)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
 	_empezar_partida()
@@ -170,8 +173,10 @@ func _mover_bot() -> void:
 
 func _informe(etiqueta: String) -> void:
 	var vivos := 0
+	var por_tipo := []
 	for gestor in _gestores:
 		vivos += gestor.vivos()
+		por_tipo.append("%s %d" % [gestor.datos.tipo, gestor.vivos()])
 
 	var resistencias := []
 	var tabla: Dictionary = _raiz.get_node("ResistenciaMalware").resistencias()
@@ -182,6 +187,7 @@ func _informe(etiqueta: String) -> void:
 	print("%s vida=%3.0f/%3.0f nivel=%2d en_pantalla=%3d arma=%s resiste=%s" % [
 		etiqueta, salud._vida, salud.vida_maxima, _raiz.get_node("SistemaNiveles").nivel(),
 		vivos, _jugador.get_node("GestorArmas").armas[0].nombre, resistencias])
+	print("        por tipo: %s" % ", ".join(por_tipo))
 
 
 func _al_terminar(estadisticas: Dictionary) -> void:
@@ -209,4 +215,5 @@ func _siguiente() -> void:
 		suma += duracion
 	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d" % [
 		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones])
+	print("ELIMINADOS POR TIPO %s" % _eliminados_por_tipo)
 	quit()

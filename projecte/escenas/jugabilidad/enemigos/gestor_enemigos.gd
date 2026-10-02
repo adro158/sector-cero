@@ -48,6 +48,11 @@ func tiempo_aparicion() -> float:
 	return datos.tiempo_aparicion
 
 
+## Si cabe otro de este tipo sin pasar de su máximo a la vez (0 es sin límite).
+func cabe_otro() -> bool:
+	return datos.maximo_vivos == 0 or _vivos < datos.maximo_vivos
+
+
 func aparecer(posicion: Vector2) -> void:
 	if _vivos >= MAXIMO_ENEMIGOS:
 		return

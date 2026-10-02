@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="Texture2D" path="res://recursos/enemigos/sprites/ransomware.png" id="2_textura"]
+
+[resource]
+script = ExtResource("1_tipo")
+tipo = "ransomware"
+nombre = "Ransomware"
+descripcion = "El tanque del final. Aparece desde el 6:00: muy lento, pero aguanta muchísimo y pega fuerte. No dejes que te acorrale; el Escáner le pega desde lejos."
+vida = 240.0
+velocidad = 70.0
+tamano = 44.0
+textura = ExtResource("2_textura")
+color = Color(0.92, 0.22, 0.27, 1)
+dano_contacto = 12.0
+experiencia = 10
+tiempo_aparicion = 360.0
+maximo_vivos = 8

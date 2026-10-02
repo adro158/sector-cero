@@ -69,11 +69,12 @@ func _intervalo_actual() -> float:
 
 func _elegir_tipo() -> GestorEnemigos:
 	# Cada tipo tiene su propio momento de entrada en la partida, así que la
-	# variedad crece sola con el tiempo sin necesidad de guionizar oleadas.
+	# variedad crece sola con el tiempo sin necesidad de guionizar oleadas. Un
+	# tipo que ya tiene vivos todos los que admite a la vez se salta este turno.
 	var disponibles: Array[GestorEnemigos] = []
 
 	for gestor in _gestores:
-		if gestor.tiempo_aparicion() <= _tiempo:
+		if gestor.tiempo_aparicion() <= _tiempo and gestor.cabe_otro():
 			disponibles.append(gestor)
 
 	if disponibles.is_empty():

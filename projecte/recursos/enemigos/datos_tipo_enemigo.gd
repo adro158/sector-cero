@@ -18,3 +18,7 @@ extends Resource
 
 ## Segundo de partida a partir del cual este tipo empieza a aparecer.
 @export var tiempo_aparicion: float = 0.0
+## Cuántos de este tipo puede haber vivos a la vez; 0 es sin límite. Es para
+## los tanques como el ransomware: lentos y con mucha vida, sin límite se
+## acumulan detrás del jugador.
+@export var maximo_vivos: int = 0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe.tscn" id="18_jefe"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/pool_particulas.gd" id="19_particulas"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/enemigo_elite.tscn" id="20_elite"]
+[ext_resource type="Resource" path="res://recursos/enemigos/datos/ransomware.tres" id="21_ransomware"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -41,6 +42,12 @@ script = ExtResource("3_enemigos")
 datos = ExtResource("10_proceso")
 
 [node name="Horda" type="MultiMeshInstance2D" parent="ProcesoColgado"]
+
+[node name="Ransomware" type="Node2D" parent="." groups=["gestor_enemigos", "objetivos"]]
+script = ExtResource("3_enemigos")
+datos = ExtResource("21_ransomware")
+
+[node name="Horda" type="MultiMeshInstance2D" parent="Ransomware"]
 
 [node name="PoolGemas" type="Node2D" parent="."]
 script = ExtResource("5_gemas")
