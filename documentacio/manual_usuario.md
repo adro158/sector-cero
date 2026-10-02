@@ -39,26 +39,39 @@ Los menús también se usan con el ratón.
 2. **Recoge los fragmentos de datos** que suelta el malware al morir. Te dan
    experiencia.
 3. **Al subir de nivel**, el juego se pausa y eliges una de tres mejoras: más
-   daño, más cadencia, más alcance, más velocidad o más integridad.
+   daño, más cadencia, más alcance, más velocidad, más integridad, que el
+   malware se adapte más despacio (Actualizar firmas), menos espera entre
+   cambios de personaje (Cambio en caliente) o recoger los fragmentos desde más
+   lejos (Caché ampliada).
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
    herramienta que más daño le ha hecho. Lo verás porque los números de daño y
-   el anillo de tu herramienta se vuelven rojos.
+   el anillo de tu herramienta se vuelven rojos. Actualizar firmas hace que se
+   adapte más despacio.
 5. **Cambia de personaje** para atacarle con otra herramienta. Hay tres:
    - **Espadachín · Firewall:** golpea todo lo que tienes alrededor.
    - **Mago · Ping:** dispara un paquete que salta de un enemigo a otro.
    - **Segador · Escáner:** un pulso lento y muy amplio.
 
-   Después de cambiar hay que esperar 10 segundos para volver a hacerlo.
+   Después de cambiar hay que esperar 10 segundos para volver a hacerlo (menos
+   con Cambio en caliente, hasta un mínimo de 4).
 6. **Evoluciones.** Si eliges tres veces la misma mejora de daño, cadencia o
    alcance, aparece la evolución de una herramienta. Es mucho más fuerte y el
    malware todavía no ha aprendido a resistirla.
-7. **Élites.** Cada minuto llega un Rootkit con uno o dos afijos, escritos
+7. **La horda.** Casi todo el malware solo te persigue y hace daño al tocarte,
+   pero hay dos que piden atención:
+   - **Troyano** (caballo verde, desde el 4:00): cuando está cerca se para,
+     parpadea en rojo y embiste en línea recta. Al verlo parpadear, apártate de
+     lado.
+   - **Ransomware** (candado rojo, desde el 6:00): muy lento, pero aguanta
+     mucho y pega fuerte. Como mucho hay ocho a la vez; no dejes que te
+     acorralen.
+8. **Élites.** Cada minuto llega un Rootkit con uno o dos afijos, escritos
    sobre su cabeza:
    - **Blindado:** recibe la mitad de daño.
    - **Replicante:** al morir suelta más malware.
    - **Aura lenta:** si estás cerca, te frena.
    - **Explosivo:** al morir estalla. Aléjate del anillo naranja.
-8. **El jefe final** llega a los 10 minutos. Cuando se pone rojo va a embestir
+9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo va a embestir
    en línea recta: apártate.
 
 ## Pantallas

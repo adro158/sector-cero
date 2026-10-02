@@ -136,7 +136,8 @@ cientos en pantalla con una sola llamada de dibujado por tipo. Eso implica que
 **todas las instancias de un tipo comparten una textura y un material**: un
 solo sprite por tipo de enemigo, sin fotogramas de animación, todos del mismo
 tamaño. El movimiento visual lo pone un shader (`medios/shaders/horda.gdshader`:
-destello al recibir daño y glitch), no una animación dibujada.
+destello al recibir daño, glitch y el parpadeo rojo del troyano antes de
+embestir), no una animación dibujada.
 
 Los élites y el jefe sí son nodos normales y pueden llevar animación, porque hay
 pocos a la vez.
@@ -151,6 +152,10 @@ un shader con un cero justo detrás del punto llega mal: `0.05` se comporta como
 `0.5`, y `0.005` como `0.05`. `0.10` o `0.25` salen bien. Para valores así hay
 que escribirlos como división (`1.0 / 20.0`) o pasarlos como parámetros del
 material desde la escena.
+
+En los shaders `canvas_item` de Godot 4, el `COLOR` que llega a `fragment()`
+ya trae la textura aplicada. No hay que volver a multiplicarlo por
+`texture(TEXTURE, UV)`: el sprite sale más oscuro (cada canal, al cuadrado).
 
 ## Idioma
 

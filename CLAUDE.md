@@ -145,7 +145,11 @@ de lanzar Godot.
   `Version` (la cargaría antes de aplicar la actualización).
 - Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
-  que se va a publicar: el `.pck` de actualización no lleva esas cosas.
+  que se va a publicar: el `.pck` de actualización no lleva esas cosas. Un
+  script auxiliar nuevo que no necesite ser global se carga con `preload` y
+  sin `class_name` (como `embestida_horda.gd`), y así no hace falta subirlo.
+  Se comprueba en `.godot/global_script_class_cache.cfg`: el número de clases
+  no debe cambiar.
 - Probado de punta a punta con un servidor local que imita la API de GitHub
   (bitácora, sesión 6).
 - Tras cualquier cambio de balance, medirlo con el simulador de partidas

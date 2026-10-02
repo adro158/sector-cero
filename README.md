@@ -91,11 +91,18 @@ Las instrucciones completas están en el
   gana resistencia contra la herramienta que más daño le ha hecho.
 - **Tres personajes** con su herramienta (Firewall, Ping y Escáner) y cambio en
   plena partida.
-- **Evoluciones** de cada herramienta al repetir una mejora.
+- **Ocho mejoras y tres evoluciones**: además de las de ataque y defensa, una
+  que frena la adaptación del malware, otra que acorta la espera entre
+  personajes y otra que amplía el radio de recogida.
 - **Élites con afijos procedurales**: blindado, replicante, aura lenta y
   explosivo, combinados al azar.
+- **Cinco tipos de horda**, entre ellos el troyano, que embiste tras un
+  parpadeo rojo, y el ransomware, un tanque lento del que no puede haber más de
+  ocho a la vez.
 - **Jefe final** con embestida telegrafiada.
-- **Mapa infinito** con un suelo de placa base hecho por shader.
+- **Mapa infinito** con un suelo de placa base animado: baldosas de pixel art
+  que encajan sin costuras y un shader con pulsos de datos que se aceleran
+  durante la partida y se vuelven rojos con el jefe.
 - **Récords y opciones guardados** (volumen, pantalla completa y filtro CRT).
 - **Actualización desde el propio juego**: busca la última release en GitHub
   y se descarga solo el contenido nuevo.
@@ -122,10 +129,11 @@ Las instrucciones completas están en el
 
 ## Créditos
 
-Todos los gráficos, sonidos y la música son propios o generados por código,
-salvo los sprites de los personajes y del jefe, hechos con IA (Gemini y Claude)
-a partir de un ejemplo del profesor. El detalle está en
-[créditos](documentacio/creditos.md).
+La música, los sonidos y parte de los iconos son propios, generados por código.
+Los sprites de los personajes y del jefe se hicieron con IA (Gemini y Claude) a
+partir de un ejemplo del profesor, y los de la horda y el élite, tres iconos y
+las texturas del suelo, con Claude. No hay assets de terceros. El detalle está
+en [créditos](documentacio/creditos.md).
 
 ## Documentación
 

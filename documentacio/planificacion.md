@@ -112,6 +112,9 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       ralentizadora y explosivo (01/10)
 - [x] Evoluciones de armas (01/10)
 - [x] Mapa infinito (01/10)
+- [x] Contenido nuevo pedido por Adam (02/10): suelo de placa base animado,
+      enemigos redibujados, troyano (embiste), ransomware (tanque, 8 a la vez)
+      y tres mejoras (Actualizar firmas, Cambio en caliente y Caché ampliada)
 
 **Asignado a Alan, hecho por Adam**
 
@@ -128,13 +131,14 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 **Ambos**
 
 - [x] Corrección de errores detectados en testeo
-- [x] Ajuste de balance y sensaciones de juego con el simulador de partidas (29/09
-      y 01/10)
+- [x] Ajuste de balance y sensaciones de juego con el simulador de partidas (29/09,
+      01/10 y 02/10)
 - [x] **Validación de rendimiento en una máquina con GPU real** (01/10, RTX 5070)
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
-- [ ] Build final exportado y probado en una máquina limpia (exportado el 01/10;
-      falta probarlo en un ordenador sin Godot)
+- [ ] Build final exportado y probado en una máquina limpia (release v0.2
+      publicada el 01/10; falta probarla en un ordenador sin Godot, y el
+      contenido del 02/10 saldrá en la v0.3)
 
 ---
 

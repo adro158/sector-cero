@@ -1039,3 +1039,209 @@ después). La release v0.2 la publicará la GitHub Action al subir la etiqueta
 3. Vídeo demostrativo (Adam pidió que se le recuerde).
 4. Probar el ejecutable en un ordenador sin Godot.
 5. Ensayar la defensa con `presentacion.md` y acordar con Alan su parte.
+
+---
+
+## Sesión 7 — 02/10/2026
+
+**Duración:** 2 h · **Fitas:** 4, 5 y 6 · **Participantes:** Adam (desde casa)
+
+**Horas acumuladas:** 14 h de las 60 sugeridas (23 %)
+
+### Qué se ha hecho
+
+- **Lo que quedó fuera de la sesión 6:** al cerrarla se subió `main` y se
+  publicó la release v0.2 con la GitHub Action. La primera vez no se lanzó,
+  porque la etiqueta llegó en el mismo push que el fichero de la Action; se
+  volvió a subir la etiqueta y terminó bien. El ejecutable que exporta la
+  Action arranca sin errores.
+- **Contenido nuevo que Adam hizo fuera**, con Claude en una conversación
+  aparte: tres zips con los dibujos, el suelo y un texto de instrucciones. Se
+  integró aquí en cinco bloques, con un commit cada uno:
+  - **A. Suelo de placa base animado**: 12 baldosas de pixel art que encajan
+    sin costuras, pulsos de datos por las pistas, LEDs, ventiladores y brillo
+    en los chips. Los pulsos se aceleran con la partida y se vuelven rojos
+    con el jefe.
+  - **B. Enemigos redibujados**: los tres de la horda y el élite, con el mismo
+    nombre, tamaño y color.
+  - **C1. Ransomware**: enemigo de horda lento y muy resistente desde el 6:00,
+    como mucho 8 a la vez.
+  - **C2. Troyano**: enemigo de horda desde el 4:00 que, al acercarse,
+    parpadea en rojo y embiste como el jefe.
+  - **C3. Tres mejoras**: Actualizar firmas (el malware se adapta un 30 % más
+    despacio), Cambio en caliente (-20 % de espera entre personajes, mínimo
+    4 s) y Caché ampliada (+30 % de radio de recogida).
+- **Arreglo del shader de la horda**, que oscurecía todos los sprites (ver
+  Problemas).
+- **Simulador**: cuenta los enemigos por tipo y su bot elige mejoras como un
+  jugador.
+- **Documentación**: técnica, manual, créditos, presentación (con las
+  preguntas sobre el suelo, el troyano, el ransomware y Actualizar firmas),
+  README con capturas nuevas, `GEMINI.md` y `CLAUDE.md`.
+- **Encontrado en GitHub:** dos ramas que la bitácora no recoge,
+  `demo-movil` (controles táctiles y exportación web para una demo en el
+  móvil, dos commits del 01/10 firmados por Claude) y `gh-pages` (esa demo
+  publicada en GitHub Pages). No están fusionadas en `main` y no se han
+  tocado; se avisó a Adam.
+
+### Decisiones técnicas y por qué
+
+**Solo entra en el repositorio lo que va en el juego.** Los zips no estaban
+descomprimidos. Se abrieron aparte y solo se copió su carpeta `projecte/`. Los
+textos de instrucciones, las vistas previas y los scripts de Python que
+generaron los dibujos se quedan fuera; su procedencia está en `creditos.md`.
+
+**El suelo, entendido para defenderlo.** El shader parte el mundo en casillas
+de 256x256 y cada una elige uno de los 12 dibujos con un número al azar fijo
+para esa casilla. Las otras dos texturas son datos: la máscara dice qué
+píxeles son pistas con datos, cuánto camino llevan y en qué dirección van, y
+el shader enciende el punto cuyo camino coincide con el avance; la de efectos
+marca LEDs, aspas y brillo. El avance lo suma `arena.gd` y no el reloj del
+shader, para cambiar la velocidad sin que los pulsos salten. La arena usa una
+copia del material para que el rojo del jefe no pase a la partida siguiente.
+Las texturas son opacas, así que la importación por defecto no altera la
+máscara (se comprobó).
+
+**`generar_sprites.gd` ya no dibuja enemigos.** Se quitaron las cuatro líneas
+que los guardaban y también las funciones que los dibujaban, en lugar de
+comentarlas: habrían quedado como código muerto difícil de justificar. Los
+dibujos antiguos siguen en el historial de Git.
+
+**Un máximo a la vez por tipo, no pesos** (decisión de Adam). El director
+elige el tipo al azar y el ransomware se acumulaba (ver Problemas). Se
+probaron dos formas con el simulador: un peso por tipo (con 0,25, 5 de 5
+victorias, pero aún 40-75 ransomware al final) y un máximo de vivos a la vez
+(con 8, 3 de 5 y siempre 8 en pantalla). Ganó el máximo por ser una sola
+comparación (`cabe_otro()`) y la regla más fácil de contar: "nunca hay más de
+ocho".
+
+**La embestida del troyano va en su propio script.** El troyano repite la
+máquina de estados del jefe (perseguir, aviso y embestida), pero no es un nodo:
+su estado, su cronómetro y su dirección van en tres arrays de tamaño fijo con
+el mismo índice que su posición, y `_eliminar` los copia al hueco nuevo como
+la vida. Meterlo en `gestor_enemigos.gd` lo llevaba a unas 270 líneas; en
+`embestida_horda.gd` el gestor se queda en 245 y solo lo crean los tipos con
+`embiste = true`. Los valores (220 px, 0,4 s, 0,6 s, el triple de velocidad,
+2,5 s) están en `DatosTipoEnemigo`, como el resto de cada tipo. Durante el
+aviso se queda quieto y apunta al jugador hasta el último momento, igual que
+el jefe. El aviso llega al shader en `INSTANCE_CUSTOM.g`.
+
+**Sin `class_name` en el script nuevo.** Una clase global nueva no viaja en
+el `.pck` de actualización y habría obligado a subir `EJECUTABLE_MINIMO`: los
+jugadores con la v0.2 tendrían que bajarse el juego entero. Con `preload` no
+hace falta; se comprobó que el número de clases globales no cambia.
+
+**Las mejoras nuevas, como las de siempre.** Multiplicadores en el nodo al
+que afectan, sin tocar los `.tres`, y un caso más en el `match` de
+`sistema_niveles.gd`. Los efectos nuevos van al final del enum, porque los
+`.tres` guardan el número. Actualizar firmas multiplica el aumento de
+resistencia por 0,7, como la cadencia, para que nunca llegue a cero. Cambio en
+caliente tiene un mínimo de 4 s (sin espera se cambiaría sin parar y la
+resistencia no obligaría a decidir) y su descripción lo dice. Para encontrar
+el pool de gemas se le dio el grupo `pool_gemas`, como `pool_proyectiles`.
+
+**El bot del simulador elige mejoras como un jugador** (decisión de Adam). Con
+ocho mejoras, tres sin daño, el bot que elegía al azar dejó de parecerse a un
+jugador (ver Problemas). Ahora coge la evolución si sale y, si no, una de daño,
+cadencia o alcance si la hay. El balance se mide con este bot y con 10
+partidas: 5 se quedaron cortas para ver diferencias.
+
+### Cambios de rumbo y su justificación
+
+**Se añade contenido** aunque desde la sesión 6 la prioridad era la entrega:
+lo pidió Adam y estaba hecho fuera.
+
+**La referencia de dificultad cambia de bot.** El objetivo sigue siendo 3-4
+victorias de 5, pero medido con el bot nuevo. Con él, el juego da 9 de 10
+antes del contenido nuevo y 8 de 10 después.
+
+### Problemas encontrados y cómo se resolvieron
+
+**El ransomware se acumulaba.** Con la misma probabilidad que los demás,
+salían unos 250 por partida entre el 6:00 y el 10:00, el bot apenas los
+mataba y lo seguían en bloque. Se vio gracias al recuento por tipo que se
+añadió al simulador. Resultado con 5 partidas: de 4 victorias a 1. Con el
+máximo de 8 a la vez: 3 de 5.
+
+**La horda se veía más oscura que sus sprites desde la sesión 6.** Al probar
+el parpadeo del troyano, el rojo salía marrón. Se descartó paso a paso: los
+números del shader llegaban bien (rectángulos que pintan valores fijos) y
+`INSTANCE_CUSTOM` también (un MultiMesh de prueba que lo pinta tal cual). Al
+dibujar el mismo PNG con un `Sprite2D`, con un MultiMesh con el shader por
+defecto y con la horda, solo la horda salía distinta, con cada canal al
+cuadrado. En Godot 4 el `COLOR` de `fragment()` ya trae la textura y el shader
+la multiplicaba otra vez. Ahora la horda se ve exactamente como sus PNG y el
+aviso sale rojo. Queda anotado en `GEMINI.md`.
+
+**Las mejoras nuevas hundían al bot.** Simulador, 10 partidas por variante y
+semillas fijas:
+
+| Variante | Bot al azar | Bot que elige ataque |
+|---|---|---|
+| Antes del contenido nuevo | 9 | 9 |
+| Ransomware (8 a la vez) y troyano | 7 | — |
+| Todo, con las tres mejoras | 2 | **8** |
+| Todo, con evoluciones a las 2 elecciones | 1 de 8 | — |
+| Todo, con la horda final cada 0,13 s | 4 | — |
+| Todo, con la horda final cada 0,15 s | 6 | — |
+| Todo, con el troyano a 30 de vida | 3 | — |
+| Todo, con 25 troyanos como mucho | 2 | — |
+
+Los enemigos nuevos solos dejaban el juego en el objetivo. Con las mejoras, al
+bot al azar le tocaban menos de ataque y muchas menos evoluciones (de 14 a 5
+en 10 partidas), y perdía por no poder con el jefe. Se le propusieron a Adam
+dos salidas: hacer la horda final menos densa o que el bot eligiera como un
+jugador. Eligió lo segundo, que no cambia el juego.
+
+**El script de capturas se quedaba esperando.** Buscaba un élite con dos
+afijos, pero si los tres élites de un afijo seguían vivos no llegaban más. Ahora
+espera 60 s y, si no, usa cualquiera.
+
+**Un commit por bloque con ficheros compartidos.** La escena, las reglas, el
+gestor y los datos de enemigo mezclaban cambios de C1, C2 y C3. Se prepararon
+en Git versiones intermedias de esos ficheros sin tocar la copia de trabajo, y
+cada commit intermedio se extrajo a una carpeta limpia, se importó y se
+arrancó para comprobar que `main` arranca en todos.
+
+### Uso de IA
+
+El arte nuevo, el shader del suelo y `arena.gd` los hizo Claude en una
+conversación aparte con Adam, que trajo los zips. En esta sesión, Claude
+(Claude Code) revisó y probó el suelo, integró los enemigos, programó el
+ransomware, la embestida del troyano y las tres mejoras, encontró el fallo del
+shader de la horda, midió el balance y actualizó la documentación. Las
+decisiones las tomó Adam: el máximo a la vez para el ransomware, el bot que
+elige ataque y las horas de la sesión.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless tras cada bloque, y también en cada
+  commit intermedio extraído a una carpeta limpia.
+- Con ventana: capturas del suelo (al empezar, con el jefe y alejado para ver
+  las costuras), de los enemigos nuevos y del parpadeo del troyano. Medidas
+  píxel a píxel del shader de la horda.
+- Scripts temporales: los parámetros del suelo al pasar el tiempo, con el jefe
+  y con la pausa, y que el material del fichero no cambia; la embestida
+  (distancias y tiempos de cada estado, el aviso en el shader y que el estado
+  viaja al eliminar a otro); las tres mejoras por el camino real (subir de
+  nivel y elegir), con sus valores, el mínimo de 4 s, el HUD, las tarjetas y
+  la ventana de reglas.
+- Simulador de partidas: unas veinte tandas, la tabla de arriba.
+- Recuento de clases globales antes y después del troyano.
+
+### Estado al cerrar
+
+Los cinco bloques y el arreglo del shader están en `main`, con la
+documentación al día. **No se ha subido a GitHub**: se sube cuando Adam diga
+"ya he acabado". La v0.3 con este contenido no se ha publicado.
+
+### Siguiente paso
+
+1. Entregar hoy el informe del primer seguimiento. No menciona lo de hoy.
+2. Que Adam juegue una partida entera con el contenido nuevo, sobre todo
+   contra el troyano y el ransomware, y diga si se siente bien.
+3. Publicar la v0.3 cuando Adam lo pida y probar en un ordenador sin Godot la
+   v0.2 y su botón ACTUALIZAR hacia la v0.3.
+4. Vídeo demostrativo (Adam pidió que se le recuerde).
+5. Ensayar la defensa con `presentacion.md` y acordar con Alan su parte.
+6. Decidir qué se hace con las ramas `demo-movil` y `gh-pages`.
