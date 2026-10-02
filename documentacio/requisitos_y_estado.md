@@ -40,7 +40,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Release v0.2 publicada el 01/10 por la GitHub Action. Falta probarla en un ordenador limpio. El contenido del 02/10 saldrá en la v0.3 |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10) y v0.3 (02/10, con el contenido nuevo) publicadas por la GitHub Action. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v0.2 publicada. Falta probarla en un ordenador limpio y publicar la v0.3 con el contenido del 02/10 |
+| 2 | Build ejecutable | Casi | v0.3 publicada el 02/10. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Capturas, ejecución, controles, tecnologías, autores y créditos |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md` |
@@ -94,11 +94,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Publicar la v0.3** con el contenido del 02/10 (`git tag v0.3` y
-   `git push origin v0.3`, solo cuando Adam lo pida) y **probar en un ordenador
-   limpio** (sin Godot) la v0.2 y el botón ACTUALIZAR hacia la v0.3. No hace
-   falta subir `EJECUTABLE_MINIMO`: no hay clases globales nuevas ni cambios en
-   `project.godot`.
+2. **Probar en un ordenador limpio** (sin Godot) la v0.2 y el botón
+   ACTUALIZAR hacia la v0.3, publicada el 02/10 con ejecutable mínimo 0.2.
 3. **Vídeo demostrativo** (2-4 min).
 4. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.

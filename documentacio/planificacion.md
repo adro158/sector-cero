@@ -136,9 +136,9 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 - [x] **Validación de rendimiento en una máquina con GPU real** (01/10, RTX 5070)
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
-- [ ] Build final exportado y probado en una máquina limpia (release v0.2
-      publicada el 01/10; falta probarla en un ordenador sin Godot, y el
-      contenido del 02/10 saldrá en la v0.3)
+- [ ] Build final exportado y probado en una máquina limpia (releases v0.2,
+      01/10, y v0.3, 02/10, publicadas; falta probarlas en un ordenador sin
+      Godot)
 
 ---
 

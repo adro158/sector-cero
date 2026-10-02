@@ -1232,16 +1232,19 @@ elige ataque y las horas de la sesión.
 ### Estado al cerrar
 
 Los cinco bloques y el arreglo del shader están en `main`, con la
-documentación al día, y subidos a GitHub (Adam lo pidió). La v0.3 con este
-contenido no se ha publicado todavía.
+documentación al día, y subidos a GitHub (Adam lo pidió). También se publicó
+la **release v0.3** (etiqueta `v0.3`, a petición de Adam): la Action terminó
+bien, `version.json` dice versión 0.3 con ejecutable mínimo 0.2 (quien tenga
+la v0.2 se actualiza con el botón) y el ejecutable de Windows que exportó
+arranca sin errores.
 
 ### Siguiente paso
 
 1. Entregar hoy el informe del primer seguimiento. No menciona lo de hoy.
 2. Que Adam juegue una partida entera con el contenido nuevo, sobre todo
    contra el troyano y el ransomware, y diga si se siente bien.
-3. Publicar la v0.3 cuando Adam lo pida y probar en un ordenador sin Godot la
-   v0.2 y su botón ACTUALIZAR hacia la v0.3.
+3. Probar en un ordenador sin Godot la v0.2 y su botón ACTUALIZAR hacia la
+   v0.3, que ya está publicada.
 4. Vídeo demostrativo (Adam pidió que se le recuerde).
 5. Ensayar la defensa con `presentacion.md` y acordar con Alan su parte.
 6. Decidir qué se hace con las ramas `demo-movil` y `gh-pages`.
