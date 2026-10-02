@@ -1232,8 +1232,8 @@ elige ataque y las horas de la sesión.
 ### Estado al cerrar
 
 Los cinco bloques y el arreglo del shader están en `main`, con la
-documentación al día. **No se ha subido a GitHub**: se sube cuando Adam diga
-"ya he acabado". La v0.3 con este contenido no se ha publicado.
+documentación al día, y subidos a GitHub (Adam lo pidió). La v0.3 con este
+contenido no se ha publicado todavía.
 
 ### Siguiente paso
 
