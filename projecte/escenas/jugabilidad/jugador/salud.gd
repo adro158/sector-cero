@@ -47,6 +47,14 @@ func reiniciar(maxima: float) -> void:
 	vida_cambiada.emit(_vida, vida_maxima)
 
 
+## Recupera una fracción de la vida máxima (0.5 es la mitad), sin pasarse.
+func curar(fraccion: float) -> void:
+	if _vida <= 0.0:
+		return
+	_vida = minf(_vida + vida_maxima * fraccion, vida_maxima)
+	vida_cambiada.emit(_vida, vida_maxima)
+
+
 func aumentar_vida_maxima(cantidad: float) -> void:
 	vida_maxima += cantidad
 	_vida += cantidad

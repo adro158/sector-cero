@@ -15,6 +15,10 @@ const RADIO_AURA := 150.0
 const RADIO_EXPLOSION := 130.0
 ## Segundos de aviso entre la muerte de un explosivo y su explosión.
 const AVISO_EXPLOSION := 0.8
+## Recompensa por matarlo: esta fracción de la vida del jugador. La otra
+## recompensa, una mejora extra, la da el sistema de niveles.
+const CURACION_AL_MORIR := 0.5
+const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -23,6 +27,8 @@ var _activo := false
 var _afijos: Array[DatosAfijoElite] = []
 ## Tiempo que falta para explotar; cero si no está a punto de hacerlo.
 var _cuenta_atras := 0.0
+## Nivel del jugador: como la horda, aparece con más vida cuanto más alto.
+var _nivel := 1
 var _jugador: Node2D
 var _salud_jugador: Salud
 
@@ -36,6 +42,7 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_sprite.texture = datos.textura
 	_salud.murio.connect(_al_morir)
+	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 
 
 func activo() -> bool:
@@ -45,7 +52,7 @@ func activo() -> bool:
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
 	global_position = posicion
 	_afijos = afijos
-	_salud.reiniciar(datos.vida)
+	_salud.reiniciar(datos.vida_para_nivel(_nivel))
 	_activo = true
 	visible = true
 	queue_redraw()
@@ -70,6 +77,25 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 	queue_redraw()
 	enemigo_danado.emit(global_position + Vector2(randf_range(-16.0, 16.0), -30.0), cantidad * (1.0 - blindaje), resistencia)
 	return 1
+
+
+## Para la ficha que sale al pincharlo, como en los gestores de la horda. Solo
+## hay uno por nodo, así que su id siempre es 0.
+func ficha_en(punto: Vector2, radio: float) -> Dictionary:
+	var distancia := global_position.distance_to(punto)
+	if not _activo or distancia > radio + datos.tamano * 0.5:
+		return {}
+	var resultado := ficha(0)
+	resultado.distancia = distancia
+	return resultado
+
+
+func ficha(_id: int) -> Dictionary:
+	if not _activo:
+		return {}
+	return {"id": 0, "nombre": "%s · %s" % [datos.nombre, descripcion()], "textura": datos.textura,
+		"color": datos.color, "vida": _salud.vida(), "vida_maxima": _salud.vida_maxima,
+		"dano": datos.dano_contacto, "velocidad": datos.velocidad}
 
 
 func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
@@ -115,6 +141,7 @@ func _al_morir() -> void:
 	_activo = false
 	# Al morir suelta su experiencia y cuenta como eliminado, como la horda.
 	BusEventos.enemigo_muerto.emit(global_position, datos.tipo)
+	_salud_jugador.curar(CURACION_AL_MORIR)
 
 	# El replicante suelta bits corruptos a su alrededor. El primer gestor del
 	# grupo es el del bit corrupto, el primero de la escena.
@@ -157,9 +184,7 @@ func _draw() -> void:
 	for i in _afijos.size():
 		draw_arc(Vector2.ZERO, radio + 6.0 + i * 5.0, 0.0, TAU, 32, _afijos[i].color, 2.0)
 
-	var ancho := 60.0
-	var origen := Vector2(-ancho * 0.5, -radio - 16.0)
-	draw_rect(Rect2(origen, Vector2(ancho, 5.0)), Color(0.05, 0.05, 0.1, 0.9))
-	draw_rect(Rect2(origen, Vector2(ancho * _salud.vida() / _salud.vida_maxima, 5.0)), datos.color)
+	var arriba := Vector2(0.0, -radio - 20.0)
+	BarraVida.dibujar(self, arriba, 70.0, 7.0, _salud.vida() / _salud.vida_maxima, datos.color)
 	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
-	draw_string(ThemeDB.fallback_font, Vector2(-120.0, origen.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
+	draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)

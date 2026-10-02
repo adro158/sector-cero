@@ -17,3 +17,4 @@ dano_contacto = 12.0
 experiencia = 10
 tiempo_aparicion = 360.0
 maximo_vivos = 8
+mostrar_vida = true

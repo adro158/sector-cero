@@ -32,9 +32,10 @@ const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
 const COMO_SE_JUEGA := [
 	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si tu integridad (la barra sobre tu personaje) llega a cero, pierdes."],
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
-	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir. Acércate para recogerlos. Al subir de nivel el juego se pausa y eliges una de tres mejoras."],
+	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: cian, verdes o dorados según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
 	["CAMBIA DE PERSONAJE", "Con Q o Tab pasas al siguiente personaje, que lleva otra herramienta contra la que el malware aún no se ha protegido. Después hay que esperar 10 s para volver a cambiar."],
+	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
 	["CONTROLES", "Moverse: WASD, flechas o stick · Cambiar de personaje: Q, Tab o Y · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3"],
 ]
 

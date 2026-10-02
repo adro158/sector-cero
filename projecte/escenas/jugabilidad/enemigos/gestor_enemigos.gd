@@ -7,11 +7,12 @@ extends Node2D
 ## pueda mostrar que el malware se está adaptando a esa arma.
 signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 
-const MAXIMO_ENEMIGOS := 400
+const MAXIMO_ENEMIGOS := 600
 ## Segundos que un enemigo se queda en blanco al recibir un golpe.
 const DURACION_DESTELLO := 0.1
 const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
 const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_horda.gd")
+const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
@@ -22,8 +23,17 @@ const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_ho
 
 var _posiciones := PackedVector2Array()
 var _vidas := PackedFloat32Array()
+## La vida con la que apareció cada uno: depende del nivel del jugador en ese
+## momento, así que no es la misma para todos.
+var _vidas_maximas := PackedFloat32Array()
 var _destellos := PackedFloat32Array()
+## Un número único por enemigo, que viaja con él cuando cambia de hueco: la
+## ficha del enemigo que se ha pinchado lo sigue con él.
+var _ids := PackedInt32Array()
+var _siguiente_id := 1
 var _vivos := 0
+## Nivel del jugador: los que aparecen a partir de ahora tienen más vida.
+var _nivel := 1
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
@@ -38,11 +48,17 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
+	_vidas_maximas.resize(MAXIMO_ENEMIGOS)
 	_destellos.resize(MAXIMO_ENEMIGOS)
+	_ids.resize(MAXIMO_ENEMIGOS)
 	_rejilla = RejillaEspacial.new(radio_separacion)
 	if datos.embiste:
 		_embestida = EmbestidaHorda.new(datos, MAXIMO_ENEMIGOS)
 	_preparar_multimesh()
+	# Las barras de vida se dibujan en este nodo: la horda, que es su hijo, va
+	# detrás para que no las tape.
+	_horda.show_behind_parent = datos.mostrar_vida
+	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 
 
 func vivos() -> int:
@@ -63,8 +79,11 @@ func aparecer(posicion: Vector2) -> void:
 		return
 
 	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = datos.vida
+	_vidas[_vivos] = datos.vida_para_nivel(_nivel)
+	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
+	_ids[_vivos] = _siguiente_id
+	_siguiente_id += 1
 	if _embestida != null:
 		_embestida.reiniciar(_vivos)
 	_vivos += 1
@@ -90,6 +109,34 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia :
 			alcanzados += 1
 
 	return alcanzados
+
+
+## Ficha del enemigo más cercano al punto dentro del radio, para la ficha que
+## sale al pinchar en él. Vacía si no hay ninguno. Mismo método en los élites y
+## el jefe: la interfaz recorre el grupo objetivos sin saber qué es cada uno.
+func ficha_en(punto: Vector2, radio: float) -> Dictionary:
+	var indice := -1
+	var mejor_distancia := radio
+	for i in _rejilla.indices_cerca(punto, radio):
+		var distancia := _posiciones[i].distance_to(punto)
+		if _vidas[i] > 0.0 and distancia < mejor_distancia:
+			mejor_distancia = distancia
+			indice = i
+	if indice == -1:
+		return {}
+	var resultado := ficha(_ids[indice])
+	resultado.distancia = mejor_distancia
+	return resultado
+
+
+## Los datos actuales del enemigo con ese id, o vacía si ya no existe.
+func ficha(id: int) -> Dictionary:
+	for i in _vivos:
+		if _ids[i] == id and _vidas[i] > 0.0:
+			return {"id": id, "nombre": datos.nombre, "textura": datos.textura, "color": datos.color,
+				"vida": _vidas[i], "vida_maxima": _vidas_maximas[i], "dano": datos.dano_contacto,
+				"velocidad": datos.velocidad}
+	return {}
 
 
 ## Posición del enemigo vivo más cercano dentro del radio, o Vector2.INF si no
@@ -141,6 +188,16 @@ func _physics_process(delta: float) -> void:
 	_mover(delta)
 	_danar_jugador()
 	_volcar_al_multimesh(delta)
+	if datos.mostrar_vida:
+		queue_redraw()
+
+
+func _draw() -> void:
+	if not datos.mostrar_vida:
+		return
+	for i in _vivos:
+		var arriba := _posiciones[i] - Vector2(0.0, datos.tamano * 0.5 + 10.0)
+		BarraVida.dibujar(self, arriba, datos.tamano, 5.0, _vidas[i] / _vidas_maximas[i], datos.color)
 
 
 func _reconstruir_rejilla() -> void:
@@ -227,7 +284,9 @@ func _eliminar(indice: int) -> void:
 	_vivos -= 1
 	_posiciones[indice] = _posiciones[_vivos]
 	_vidas[indice] = _vidas[_vivos]
+	_vidas_maximas[indice] = _vidas_maximas[_vivos]
 	_destellos[indice] = _destellos[_vivos]
+	_ids[indice] = _ids[_vivos]
 	if _embestida != null:
 		_embestida.copiar(_vivos, indice)
 

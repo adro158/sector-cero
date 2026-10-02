@@ -7,6 +7,8 @@ extends Control
 ## Solo escucha señales del BusEventos. Los niveles de cada mejora los anota el
 ## panel de mejoras al elegir, en un diccionario que comparten los dos.
 
+const FichaEnemigo := preload("res://escenas/interfaz/ficha_enemigo.gd")
+
 var niveles_mejora := {}
 
 var _etiqueta_nivel: Label
@@ -71,10 +73,15 @@ func _ready() -> void:
 	_aviso.modulate.a = 0.0
 	add_child(_aviso)
 
+	# La primera de los hijos: así queda por debajo de la pausa y las mejoras.
+	var ficha := FichaEnemigo.new()
+	add_child(ficha)
+	move_child(ficha, 0)
 	$PanelMejoras.niveles = niveles_mejora
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
+	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
@@ -147,6 +154,13 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		_columna.add_child(icono)
 		_iconos[mejora] = icono
 	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
+
+
+## Matar un élite cura y regala una mejora: se avisa para que se entienda por
+## qué se abre el panel sin haber subido de nivel.
+func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
+	if tipo == "elite":
+		_avisar("ÉLITE ELIMINADO: +50 % DE VIDA Y UNA MEJORA", EstiloInterfaz.VICTORIA)
 
 
 ## Mensaje grande arriba en el centro que se desvanece a los pocos segundos.

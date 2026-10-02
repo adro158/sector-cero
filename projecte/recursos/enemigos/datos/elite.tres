@@ -7,7 +7,7 @@
 script = ExtResource("1_tipo")
 tipo = "elite"
 nombre = "Rootkit (élite)"
-descripcion = "Llega cada minuto desde el 1:30 con uno o dos afijos, escritos sobre su cabeza. Mucho más duro que la horda y suelta 25 de experiencia."
+descripcion = "Llega cada minuto desde el 1:30 con uno o dos afijos, escritos sobre su cabeza. Mucho más duro que la horda y suelta 25 de experiencia. Al matarlo recuperas la mitad de la vida y eliges una mejora extra."
 vida = 450.0
 velocidad = 120.0
 tamano = 48.0

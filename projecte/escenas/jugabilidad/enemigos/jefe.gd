@@ -17,6 +17,7 @@ signal derrotado
 enum Estado { PERSEGUIR, AVISO, EMBESTIDA }
 
 const FOTOGRAMAS_ANDAR := 12
+const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -67,6 +68,28 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 	# golpes seguidos no se pinten uno encima de otro.
 	enemigo_danado.emit(global_position + Vector2(randf_range(-24.0, 24.0), -40.0), cantidad, resistencia)
 	return 1
+
+
+## Para la ficha que sale al pincharlo, como en la horda y los élites.
+func ficha_en(punto: Vector2, radio_busqueda: float) -> Dictionary:
+	var distancia := global_position.distance_to(punto)
+	if not _activo or distancia > radio_busqueda + radio:
+		return {}
+	var resultado := ficha(0)
+	resultado.distancia = distancia
+	return resultado
+
+
+func ficha(_id: int) -> Dictionary:
+	if not _activo:
+		return {}
+	# El primer fotograma de la hoja: el jefe mirando de frente.
+	var retrato := AtlasTexture.new()
+	retrato.atlas = _sprite.texture
+	retrato.region = Rect2(Vector2.ZERO, _sprite.texture.get_size() / Vector2(_sprite.hframes, _sprite.vframes))
+	return {"id": 0, "nombre": "Jefe final", "textura": retrato, "color": Color(0.75, 0.3, 1.0),
+		"vida": _salud.vida(), "vida_maxima": _salud.vida_maxima, "dano": dano_contacto,
+		"velocidad": velocidad}
 
 
 func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
@@ -123,11 +146,7 @@ func _draw() -> void:
 		return
 
 	# Barra de vida sobre la corona.
-	var ancho := 110.0
-	var origen := Vector2(-ancho * 0.5, -130.0)
-	var proporcion := _salud.vida() / _salud.vida_maxima
-	draw_rect(Rect2(origen, Vector2(ancho, 7.0)), Color(0.05, 0.05, 0.1, 0.9))
-	draw_rect(Rect2(origen, Vector2(ancho * proporcion, 7.0)), Color(0.75, 0.3, 1.0))
+	BarraVida.dibujar(self, Vector2(0.0, -132.0), 140.0, 10.0, _salud.vida() / _salud.vida_maxima, Color(0.75, 0.3, 1.0))
 
 
 func _al_morir() -> void:

@@ -28,18 +28,20 @@ func _ready() -> void:
 	add_theme_stylebox_override("normal", EstiloInterfaz.caja(COLOR, 12))
 	add_theme_color_override("font_color", COLOR)
 	add_theme_font_size_override("font_size", 14)
-	# Arriba a la derecha, bajo el reloj: la izquierda es del HUD.
-	# Los dos bordes en el mismo punto y creciendo hacia la izquierda: el panel
-	# ocupa solo lo que mide su texto.
-	set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	# Abajo a la derecha: la izquierda es del HUD y arriba a la derecha sale la
+	# ficha del enemigo pinchado. Los bordes en el mismo punto y creciendo hacia
+	# la izquierda y hacia arriba: el panel ocupa solo lo que mide su texto.
+	set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	grow_vertical = Control.GROW_DIRECTION_BEGIN
 	offset_left = -16.0
 	offset_right = -16.0
-	offset_top = 16.0
+	offset_top = -16.0
+	offset_bottom = -16.0
 
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
-	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
+	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.partida_terminada.connect(_al_terminar)
 
@@ -111,10 +113,6 @@ func _al_cambiar_vida(actual: float, maxima: float) -> void:
 
 func _al_ganar_experiencia(cantidad: int) -> void:
 	_experiencia += cantidad
-
-
-func _al_subir_nivel(_opciones: Array) -> void:
-	_nivel += 1
 
 
 func _al_morir_enemigo(_posicion: Vector2, _tipo: String) -> void:

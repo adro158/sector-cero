@@ -4,15 +4,15 @@ const OPCIONES_POR_NIVEL := 3
 
 @export var pool_mejoras: DatosPoolMejoras
 @export var experiencia_primer_nivel: int = 5
-@export var incremento_por_nivel: float = 1.35
+@export var incremento_por_nivel: float = 1.5
 
 var _nivel := 1
 var _experiencia := 0
 var _objetivo: int
 
-# Niveles ganados cuyas mejoras aún no se han elegido. Se ofrecen de uno en uno:
-# el panel de mejoras solo puede mostrar tres tarjetas a la vez.
-var _niveles_pendientes := 0
+# Mejoras por elegir: una por cada nivel ganado y una por cada élite eliminado.
+# Se ofrecen de una en una: el panel solo puede mostrar tres tarjetas a la vez.
+var _mejoras_pendientes := 0
 
 # Veces que se ha elegido cada mejora: las evoluciones piden un mínimo.
 var _veces := {}
@@ -38,6 +38,7 @@ func _ready() -> void:
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
+	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	# Diferido para que la interfaz, que está lista después, ya esté conectada.
 	_avisar_experiencia.call_deferred()
 
@@ -49,12 +50,12 @@ func nivel() -> int:
 ## Si hay mejoras pendientes de elegir. Mientras tanto el juego está pausado por
 ## este motivo y nadie más debe quitar la pausa.
 func eligiendo() -> bool:
-	return _niveles_pendientes > 0
+	return _mejoras_pendientes > 0
 
 
 func _al_ganar_experiencia(cantidad: int) -> void:
 	_experiencia += cantidad
-	var ya_estaba_eligiendo := _niveles_pendientes > 0
+	var ya_estaba_eligiendo := _mejoras_pendientes > 0
 
 	# Un bucle y no un if: con muchos enemigos muriendo a la vez se puede subir
 	# más de un nivel de golpe.
@@ -62,10 +63,20 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_experiencia -= _objetivo
 		_nivel += 1
 		_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
-		_niveles_pendientes += 1
+		_mejoras_pendientes += 1
 
 	_avisar_experiencia()
-	if _niveles_pendientes > 0 and not ya_estaba_eligiendo:
+	if _mejoras_pendientes > 0 and not ya_estaba_eligiendo:
+		_ofrecer_mejoras()
+
+
+## Matar un élite regala una mejora sin gastar experiencia: va a la misma cola
+## que las de subir de nivel, pero sin subir de nivel.
+func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
+	if tipo != "elite":
+		return
+	_mejoras_pendientes += 1
+	if _mejoras_pendientes == 1:
 		_ofrecer_mejoras()
 
 
@@ -99,15 +110,15 @@ func _sortear_opciones() -> Array[DatosMejora]:
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
-	# Si no hay ningún nivel esperando, la elección llega repetida (por ejemplo,
+	# Si no hay ninguna mejora esperando, la elección llega repetida (por ejemplo,
 	# desde dos sitios a la vez) y no debe aplicarse otra vez.
-	if _niveles_pendientes == 0:
+	if _mejoras_pendientes == 0:
 		return
 
 	_aplicar(mejora)
-	_niveles_pendientes -= 1
+	_mejoras_pendientes -= 1
 
-	if _niveles_pendientes > 0:
+	if _mejoras_pendientes > 0:
 		_ofrecer_mejoras()
 	else:
 		get_tree().paused = false
