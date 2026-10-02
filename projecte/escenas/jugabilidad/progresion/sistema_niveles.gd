@@ -23,6 +23,8 @@ var _jugador: Node2D
 var _gestor_armas: Node
 var _cambio_personaje: Node
 var _salud: Salud
+var _resistencia: Node
+var _pool_gemas: Node
 
 
 func _ready() -> void:
@@ -31,6 +33,8 @@ func _ready() -> void:
 	_gestor_armas = _jugador.get_node("GestorArmas")
 	_cambio_personaje = _jugador.get_node("CambioPersonaje")
 	_salud = _jugador.get_node("Salud")
+	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
+	_pool_gemas = get_tree().get_first_node_in_group("pool_gemas")
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
@@ -130,3 +134,11 @@ func _aplicar(mejora: DatosMejora) -> void:
 		DatosMejora.Efecto.EVOLUCIONAR_ARMA:
 			_cambio_personaje.evolucionar(mejora.arma_base, mejora.arma)
 			_agotadas.append(mejora)
+		DatosMejora.Efecto.ADAPTACION_MALWARE:
+			# Lo que gana el malware en cada análisis, multiplicado como la
+			# cadencia: cada vez que se elige queda un 30 % menos de lo que había.
+			_resistencia.aumento *= 1.0 - mejora.valor
+		DatosMejora.Efecto.ESPERA_CAMBIO:
+			_cambio_personaje.reducir_espera(mejora.valor)
+		DatosMejora.Efecto.RADIO_IMAN:
+			_pool_gemas.radio_iman *= 1.0 + mejora.valor

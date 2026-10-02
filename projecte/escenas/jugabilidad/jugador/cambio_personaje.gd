@@ -7,6 +7,9 @@ extends Node
 
 @export var personajes: Array[DatosPersonaje] = []
 @export var espera: float = 10.0
+## La mejora Cambio en caliente acorta la espera, pero nunca por debajo de esto:
+## sin espera se podría cambiar sin parar y la resistencia no obligaría a nada.
+@export var espera_minima: float = 4.0
 
 var _indice := 0
 var _restante := 0.0
@@ -45,6 +48,12 @@ func cambiar() -> bool:
 	sprite.modulate = Color(2.0, 2.0, 2.0)
 	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.3)
 	return true
+
+
+## La mejora Cambio en caliente: quita un porcentaje de la espera. Cuenta a
+## partir del siguiente cambio, no acorta el que ya está en marcha.
+func reducir_espera(fraccion: float) -> void:
+	espera = maxf(espera * (1.0 - fraccion), espera_minima)
 
 
 ## Sustituye la herramienta base por su evolución en el personaje que la lleva.

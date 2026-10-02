@@ -56,7 +56,7 @@ datos = ExtResource("21_ransomware")
 
 [node name="Horda" type="MultiMeshInstance2D" parent="Ransomware"]
 
-[node name="PoolGemas" type="Node2D" parent="."]
+[node name="PoolGemas" type="Node2D" parent="." groups=["pool_gemas"]]
 script = ExtResource("5_gemas")
 
 [node name="Gemas" type="MultiMeshInstance2D" parent="PoolGemas"]

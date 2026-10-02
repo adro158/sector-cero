@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" path="res://recursos/mejoras/iconos/actualizar_firmas.png" id="9_icono"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Actualizar firmas"
+icono = ExtResource("9_icono")
+descripcion = "El malware se adapta un 30 % más despacio a tus herramientas"
+efecto = 6
+valor = 0.3

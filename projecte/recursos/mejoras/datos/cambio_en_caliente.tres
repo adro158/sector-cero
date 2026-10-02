@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DatosMejora" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://recursos/mejoras/datos_mejora.gd" id="1_mejora"]
+[ext_resource type="Texture2D" path="res://recursos/mejoras/iconos/cambio_en_caliente.png" id="9_icono"]
+
+[resource]
+script = ExtResource("1_mejora")
+nombre = "Cambio en caliente"
+icono = ExtResource("9_icono")
+descripcion = "-20 % de espera entre cambios de personaje (mínimo 4 s)"
+efecto = 7
+valor = 0.2

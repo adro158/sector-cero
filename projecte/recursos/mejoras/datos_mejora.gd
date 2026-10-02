@@ -8,6 +8,11 @@ enum Efecto {
 	VELOCIDAD_JUGADOR,
 	VIDA_MAXIMA,
 	EVOLUCIONAR_ARMA,
+	# Las nuevas, siempre al final: los .tres guardan el efecto como número y
+	# meterlas en medio cambiaría el de las que ya existen.
+	ADAPTACION_MALWARE,
+	ESPERA_CAMBIO,
+	RADIO_IMAN,
 }
 
 @export var nombre: String = ""
