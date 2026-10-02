@@ -1,15 +1,23 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
 
 [ext_resource type="Shader" path="res://escenas/arena/suelo.gdshader" id="1_suelo"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_placa.png" id="2_baldosas"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_placa_mascara.png" id="3_mascara"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_placa_efectos.png" id="4_efectos"]
 
 [resource]
 shader = ExtResource("1_suelo")
-shader_parameter/color_fondo = Color(0.02, 0.03, 0.06, 1)
-shader_parameter/color_rejilla = Color(0, 0.8, 0.9, 0.3)
-shader_parameter/tamano_rejilla = 64.0
-shader_parameter/grosor_rejilla = 1.5
-shader_parameter/tamano_celda = 96.0
-shader_parameter/color_pista = Color(0.1, 0.6, 0.45, 0.28)
-shader_parameter/color_via = Color(0.2, 0.9, 0.7, 0.55)
-shader_parameter/color_chip = Color(0.04, 0.06, 0.1, 0.92)
-shader_parameter/color_borde_chip = Color(0.25, 0.45, 0.6, 0.8)
+shader_parameter/baldosas = ExtResource("2_baldosas")
+shader_parameter/mascara = ExtResource("3_mascara")
+shader_parameter/efectos = ExtResource("4_efectos")
+shader_parameter/tamano_baldosa = 256.0
+shader_parameter/columnas = 4.0
+shader_parameter/filas = 3.0
+shader_parameter/color_pulso = Color(0.3, 0.9, 1, 1)
+shader_parameter/intensidad_pulso = 1.2
+shader_parameter/avance_pulsos = 0.0
+shader_parameter/longitud_pulso = 0.2
+shader_parameter/velocidad_leds = 0.8
+shader_parameter/color_brillo = Color(0.3, 0.8, 1, 1)
+shader_parameter/intensidad_brillo = 0.7
+shader_parameter/velocidad_ventilador = 3.0
