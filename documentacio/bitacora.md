@@ -1073,6 +1073,11 @@ después). La release v0.2 la publicará la GitHub Action al subir la etiqueta
     4 s) y Caché ampliada (+30 % de radio de recogida).
 - **Arreglo del shader de la horda**, que oscurecía todos los sprites (ver
   Problemas).
+- **Sprites para la experiencia y el Ping** (un cuarto zip, también hecho con
+  Claude aparte). Los fragmentos de datos y el proyectil del Ping eran
+  cuadrados de color. Ahora el fragmento es un cristal en grises que cada gema
+  tiñe según lo que vale (cian de 1 a 2, verde de 3 a 9 y dorado desde 10), y
+  el proyectil es un rayo con estela girado hacia donde va.
 - **Simulador**: cuenta los enemigos por tipo y su bot elige mejoras como un
   jugador.
 - **Documentación**: técnica, manual, créditos, presentación (con las
@@ -1139,6 +1144,15 @@ resistencia por 0,7, como la cadencia, para que nunca llegue a cero. Cambio en
 caliente tiene un mínimo de 4 s (sin espera se cambiaría sin parar y la
 resistencia no obligaría a decidir) y su descripción lo dice. Para encontrar
 el pool de gemas se le dio el grupo `pool_gemas`, como `pool_proyectiles`.
+
+**Un sprite en grises teñido por instancia para la experiencia.** En lugar
+de tres sprites, uno solo y `use_colors` en el MultiMesh: el color se elige
+con dos umbrales exportados y se escribe en cada fotograma junto a la
+posición, porque al recoger una gema la última pasa a su hueco y cambia de
+índice. El proyectil se gira con `Transform2D(dirección.angle(), ...)` al
+volcarlo al MultiMesh, así que al rebotar no hay que hacer nada más. Los dos
+llevan la escala vertical -1, como la horda, porque el QuadMesh invierte la
+textura.
 
 **El bot del simulador elige mejoras como un jugador** (decisión de Adam). Con
 ocho mejoras, tres sin daño, el bot que elegía al azar dejó de parecerse a un
@@ -1228,6 +1242,10 @@ elige ataque y las horas de la sesión.
   la ventana de reglas.
 - Simulador de partidas: unas veinte tandas, la tabla de arriba.
 - Recuento de clases globales antes y después del troyano.
+- Experiencia y Ping, con ventana: gemas de 1, 4 y 10 (cian, verde y dorado,
+  leído también del MultiMesh) y un Ping que rebota dos veces entre enemigos
+  quietos, con capturas ampliadas en cada dirección (61°, -167° y -19°): la
+  cabeza siempre delante.
 
 ### Estado al cerrar
 
@@ -1237,6 +1255,10 @@ la **release v0.3** (etiqueta `v0.3`, a petición de Adam): la Action terminó
 bien, `version.json` dice versión 0.3 con ejecutable mínimo 0.2 (quien tenga
 la v0.2 se actualiza con el botón) y el ejecutable de Windows que exportó
 arranca sin errores.
+
+Después de la v0.3 entraron los sprites de la experiencia y del Ping:
+commiteados en `main`, pendientes de subir hasta que Adam diga "ya he
+acabado". Saldrán en la próxima versión.
 
 ### Siguiente paso
 

@@ -131,7 +131,10 @@ bajó de 19,17 ms a 4,36 ms por fotograma (el presupuesto a 60 FPS son
 **Armas y personajes.** Hay dos tipos de arma: de área (Firewall y Escáner,
 golpean todo lo que hay en un radio) y de proyectil (Ping, salta de un enemigo
 a otro). Los proyectiles usan el mismo patrón de arrays y MultiMesh que la
-horda. Cada personaje lleva una herramienta y solo dispara la del activo. Se
+horda; su sprite apunta a la derecha y cada uno se gira con el ángulo de su
+dirección, así que al rebotar se gira solo. Las gemas también son un MultiMesh,
+con un sprite en grises que cada gema tiñe con un color propio de la instancia
+(`use_colors`) según lo que vale: cian, verde o dorado. Cada personaje lleva una herramienta y solo dispara la del activo. Se
 cambia con Q, con 10 s de espera entre cambios (la mejora Cambio en caliente
 la acorta un 20 % cada vez, hasta un mínimo de 4 s: sin espera se podría
 cambiar sin parar y la resistencia no obligaría a decidir nada).
@@ -307,8 +310,9 @@ Godot avisa de una fuga del reproductor de audio. Se comprobó que es del motor
 
 - **Godot 4.7.2** con el renderizador Compatibility, **Git y GitHub**, y
   **GitHub Actions** para exportar y publicar cada versión.
-- **Gráficos:** los sprites de la horda y del élite, tres iconos de mejora y
-  las texturas del suelo los dibujó Claude con scripts de Python, en una
+- **Gráficos:** los sprites de la horda y del élite, de los fragmentos de
+  datos y del proyectil del Ping, tres iconos de mejora y las texturas del
+  suelo los dibujó Claude con scripts de Python, en una
   conversación aparte; los demás iconos los dibuja un script propio a partir de
   formas simples. El suelo, la horda y el CRT tienen shaders propios. Los
   personajes y el jefe se hicieron con IA a partir de un ejemplo del profesor

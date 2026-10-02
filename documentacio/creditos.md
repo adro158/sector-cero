@@ -12,6 +12,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Sprites de la horda (5 tipos) y del élite | Hechos con IA (Claude) | Ver más abajo |
 | Texturas del suelo de placa base | Hechas con IA (Claude) | Ver más abajo |
 | Iconos de las mejoras | 8 propios, generados por código; 3 hechos con IA (Claude) | Del proyecto / ver más abajo |
+| Sprites del fragmento de datos y del proyectil del Ping | Hechos con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -62,6 +63,10 @@ scripts no forman parte del repositorio.
   `suelo_placa_efectos.png`, que marca los LEDs, las aspas de los ventiladores
   y el brillo de los chips. Con ellas vinieron el shader del suelo y el script
   de la arena que lo anima.
+- **Experiencia y Ping** (`medios/sprites/`, el mismo día y de la misma
+  forma): `fragmento_datos.png` (12x12), un cristal de datos en grises que el
+  juego tiñe según lo que vale, y `proyectil_ping.png` (24x12), un rayo de
+  energía con estela que el juego gira hacia donde va.
 
 ### Sprites de los personajes y del jefe
 
