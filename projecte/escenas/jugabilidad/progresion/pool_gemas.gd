@@ -2,13 +2,24 @@ extends Node2D
 
 const MAXIMO_GEMAS := 800
 
-@export var tamano: float = 10.0
+## Sprite del fragmento de datos, en grises: cada gema lo tiñe según lo que vale.
+@export var textura: Texture2D
+@export var tamano: float = 12.0
 @export var radio_iman: float = 100.0
 @export var radio_recogida: float = 18.0
 @export var velocidad_iman: float = 420.0
 ## En un mapa sin fin, las gemas que se quedan muy atrás no se van a recoger y
 ## llenarían el pool: a partir de esta distancia se descartan.
 @export var distancia_olvido: float = 1800.0
+
+@export_group("Colores por valor")
+## Hasta valor_medio - 1 de experiencia, color_bajo; hasta valor_alto - 1,
+## color_medio; desde valor_alto, color_alto.
+@export var color_bajo := Color(0.4, 0.9, 1.0)
+@export var valor_medio := 3
+@export var color_medio := Color(0.5, 1.0, 0.55)
+@export var valor_alto := 10
+@export var color_alto := Color(1.0, 0.8, 0.3)
 
 var _posiciones := PackedVector2Array()
 var _valores := PackedInt32Array()
@@ -39,11 +50,16 @@ func _preparar_multimesh() -> void:
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
+	# Un color por gema, según lo que vale. Hay que activarlo antes de fijar el
+	# número de instancias.
+	multimesh.use_colors = true
 	multimesh.mesh = malla
 	multimesh.instance_count = MAXIMO_GEMAS
 	multimesh.visible_instance_count = 0
 
 	_gemas.multimesh = multimesh
+	_gemas.texture = textura
+	_gemas.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
@@ -86,7 +102,19 @@ func _eliminar(indice: int) -> void:
 func _volcar_al_multimesh() -> void:
 	var multimesh := _gemas.multimesh
 
+	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
+	# El color se pone cada fotograma, junto a la posición: al recoger una gema
+	# la última pasa a su hueco y cambia de índice.
 	for i in _vivas:
-		multimesh.set_instance_transform_2d(i, Transform2D(0.0, _posiciones[i]))
+		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
+		multimesh.set_instance_color(i, _color(_valores[i]))
 
 	multimesh.visible_instance_count = _vivas
+
+
+func _color(valor: int) -> Color:
+	if valor >= valor_alto:
+		return color_alto
+	if valor >= valor_medio:
+		return color_medio
+	return color_bajo

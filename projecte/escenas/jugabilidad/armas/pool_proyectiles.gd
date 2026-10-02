@@ -7,7 +7,9 @@ const MAXIMO_PROYECTILES := 200
 ## lugar de saltar al siguiente.
 const ESPERA_TRAS_IMPACTO := 0.08
 
-@export var tamano: float = 10.0
+## Sprite del proyectil, apuntando a la derecha: se gira hacia donde va.
+@export var textura: Texture2D
+@export var tamano: Vector2 = Vector2(24, 12)
 @export var radio_busqueda_rebote: float = 320.0
 
 var _posiciones := PackedVector2Array()
@@ -48,7 +50,7 @@ func _ready() -> void:
 
 func _preparar_multimesh() -> void:
 	var quad := QuadMesh.new()
-	quad.size = Vector2(tamano, tamano)
+	quad.size = tamano
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
@@ -57,6 +59,8 @@ func _preparar_multimesh() -> void:
 	multimesh.visible_instance_count = 0
 
 	_malla.multimesh = multimesh
+	_malla.texture = textura
+	_malla.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float) -> void:
@@ -160,7 +164,9 @@ func _eliminar(indice: int) -> void:
 func _volcar_al_multimesh() -> void:
 	var multimesh := _malla.multimesh
 
+	# Girado hacia donde va; al rebotar cambia la dirección y el giro la sigue.
+	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	for i in _activos:
-		multimesh.set_instance_transform_2d(i, Transform2D(0.0, _posiciones[i]))
+		multimesh.set_instance_transform_2d(i, Transform2D(_direcciones[i].angle(), Vector2(1.0, -1.0), 0.0, _posiciones[i]))
 
 	multimesh.visible_instance_count = _activos
