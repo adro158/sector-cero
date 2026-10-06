@@ -6,6 +6,7 @@ extends Control
 
 const PARTIDA := "res://escenas/juego.tscn"
 const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
+const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -87,25 +88,28 @@ func _crear_fondo() -> void:
 
 
 ## Versión del juego y, si hay una nueva, el botón para actualizar. Las consultas
-## a GitHub las hace el Actualizador por su cuenta; aquí solo se enseña lo que
-## va diciendo.
+## a GitHub las hace el Actualizador; aquí solo se enseña lo que va diciendo.
 func _crear_version(caja: VBoxContainer) -> void:
+	InstaladorJuego.limpiar()
 	_version = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(_version)
-	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", Actualizador.actualizar, 260)
+	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", InstaladorJuego.pulsar_actualizar, 260)
 	_actualizar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_actualizar)
 
 	Actualizador.estado_cambiado.connect(_mostrar_version)
 	_mostrar_version()
+	# Los ejecutables desde la v0.6 ya buscan solos cada 5 minutos y esto no
+	# cambia nada. Los anteriores solo buscan si se lo pide el menú.
+	Actualizador.buscar()
 
 
 func _mostrar_version() -> void:
 	_version.text = Actualizador.texto()
 	var estado := Actualizador.estado
 	_actualizar.visible = estado in [Actualizador.Estado.HAY_ACTUALIZACION, Actualizador.Estado.HAY_JUEGO_NUEVO]
-	_actualizar.text = "DESCARGAR EL JUEGO" if estado == Actualizador.Estado.HAY_JUEGO_NUEVO else "ACTUALIZAR"
+	_actualizar.text = "ACTUALIZAR"
 	if estado == Actualizador.Estado.HAY_ACTUALIZACION:
 		_version.add_theme_color_override("font_color", EstiloInterfaz.VICTORIA)
 	# Al acabar la descarga el juego se reinicia: no se puede empezar partida.

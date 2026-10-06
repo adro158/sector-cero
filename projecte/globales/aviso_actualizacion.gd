@@ -8,6 +8,8 @@ extends CanvasLayer
 ## Lo crea el Actualizador y solo existe en el juego exportado. Sin class_name:
 ## así este script viaja en el .pck de las actualizaciones como uno más.
 
+const InstaladorJuego := preload("res://globales/instalador_juego.gd")
+
 var _panel: PanelContainer
 var _titulo: Label
 var _texto: Label
@@ -47,7 +49,7 @@ func _ready() -> void:
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 12)
 	caja.add_child(botones)
-	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", Actualizador.actualizar, 180)
+	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", InstaladorJuego.pulsar_actualizar, 180)
 	_ahora_no = EstiloInterfaz.boton("AHORA NO", _descartar, 140)
 	for boton in [_actualizar, _ahora_no]:
 		# Solo con el ratón: si cogieran el foco, Enter o las flechas de la
@@ -65,10 +67,9 @@ func _mostrar() -> void:
 			return
 		var juego_nuevo: bool = estado == Actualizador.Estado.HAY_JUEGO_NUEVO
 		_titulo.text = "NUEVA VERSIÓN %s DISPONIBLE" % Actualizador.version_nueva
-		_texto.text = "Hay que descargar el juego completo." if juego_nuevo else "Se descarga en unos segundos y el juego se reinicia."
+		_texto.text = "Se descarga el juego completo y se reinicia." if juego_nuevo else "Se descarga en unos segundos y el juego se reinicia."
 		if _en_partida():
 			_texto.text += "\nSe perderá la partida en curso."
-		_actualizar.text = "DESCARGAR" if juego_nuevo else "ACTUALIZAR"
 		_actualizar.visible = true
 		_ahora_no.visible = true
 		_aparecer()

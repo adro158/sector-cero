@@ -13,5 +13,10 @@ const ACTUAL := "desarrollo"
 ## clases con class_name, y también actualizador.gd, que es quien carga la
 ## actualización y por eso ya está en marcha antes. Si una versión cambia algo
 ## de eso, se sube este número a esa versión y los ejecutables más antiguos
-## pedirán bajar el juego entero.
-const EJECUTABLE_MINIMO := "0.6"
+## pedirán el juego entero, que instalador_juego.gd descarga y pone solo.
+##
+## Vuelve a ser 0.2 desde la v0.7: la v0.6 lo subió a 0.6 por un cambio en
+## actualizador.gd, y así los ejecutables v0.5 solo podían abrir la página de
+## GitHub. El contenido de ahora funciona con cualquier ejecutable desde la
+## v0.2 (solo le faltaría el aviso automático, que crea el actualizador nuevo).
+const EJECUTABLE_MINIMO := "0.2"
