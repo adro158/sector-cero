@@ -30,13 +30,14 @@ const OLEADAS := "res://recursos/oleadas/datos/config_principal.tres"
 const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
 
 const COMO_SE_JUEGA := [
-	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si tu integridad (la barra sobre tu personaje) llega a cero, pierdes."],
+	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
 	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: cian, verdes o dorados según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
-	["CAMBIA DE PERSONAJE", "Con Q o Tab pasas al siguiente personaje, que lleva otra herramienta contra la que el malware aún no se ha protegido. Después hay que esperar 10 s para volver a cambiar."],
+	["CAMBIA DE PERSONAJE", "Con E (o Tab) pasas al siguiente personaje y con Q vuelves al anterior. Cada uno lleva otra herramienta, contra la que el malware aún no se ha protegido, y su propia vida: los que esperan se curan poco a poco. Después hay que esperar 10 s para volver a cambiar. Con C ves cómo está cada uno."],
+	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
 	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
-	["CONTROLES", "Moverse: WASD, flechas o stick · Cambiar de personaje: Q, Tab o Y · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3"],
+	["CONTROLES", "Moverse: WASD, flechas o stick · Personaje siguiente: E, Tab o Y · Anterior: Q · Equipo: C · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3"],
 ]
 
 var _ventana: ColorRect
@@ -113,7 +114,7 @@ func _personajes() -> VBoxContainer:
 		var personaje: DatosPersonaje = load(ruta)
 		# Las hojas tienen 6 columnas (pasos) y 8 filas (direcciones).
 		var icono := _primer_fotograma(personaje.hoja, 6, 8)
-		var titulo := "%s · %s" % [personaje.nombre.to_upper(), personaje.arma.nombre]
+		var titulo := "%s · %s · %d de vida" % [personaje.nombre.to_upper(), personaje.arma.nombre, personaje.vida_maxima]
 		lista.add_child(_fila(icono, titulo, personaje.color, personaje.descripcion))
 	return lista
 

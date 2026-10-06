@@ -11,7 +11,7 @@ const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
 	"Aguanta 10 minutos contra el malware y derrota al jefe final.",
-	"El malware se adapta a tu herramienta: cambia de personaje con Q para sorprenderle.",
+	"El malware se adapta a tu herramienta: cambia de personaje con Q y E para sorprenderle.",
 ]
 
 var _reglas: PanelReglas
