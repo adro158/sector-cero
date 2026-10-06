@@ -20,7 +20,9 @@ para sorprenderle.
 3. Abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`).
 
 No hay que instalar nada. Cuando publicamos una versión nueva, el propio juego
-la encuentra y aparece el botón **ACTUALIZAR** en el menú.
+la encuentra en unos minutos, aunque esté abierto, y avisa con un mensaje: con
+**ACTUALIZAR** se descarga y se reinicia; con **AHORA NO** se sigue jugando y
+el botón queda en el menú para más tarde.
 
 | Acción | Teclado | Mando |
 |---|---|---|

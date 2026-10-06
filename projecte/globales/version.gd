@@ -10,6 +10,8 @@ const ACTUAL := "desarrollo"
 ## actualizaciones solo cambian el .pck (escenas, scripts, sonidos...). Lo que
 ## Godot lee al arrancar, antes de cargar la actualización, se queda como venía
 ## en el ejecutable: project.godot (autoloads, controles, ventana) y la lista de
-## clases con class_name. Si una versión cambia algo de eso, se sube este número
-## a esa versión y los ejecutables más antiguos pedirán bajar el juego entero.
-const EJECUTABLE_MINIMO := "0.2"
+## clases con class_name, y también actualizador.gd, que es quien carga la
+## actualización y por eso ya está en marcha antes. Si una versión cambia algo
+## de eso, se sube este número a esa versión y los ejecutables más antiguos
+## pedirán bajar el juego entero.
+const EJECUTABLE_MINIMO := "0.6"

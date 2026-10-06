@@ -84,8 +84,9 @@ func _crear_fondo() -> void:
 	add_child(suelo)
 
 
-## Versión del juego y, si hay una nueva, el botón para actualizar. La consulta
-## a GitHub la hace el Actualizador; aquí solo se enseña lo que va diciendo.
+## Versión del juego y, si hay una nueva, el botón para actualizar. Las consultas
+## a GitHub las hace el Actualizador por su cuenta; aquí solo se enseña lo que
+## va diciendo.
 func _crear_version(caja: VBoxContainer) -> void:
 	_version = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -96,7 +97,6 @@ func _crear_version(caja: VBoxContainer) -> void:
 
 	Actualizador.estado_cambiado.connect(_mostrar_version)
 	_mostrar_version()
-	Actualizador.buscar()
 
 
 func _mostrar_version() -> void:

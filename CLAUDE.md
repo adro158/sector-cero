@@ -145,7 +145,10 @@ de lanzar Godot.
 - En el código, `Version.ACTUAL` y `config/version` de `project.godot` valen
   `"desarrollo"`: la Action los sustituye por la etiqueta. No cambiarlos a mano.
 - `Actualizador` tiene que ser el primer autoload y no puede nombrar la clase
-  `Version` (la cargaría antes de aplicar la actualización).
+  `Version` (la cargaría antes de aplicar la actualización). Por lo mismo, un
+  cambio en `actualizador.gd` no llega con el `.pck`: hay que subir
+  `EJECUTABLE_MINIMO` (pasó a 0.6 el 06/10 por el aviso automático). El aviso
+  vive en `aviso_actualizacion.gd`, que se carga con `load()` y sí se actualiza.
 - Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
   que se va a publicar: el `.pck` de actualización no lleva esas cosas. Un

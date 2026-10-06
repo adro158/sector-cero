@@ -148,9 +148,11 @@ un número único.
 
 **Guardado y actualizaciones.** `GestorGuardado` guarda en un fichero de texto
 de Godot (`ConfigFile`) los récords, el ranking de las 10 mejores partidas y
-las opciones. Al abrir el menú, el `Actualizador` pregunta a GitHub si hay una
-versión nueva; el botón ACTUALIZAR descarga solo el contenido del juego (1 MB
-en lugar de 110) y lo carga al arrancar, antes que nada.
+las opciones. Al arrancar y después cada 5 minutos, el `Actualizador` pregunta
+a GitHub si hay una versión nueva; si la hay, sale un aviso en cualquier
+pantalla, también en plena partida. El botón ACTUALIZAR descarga solo el
+contenido del juego (1 MB en lugar de 110) y lo carga al arrancar, antes que
+nada.
 
 **Audio.** Todos los sonidos los genera un script que suma ondas simples, como
 los chips de sonido antiguos: 17 efectos y 3 músicas. `GestorAudio` escucha el

@@ -6,8 +6,10 @@ extends Node
 ##    juego con load_resource_pack. Es el primer autoload y lo hace en _init
 ##    para que todo lo que se cargue después (los demás autoloads, el menú, la
 ##    partida) salga ya de la versión nueva.
-## 2. En el menú: pregunta a GitHub cuál es la última release y, si es más
-##    nueva, el menú ofrece actualizar. Al aceptar, descarga el .pck nuevo (unos
+## 2. Mientras el juego está abierto: pregunta a GitHub cuál es la última
+##    release al arrancar y después cada INTERVALO_BUSQUEDA. Si es más nueva,
+##    sale un aviso (aviso_actualizacion.gd) en el menú o en plena partida, y
+##    el menú enseña además su botón. Al aceptar, descarga el .pck nuevo (unos
 ##    pocos MB, no los 110 del ejecutable) y reinicia el juego.
 ##
 ## Solo actúa en el juego exportado (OS.has_feature("template")): jugando desde
@@ -38,6 +40,10 @@ const VERSION_PARCHE := "user://actualizacion.txt"
 const DESCARGA := "user://actualizacion.pck.descarga"
 ## GitHub rechaza las peticiones que no dicen quién las hace.
 const CABECERAS := ["User-Agent: SectorCero"]
+## Cada cuánto se vuelve a preguntar, en segundos. GitHub deja hacer 60
+## consultas por hora sin cuenta desde una misma conexión: cada 5 minutos son
+## 12, así que caben varios jugadores en la misma red (la del instituto).
+const INTERVALO_BUSQUEDA := 300.0
 
 var estado := Estado.SIN_BUSCAR
 var version_nueva := ""
@@ -54,6 +60,24 @@ var _descarga: HTTPRequest
 func _init() -> void:
 	if OS.has_feature("template") and FileAccess.file_exists(PARCHE):
 		_cargar_parche()
+
+
+func _ready() -> void:
+	if not OS.has_feature("template"):
+		return
+	# Las consultas y la descarga tienen que avanzar con el juego en pausa:
+	# el aviso puede pulsarse mientras se elige mejora.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Con load() y no preload(): así el aviso sale ya del parche cargado en
+	# _init, igual que version.gd.
+	add_child(load("res://globales/aviso_actualizacion.gd").new())
+
+	var reloj := Timer.new()
+	reloj.wait_time = INTERVALO_BUSQUEDA
+	reloj.timeout.connect(buscar)
+	add_child(reloj)
+	reloj.start()
+	buscar()
 
 
 func _cargar_parche() -> void:
@@ -88,12 +112,16 @@ static func comparar(a: String, b: String) -> int:
 	return 0
 
 
-## Pregunta a GitHub por la última release. Solo la primera vez que se llama:
-## volver al menú no repite la consulta.
+## Pregunta a GitHub por la última release. La llama el reloj de _ready; no se
+## pregunta durante la primera consulta ni durante una descarga. Las demás no
+## pueden solaparse: cada una tarda como mucho unos segundos y van cada 5 minutos.
 func buscar() -> void:
-	if not OS.has_feature("template") or estado != Estado.SIN_BUSCAR:
+	if not OS.has_feature("template") or estado in [Estado.BUSCANDO, Estado.DESCARGANDO]:
 		return
-	_cambiar(Estado.BUSCANDO)
+	# Solo la primera vez se enseña "buscando...": las siguientes consultas son
+	# silenciosas y el menú solo cambia si hay algo nuevo que contar.
+	if estado == Estado.SIN_BUSCAR:
+		_cambiar(Estado.BUSCANDO)
 
 	var respuesta := await _pedir(ULTIMA_RELEASE)
 	# 404: todavía no hay ninguna release publicada.
@@ -102,11 +130,11 @@ func buscar() -> void:
 		return
 	# Primero el código: leer como JSON una respuesta vacía da un error.
 	if respuesta.codigo != 200:
-		_cambiar(Estado.SIN_CONEXION)
+		_sin_conexion()
 		return
 	var release = JSON.parse_string(respuesta.texto)
 	if release == null:
-		_cambiar(Estado.SIN_CONEXION)
+		_sin_conexion()
 		return
 
 	version_nueva = release.tag_name.trim_prefix("v")
@@ -115,6 +143,7 @@ func buscar() -> void:
 		return
 
 	_pagina = release.html_url
+	_url_pck = ""
 	var nombre_pck := "sector_cero_%s.pck" % OS.get_name().to_lower()
 	var url_info := ""
 	for archivo in release.assets:
@@ -220,6 +249,13 @@ func _pedir(url: String) -> Dictionary:
 		"codigo": resultado[1] if conecto else 0,
 		"texto": resultado[3].get_string_from_utf8() if conecto else "",
 	}
+
+
+## Si falla una consulta periódica se deja lo que ya se sabía: un corte de red
+## no debe esconder una actualización encontrada antes.
+func _sin_conexion() -> void:
+	if estado == Estado.BUSCANDO:
+		_cambiar(Estado.SIN_CONEXION)
 
 
 func _cambiar(nuevo: Estado) -> void:

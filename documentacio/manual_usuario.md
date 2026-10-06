@@ -11,7 +11,9 @@ barra sobre tu personaje) llega a cero, pierdes.
 Descarga el `.zip` de [Releases](https://github.com/adro158/sector-cero/releases),
 descomprímelo y abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`; si no
 arranca, dale permiso con `chmod +x SectorCero.x86_64`). No hay que instalar
-nada. Si hay una versión nueva, en el menú aparece el botón **ACTUALIZAR**.
+nada. Si sale una versión nueva, el juego avisa solo (también en plena
+partida): **ACTUALIZAR** la descarga y reinicia el juego, y **AHORA NO** lo deja
+para más tarde, con el botón en el menú.
 
 ## Controles
 
