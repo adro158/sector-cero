@@ -21,6 +21,9 @@ var _resistencia: Node
 
 
 func _ready() -> void:
+	# También en pausa: al caer un personaje, el panel tiene que enseñarlo caído
+	# mientras se elige quién sigue.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -87,9 +90,10 @@ func _unhandled_input(evento: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if _estado.is_empty():
 		return
-	# Cuenta atrás propia: se sabe cuánto faltaba al cambiar y el HUD, como el
-	# juego, no avanza en pausa.
-	_espera = maxf(_espera - delta, 0.0)
+	# Cuenta atrás propia: se sabe cuánto faltaba al cambiar, y no avanza en
+	# pausa, como el juego.
+	if not get_tree().paused:
+		_espera = maxf(_espera - delta, 0.0)
 	_escribir_linea()
 	if _panel.visible:
 		for i in _fichas.size():
