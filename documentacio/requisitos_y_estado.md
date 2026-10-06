@@ -4,8 +4,8 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 02/10/2026** contra la bitácora (hasta la sesión 8,
-15 h de 60) y contra el código del repositorio. Se actualiza al
+**Estado verificado el 06/10/2026** contra la bitácora (hasta la sesión 9,
+17 h de 60) y contra el código del repositorio. Se actualiza al
 cerrar cada sesión, junto con la bitácora y las casillas de `planificacion.md`.
 
 ## Qué es esto, en tres líneas
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v0.5 publicada el 02/10. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v0.7 publicada el 06/10, también en la web. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -94,9 +94,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Publicar la v0.7** (corazón, cofre y ruleta, vida por personaje, Q y E, y
-   el arreglo del botón ACTUALIZAR) y comprobar que la v0.5 y la v0.6 de Adam se
-   actualizan solas, en Windows y en Linux.
+2. **Lo que Adam encargó tras jugar la v0.7** (detalle en la bitácora, sesión
+   9, «Siguiente paso»): gemas amarillas, naranjas y magentas; menos horda al
+   llegar el jefe; ransomware más rápido; un jefe más duro que invoque oleadas
+   con un movimiento propio; y medirlo con el simulador (hoy 7 de 10, objetivo
+   4-6). Comprobar también que la v0.5 y la v0.6 se actualizan solas a la v0.7
+   en Windows y en Linux.
 3. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
 4. **Vídeo demostrativo** (2-4 min).

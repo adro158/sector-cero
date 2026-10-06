@@ -1433,3 +1433,238 @@ Todo commiteado y subido a `main`, y publicado como **v0.5**.
 3. Vídeo demostrativo (Adam pidió que se le recuerde).
 4. Ensayar la defensa con `presentacion.md`, que tiene las preguntas nuevas.
 5. Decidir qué se hace con las ramas `demo-movil` y `gh-pages`.
+
+---
+
+## Sesión 9 — 06/10/2026
+
+**Duración:** 2 h · **Fitas:** 4, 5 y 6 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 17 h de las 60 sugeridas (28 %)
+
+### Qué se ha hecho
+
+Al empezar, Claude bajó de GitHub los 41 commits de Adam de casa (sesiones 6 a
+8, releases v0.2 a v0.5 y las ramas `demo-movil` y `gh-pages`). Después:
+
+- **Aviso de versión nueva con el juego abierto.** El juego pregunta a GitHub
+  al arrancar y cada 5 minutos, también en plena partida, y avisa arriba en el
+  centro con ACTUALIZAR o AHORA NO (`aviso_actualizacion.gd`).
+- **El juego en el móvil, fácil de encontrar.** Botón JUGAR AHORA y código QR
+  al principio del README, y el enlace en el «About» del repositorio. Los
+  controles táctiles de `demo-movil` pasaron a `main` y la Action de las
+  releases publica también la web, así que el enlace tiene siempre la última
+  versión.
+- Se publicó la **v0.6** con lo anterior.
+- **ACTUALIZAR ya no manda a GitHub.** Adam lo probó en Windows y en Linux
+  con la v0.5 y el botón abría la página de la release. Arreglado para la v0.7
+  (ver «Problemas»).
+- **Disparo del Ping en morado**, el color del Mago (dibujo de Adam con Claude
+  en el chat).
+- **Premio de los élites: corazón y cofre con ruleta** (dibujos de Adam con
+  Claude en el chat). Al morir, el élite suelta un corazón, que cura el 50 %, y
+  un cofre que abre una ruleta de 8 mejoras. Sustituye a la cura instantánea y
+  la mejora gratis de la sesión 8.
+- **Cada personaje tiene su vida** (Espadachín 120, Segador 100, Mago 90). Los
+  que esperan se curan; si cae el activo se elige quién sigue, y se pierde al
+  caer los tres.
+- **E pasa al siguiente personaje y Q vuelve al anterior; C abre el panel del
+  equipo** a la derecha, pequeño, con la vida, la herramienta, la resistencia y
+  el estado de cada uno.
+- Se publicó la **v0.7** con todo lo de la tarde.
+
+### Decisiones técnicas y por qué
+
+**Las consultas a GitHub, cada 5 minutos.** Sin cuenta, GitHub deja 60 por
+hora desde una misma conexión: cada 5 minutos son 12, y caben varios jugadores
+en la red del instituto. Las consultas siguientes a la primera son silenciosas
+y un corte de red no esconde una actualización ya encontrada.
+
+**Los botones del aviso no cogen el foco**: si lo cogieran, Enter o las
+flechas de la partida los pulsarían sin querer.
+
+**La web se publica con cada release y no desde `demo-movil`**: así no hay que
+mantener dos ramas y el enlace no se queda atrás. En la web no hay
+actualizador (el navegador ya baja la última versión) ni botón SALIR, y se
+activó el teclado virtual para escribir el nombre del ranking.
+
+**El instalador del juego completo va con el contenido, no en el
+actualizador** (`instalador_juego.gd`). `actualizador.gd` lo carga el
+ejecutable antes que cualquier actualización, así que lo que cambie en él no
+llega a los ejecutables viejos. El instalador viaja en el `.pck`: un ejecutable
+antiguo que recibe la v0.7 ya sabe instalarse el siguiente ejecutable. Descarga
+el `.zip` de la release, aparta el ejecutable en marcha (Windows deja
+renombrarlo pero no borrarlo), pone el nuevo y reinicia; el viejo se borra al
+arrancar. Si algo falla, abre la página como antes.
+
+**El premio, decidido con el prompt de Adam:**
+- `premios_elite.gd`, un nodo de la partida que escucha la muerte del élite en
+  el bus: el élite no sabe nada de los premios. Sprite2D normales, porque no
+  hay más de tres élites.
+- El cofre avisa con `cofre_recogido` y la cola del sistema de niveles pasa de
+  un contador a una lista de «nivel» y «cofre»: **cada elemento sale con su
+  panel**, en orden de llegada, y el cofre nunca se convierte en tres tarjetas
+  ni al revés.
+- La ruleta (`panel_ruleta.gd`) recibe en `ruleta_abierta` los 8 sectores y el
+  premio ya sorteado; el giro solo lo enseña. Contesta con la
+  `mejora_seleccionada` de siempre, así que aplicar la mejora, las evoluciones,
+  el sonido y la columna del HUD funcionan sin tocarlos. Apunta el nivel en el
+  mismo diccionario que el panel de mejoras, antes de emitir.
+- Los iconos no giran con el disco: se recolocan cada fotograma en el ángulo de
+  su sector más el giro. El disco frena con un `Tween` (EASE_OUT, TRANS_CUBIC,
+  3,5 s) hasta -(45·k) - 360·vueltas grados.
+- Se acepta con click, Enter o espacio, no sola: así el jugador ve qué le ha
+  tocado.
+- Va en un solo commit `feat` y no en dos: el cofre sin la ruleta habría dejado
+  el juego pausado en el commit intermedio.
+
+**La vida por personaje, decidida con preguntas a Adam** (eligió 120/100/90,
+que se curen en el banquillo, pausa para elegir al caer, y C para un panel
+pequeño a la derecha):
+- El nodo `Salud` del jugador es siempre la vida del activo; el equipo
+  (`cambio_personaje.gd`) guarda la de los demás y la intercambia al cambiar.
+  Así las barras, el daño de los enemigos y el corazón no cambian.
+- Los que esperan recuperan 1,5 por segundo. Memoria redundante sube a los tres.
+- Al caer el activo, el juego se pausa (`personaje_caido`), la interfaz
+  contesta con `personaje_elegido` y el que entra tiene 2 s sin recibir daño:
+  si no, la horda que acaba de matar al primero mataría al segundo al momento.
+- `equipo_cambiado` lleva el estado de los tres para la interfaz.
+- **El sonido de daño escucha ahora `jugador_danado`.** Antes comparaba la
+  vida, y al cambiar a un personaje con menos sonaba como un golpe.
+
+**Q y E sin pedir el ejecutable nuevo.** Están en `project.godot`, que no
+viaja en el `.pck`. En los ejecutables viejos, que traen Q para «siguiente», el
+equipo corrige las teclas al empezar la partida
+(`_configurar_teclas_antiguas`). Así `EJECUTABLE_MINIMO` sigue en 0.2.
+
+### Cambios de rumbo y su justificación
+
+**`EJECUTABLE_MINIMO` vuelve a 0.2.** Por la mañana se subió a 0.6 con la regla
+«un cambio en `actualizador.gd` obliga a subirlo». La regla era demasiado
+estricta: el contenido no necesitaba nada del actualizador nuevo. Corregida en
+`CLAUDE.md`.
+
+**El premio del élite de la sesión 8 (cura y mejora al momento) pasa a corazón
+y cofre**, a petición de Adam: ahora hay que ir a por ellos.
+
+### Problemas encontrados y cómo se resolvieron
+
+**ACTUALIZAR abría GitHub.** Con el mínimo en 0.6, los ejecutables v0.5 no
+podían usar el `.pck`. Solución: el mínimo vuelve a 0.2, el menú vuelve a pedir
+la búsqueda (los ejecutables anteriores a la v0.6 no buscan solos) y el
+instalador cubre el caso en que de verdad haga falta un ejecutable nuevo.
+
+**El simulador releía los scripts a mitad de la medida.** Al terminar cada
+partida, Godot suelta la escena y la siguiente se carga del disco: editar la
+jugabilidad mientras corría habría cambiado las reglas a medias. Las medidas se
+hicieron sobre una copia del proyecto.
+
+**El panel del equipo no se actualizaba en pausa** y, al caer un personaje,
+seguía enseñándolo vivo. Ahora procesa también en pausa, sin que avance la
+cuenta atrás del cambio.
+
+**Al caer un personaje no se avisaba del estado del equipo**, y una prueba
+eligió a uno ya caído. Se avisa al caer.
+
+**`Salud` enviaba al arrancar los valores del momento de pedirlo**
+(`emit.call_deferred` con argumentos) y no los del momento del aviso: el
+equipo pone la vida del primer personaje (120) entre medias, y la barra
+habría salido con 100. Ahora envía los valores de cuando avisa.
+
+### Uso de IA
+
+Claude programó todo, propuso las opciones de cada pregunta y redactó la
+documentación. Los dibujos del Ping, el corazón, el cofre y la ruleta los hizo
+Adam con Claude en el chat, con un prompt que describía cómo meterlos; las
+decisiones de diseño (premio, vidas, teclas, panel) las tomó Adam.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless tras cada cambio, y recuento de clases
+  globales (16, sin cambios).
+- **Actualizador, de punta a punta, con un servidor local que imita la API:**
+  - Por la mañana, un ejecutable 0.6 en partida ve la 0.7, la descarga y
+    arranca con ella.
+  - Por la tarde, un ejecutable construido desde la etiqueta v0.5 recibe la
+    0.7 por `.pck`. Con una «0.8» que pide ejecutable nuevo, se lo instala solo
+    y arranca como «0.8 · al día».
+- **Web en local**, servida por HTTP y con el navegador a tamaño de móvil:
+  joystick, pausa al subir de nivel y elegir mejora con un toque.
+- **Prueba temporal del premio**, con la partida y el HUD de verdad:
+  - Al morir el élite caen el corazón y el cofre, sin cura instantánea, y el
+    corazón cura de 30 a 80.
+  - El cofre pausa y abre la ruleta, y Enter no acepta mientras gira.
+  - La rueda para en -270° con el premio en el sector 6, y se aplica ese.
+  - Con un nivel y un cofre en la cola, sale cada uno con su panel y la pausa
+    no se puede quitar.
+  - Con una evolución disponible, entra en la ruleta.
+- **Prueba temporal del equipo:**
+  - Vidas 120/90/100 y E y Q en las dos direcciones.
+  - La espera bloquea el cambio y no suena daño al cambiar.
+  - El banquillo se cura y Memoria redundante sube a los tres.
+  - El panel C enseña el estado de cada uno.
+  - Al caer el activo hay pausa, la tecla del caído no hace nada y el elegido
+    entra protegido.
+  - E y Q se saltan a los caídos y la partida acaba al caer los tres.
+  - Las teclas se corrigen en un ejecutable viejo.
+- **Capturas con ventana:** Ping morado (también el de inundación), corazón y
+  cofre en el suelo, cofre abriéndose, ruleta parada con el premio, panel del
+  equipo y ventana de personaje caído.
+- **Simulador (10 partidas, mismas semillas):**
+
+  | Versión | Victorias | Duración media | Notas |
+  |---|---|---|---|
+  | Antes de hoy | 6 de 10 | 602 s | |
+  | Con el corazón y el cofre | 2 de 10 | 588 s | Sin la cura al momento, cuatro partidas que se ganaban se pierden antes (538-589 s) |
+  | Con todo (premios y vida por personaje) | 7 de 10 | 751 s | 48 cofres de 48 élites; solo 4 personajes caídos en 10 partidas. Las 3 derrotas son el bot sin acabar con el jefe en 4 minutos, ninguna por caer los tres |
+
+### Estado al cerrar
+
+Todo commiteado y subido a `main`, y publicado como **v0.7** (la Action exportó
+el juego, el `.pck`, `version.json` con ejecutable mínimo 0.2 y la web). El
+balance queda por encima del objetivo (7 de 10 frente a 4-6).
+
+Adam jugó la v0.7 al final de la clase y dejó apuntado lo que hay que hacer en
+la sesión siguiente (ver «Siguiente paso»). No hubo tiempo de hacerlo hoy.
+
+### Siguiente paso
+
+Encargado por Adam el 06/10 para la sesión siguiente. Cuando diga «hazlo», es
+esta lista, en este orden, cada bloque en su commit:
+
+1. **Colores de la experiencia** (apartado C del prompt de
+   `premios_ping_y_xp.zip`; los apartados A y B, Ping y premio, ya están
+   hechos y sus PNG son idénticos a los del repositorio). Las gemas se
+   camuflan con el suelo porque el cian y el verde son los colores de las
+   pistas; Adam probó cuatro combinaciones sobre el suelo y eligió la 2. En
+   `pool_gemas.gd`:
+   - `color_bajo = Color(1.0, 0.92, 0.3)`, amarillo (la gema común)
+   - `color_medio = Color(1.0, 0.55, 0.2)`, naranja
+   - `color_alto = Color(1.0, 0.35, 0.85)`, magenta (la que más vale)
+
+   No hace falta sprite nuevo: `fragmento_datos.png` es gris y se tiñe por
+   instancia, y `raiz_juego.tscn` no sobrescribe los colores (comprobado).
+   Cambiar los textos que dicen «cian, verdes o dorados»: `panel_reglas.gd`
+   (Experiencia), `manual_usuario.md` y `documentacion_tecnica.md`. Captura con
+   ventana de las gemas en partida.
+2. **Menos horda cuando llega el jefe.** A los 10 minutos queda demasiada
+   oleada en pantalla. Preguntar a Adam si prefiere bajar la densidad en el
+   último minuto o que la horda que queda se retire al aparecer el jefe.
+3. **El ransomware es demasiado lento**: casi no molesta. Subirle la
+   velocidad (`recursos/enemigos/datos/ransomware.tres`).
+4. **Un jefe más difícil**, que ahora dura poco:
+   - Ataques más fuertes (daño por contacto y de la embestida, quizá más
+     vida).
+   - **Que invoque oleadas de enemigos** cada cierto tiempo, con un movimiento
+     propio antes de cada una, como si los estuviera generando (por ejemplo,
+     se para, brilla o late y salen a su alrededor), para que se vea que salen
+     de él. Los enemigos los crean los gestores de horda (`aparecer`), como
+     hace el replicante.
+5. **Medir con el simulador antes y después** (mismas semillas, 10 partidas,
+   sobre una copia del proyecto). Hoy da 7 de 10 y el objetivo es 4-6: el
+   jefe más duro debería bajarlo. Si sigue alto, proponer a Adam bajar la
+   curación del banquillo de 1,5 a 0,5 por segundo.
+6. Publicar la v0.8 cuando Adam lo pida.
+
+Después: vídeo demostrativo (Adam pidió que se le recuerde) y ensayo de la
+defensa.
