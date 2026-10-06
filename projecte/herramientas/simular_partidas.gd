@@ -2,12 +2,14 @@ extends SceneTree
 
 ## Herramienta de testeo, no forma parte del juego: juega partidas enteras sin
 ## nadie delante para medir el balance. Un bot huye de los enemigos cercanos,
-## de los élites y del jefe, da vueltas cuando no hay peligro, elige mejoras
-## como un jugador (la evolución si sale y, si no, una de ataque si la hay) y
-## cambia de personaje cuando el malware se ha hecho resistente a su
-## herramienta. Cada minuto de partida anota vida, nivel,
+## de los élites y del jefe, va a por el corazón y el cofre que sueltan los
+## élites (y acepta lo que toque en la ruleta), da vueltas cuando no hay
+## peligro, elige mejoras como un jugador (la evolución si sale y, si no, una
+## de ataque si la hay) y cambia de personaje cuando el malware se ha hecho
+## resistente a su herramienta. Cada minuto de partida anota vida, nivel,
 ## enemigos (en total y por tipo), herramienta y resistencias, y al final
-## resume victorias, duración media, cambios de personaje y eliminados por tipo.
+## resume victorias, duración media, cambios de personaje, cofres recogidos y
+## eliminados por tipo.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -40,6 +42,7 @@ var _victorias := 0
 var _duraciones: Array[float] = []
 var _cambios := 0
 var _evoluciones := 0
+var _cofres := 0
 ## Eliminados de cada tipo, sumando todas las partidas.
 var _eliminados_por_tipo := {}
 var _bus: Node
@@ -63,7 +66,10 @@ func _initialize() -> void:
 	var guardado := root.get_node("GestorGuardado")
 	_bus.partida_terminada.disconnect.call_deferred(guardado._al_terminar_partida)
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
+	# La ruleta del cofre no se elige: se acepta el premio que ha tocado.
+	_bus.ruleta_abierta.connect(func(_opciones, premio): _elegir.call_deferred(premio))
 	_bus.arma_evolucionada.connect(func(_arma): _evoluciones += 1)
+	_bus.cofre_recogido.connect(func(): _cofres += 1)
 	_bus.enemigo_muerto.connect(func(_posicion, tipo): _eliminados_por_tipo[tipo] = _eliminados_por_tipo.get(tipo, 0) + 1)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
@@ -159,7 +165,12 @@ func _mover_bot() -> void:
 	# jefe es más lento que el jugador y, si no, no se encontrarían nunca.
 	var direccion := huida.normalized()
 	var jefe: Node2D = _raiz.get_node("Jefe")
-	if huida == Vector2.ZERO and jefe._activo:
+	# El corazón y el cofre de los élites hay que ir a buscarlos: el bot va a
+	# por el más cercano sin dejar de apartarse de lo que tenga encima.
+	var premio := _premio_mas_cercano(posicion)
+	if premio != Vector2.INF:
+		direccion = ((premio - posicion).normalized() + huida.normalized() * 0.7).normalized()
+	elif huida == Vector2.ZERO and jefe._activo:
 		direccion = (jefe.global_position - posicion).normalized()
 	elif huida == Vector2.ZERO:
 		direccion = Vector2(-posicion.y, posicion.x).normalized() * 0.6
@@ -176,6 +187,16 @@ func _mover_bot() -> void:
 		Input.action_press("mover_abajo", direccion.y)
 	elif direccion.y < -0.05:
 		Input.action_press("mover_arriba", -direccion.y)
+
+
+## Dónde está el premio más cercano en el suelo, o Vector2.INF si no hay.
+func _premio_mas_cercano(posicion: Vector2) -> Vector2:
+	var mejor := Vector2.INF
+	for premio in _raiz.get_node("PremiosElite").get_children():
+		var suelo: Vector2 = premio.get_meta("suelo")
+		if mejor == Vector2.INF or posicion.distance_to(suelo) < posicion.distance_to(mejor):
+			mejor = suelo
+	return mejor
 
 
 func _informe(etiqueta: String) -> void:
