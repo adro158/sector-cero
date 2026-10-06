@@ -8,8 +8,9 @@ extends SceneTree
 ## de ataque si la hay) y cambia de personaje cuando el malware se ha hecho
 ## resistente a su herramienta. Cada minuto de partida anota vida, nivel,
 ## enemigos (en total y por tipo), herramienta y resistencias, y al final
-## resume victorias, duración media, cambios de personaje, cofres recogidos y
-## eliminados por tipo.
+## resume victorias, duración media, cambios de personaje, cofres recogidos,
+## personajes caídos y eliminados por tipo. Cuando cae el personaje activo,
+## sigue con el que tenga más vida.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -43,6 +44,7 @@ var _duraciones: Array[float] = []
 var _cambios := 0
 var _evoluciones := 0
 var _cofres := 0
+var _caidas := 0
 ## Eliminados de cada tipo, sumando todas las partidas.
 var _eliminados_por_tipo := {}
 var _bus: Node
@@ -70,6 +72,7 @@ func _initialize() -> void:
 	_bus.ruleta_abierta.connect(func(_opciones, premio): _elegir.call_deferred(premio))
 	_bus.arma_evolucionada.connect(func(_arma): _evoluciones += 1)
 	_bus.cofre_recogido.connect(func(): _cofres += 1)
+	_bus.personaje_caido.connect(_al_caer_personaje)
 	_bus.enemigo_muerto.connect(func(_posicion, tipo): _eliminados_por_tipo[tipo] = _eliminados_por_tipo.get(tipo, 0) + 1)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
@@ -104,6 +107,16 @@ func _al_subir_nivel(opciones: Array) -> void:
 
 func _elegir(mejora: DatosMejora) -> void:
 	_bus.mejora_seleccionada.emit(mejora)
+
+
+## Cuando cae el personaje activo, sigue el que tenga más vida.
+func _al_caer_personaje(personajes: Array, _caido: int) -> void:
+	_caidas += 1
+	var mejor := -1
+	for i in personajes.size():
+		if not personajes[i].caido and (mejor == -1 or personajes[i].vida > personajes[mejor].vida):
+			mejor = i
+	_bus.personaje_elegido.emit.call_deferred(mejor)
 
 
 func _paso() -> void:
@@ -241,7 +254,7 @@ func _siguiente() -> void:
 	var suma := 0.0
 	for duracion in _duraciones:
 		suma += duracion
-	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d" % [
-		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones])
+	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d cofres=%d caidas=%d" % [
+		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones, _cofres, _caidas])
 	print("ELIMINADOS POR TIPO %s" % _eliminados_por_tipo)
 	quit()

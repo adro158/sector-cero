@@ -10,4 +10,5 @@ nombre = "Segador"
 descripcion = "Escáner: un pulso amplio y fuerte, pero lento (cada 2,5 s). El mejor contra grupos grandes y enemigos duros como el proceso colgado. Entre pulso y pulso estás desprotegido. Evoluciona a Análisis heurístico con Ampliar subred ×3."
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
+vida_maxima = 100.0
 color = Color(1, 0.35, 0.35, 1)

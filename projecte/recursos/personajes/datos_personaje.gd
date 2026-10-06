@@ -13,6 +13,8 @@ extends Resource
 ## personaje original.
 @export var hoja: Texture2D
 @export var arma: DatosArma
+## Cada personaje tiene su propia vida: el que pega de cerca aguanta más.
+@export var vida_maxima: float = 100.0
 
 ## Color que lo identifica en la interfaz.
 @export var color: Color = Color.WHITE

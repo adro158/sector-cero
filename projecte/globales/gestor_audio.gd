@@ -27,7 +27,6 @@ var _reproductores := {}
 var _ultima_vez := {}
 var _musica: AudioStreamPlayer
 var _pista_actual := ""
-var _vida_anterior := 0.0
 var _personaje_anterior: DatosPersonaje
 
 
@@ -56,8 +55,9 @@ func _ready() -> void:
 	BusEventos.ruleta_abierta.connect(func(_opciones, _premio): sonar("subir_nivel"))
 	BusEventos.mejora_seleccionada.connect(func(_mejora): sonar("elegir"))
 	BusEventos.herramienta_usada.connect(func(arma: DatosArma): sonar(arma.sonido))
-	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
+	BusEventos.jugador_danado.connect(func(_cantidad): sonar("dano"))
 	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
+	BusEventos.personaje_caido.connect(func(_personajes, _caido): sonar("explosion"))
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
@@ -112,12 +112,6 @@ func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 	else:
 		# Un poco más agudo o más grave cada vez, para que no canse.
 		sonar("muerte", randf_range(0.85, 1.15))
-
-
-func _al_cambiar_vida(actual: float, _maxima: float) -> void:
-	if actual < _vida_anterior:
-		sonar("dano")
-	_vida_anterior = actual
 
 
 func _al_cambiar_personaje(actual: DatosPersonaje, _arma: DatosArma, _siguiente: DatosPersonaje, _espera: float) -> void:

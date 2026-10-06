@@ -13,7 +13,9 @@ func _ready() -> void:
 	$Jugador.global_position = aparicion.global_position
 
 	_salud_jugador.vida_cambiada.connect(_al_cambiar_vida)
-	_salud_jugador.murio.connect(_terminar_partida.bind(false))
+	_salud_jugador.danado.connect(BusEventos.jugador_danado.emit)
+	# Cuando cae un personaje se elige otro; la partida se pierde al caer todos.
+	$Jugador/CambioPersonaje.equipo_derrotado.connect(_terminar_partida.bind(false))
 	# Al cumplirse el tiempo llega el jefe, y se gana al derrotarlo.
 	_director.llega_el_jefe.connect($Jefe.aparecer)
 	$Jefe.derrotado.connect(_terminar_partida.bind(true))
@@ -31,8 +33,8 @@ func _al_morir_enemigo(_posicion: Vector2, _tipo: String) -> void:
 
 func _al_pausar(en_pausa: bool) -> void:
 	# El menú de pausa no puede quitar una pausa que no es suya: ni la del fin
-	# de partida ni la de elegir mejora, que se levanta sola al elegir.
-	if _terminada or _sistema_niveles.eligiendo():
+	# de partida ni la de elegir mejora o personaje, que se levantan solas.
+	if _terminada or _sistema_niveles.eligiendo() or $Jugador/CambioPersonaje.eligiendo():
 		return
 
 	get_tree().paused = en_pausa

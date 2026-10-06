@@ -2,13 +2,16 @@ extends Control
 
 ## HUD de la partida: nivel y experiencia arriba a la izquierda, reloj y cuenta
 ## atrás hasta el jefe arriba en el centro, y la columna de mejoras elegidas a
-## la izquierda. La vida va en una barra sobre el propio personaje.
+## la izquierda. La vida va en una barra sobre el propio personaje; el equipo
+## (abajo y con C) lo lleva panel_equipo.gd.
 ##
-## Solo escucha señales del BusEventos. Los niveles de cada mejora los anota el
-## panel de mejoras al elegir, en un diccionario que comparten los dos.
+## Solo escucha señales del BusEventos. Los niveles de cada mejora los anotan
+## el panel de mejoras y la ruleta al elegir, en un diccionario que comparten.
 
 const FichaEnemigo := preload("res://escenas/interfaz/ficha_enemigo.gd")
 const PanelRuleta := preload("res://escenas/interfaz/panel_ruleta.gd")
+const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
+const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 
 var niveles_mejora := {}
 
@@ -19,31 +22,8 @@ var _etiqueta_tiempo: Label
 var _etiqueta_jefe: Label
 var _columna: VBoxContainer
 var _iconos := {}
-var _personaje: Label
 var _aviso: Label
 var _efecto_aviso: Tween
-var _actual: DatosPersonaje
-var _arma: DatosArma
-var _siguiente: DatosPersonaje
-var _espera := 0.0
-
-
-func _process(delta: float) -> void:
-	if _actual == null:
-		return
-	# Cuenta atrás propia: se sabe cuánto faltaba al cambiar y el HUD, como el
-	# juego, no avanza en pausa.
-	_espera = maxf(_espera - delta, 0.0)
-	var estado := "[Q] cambiar a %s" % _siguiente.nombre if _espera <= 0.0 else "%s en %d s" % [_siguiente.nombre, ceili(_espera)]
-	_personaje.text = "%s · %s      %s" % [_actual.nombre.to_upper(), _arma.nombre, estado]
-
-
-func _al_cambiar_personaje(actual: DatosPersonaje, arma: DatosArma, siguiente: DatosPersonaje, espera: float) -> void:
-	_actual = actual
-	_arma = arma
-	_siguiente = siguiente
-	_espera = espera
-	_personaje.add_theme_color_override("font_color", actual.color)
 
 
 func _ready() -> void:
@@ -57,14 +37,6 @@ func _ready() -> void:
 	_columna.add_theme_constant_override("separation", 6)
 	add_child(_columna)
 
-	_personaje = EstiloInterfaz.etiqueta("", 16)
-	_personaje.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_personaje.offset_left = -300.0
-	_personaje.offset_right = 300.0
-	_personaje.offset_top = -44.0
-	_personaje.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(_personaje)
-
 	_aviso = EstiloInterfaz.etiqueta("", 26)
 	_aviso.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	_aviso.offset_left = -400.0
@@ -74,22 +46,24 @@ func _ready() -> void:
 	_aviso.modulate.a = 0.0
 	add_child(_aviso)
 
-	# La primera de los hijos: así queda por debajo de la pausa y las mejoras.
-	var ficha := FichaEnemigo.new()
-	add_child(ficha)
-	move_child(ficha, 0)
+	# Los primeros hijos: así quedan por debajo de la pausa y las mejoras.
+	for panel in [PanelEquipo.new(), FichaEnemigo.new()]:
+		add_child(panel)
+		move_child(panel, 0)
 	$PanelMejoras.niveles = niveles_mejora
-	# Delante de todo menos de la pausa y la pantalla final, como el panel de
-	# mejoras.
+	# Justo encima del panel de mejoras: por debajo de la pausa y de la
+	# pantalla final, como él.
 	var ruleta := PanelRuleta.new()
 	ruleta.niveles = niveles_mejora
 	add_child(ruleta)
 	move_child(ruleta, $PanelMejoras.get_index() + 1)
+	var caida := PanelCaida.new()
+	add_child(caida)
+	move_child(caida, ruleta.get_index() + 1)
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
-	BusEventos.personaje_cambiado.connect(_al_cambiar_personaje)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)

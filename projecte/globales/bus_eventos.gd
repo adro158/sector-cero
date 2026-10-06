@@ -11,6 +11,18 @@ signal tiempo_partida(segundos: float, duracion: float)
 ## del activo. arma: la que lleva ahora. espera: segundos hasta poder volver a
 ## cambiar.
 signal personaje_cambiado(actual: DatosPersonaje, arma: DatosArma, siguiente: DatosPersonaje, espera: float)
+## Cómo está el equipo: al empezar, al cambiar de personaje y cuando cambia la
+## vida de alguno. personajes: un diccionario por personaje con personaje
+## (DatosPersonaje), arma (DatosArma), vida, maxima y caido. activo: su índice.
+signal equipo_cambiado(personajes: Array, activo: int)
+## Ha caído el personaje activo y quedan otros: llega con el juego pausado y se
+## contesta con personaje_elegido. Mismo formato que equipo_cambiado.
+signal personaje_caido(personajes: Array, caido: int)
+## La interfaz avisa de quién sigue tras caer uno (su índice en el equipo).
+signal personaje_elegido(indice: int)
+## El jugador ha recibido un golpe que hace daño. Para el sonido: comparar la
+## vida no sirve, porque también baja al cambiar a un personaje con menos.
+signal jugador_danado(cantidad: float)
 ## Una herramienta se ha convertido en su evolución.
 signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])

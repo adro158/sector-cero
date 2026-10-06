@@ -19,8 +19,11 @@ var _tiempo_invulnerable := 0.0
 func _ready() -> void:
 	_vida = vida_maxima
 	# Diferido porque los hijos están listos antes que el padre: si se emitiera
-	# aquí mismo, nadie se habría conectado todavía y el aviso se perdería.
-	vida_cambiada.emit.call_deferred(_vida, vida_maxima)
+	# aquí mismo, nadie se habría conectado todavía y el aviso se perdería. Con
+	# _avisar y no con emit.call_deferred(_vida, ...): así se envían los valores
+	# del momento del aviso, por si alguien (el equipo de personajes) los ha
+	# cambiado entretanto.
+	_avisar.call_deferred()
 
 
 func _physics_process(delta: float) -> void:
@@ -37,6 +40,23 @@ func _physics_process(delta: float) -> void:
 
 func vida() -> float:
 	return _vida
+
+
+func _avisar() -> void:
+	vida_cambiada.emit(_vida, vida_maxima)
+
+
+## Pone una vida y un máximo concretos. Para el jugador al cambiar de
+## personaje: cada personaje tiene la suya.
+func poner(actual: float, maxima: float) -> void:
+	vida_maxima = maxima
+	_vida = actual
+	_avisar()
+
+
+## Un rato sin recibir daño, como tras un golpe pero más largo.
+func proteger(segundos: float) -> void:
+	_tiempo_invulnerable = segundos
 
 
 ## Vuelve a llenar la vida con un máximo nuevo. Para los élites, que se

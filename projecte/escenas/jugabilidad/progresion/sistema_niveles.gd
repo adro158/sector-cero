@@ -25,7 +25,6 @@ var _agotadas: Array[DatosMejora] = []
 var _jugador: Node2D
 var _gestor_armas: Node
 var _cambio_personaje: Node
-var _salud: Salud
 var _resistencia: Node
 var _pool_gemas: Node
 
@@ -35,7 +34,6 @@ func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_gestor_armas = _jugador.get_node("GestorArmas")
 	_cambio_personaje = _jugador.get_node("CambioPersonaje")
-	_salud = _jugador.get_node("Salud")
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	_pool_gemas = get_tree().get_first_node_in_group("pool_gemas")
 
@@ -162,7 +160,7 @@ func _aplicar(mejora: DatosMejora) -> void:
 		DatosMejora.Efecto.VELOCIDAD_JUGADOR:
 			_jugador.velocidad_maxima *= 1.0 + mejora.valor
 		DatosMejora.Efecto.VIDA_MAXIMA:
-			_salud.aumentar_vida_maxima(mejora.valor)
+			_cambio_personaje.aumentar_vida_maxima(mejora.valor)
 		DatosMejora.Efecto.EVOLUCIONAR_ARMA:
 			_cambio_personaje.evolucionar(mejora.arma_base, mejora.arma)
 			_agotadas.append(mejora)
