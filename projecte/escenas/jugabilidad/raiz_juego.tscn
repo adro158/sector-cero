@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -22,6 +22,7 @@
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/troyano.tres" id="22_troyano"]
 [ext_resource type="Texture2D" path="res://medios/sprites/fragmento_datos.png" id="23_fragmento"]
 [ext_resource type="Texture2D" path="res://medios/sprites/proyectil_ping.png" id="24_proyectil"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/progresion/premios_elite.gd" id="25_premios"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -82,6 +83,9 @@ config = ExtResource("11_config")
 [node name="SistemaNiveles" type="Node" parent="."]
 script = ExtResource("6_niveles")
 pool_mejoras = ExtResource("7_pool_mejoras")
+
+[node name="PremiosElite" type="Node2D" parent="."]
+script = ExtResource("25_premios")
 
 [node name="PoolProyectiles" type="Node2D" parent="." groups=["pool_proyectiles"]]
 script = ExtResource("14_proyectiles")

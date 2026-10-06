@@ -8,6 +8,7 @@ extends Control
 ## panel de mejoras al elegir, en un diccionario que comparten los dos.
 
 const FichaEnemigo := preload("res://escenas/interfaz/ficha_enemigo.gd")
+const PanelRuleta := preload("res://escenas/interfaz/panel_ruleta.gd")
 
 var niveles_mejora := {}
 
@@ -78,6 +79,12 @@ func _ready() -> void:
 	add_child(ficha)
 	move_child(ficha, 0)
 	$PanelMejoras.niveles = niveles_mejora
+	# Delante de todo menos de la pausa y la pantalla final, como el panel de
+	# mejoras.
+	var ruleta := PanelRuleta.new()
+	ruleta.niveles = niveles_mejora
+	add_child(ruleta)
+	move_child(ruleta, $PanelMejoras.get_index() + 1)
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
@@ -156,11 +163,11 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
 
 
-## Matar un élite cura y regala una mejora: se avisa para que se entienda por
-## qué se abre el panel sin haber subido de nivel.
+## Matar un élite deja en el suelo un corazón y un cofre: se avisa para que se
+## sepa que hay que ir a por ellos.
 func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 	if tipo == "elite":
-		_avisar("ÉLITE ELIMINADO: +50 % DE VIDA Y UNA MEJORA", EstiloInterfaz.VICTORIA)
+		_avisar("ÉLITE ELIMINADO: RECOGE EL CORAZÓN Y EL COFRE", EstiloInterfaz.VICTORIA)
 
 
 ## Mensaje grande arriba en el centro que se desvanece a los pocos segundos.

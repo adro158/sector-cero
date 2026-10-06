@@ -15,9 +15,6 @@ const RADIO_AURA := 150.0
 const RADIO_EXPLOSION := 130.0
 ## Segundos de aviso entre la muerte de un explosivo y su explosión.
 const AVISO_EXPLOSION := 0.8
-## Recompensa por matarlo: esta fracción de la vida del jugador. La otra
-## recompensa, una mejora extra, la da el sistema de niveles.
-const CURACION_AL_MORIR := 0.5
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 
 @export var datos: DatosTipoEnemigo
@@ -140,8 +137,8 @@ func _valor(efecto: DatosAfijoElite.Efecto) -> float:
 func _al_morir() -> void:
 	_activo = false
 	# Al morir suelta su experiencia y cuenta como eliminado, como la horda.
+	# El premio (corazón y cofre) lo suelta premios_elite.gd al oír esta señal.
 	BusEventos.enemigo_muerto.emit(global_position, datos.tipo)
-	_salud_jugador.curar(CURACION_AL_MORIR)
 
 	# El replicante suelta bits corruptos a su alrededor. El primer gestor del
 	# grupo es el del bit corrupto, el primero de la escena.

@@ -85,7 +85,7 @@ func _al_subir_nivel(opciones: Array) -> void:
 		var contenido := tarjeta.get_child(0)
 		contenido.get_child(1).texture = mejora.icono
 		contenido.get_child(2).text = mejora.nombre
-		contenido.get_child(3).text = _texto_nivel(mejora)
+		contenido.get_child(3).text = texto_nivel(mejora, niveles)
 		contenido.get_child(4).text = mejora.descripcion
 
 	_ventana.visible = true
@@ -93,7 +93,9 @@ func _al_subir_nivel(opciones: Array) -> void:
 	_tarjetas[0].grab_focus()
 
 
-func _texto_nivel(mejora: DatosMejora) -> String:
+## "NUEVA", "NIVEL 1 → 2" o "EVOLUCIÓN". Estática porque la usa también la
+## ruleta del cofre, con el mismo diccionario de niveles.
+static func texto_nivel(mejora: DatosMejora, niveles: Dictionary) -> String:
 	if mejora.efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA:
 		return "EVOLUCIÓN"
 	var actual: int = niveles.get(mejora, 0)

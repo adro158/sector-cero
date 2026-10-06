@@ -14,6 +14,12 @@ signal personaje_cambiado(actual: DatosPersonaje, arma: DatosArma, siguiente: Da
 ## Una herramienta se ha convertido en su evolución.
 signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
+## Se ha recogido el cofre que suelta un élite al morir.
+signal cofre_recogido
+## El cofre abre la ruleta: las 8 mejoras de los sectores y la que ha tocado,
+## que se sortea antes de girar. Como al subir de nivel, llega con el juego
+## pausado y se contesta con mejora_seleccionada(premio).
+signal ruleta_abierta(opciones: Array[DatosMejora], premio: DatosMejora)
 signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 ## Cada vez que la herramienta del personaje ataca. Para el sonido.

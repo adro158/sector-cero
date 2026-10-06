@@ -53,6 +53,7 @@ func _ready() -> void:
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.experiencia_ganada.connect(func(_cantidad): sonar("gema"))
 	BusEventos.jugador_subio_nivel.connect(func(_opciones): sonar("subir_nivel"))
+	BusEventos.ruleta_abierta.connect(func(_opciones, _premio): sonar("subir_nivel"))
 	BusEventos.mejora_seleccionada.connect(func(_mejora): sonar("elegir"))
 	BusEventos.herramienta_usada.connect(func(arma: DatosArma): sonar(arma.sonido))
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)

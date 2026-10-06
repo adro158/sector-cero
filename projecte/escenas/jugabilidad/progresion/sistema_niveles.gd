@@ -1,6 +1,8 @@
 extends Node
 
 const OPCIONES_POR_NIVEL := 3
+## Sectores de la ruleta del cofre.
+const SECTORES_RULETA := 8
 
 @export var pool_mejoras: DatosPoolMejoras
 @export var experiencia_primer_nivel: int = 5
@@ -10,9 +12,10 @@ var _nivel := 1
 var _experiencia := 0
 var _objetivo: int
 
-# Mejoras por elegir: una por cada nivel ganado y una por cada élite eliminado.
-# Se ofrecen de una en una: el panel solo puede mostrar tres tarjetas a la vez.
-var _mejoras_pendientes := 0
+# Mejoras por elegir, en orden de llegada: "nivel" por cada nivel ganado y
+# "cofre" por cada cofre recogido. Se ofrecen de una en una, y cada una con su
+# panel: las tres tarjetas para un nivel y la ruleta para un cofre.
+var _pendientes: Array[String] = []
 
 # Veces que se ha elegido cada mejora: las evoluciones piden un mínimo.
 var _veces := {}
@@ -38,7 +41,7 @@ func _ready() -> void:
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
-	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
+	BusEventos.cofre_recogido.connect(_anadir_pendiente.bind("cofre"))
 	# Diferido para que la interfaz, que está lista después, ya esté conectada.
 	_avisar_experiencia.call_deferred()
 
@@ -50,12 +53,11 @@ func nivel() -> int:
 ## Si hay mejoras pendientes de elegir. Mientras tanto el juego está pausado por
 ## este motivo y nadie más debe quitar la pausa.
 func eligiendo() -> bool:
-	return _mejoras_pendientes > 0
+	return not _pendientes.is_empty()
 
 
 func _al_ganar_experiencia(cantidad: int) -> void:
 	_experiencia += cantidad
-	var ya_estaba_eligiendo := _mejoras_pendientes > 0
 
 	# Un bucle y no un if: con muchos enemigos muriendo a la vez se puede subir
 	# más de un nivel de golpe.
@@ -63,20 +65,16 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_experiencia -= _objetivo
 		_nivel += 1
 		_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
-		_mejoras_pendientes += 1
+		_anadir_pendiente("nivel")
 
 	_avisar_experiencia()
-	if _mejoras_pendientes > 0 and not ya_estaba_eligiendo:
-		_ofrecer_mejoras()
 
 
-## Matar un élite regala una mejora sin gastar experiencia: va a la misma cola
-## que las de subir de nivel, pero sin subir de nivel.
-func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
-	if tipo != "elite":
-		return
-	_mejoras_pendientes += 1
-	if _mejoras_pendientes == 1:
+## Apunta una mejora por elegir. Si no había ninguna, se ofrece ya; si no,
+## espera su turno y se ofrecerá al elegir la anterior.
+func _anadir_pendiente(tipo: String) -> void:
+	_pendientes.append(tipo)
+	if _pendientes.size() == 1:
 		_ofrecer_mejoras()
 
 
@@ -88,7 +86,11 @@ func _ofrecer_mejoras() -> void:
 	# La pausa la pone la jugabilidad y no el panel de mejoras: así la interfaz
 	# solo tiene que mostrar las opciones y avisar de la elegida.
 	get_tree().paused = true
-	BusEventos.jugador_subio_nivel.emit(_sortear_opciones())
+	if _pendientes[0] == "cofre":
+		var sectores := _sortear_sectores()
+		BusEventos.ruleta_abierta.emit(sectores, sectores.pick_random())
+	else:
+		BusEventos.jugador_subio_nivel.emit(_sortear_opciones())
 
 
 func _sortear_opciones() -> Array[DatosMejora]:
@@ -96,10 +98,9 @@ func _sortear_opciones() -> Array[DatosMejora]:
 
 	# Una evolución que ya se puede elegir sale siempre, y la primera: es el
 	# premio por haber repetido su mejora. Si hay varias, de una en una.
-	for evolucion in pool_mejoras.evoluciones:
-		if evolucion not in _agotadas and _veces.get(evolucion.requisito, 0) >= evolucion.nivel_requisito:
-			opciones.append(evolucion)
-			break
+	var evolucion := _evolucion_disponible()
+	if evolucion != null:
+		opciones.append(evolucion)
 
 	var normales := pool_mejoras.mejoras.duplicate()
 	normales.shuffle()
@@ -109,16 +110,36 @@ func _sortear_opciones() -> Array[DatosMejora]:
 	return opciones
 
 
+## Los 8 sectores de la ruleta: las mejoras normales, repetidas si hay menos
+## de 8. Si hay una evolución disponible, ocupa el lugar de una de ellas.
+func _sortear_sectores() -> Array[DatosMejora]:
+	var sectores: Array[DatosMejora] = []
+	while sectores.size() < SECTORES_RULETA:
+		sectores.append(pool_mejoras.mejoras[sectores.size() % pool_mejoras.mejoras.size()])
+	var evolucion := _evolucion_disponible()
+	if evolucion != null:
+		sectores[randi() % SECTORES_RULETA] = evolucion
+	return sectores
+
+
+## La primera evolución que ya se puede elegir, o null si no hay ninguna.
+func _evolucion_disponible() -> DatosMejora:
+	for evolucion in pool_mejoras.evoluciones:
+		if evolucion not in _agotadas and _veces.get(evolucion.requisito, 0) >= evolucion.nivel_requisito:
+			return evolucion
+	return null
+
+
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
 	# Si no hay ninguna mejora esperando, la elección llega repetida (por ejemplo,
 	# desde dos sitios a la vez) y no debe aplicarse otra vez.
-	if _mejoras_pendientes == 0:
+	if _pendientes.is_empty():
 		return
 
 	_aplicar(mejora)
-	_mejoras_pendientes -= 1
+	_pendientes.pop_front()
 
-	if _mejoras_pendientes > 0:
+	if not _pendientes.is_empty():
 		_ofrecer_mejoras()
 	else:
 		get_tree().paused = false
