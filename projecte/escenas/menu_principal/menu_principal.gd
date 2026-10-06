@@ -59,7 +59,9 @@ func _ready() -> void:
 	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 160)
 	for boton in [jugar, reglas, ranking, opciones]:
 		botones.add_child(boton)
-	botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 160))
+	# En el navegador no se puede cerrar el juego.
+	if not OS.has_feature("web"):
+		botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 160))
 	caja.add_child(botones)
 	_crear_version(caja)
 
@@ -154,7 +156,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 		return
 	if evento.keycode == KEY_ENTER or evento.keycode == KEY_KP_ENTER:
 		_jugar()
-	elif evento.keycode == KEY_ESCAPE:
+	elif evento.keycode == KEY_ESCAPE and not OS.has_feature("web"):
 		get_tree().quit()
 
 

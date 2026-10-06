@@ -149,6 +149,11 @@ de lanzar Godot.
   cambio en `actualizador.gd` no llega con el `.pck`: hay que subir
   `EJECUTABLE_MINIMO` (pasó a 0.6 el 06/10 por el aviso automático). El aviso
   vive en `aviso_actualizacion.gd`, que se carga con `load()` y sí se actualiza.
+- La versión web (GitHub Pages) la publica la misma Action con cada etiqueta.
+  En la web no hay actualizador ni botón SALIR, y `ControlTactil` pinta el
+  joystick y los botones si hay pantalla táctil. Para probarla en local hay que
+  servir la carpeta exportada por HTTP (no vale abrir el `index.html`) y usar el
+  navegador con un tamaño de móvil, que emula el táctil.
 - Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
   que se va a publicar: el `.pck` de actualización no lleva esas cosas. Un

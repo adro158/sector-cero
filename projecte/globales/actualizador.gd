@@ -13,7 +13,8 @@ extends Node
 ##    pocos MB, no los 110 del ejecutable) y reinicia el juego.
 ##
 ## Solo actúa en el juego exportado (OS.has_feature("template")): jugando desde
-## el proyecto, el código ya es el más nuevo.
+## el proyecto, el código ya es el más nuevo. Tampoco en la versión web, que el
+## navegador descarga entera cada vez que se abre: siempre es la última.
 ##
 ## Ojo: este script no puede nombrar la clase Version. Godot cargaría version.gd
 ## al compilarlo, antes de aplicar la actualización, y se quedaría para siempre
@@ -63,7 +64,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	if not OS.has_feature("template"):
+	if not _activo():
 		return
 	# Las consultas y la descarga tienen que avanzar con el juego en pausa:
 	# el aviso puede pulsarse mientras se elige mejora.
@@ -116,7 +117,7 @@ static func comparar(a: String, b: String) -> int:
 ## pregunta durante la primera consulta ni durante una descarga. Las demás no
 ## pueden solaparse: cada una tarda como mucho unos segundos y van cada 5 minutos.
 func buscar() -> void:
-	if not OS.has_feature("template") or estado in [Estado.BUSCANDO, Estado.DESCARGANDO]:
+	if not _activo() or estado in [Estado.BUSCANDO, Estado.DESCARGANDO]:
 		return
 	# Solo la primera vez se enseña "buscando...": las siguientes consultas son
 	# silenciosas y el menú solo cambia si hay algo nuevo que contar.
@@ -249,6 +250,11 @@ func _pedir(url: String) -> Dictionary:
 		"codigo": resultado[1] if conecto else 0,
 		"texto": resultado[3].get_string_from_utf8() if conecto else "",
 	}
+
+
+## Solo en el juego exportado de escritorio (ver la cabecera).
+func _activo() -> bool:
+	return OS.has_feature("template") and not OS.has_feature("web")
 
 
 ## Si falla una consulta periódica se deja lo que ya se sabía: un corte de red

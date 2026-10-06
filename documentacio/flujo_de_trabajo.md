@@ -26,12 +26,14 @@ git push origin v0.6
 La Action pone la versión de la etiqueta en el juego, exporta Windows y Linux,
 y publica la release con el juego completo (`.zip`), el contenido para el botón
 ACTUALIZAR (`sector_cero_windows.pck` y `sector_cero_linux.pck`) y
-`version.json`.
+`version.json`. También exporta la versión web y la publica en GitHub Pages
+(rama `gh-pages`): https://adro158.github.io/sector-cero/ tiene siempre la
+última versión, con controles táctiles en el móvil.
 
-Si una versión cambia algo de `project.godot` (autoloads, controles, ventana) o
-añade un `class_name` nuevo, hay que subir `EJECUTABLE_MINIMO` en
-`projecte/globales/version.gd` a esa versión: eso no viaja en el `.pck` y el
-juego pedirá descargar el ejecutable entero.
+Si una versión cambia algo de `project.godot` (autoloads, controles, ventana),
+añade un `class_name` nuevo o toca `globales/actualizador.gd`, hay que subir
+`EJECUTABLE_MINIMO` en `projecte/globales/version.gd` a esa versión: eso no
+viaja en el `.pck` y el juego pedirá descargar el ejecutable entero.
 
 Para exportar a mano hacen falta las plantillas de exportación de Godot 4.7.2.
 Desde la carpeta `projecte/`:

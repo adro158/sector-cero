@@ -4,8 +4,10 @@
 #   git push origin v0.3
 #
 # Exporta el juego completo para Windows y Linux (para quien lo descarga por
-# primera vez) y el .pck de cada plataforma (para que el botón ACTUALIZAR del
-# menú se baje solo eso), y lo sube todo a una release de GitHub.
+# primera vez), el .pck de cada plataforma (para que el botón ACTUALIZAR del
+# menú se baje solo eso), y lo sube todo a una release de GitHub. También
+# publica la versión web en GitHub Pages (rama gh-pages), la que se abre desde
+# el móvil en https://adro158.github.io/sector-cero/.
 name: Publicar release
 
 on:
@@ -50,12 +52,14 @@ jobs:
 
       - name: Exportar
         run: |
-          mkdir -p build/windows build/linux
+          mkdir -p build/windows build/linux build/web
           ./$GODOT --headless --path projecte --import
           ./$GODOT --headless --path projecte --export-release "Windows Desktop" ../build/windows/SectorCero.exe
           ./$GODOT --headless --path projecte --export-release "Linux" ../build/linux/SectorCero.x86_64
           ./$GODOT --headless --path projecte --export-pack "Windows Desktop" ../build/sector_cero_windows.pck
           ./$GODOT --headless --path projecte --export-pack "Linux" ../build/sector_cero_linux.pck
+          ./$GODOT --headless --path projecte --export-release "Web" ../build/web/index.html
+          touch build/web/.nojekyll
           cd build
           zip -j "SectorCero_${GITHUB_REF_NAME}_windows.zip" windows/SectorCero.exe
           zip -j "SectorCero_${GITHUB_REF_NAME}_linux.zip" linux/SectorCero.x86_64
@@ -73,3 +77,11 @@ jobs:
             build/sector_cero_windows.pck \
             build/sector_cero_linux.pck \
             version.json
+
+      # La rama gh-pages solo tiene la última versión web: cada release la
+      # sustituye entera.
+      - name: Publicar la versión web
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
