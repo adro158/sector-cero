@@ -13,6 +13,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Texturas del suelo de placa base | Hechas con IA (Claude) | Ver más abajo |
 | Iconos de las mejoras | 8 propios, generados por código; 3 hechos con IA (Claude) | Del proyecto / ver más abajo |
 | Sprites del fragmento de datos y del proyectil del Ping | Hechos con IA (Claude) | Ver más abajo |
+| Corazón, cofre y ruleta del premio de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -66,7 +67,13 @@ scripts no forman parte del repositorio.
 - **Experiencia y Ping** (`medios/sprites/`, el mismo día y de la misma
   forma): `fragmento_datos.png` (12x12), un cristal de datos en grises que el
   juego tiñe según lo que vale, y `proyectil_ping.png` (24x12), un rayo de
-  energía con estela que el juego gira hacia donde va.
+  energía con estela que el juego gira hacia donde va. El 06/10/2026 se
+  sustituyó por la misma forma en morado, el color del Mago.
+- **Premio de los élites** (`medios/sprites/`, 06/10/2026, de la misma forma):
+  `corazon.png` (20x20), `cofre.png` (4 fotogramas de 32x32, de cerrado a
+  abierto), `ruleta_rueda.png` (96x96, el disco de 8 sectores) y
+  `ruleta_marco_a.png` y `ruleta_marco_b.png` (112x112, el marco con las
+  bombillas encendidas de dos formas para que parpadeen).
 
 ### Sprites de los personajes y del jefe
 

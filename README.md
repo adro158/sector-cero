@@ -46,7 +46,8 @@ el botón queda en el menú para más tarde.
 | Acción | Teclado | Mando |
 |---|---|---|
 | Moverse | WASD o flechas | Stick izquierdo |
-| Cambiar de personaje | Q o Tab | Y |
+| Personaje siguiente / anterior | E o Tab / Q | Y / — |
+| Ver el equipo | C | — |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ver la ficha de un enemigo | Click (click derecho la cierra) | — |
@@ -60,13 +61,13 @@ mejoras. Cada 20 segundos el malware se hace más resistente a la herramienta
 que más le ha dañado: cuando veas tus números de daño en rojo, cambia de
 personaje.
 
-- **Tres personajes**: el Espadachín (Firewall, golpea alrededor), el Mago
-  (Ping, salta de un enemigo a otro) y el Segador (Escáner, un pulso amplio y
-  lento).
+- **Tres personajes**, cada uno con su vida: el Espadachín (Firewall, golpea
+  alrededor), el Mago (Ping, salta de un enemigo a otro) y el Segador (Escáner,
+  un pulso amplio y lento). Si cae el que llevas, eliges quién sigue.
 - **Cinco tipos de malware**, entre ellos el troyano, que avisa en rojo y
   embiste, y el ransomware, lento y durísimo.
-- **Élites** cada minuto con habilidades al azar; si los matas, recuperas la
-  mitad de la vida y eliges una mejora gratis.
+- **Élites** cada minuto con habilidades al azar; si los matas, dejan un
+  corazón que cura y un cofre con una ruleta de mejoras.
 - **Evoluciones**: repite tres veces una mejora y tu herramienta evoluciona.
 - **Ficha del enemigo**: haz click en cualquiera para ver su vida y su daño.
 - **Ranking** con las diez mejores partidas.

@@ -31,7 +31,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 1 | Pantalla inicial | Hecho | Menú con reglas, controles, récord y opciones (`escenas/menu_principal/`) |
 | 2 | Al menos dos escenas o estados | Hecho | Menú, partida, pausa, opciones, subida de nivel y resultados |
 | 3 | Mecánica principal funcional | Hecho | Esquivar mientras la herramienta ataca sola; cinco tipos de horda (uno embiste), élites, jefe, experiencia, ocho mejoras y evoluciones |
-| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe, mejoras, personaje activo y avisos |
+| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe, mejoras, personaje activo y avisos; panel del equipo (C), ruleta del cofre y ventana para elegir quién sigue al caer un personaje |
 | 5 | Controles coherentes | Hecho | Teclado, ratón en los menús y mando. Explicados en el menú, el manual y el README |
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
 | 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
@@ -40,7 +40,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10) y v0.3 a v0.5 (02/10, con el contenido nuevo y los cambios tras las pruebas de Adam y Alan) publicadas por la GitHub Action. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10), v0.3 a v0.5 (02/10) y v0.6 (06/10, con la versión web) publicadas por la GitHub Action. Adam probó el botón ACTUALIZAR en Windows y Linux (06/10): abría GitHub, ya corregido para la v0.7. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -94,13 +94,16 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Probar en un ordenador limpio** (sin Godot) la v0.2 y el botón
-   ACTUALIZAR hacia la v0.5, publicada el 02/10 con ejecutable mínimo 0.2.
-3. **Vídeo demostrativo** (2-4 min).
-4. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+2. **Publicar la v0.7** (corazón, cofre y ruleta, vida por personaje, Q y E, y
+   el arreglo del botón ACTUALIZAR) y comprobar que la v0.5 y la v0.6 de Adam se
+   actualizan solas, en Windows y en Linux.
+3. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+   ACTUALIZAR.
+4. **Vídeo demostrativo** (2-4 min).
+5. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-5. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-6. Opcional: sustituir los sprites de IA por pixel art propio.
+6. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+7. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
@@ -134,7 +137,8 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   ataque) y con 10 partidas. Hoy da 6 de 10.
 - **Presión de la sesión 8** (decisiones de Adam): el doble de enemigos, +4 %
   de vida por nivel del jugador, cada nivel un 50 % más caro, experiencia que
-  caduca a los 30 s, y élites que curan el 50 % y regalan una mejora.
+  caduca a los 30 s. Los élites curaban el 50 % y regalaban una mejora; desde
+  la sesión 9 dejan un corazón y un cofre que hay que ir a buscar.
 - **Ranking local con nombre**, sin servidor (sesión 8).
 - **Un tipo de horda puede limitar cuántos hay vivos a la vez**
   (`maximo_vivos`), en lugar de repartir las apariciones con pesos: el
@@ -144,6 +148,19 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
 - **Mapa infinito** sin límites de arena (sesión 6).
 - **Audio sintetizado por código**, sin assets de terceros (sesión 6).
 - **Actualizaciones:** el juego busca solo y se actualiza al pulsar el botón;
-  una release por etiqueta `vX.Y`, no por commit (sesión 6).
+  una release por etiqueta `vX.Y`, no por commit (sesión 6). Desde la sesión 9
+  busca cada 5 minutos y avisa también en plena partida; si hace falta el
+  ejecutable entero, lo instala solo. `EJECUTABLE_MINIMO` vuelve a 0.2 y solo se
+  sube si el contenido no puede funcionar con un ejecutable viejo.
+- **La versión web se publica con cada release** en GitHub Pages, con
+  controles táctiles para el móvil, y se enlaza con un botón y un QR en el
+  README y en el «About» del repositorio (sesión 9).
+- **Premio de los élites** (sesión 9, decisión de Adam): corazón (cura el 50 %)
+  y cofre con una ruleta de 8 sectores; cada elemento de la cola de mejoras sale
+  con su panel.
+- **Cada personaje tiene su vida** (sesión 9, decisión de Adam): Espadachín
+  120, Segador 100, Mago 90; los que esperan se curan 1,5 por segundo; al caer
+  el activo se pausa y se elige quién sigue, y se pierde al caer los tres. E
+  pasa al siguiente, Q vuelve al anterior y C abre el panel del equipo.
 - **Élites y jefe son nodos ocultos en la escena desde el principio**, porque
   las armas buscan sus objetivos al empezar (sesiones 5 y 6).

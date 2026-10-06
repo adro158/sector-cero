@@ -71,8 +71,14 @@ signal experiencia_ganada(cantidad: int)
 signal experiencia_cambiada(actual: int, necesaria: int, nivel: int)
 signal tiempo_partida(segundos: float, duracion: float)
 signal personaje_cambiado(actual: DatosPersonaje, arma: DatosArma, siguiente: DatosPersonaje, espera: float)
+signal equipo_cambiado(personajes: Array, activo: int)
+signal personaje_caido(personajes: Array, caido: int)
+signal personaje_elegido(indice: int)
+signal jugador_danado(cantidad: float)
 signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
+signal cofre_recogido
+signal ruleta_abierta(opciones: Array[DatosMejora], premio: DatosMejora)
 signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 signal herramienta_usada(arma: DatosArma)
@@ -83,9 +89,10 @@ signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 ```
 
-La interfaz **escucha** casi todas y **emite** dos: `mejora_seleccionada` (cuando
-el jugador pulsa una de las tres tarjetas al subir de nivel) y `juego_pausado`
-(desde el menú de pausa).
+La interfaz **escucha** casi todas y **emite** tres: `mejora_seleccionada`
+(cuando el jugador pulsa una de las tres tarjetas al subir de nivel o acepta el
+premio de la ruleta), `juego_pausado` (desde el menú de pausa) y
+`personaje_elegido` (quién sigue cuando cae el personaje activo).
 
 Detalles que la interfaz tiene que respetar:
 
@@ -96,9 +103,21 @@ Detalles que la interfaz tiene que respetar:
   `nombre` y `descripcion`. Si se suben varios niveles de golpe, la señal vuelve
   a llegar justo después de cada elección. Si hay una evolución disponible,
   llega la primera.
+- **Cofre de los élites.** Al morir, un élite suelta un corazón (cura el 50 %)
+  y un cofre. Recoger el cofre emite `cofre_recogido`; la jugabilidad lo pone en
+  la misma cola que las subidas de nivel, pausa y emite `ruleta_abierta` con los
+  8 sectores y el premio ya sorteado. La ruleta lo enseña girando y contesta con
+  `mejora_seleccionada(premio)`. Cada elemento de la cola sale con su panel.
+- **Equipo.** Cada personaje tiene su vida. `equipo_cambiado` trae el estado de
+  los tres (personaje, arma, vida, maxima, caido) y el índice del activo. Si cae
+  el activo y quedan otros, la jugabilidad pausa y emite `personaje_caido`; la
+  interfaz contesta con `personaje_elegido(indice)`. Al caer los tres llega
+  `partida_terminada`. Acciones de input: `cambiar_personaje` (E, Tab, Y del
+  mando) pasa al siguiente y `personaje_anterior` (Q) vuelve al anterior.
 - **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
-  jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o tras el
-  fin de partida. La acción de input es `pausar` (Esc, P y Start del mando).
+  jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o
+  personaje, o tras el fin de partida. La acción de input es `pausar` (Esc, P y
+  Start del mando).
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int) y `personaje` (String, el que llevaba al acabar;

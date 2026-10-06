@@ -30,10 +30,11 @@ ACTUALIZAR (`sector_cero_windows.pck` y `sector_cero_linux.pck`) y
 (rama `gh-pages`): https://adro158.github.io/sector-cero/ tiene siempre la
 última versión, con controles táctiles en el móvil.
 
-Si una versión cambia algo de `project.godot` (autoloads, controles, ventana),
-añade un `class_name` nuevo o toca `globales/actualizador.gd`, hay que subir
-`EJECUTABLE_MINIMO` en `projecte/globales/version.gd` a esa versión: eso no
-viaja en el `.pck` y el juego pedirá descargar el ejecutable entero.
+Si una versión cambia algo de `project.godot` (autoloads, controles, ventana)
+o añade un `class_name` nuevo, y el contenido no puede funcionar sin ello, hay
+que subir `EJECUTABLE_MINIMO` en `projecte/globales/version.gd` a esa versión:
+eso no viaja en el `.pck`. Entonces el botón ACTUALIZAR descarga el juego
+completo y cambia el ejecutable solo (`globales/instalador_juego.gd`).
 
 Para exportar a mano hacen falta las plantillas de exportación de Godot 4.7.2.
 Desde la carpeta `projecte/`:

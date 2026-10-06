@@ -20,7 +20,8 @@ para más tarde, con el botón en el menú.
 | Acción | Teclado | Mando |
 |---|---|---|
 | Moverse | WASD o flechas | Stick izquierdo |
-| Cambiar de personaje | Q o Tab | Y |
+| Personaje siguiente / anterior | E o Tab / Q | Y / — |
+| Ver el equipo (vida de cada personaje) | C | — |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ficha de un enemigo | Click (click derecho la cierra) | — |
@@ -37,18 +38,22 @@ para más tarde, con el botón en el menú.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
    herramienta que más le ha dañado: tus números de daño se vuelven rojos.
 5. **Cambia de personaje** para atacarle con otra herramienta (10 s de espera
-   entre cambios):
-   - **Espadachín · Firewall:** golpea todo lo que tienes alrededor.
-   - **Mago · Ping:** un paquete que salta de un enemigo a otro, a distancia.
-   - **Segador · Escáner:** un pulso fuerte y amplio, pero lento.
+   entre cambios). Cada uno tiene su propia vida y los que esperan se curan
+   poco a poco. Si cae el que llevas, el juego se pausa y eliges quién sigue;
+   pierdes cuando caen los tres:
+   - **Espadachín · Firewall (120 de vida):** golpea todo lo que tienes alrededor.
+   - **Mago · Ping (90 de vida):** un paquete que salta de un enemigo a otro, a
+     distancia.
+   - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.
 6. **Evoluciones.** Elige tres veces la misma mejora de daño, cadencia o
    alcance y tu herramienta evoluciona.
 7. **Cuidado con:** el **troyano** (caballo verde), que parpadea en rojo y
    embiste en línea recta (apártate de lado), y el **ransomware** (candado
    rojo), lento pero muy duro.
 8. **Élites.** Cada minuto llega uno con habilidades escritas encima
-   (blindado, replicante, aura lenta o explosivo). Al matarlo recuperas la
-   mitad de la vida y eliges una mejora gratis.
+   (blindado, replicante, aura lenta o explosivo). Al matarlo deja un
+   **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
+   una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
 9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo, va a
    embestir: apártate.
 

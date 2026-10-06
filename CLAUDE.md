@@ -146,9 +146,18 @@ de lanzar Godot.
   `"desarrollo"`: la Action los sustituye por la etiqueta. No cambiarlos a mano.
 - `Actualizador` tiene que ser el primer autoload y no puede nombrar la clase
   `Version` (la cargaría antes de aplicar la actualización). Por lo mismo, un
-  cambio en `actualizador.gd` no llega con el `.pck`: hay que subir
-  `EJECUTABLE_MINIMO` (pasó a 0.6 el 06/10 por el aviso automático). El aviso
-  vive en `aviso_actualizacion.gd`, que se carga con `load()` y sí se actualiza.
+  cambio en `actualizador.gd` solo llega con un ejecutable nuevo. Eso **no**
+  obliga a subir `EJECUTABLE_MINIMO`: solo hay que subirlo si el contenido
+  nuevo no puede funcionar con el actualizador viejo. Error del 06/10: se subió
+  a 0.6 sin hacer falta y los ejecutables v0.5 solo podían abrir la página de
+  GitHub; en la v0.7 volvió a 0.2. El contenido solo usa del `Actualizador` lo
+  que existe desde la v0.2 (estado, progreso, version_nueva, texto(), buscar(),
+  actualizar(), sus constantes y estado_cambiado). El aviso
+  (`aviso_actualizacion.gd`) y el instalador del juego completo
+  (`instalador_juego.gd`) se cargan con el contenido y sí se actualizan.
+- Si una versión necesita de verdad un ejecutable nuevo, el botón ACTUALIZAR
+  descarga el `.zip` de la release, cambia el ejecutable y reinicia
+  (`instalador_juego.gd`); solo si falla abre la página de GitHub.
 - La versión web (GitHub Pages) la publica la misma Action con cada etiqueta.
   En la web no hay actualizador ni botón SALIR, y `ControlTactil` pinta el
   joystick y los botones si hay pantalla táctil. Para probarla en local hay que
@@ -156,7 +165,10 @@ de lanzar Godot.
   navegador con un tamaño de móvil, que emula el táctil.
 - Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
-  que se va a publicar: el `.pck` de actualización no lleva esas cosas. Un
+  que se va a publicar: el `.pck` de actualización no lleva esas cosas. Salvo
+  que el contenido sepa arreglárselas con el `project.godot` viejo: las teclas
+  Q y E de la v0.7 se corrigen al empezar la partida
+  (`cambio_personaje.gd`, `_configurar_teclas_antiguas`). Un
   script auxiliar nuevo que no necesite ser global se carga con `preload` y
   sin `class_name` (como `embestida_horda.gd`), y así no hace falta subirlo.
   Se comprueba en `.godot/global_script_class_cache.cfg`: el número de clases

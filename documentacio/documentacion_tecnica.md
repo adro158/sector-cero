@@ -106,8 +106,15 @@ embisten.
 **Personajes y herramientas.** Hay dos tipos de arma: de área (el Firewall del
 Espadachín golpea alrededor y el Escáner del Segador da un pulso amplio y
 lento) y de proyectil (el Ping del Mago salta de un enemigo a otro). Solo
-dispara la del personaje activo y se cambia con Q, con 10 s de espera. Los tres
-hacen un daño por segundo parecido; los diferencia dónde pegan.
+dispara la del personaje activo y se cambia con E (siguiente) o Q (anterior),
+con 10 s de espera. Los tres hacen un daño por segundo parecido; los diferencia
+dónde pegan. Cada uno tiene su vida (Espadachín 120, Segador 100, Mago 90): el
+nodo `Salud` del jugador es siempre la del activo, y el equipo
+(`cambio_personaje.gd`) guarda la de los demás, que se curan 1,5 por segundo
+mientras esperan. Si cae el activo y quedan otros, el juego se pausa y se elige
+quién sigue (`personaje_caido` y `personaje_elegido`), y entra con 2 s sin
+recibir daño; la partida se pierde al caer los tres. Con C se ve la vida de
+todos.
 
 **La resistencia adaptativa.** Cada arma avisa del daño que hace. Cada 20 s, el
 malware mira cuál le ha hecho más y gana un 10 % de resistencia contra ella
@@ -128,9 +135,14 @@ entre apariciones baja de 0,5 s a 0,05 s en 10 minutos, cada tipo de enemigo
 dice a partir de qué minuto sale y cada enemigo aparece con un 4 % más de vida
 por cada nivel del jugador. Un tipo puede limitar cuántos hay a la vez: sin ese
 límite, el ransomware se acumulaba por cientos. Cada minuto llega un **élite**
-con uno o dos afijos al azar (blindado, replicante, aura lenta, explosivo); al
-matarlo, el jugador recupera la mitad de la vida y elige una mejora gratis. A
-los 10 minutos deja de salir horda y llega el **jefe**.
+con uno o dos afijos al azar (blindado, replicante, aura lenta, explosivo). Al
+morir deja un corazón, que cura la mitad de la vida, y un cofre. El cofre va a
+la misma cola que las subidas de nivel, que distingue "nivel" y "cofre" para
+que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las
+mejoras (y una evolución si hay alguna disponible). El premio se sortea antes de
+girar; el disco frena con un `Tween` hasta -45·k grados más unas vueltas, que
+deja el sector k bajo la flecha. A los 10 minutos deja de salir horda y llega
+el **jefe**.
 
 **El mapa infinito.** El suelo es un rectángulo más grande que la pantalla que
 se coloca bajo la cámara en cada fotograma, y su shader dibuja según la posición
@@ -152,7 +164,12 @@ las opciones. Al arrancar y después cada 5 minutos, el `Actualizador` pregunta
 a GitHub si hay una versión nueva; si la hay, sale un aviso en cualquier
 pantalla, también en plena partida. El botón ACTUALIZAR descarga solo el
 contenido del juego (1 MB en lugar de 110) y lo carga al arrancar, antes que
-nada.
+nada. Si una versión necesitara un ejecutable nuevo (por ejemplo, por un
+autoload más), el mismo botón descarga el juego completo, pone el ejecutable
+nuevo en lugar del viejo y reinicia (`instalador_juego.gd`). Ese código va con
+el contenido y no en el `Actualizador`, porque el `Actualizador` ya está en
+marcha antes de cargar ninguna actualización: así funciona también en
+ejecutables antiguos.
 
 **Audio.** Todos los sonidos los genera un script que suma ondas simples, como
 los chips de sonido antiguos: 17 efectos y 3 músicas. `GestorAudio` escucha el
