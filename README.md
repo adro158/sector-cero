@@ -2,6 +2,18 @@
 
 **Eres un antivirus. Tu ordenador está infectado. Aguanta diez minutos.**
 
+<p align="center">
+  <a href="https://adro158.github.io/sector-cero/">
+    <img alt="Jugar ahora en el navegador o en el móvil" src="https://img.shields.io/badge/%E2%96%B6%20JUGAR%20AHORA-en%20el%20navegador%20o%20el%20m%C3%B3vil-00d9f2?style=for-the-badge">
+  </a>
+  <br><br>
+  <a href="https://adro158.github.io/sector-cero/">
+    <img alt="Código QR para abrir el juego en el móvil" width="160" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&data=https%3A%2F%2Fadro158.github.io%2Fsector-cero%2F">
+  </a>
+  <br>
+  <sub>Escanea el QR con la cámara del móvil para jugar sin instalar nada.</sub>
+</p>
+
 Sector Cero es un videojuego en 2D hecho con Godot por Adam y Alan para la
 asignatura "Demostra el teu talent". Es un *survivors-like*, como Vampire
 Survivors: solo te mueves, tu herramienta ataca sola y cada vez llega más
@@ -12,6 +24,13 @@ para sorprenderle.
 ![Una partida: el ransomware, los troyanos y la horda sobre la placa base](documentacio/capturas/juego/11_troyano_y_ransomware.png)
 
 ## Jugar
+
+**En el móvil o sin descargar nada:** abre
+[adro158.github.io/sector-cero](https://adro158.github.io/sector-cero/) (o
+escanea el QR de arriba). En el móvil sale un joystick a la izquierda y los
+botones de cambiar de personaje y de pausa a la derecha.
+
+**En el ordenador, la versión completa:**
 
 1. Descarga la última versión de
    [Releases](https://github.com/adro158/sector-cero/releases) (el `.zip` de
