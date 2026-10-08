@@ -1,9 +1,10 @@
 extends Node
 
-## Instala el juego completo cuando una versión nueva necesita un ejecutable
-## más nuevo (HAY_JUEGO_NUEVO): descarga el .zip de la release, saca el
-## ejecutable, lo pone en lugar del actual y reinicia. Sin esto, el botón
-## abría la página de GitHub para descargarlo a mano.
+## Instala el juego completo de una release: descarga su .zip, saca el
+## ejecutable, lo pone en lugar del actual y reinicia. Se usa cuando una versión
+## nueva necesita un ejecutable más nuevo (HAY_JUEGO_NUEVO; sin esto, el botón
+## abría la página de GitHub) y en el menú de versiones, para instalar
+## cualquiera, también una anterior.
 ##
 ## Por qué no está en actualizador.gd: ese script lo carga el ejecutable antes
 ## que cualquier actualización, así que un cambio en él solo llegaría con un
@@ -42,9 +43,22 @@ static func limpiar() -> void:
 		DirAccess.remove_absolute(viejo)
 
 
-func instalar() -> void:
+## Para el menú de versiones: instala esa release, más nueva o más antigua.
+static func instalar_version(release: Dictionary) -> void:
+	var instalador: Node = load("res://globales/instalador_juego.gd").new()
+	Actualizador.add_child(instalador)
+	instalador.instalar(release)
+
+
+## Instala la release que se le pase o, sin ninguna, la última.
+func instalar(release: Dictionary = {}) -> void:
+	if release.is_empty():
+		release = await _ultima_release()
+	# Antes de cambiar de estado: es la versión del texto "Descargando la
+	# versión X..." del menú.
+	Actualizador.version_nueva = release.get("tag_name", "").trim_prefix("v")
 	_cambiar(Actualizador.Estado.DESCARGANDO)
-	var url := await _buscar_zip()
+	var url := _zip_de(release)
 	if url == "":
 		_fallar()
 		return
@@ -82,9 +96,8 @@ func _process(_delta: float) -> void:
 		Actualizador.estado_cambiado.emit()
 
 
-## Busca en la última release el .zip de esta plataforma, como
-## "SectorCero_v0.8_windows.zip". Devuelve su dirección, o "" si no está.
-func _buscar_zip() -> String:
+## La última release publicada, o un diccionario vacío si no se ha podido saber.
+func _ultima_release() -> Dictionary:
 	var peticion := HTTPRequest.new()
 	peticion.timeout = 8.0
 	add_child(peticion)
@@ -92,13 +105,16 @@ func _buscar_zip() -> String:
 	var resultado: Array = await peticion.request_completed
 	peticion.queue_free()
 	if resultado[0] != HTTPRequest.RESULT_SUCCESS or resultado[1] != 200:
-		return ""
+		return {}
 	var release = JSON.parse_string(resultado[3].get_string_from_utf8())
-	if release == null:
-		return ""
+	return release if release is Dictionary else {}
 
+
+## El .zip de esta plataforma en la release, como "SectorCero_v0.8_windows.zip".
+## Devuelve su dirección, o "" si no está.
+func _zip_de(release: Dictionary) -> String:
 	var final := "_%s.zip" % OS.get_name().to_lower()
-	for archivo in release.assets:
+	for archivo in release.get("assets", []):
 		if archivo.name.ends_with(final):
 			_tamano = archivo.size
 			return archivo.browser_download_url

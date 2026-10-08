@@ -17,6 +17,9 @@ const OPCIONES_POR_DEFECTO := {
 	"volumen_efectos": 0.8,
 	"pantalla_completa": false,
 	"crt": true,
+	# Si sale el aviso de versión nueva (aviso_actualizacion.gd). Con él apagado
+	# se puede seguir jugando una versión anterior sin que insista.
+	"avisar_versiones": true,
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves

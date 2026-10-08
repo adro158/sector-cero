@@ -33,6 +33,7 @@ func _ready() -> void:
 	_deslizador(rejilla, "Efectos", "volumen_efectos")
 	_casilla(rejilla, "Pantalla completa", "pantalla_completa")
 	_casilla(rejilla, "Filtro CRT", "crt")
+	_casilla(rejilla, "Avisar de versiones nuevas", "avisar_versiones")
 
 	var volver := EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
 	caja.add_child(volver)

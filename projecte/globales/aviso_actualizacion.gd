@@ -63,7 +63,7 @@ func _ready() -> void:
 func _mostrar() -> void:
 	var estado: int = Actualizador.estado
 	if estado in [Actualizador.Estado.HAY_ACTUALIZACION, Actualizador.Estado.HAY_JUEGO_NUEVO]:
-		if Actualizador.version_nueva == _descartada:
+		if Actualizador.version_nueva == _descartada or not GestorGuardado.opcion("avisar_versiones"):
 			return
 		var juego_nuevo: bool = estado == Actualizador.Estado.HAY_JUEGO_NUEVO
 		_titulo.text = "NUEVA VERSIÓN %s DISPONIBLE" % Actualizador.version_nueva

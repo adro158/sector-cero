@@ -7,6 +7,7 @@ extends Control
 const PARTIDA := "res://escenas/juego.tscn"
 const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
 const InstaladorJuego := preload("res://globales/instalador_juego.gd")
+const PanelVersiones := preload("res://escenas/interfaz/panel_versiones.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -17,6 +18,7 @@ const RESUMEN := [
 var _reglas: PanelReglas
 var _opciones: PanelOpciones
 var _ranking: PanelRanking
+var _versiones: PanelVersiones
 var _version: Label
 var _actualizar: Button
 var _jugar_boton: Button
@@ -94,9 +96,19 @@ func _crear_version(caja: VBoxContainer) -> void:
 	_version = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(_version)
-	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", InstaladorJuego.pulsar_actualizar, 260)
-	_actualizar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	caja.add_child(_actualizar)
+	# ACTUALIZAR solo sale si hay una versión nueva; VERSIONES, siempre: deja
+	# instalar cualquiera, también una anterior.
+	var fila := HBoxContainer.new()
+	fila.alignment = BoxContainer.ALIGNMENT_CENTER
+	fila.add_theme_constant_override("separation", 14)
+	_actualizar = EstiloInterfaz.boton("ACTUALIZAR", InstaladorJuego.pulsar_actualizar, 220)
+	var versiones := EstiloInterfaz.boton("VERSIONES", func(): _versiones.abrir(), 180)
+	fila.add_child(_actualizar)
+	fila.add_child(versiones)
+	caja.add_child(fila)
+	_versiones = PanelVersiones.new()
+	_versiones.cerrado.connect(versiones.grab_focus)
+	add_child(_versiones)
 
 	Actualizador.estado_cambiado.connect(_mostrar_version)
 	_mostrar_version()
@@ -154,7 +166,7 @@ func _abrir_ranking() -> void:
 
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible or _ranking.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return
