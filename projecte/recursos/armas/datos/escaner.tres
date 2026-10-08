@@ -6,7 +6,7 @@
 script = ExtResource("1_datos_arma")
 nombre = "Escáner"
 tipo = 0
-dano = 27.5
+dano = 22.0
 cadencia = 2.5
 radio = 150.0
 sonido = "escaner"
