@@ -7,9 +7,9 @@
 script = ExtResource("1_tipo")
 tipo = "ransomware"
 nombre = "Ransomware"
-descripcion = "El tanque del final. Aparece desde el 6:00: muy lento, pero aguanta muchísimo y pega fuerte. No dejes que te acorrale; el Escáner le pega desde lejos."
+descripcion = "El tanque del final. Aparece desde el 6:00: no corre mucho, pero aguanta muchísimo y pega fuerte. No dejes que te acorrale; el Escáner le pega desde lejos."
 vida = 240.0
-velocidad = 70.0
+velocidad = 105.0
 tamano = 44.0
 textura = ExtResource("2_textura")
 color = Color(0.92, 0.22, 0.27, 1)
