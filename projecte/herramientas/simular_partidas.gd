@@ -9,8 +9,9 @@ extends SceneTree
 ## resistente a su herramienta. Cada minuto de partida anota vida, nivel,
 ## enemigos (en total y por tipo), herramienta y resistencias, y al final
 ## resume victorias, duración media, cambios de personaje, cofres recogidos,
-## personajes caídos y eliminados por tipo. Cuando cae el personaje activo,
-## sigue con el que tenga más vida.
+## personajes caídos, ultis lanzadas y eliminados por tipo. Cuando cae el
+## personaje activo, sigue con el que tenga más vida, y lanza la ulti en cuanto
+## la tiene llena.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -45,6 +46,7 @@ var _cambios := 0
 var _evoluciones := 0
 var _cofres := 0
 var _caidas := 0
+var _ultis := 0
 ## Eliminados de cada tipo, sumando todas las partidas.
 var _eliminados_por_tipo := {}
 var _bus: Node
@@ -137,6 +139,11 @@ func _paso() -> void:
 		return
 
 	_cambiar_si_resiste()
+	# La ulti, en cuanto está llena.
+	var ultis: Node = _jugador.get_node("Ultis")
+	if ultis.lista():
+		ultis.lanzar()
+		_ultis += 1
 	_mover_bot()
 
 
@@ -206,6 +213,9 @@ func _mover_bot() -> void:
 func _premio_mas_cercano(posicion: Vector2) -> Vector2:
 	var mejor := Vector2.INF
 	for premio in _raiz.get_node("PremiosElite").get_children():
+		# El "+N" del corazón y los premios que ya se están recogiendo, no.
+		if not premio is Sprite2D or premio.has_meta("recogido"):
+			continue
 		var suelo: Vector2 = premio.get_meta("suelo")
 		if mejor == Vector2.INF or posicion.distance_to(suelo) < posicion.distance_to(mejor):
 			mejor = suelo
@@ -254,7 +264,7 @@ func _siguiente() -> void:
 	var suma := 0.0
 	for duracion in _duraciones:
 		suma += duracion
-	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d cofres=%d caidas=%d" % [
-		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones, _cofres, _caidas])
+	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d cofres=%d caidas=%d ultis=%d" % [
+		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones, _cofres, _caidas, _ultis])
 	print("ELIMINADOS POR TIPO %s" % _eliminados_por_tipo)
 	quit()

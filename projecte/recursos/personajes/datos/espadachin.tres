@@ -11,4 +11,7 @@ descripcion = "Firewall: golpea todo lo que tiene alrededor cada 0,6 s. Es el me
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
 vida_maxima = 120.0
+ulti = "giro"
+nombre_ulti = "Torbellino"
+descripcion_ulti = "Gira con sus hojas de luz durante un segundo y medio y destroza todo lo que tiene alrededor."
 color = Color(0.4, 1, 0.5, 1)

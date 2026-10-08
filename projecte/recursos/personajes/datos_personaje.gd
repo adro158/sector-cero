@@ -16,5 +16,11 @@ extends Resource
 ## Cada personaje tiene su propia vida: el que pega de cerca aguanta más.
 @export var vida_maxima: float = 100.0
 
+## Su ulti, que se lanza con R cuando se ha cargado matando: "rayo", "giro" o
+## "tormenta" (ultis.gd). El nombre y la descripción son para la interfaz.
+@export var ulti: String = ""
+@export var nombre_ulti: String = ""
+@export_multiline var descripcion_ulti: String = ""
+
 ## Color que lo identifica en la interfaz.
 @export var color: Color = Color.WHITE

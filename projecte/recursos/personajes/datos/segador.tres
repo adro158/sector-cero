@@ -11,4 +11,7 @@ descripcion = "Escáner: un pulso amplio y fuerte, pero lento (cada 2,5 s). El m
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
 vida_maxima = 100.0
+ulti = "tormenta"
+nombre_ulti = "Tormenta"
+descripcion_ulti = "Un rayo cae sobre su guadaña y estalla alrededor; después caen mini rayos por toda la zona."
 color = Color(1, 0.35, 0.35, 1)

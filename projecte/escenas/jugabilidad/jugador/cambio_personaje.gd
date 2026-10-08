@@ -14,6 +14,8 @@ extends Node
 ## Han caído todos los personajes: se acaba la partida.
 signal equipo_derrotado
 
+const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antiguas.gd")
+
 @export var personajes: Array[DatosPersonaje] = []
 @export var espera: float = 10.0
 ## La mejora Cambio en caliente acorta la espera, pero nunca por debajo de esto:
@@ -48,7 +50,7 @@ func _ready() -> void:
 		_vidas.append(personaje.vida_maxima)
 		_maximas.append(personaje.vida_maxima)
 		_caidos.append(false)
-	_configurar_teclas_antiguas()
+	TeclasAntiguas.configurar()
 	_salud.vida_cambiada.connect(func(_actual, _maxima): _avisar_equipo())
 	_salud.murio.connect(_al_caer)
 	BusEventos.personaje_elegido.connect(_al_elegir_personaje)
@@ -101,9 +103,30 @@ func personaje_actual() -> DatosPersonaje:
 	return personajes[_indice]
 
 
+## Su puesto en el equipo (0, 1 o 2). Para la ulti, que lleva una carga por
+## personaje.
+func indice_actual() -> int:
+	return _indice
+
+
 ## Si el juego está pausado porque se está eligiendo quién sigue.
 func eligiendo() -> bool:
 	return _eligiendo
+
+
+## Para el menú de desarrollador: todos vuelven con la vida llena.
+func revivir_todos() -> void:
+	for i in personajes.size():
+		_caidos[i] = false
+		_vidas[i] = _maximas[i]
+	_salud.poner(_maximas[_indice], _maximas[_indice])
+
+
+## Para el menú de desarrollador: cambiar de personaje sin esperar.
+func quitar_espera() -> void:
+	espera = 0.0
+	espera_minima = 0.0
+	_restante = 0.0
 
 
 ## La mejora Cambio en caliente: quita un porcentaje de la espera. Cuenta a
@@ -205,21 +228,3 @@ func _estado() -> Array:
 		})
 	return estado
 
-
-## E pasa al siguiente y Q vuelve al anterior. Están en project.godot desde la
-## v0.7, pero los ejecutables anteriores traen el project.godot viejo (Q para
-## pasar al siguiente) y las actualizaciones pequeñas no lo cambian: allí se
-## arreglan aquí, al empezar la partida.
-static func _configurar_teclas_antiguas() -> void:
-	if InputMap.has_action("personaje_anterior"):
-		return
-	InputMap.add_action("personaje_anterior")
-	for evento in InputMap.action_get_events("cambiar_personaje"):
-		if evento is InputEventKey and evento.physical_keycode == KEY_Q:
-			InputMap.action_erase_event("cambiar_personaje", evento)
-	var q := InputEventKey.new()
-	q.physical_keycode = KEY_Q
-	InputMap.action_add_event("personaje_anterior", q)
-	var e := InputEventKey.new()
-	e.physical_keycode = KEY_E
-	InputMap.action_add_event("cambiar_personaje", e)

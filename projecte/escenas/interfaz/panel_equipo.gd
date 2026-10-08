@@ -3,8 +3,8 @@ extends Control
 ## El equipo en el HUD. Abajo en el centro, siempre: el personaje activo, su
 ## herramienta y a quién se pasa con Q y con E (o cuánto falta para poder
 ## cambiar). A la derecha, al pulsar C: una ficha pequeña de cada personaje
-## con su vida, su herramienta, la resistencia del malware contra ella y si
-## está jugando, listo o caído.
+## con su vida, su herramienta, la resistencia del malware contra ella, la
+## carga de su ulti y si está jugando, listo o caído.
 ##
 ## Solo escucha el bus: equipo_cambiado trae la vida de todos y
 ## personaje_cambiado la espera hasta el siguiente cambio.
@@ -14,6 +14,8 @@ const ANCHO_FICHA := 210.0
 var _estado: Array = []
 var _activo := 0
 var _espera := 0.0
+## Carga de la ulti de cada personaje, de 0 a 1.
+var _ultis: Array = []
 var _linea: Label
 var _panel: PanelContainer
 var _fichas: Array = []
@@ -56,6 +58,7 @@ func _ready() -> void:
 
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
+	BusEventos.ulti_cambiada.connect(func(cargas, _activo): _ultis = cargas)
 	BusEventos.personaje_cambiado.connect(func(_actual, _arma, _siguiente, espera): _espera = espera)
 
 
@@ -111,7 +114,8 @@ func _escribir_linea() -> void:
 		cambio = "cambio en %d s" % ceili(_espera)
 	else:
 		cambio = "[Q] %s  ·  %s [E]" % [_nombre(anterior), _nombre(siguiente)]
-	_linea.text = "%s · %s      %s      [C] equipo" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, cambio]
+	var ulti := "      [R] ¡ULTI!" if _ulti(_activo) >= 1.0 else ""
+	_linea.text = "%s · %s      %s%s      [C] equipo" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, cambio, ulti]
 	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
 
@@ -120,7 +124,8 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	var personaje: DatosPersonaje = datos.personaje
 	var estado := "CAÍDO" if datos.caido else ("ACTIVO" if i == _activo else "LISTO")
 	var titulo: Label = ficha.get_child(0)
-	titulo.text = "%s  %s" % [personaje.nombre.to_upper(), estado]
+	var ulti := "ULTI LISTA" if _ulti(i) >= 1.0 else "ulti %d %%" % roundi(_ulti(i) * 100.0)
+	titulo.text = "%s  %s  ·  %s" % [personaje.nombre.to_upper(), estado, ulti]
 	titulo.add_theme_color_override("font_color", EstiloInterfaz.TEXTO_SUAVE if datos.caido else personaje.color)
 
 	var barra: ProgressBar = ficha.get_child(1)
@@ -142,6 +147,10 @@ func _vivo_desde(paso: int) -> int:
 		if not _estado[otro].caido:
 			return otro
 	return _activo
+
+
+func _ulti(indice: int) -> float:
+	return _ultis[indice] if indice < _ultis.size() else 0.0
 
 
 func _nombre(indice: int) -> String:

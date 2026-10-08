@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/controlador_jugador.gd" id="1_controlador"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="2_salud"]
@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://recursos/personajes/datos/espadachin.tres" id="11_espadachin"]
 [ext_resource type="Resource" path="res://recursos/personajes/datos/mago.tres" id="12_mago"]
 [ext_resource type="Resource" path="res://recursos/personajes/datos/segador.tres" id="13_segador"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/ultis.gd" id="14_ultis"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 16.0
@@ -53,3 +54,7 @@ script = ExtResource("8_barra_vida")
 [node name="CambioPersonaje" type="Node" parent="."]
 script = ExtResource("9_cambio")
 personajes = Array[ExtResource("10_datos_personaje")]([ExtResource("11_espadachin"), ExtResource("12_mago"), ExtResource("13_segador")])
+
+[node name="Ultis" type="Node2D" parent="."]
+z_index = 4
+script = ExtResource("14_ultis")

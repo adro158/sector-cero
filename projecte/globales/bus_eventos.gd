@@ -23,6 +23,11 @@ signal personaje_elegido(indice: int)
 ## El jugador ha recibido un golpe que hace daño. Para el sonido: comparar la
 ## vida no sirve, porque también baja al cambiar a un personaje con menos.
 signal jugador_danado(cantidad: float)
+## La carga de la ulti de cada personaje, de 0 a 1 (llena: se lanza con R), y
+## el índice del activo. Al empezar, al matar y al lanzarla.
+signal ulti_cambiada(cargas: Array, activo: int)
+## El personaje activo ha lanzado su ulti.
+signal ulti_lanzada(personaje: DatosPersonaje)
 ## Una herramienta se ha convertido en su evolución.
 signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
@@ -33,6 +38,9 @@ signal cofre_recogido
 ## pausado y se contesta con mejora_seleccionada(premio).
 signal ruleta_abierta(opciones: Array[DatosMejora], premio: DatosMejora)
 signal mejora_seleccionada(mejora: DatosMejora)
+## Una mejora dada desde el menú de desarrollador, ya aplicada: solo para que
+## la interfaz la apunte.
+signal mejora_regalada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 ## Cada vez que la herramienta del personaje ataca. Para el sonido.
 signal herramienta_usada(arma: DatosArma)

@@ -11,4 +11,7 @@ descripcion = "Ping: dispara un paquete que salta de un enemigo a otro, hasta ci
 hoja = ExtResource("2_hoja")
 arma = ExtResource("3_arma")
 vida_maxima = 90.0
+ulti = "rayo"
+nombre_ulti = "Rayo de datos"
+descripcion_ulti = "Un rayo morado enorme hacia el enemigo más cercano que atraviesa todo lo que encuentra."
 color = Color(0.75, 0.45, 1, 1)

@@ -63,6 +63,7 @@ func _ready() -> void:
 	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
+	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
 	BusEventos.juego_pausado.connect(_al_pausar)
 	BusEventos.partida_terminada.connect(_al_terminar)
 	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)
@@ -121,6 +122,11 @@ func _al_cambiar_personaje(actual: DatosPersonaje, _arma: DatosArma, _siguiente:
 	if _personaje_anterior != null and actual != _personaje_anterior:
 		sonar("cambio")
 	_personaje_anterior = actual
+
+
+func _al_lanzar_ulti(_personaje: DatosPersonaje) -> void:
+	sonar("evolucion")
+	sonar("explosion", 0.8)
 
 
 func _al_aparecer_jefe() -> void:
