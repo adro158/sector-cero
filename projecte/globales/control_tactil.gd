@@ -7,7 +7,8 @@ extends CanvasLayer
 ## No toca al jugador: simula las mismas acciones que el teclado (mover_*,
 ## cambiar_personaje y pausar), así que el resto del juego no se entera.
 ## Joystick flotante en la mitad izquierda de la pantalla, botón de cambio de
-## personaje abajo a la derecha y botón de pausa arriba a la derecha.
+## personaje abajo a la derecha, el de la ulti encima de él y el de pausa
+## arriba a la derecha.
 
 const RADIO_JOYSTICK := 80.0
 const RADIO_BOTON := 46.0
@@ -20,6 +21,7 @@ var _centro := Vector2.ZERO
 var _vector := Vector2.ZERO
 var _boton_cambiar := Vector2.ZERO
 var _boton_pausa := Vector2.ZERO
+var _boton_ulti := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -54,6 +56,7 @@ func _process(_delta: float) -> void:
 	var pantalla := get_viewport().get_visible_rect().size
 	_boton_cambiar = pantalla - Vector2(MARGEN, MARGEN)
 	_boton_pausa = Vector2(pantalla.x - MARGEN, MARGEN)
+	_boton_ulti = pantalla - Vector2(MARGEN, MARGEN * 2.4)
 	if not _jugando() and _dedo != -1:
 		_soltar()
 	_dibujo.visible = _jugando()
@@ -78,6 +81,8 @@ func _al_tocar(evento: InputEventScreenTouch) -> void:
 		_pulsar("cambiar_personaje")
 	elif evento.position.distance_to(_boton_pausa) <= RADIO_BOTON * 1.3:
 		_pulsar("pausar")
+	elif evento.position.distance_to(_boton_ulti) <= RADIO_BOTON * 1.3:
+		_pulsar("ulti")
 	elif _dedo == -1 and evento.position.x < get_viewport().get_visible_rect().size.x * 0.5:
 		_dedo = evento.index
 		_centro = evento.position
@@ -123,6 +128,7 @@ func _pintar() -> void:
 	_dibujo.draw_circle(palanca, 30.0, Color(color, 0.45 if _dedo != -1 else 0.2))
 	_boton(_boton_cambiar, "CAMBIAR", color)
 	_boton(_boton_pausa, "II", color)
+	_boton(_boton_ulti, "ULTI", Color(1.0, 0.8, 0.2))
 
 
 func _boton(centro: Vector2, texto: String, color: Color) -> void:
