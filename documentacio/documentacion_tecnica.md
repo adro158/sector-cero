@@ -133,16 +133,22 @@ resistencia contra ella.
 **El director de oleadas.** La dificultad sale de pocos números: el tiempo
 entre apariciones baja de 0,5 s a 0,05 s en 10 minutos, cada tipo de enemigo
 dice a partir de qué minuto sale y cada enemigo aparece con un 4 % más de vida
-por cada nivel del jugador. Un tipo puede limitar cuántos hay a la vez: sin ese
-límite, el ransomware se acumulaba por cientos. Cada minuto llega un **élite**
+por cada nivel del jugador y, desde el minuto 3, con un 15 % más por cada
+minuto de partida: el principio es suave y a mitad de partida cuesta más matar.
+Un tipo puede limitar cuántos hay a la vez: sin ese límite, el ransomware se
+acumulaba por cientos. Cada minuto llega un **élite**
 con uno o dos afijos al azar (blindado, replicante, aura lenta, explosivo). Al
 morir deja un corazón, que cura la mitad de la vida, y un cofre. El cofre va a
 la misma cola que las subidas de nivel, que distingue "nivel" y "cofre" para
 que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las
 mejoras (y una evolución si hay alguna disponible). El premio se sortea antes de
 girar; el disco frena con un `Tween` hasta -45·k grados más unas vueltas, que
-deja el sector k bajo la flecha. A los 10 minutos deja de salir horda y llega
-el **jefe**.
+deja el sector k bajo la flecha. A los 10 minutos deja de salir horda, la que
+queda huye (se aleja del jugador y se desvanece en 1,2 s, sin dar experiencia)
+y llega el **jefe**. Además de embestir, el jefe tiene un tercer estado: cada
+15 s se para, late en morado mientras crece un anillo y saca un círculo de 12 a
+24 enemigos, más cuanto menos vida le queda; los crean los gestores de la
+horda, como hace el élite replicante.
 
 **El mapa infinito.** El suelo es un rectángulo más grande que la pantalla que
 se coloca bajo la cámara en cada fotograma, y su shader dibuja según la posición

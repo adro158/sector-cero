@@ -32,7 +32,7 @@ const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
 const COMO_SE_JUEGA := [
 	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
-	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes."],
+	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes y, desde el minuto 3, con cada minuto que pasa."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
 	["CAMBIA DE PERSONAJE", "Con E (o Tab) pasas al siguiente personaje y con Q vuelves al anterior. Cada uno lleva otra herramienta, contra la que el malware aún no se ha protegido, y su propia vida: los que esperan se curan poco a poco. Después hay que esperar 10 s para volver a cambiar. Con C ves cómo está cada uno."],
 	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
@@ -140,7 +140,7 @@ func _enemigos() -> VBoxContainer:
 
 	# El jefe no tiene recurso de datos: es único y su texto va aquí.
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "Jefe final", EstiloInterfaz.DERROTA,
-		"Llega a los 10 minutos y desde entonces ya no sale horda. Persigue despacio y cada 7 s se pone rojo y embiste en línea recta hacia donde estabas: apártate de su camino. Derrótalo para ganar. El Ping y el Escáner le pegan sin acercarse."))
+		"Llega a los 10 minutos: la horda que queda huye y ya no sale más. Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Derrótalo para ganar. El Ping y el Escáner le pegan sin acercarse."))
 
 	lista.add_child(EstiloInterfaz.etiqueta("AFIJOS DE LOS ÉLITES", 20, Color(1.0, 0.85, 0.3)))
 	var oleadas: DatosConfigOleada = load(OLEADAS)

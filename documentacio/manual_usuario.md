@@ -35,7 +35,8 @@ para más tarde, con el botón en el menú.
    naranjas o magentas según lo que valen). A los 30 segundos parpadean y se
    pierden.
 3. **Al subir de nivel** el juego se pausa y eliges una de tres mejoras. Cada
-   nivel cuesta más, y los enemigos ganan vida con cada nivel que subes.
+   nivel cuesta más, y los enemigos ganan vida con cada nivel que subes y, desde
+   el minuto 3, con cada minuto que pasa.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
    herramienta que más le ha dañado: tus números de daño se vuelven rojos.
 5. **Cambia de personaje** para atacarle con otra herramienta (10 s de espera
@@ -55,8 +56,9 @@ para más tarde, con el botón en el menú.
    (blindado, replicante, aura lenta o explosivo). Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
-9. **El jefe final** llega a los 10 minutos. Cuando se pone rojo, va a
-   embestir: apártate.
+9. **El jefe final** llega a los 10 minutos y la horda huye. Cuando se pone
+   rojo, va a embestir: apártate. Cuando late en morado, va a sacar un anillo
+   de malware a su alrededor.
 
 Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
 herramienta.

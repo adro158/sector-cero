@@ -83,6 +83,7 @@ signal mejora_seleccionada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
+signal jefe_invoco
 signal elite_aparecio(descripcion: String)
 signal elite_exploto(posicion: Vector2)
 signal partida_terminada(estadisticas: Dictionary)
@@ -123,7 +124,8 @@ Detalles que la interfaz tiene que respetar:
   (int), `eliminados` (int) y `personaje` (String, el que llevaba al acabar;
   para el ranking). Al cumplirse `duracion_partida`
   (`recursos/oleadas/datos/config_principal.tres`, 10 minutos) deja de
-  aparecer horda y llega el jefe final; se gana al derrotarlo.
+  aparecer horda, la que queda huye y llega el jefe final, que invoca anillos
+  de horda (`jefe_invoco`); se gana al derrotarlo.
 
 Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 
