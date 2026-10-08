@@ -60,6 +60,7 @@ func _ready() -> void:
 	BusEventos.personaje_caido.connect(func(_personajes, _caido): sonar("explosion"))
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
+	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.juego_pausado.connect(_al_pausar)

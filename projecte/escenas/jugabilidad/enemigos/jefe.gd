@@ -6,7 +6,9 @@ extends Node2D
 ##
 ## Persigue al jugador despacio y hace daño por contacto. Cada cierto tiempo se
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
-## jugador: se puede esquivar si se reacciona al aviso.
+## jugador: se puede esquivar si se reacciona al aviso. Y cada intervalo de
+## invocación se para, late en morado y saca un anillo de horda a su alrededor:
+## cuanta menos vida le queda, más enemigos.
 ##
 ## Para las armas es un objetivo más, igual que los gestores de la horda: está
 ## en el grupo objetivos y tiene danar_en_area y mas_cercano.
@@ -14,28 +16,41 @@ extends Node2D
 signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 signal derrotado
 
-enum Estado { PERSEGUIR, AVISO, EMBESTIDA }
+enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR }
 
 const FOTOGRAMAS_ANDAR := 12
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
-@export var dano_contacto: float = 15.0
+@export var dano_contacto: float = 25.0
 @export var fotogramas_por_segundo: float = 7.7
 
 @export_group("Embestida")
-@export var intervalo_embestida: float = 7.0
+@export var intervalo_embestida: float = 6.0
 @export var duracion_aviso: float = 0.8
 @export var duracion_embestida: float = 0.7
 @export var velocidad_embestida: float = 480.0
+@export var dano_embestida: float = 40.0
 @export var color_aviso: Color = Color(1.0, 0.3, 0.3, 1.0)
+
+@export_group("Invocación")
+@export var intervalo_invocacion: float = 15.0
+## Lo que dura el aviso (late en morado y crece el anillo) antes de invocar.
+@export var duracion_invocacion: float = 1.0
+## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
+## sin ella.
+@export var invocados_minimo: int = 12
+@export var invocados_maximo: int = 24
+@export var radio_invocacion: float = 140.0
+@export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
 var _activo := false
 var _estado := Estado.PERSEGUIR
 var _tiempo_estado := 0.0
 var _direccion := Vector2.DOWN
 var _tiempo_andando := 0.0
+var _hasta_invocar := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 
@@ -55,6 +70,7 @@ func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	visible = true
 	_activo = true
+	_hasta_invocar = intervalo_invocacion
 	BusEventos.jefe_aparecio.emit()
 
 
@@ -103,13 +119,16 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_tiempo_estado += delta
+	_hasta_invocar -= delta
 	var hacia_jugador := (_jugador.global_position - global_position).normalized()
 
 	match _estado:
 		Estado.PERSEGUIR:
 			_direccion = hacia_jugador
 			global_position += _direccion * velocidad * delta
-			if _tiempo_estado >= intervalo_embestida:
+			if _hasta_invocar <= 0.0:
+				_cambiar_estado(Estado.INVOCAR)
+			elif _tiempo_estado >= intervalo_embestida:
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
 			# Quieto y mirando al jugador: la embestida irá hacia donde esté
@@ -121,21 +140,46 @@ func _physics_process(delta: float) -> void:
 			global_position += _direccion * velocidad_embestida * delta
 			if _tiempo_estado >= duracion_embestida:
 				_cambiar_estado(Estado.PERSEGUIR)
+		Estado.INVOCAR:
+			# Quieto, latiendo en morado mientras crece el anillo.
+			var latido := 0.5 + 0.5 * sin(_tiempo_estado * 20.0)
+			_sprite.modulate = Color.WHITE.lerp(color_invocacion, latido)
+			queue_redraw()
+			if _tiempo_estado >= duracion_invocacion:
+				_invocar()
+				_hasta_invocar = intervalo_invocacion
+				_cambiar_estado(Estado.PERSEGUIR)
 
 	if global_position.distance_to(_jugador.global_position) < radio + 16.0:
-		_salud_jugador.recibir_dano(dano_contacto)
+		_salud_jugador.recibir_dano(dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto)
 
 	_animar(delta)
+
+
+## Saca un anillo de horda alrededor del jefe con los tipos que no tienen
+## límite de vivos (el ransomware sí lo tiene). Los crean sus gestores, como
+## hace el élite replicante.
+func _invocar() -> void:
+	var herido := 1.0 - _salud.vida() / _salud.vida_maxima
+	var cantidad := roundi(lerpf(invocados_minimo, invocados_maximo, herido))
+	var gestores := get_tree().get_nodes_in_group("gestor_enemigos").filter(func(gestor): return gestor.datos.maximo_vivos == 0)
+	for i in cantidad:
+		var angulo := TAU * i / cantidad
+		gestores.pick_random().aparecer(global_position + Vector2.from_angle(angulo) * radio_invocacion)
+	BusEventos.jefe_invoco.emit()
 
 
 func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
 	_sprite.modulate = color_aviso if nuevo == Estado.AVISO else Color.WHITE
+	# Para borrar el anillo de la invocación al terminarla.
+	queue_redraw()
 
 
 func _animar(delta: float) -> void:
-	if _estado != Estado.AVISO:
+	# Quieto (avisando o invocando), no mueve las piernas.
+	if _estado != Estado.AVISO and _estado != Estado.INVOCAR:
 		_tiempo_andando += delta
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	_sprite.frame = Direcciones8.fila(_direccion) * FOTOGRAMAS_ANDAR + columna
@@ -147,6 +191,10 @@ func _draw() -> void:
 
 	# Barra de vida sobre la corona.
 	BarraVida.dibujar(self, Vector2(0.0, -132.0), 140.0, 10.0, _salud.vida() / _salud.vida_maxima, Color(0.75, 0.3, 1.0))
+	# El anillo de la invocación crece hasta donde saldrán los enemigos.
+	if _estado == Estado.INVOCAR:
+		var avance := _tiempo_estado / duracion_invocacion
+		draw_arc(Vector2.ZERO, radio_invocacion * avance, 0.0, TAU, 48, Color(color_invocacion, 0.8), 4.0)
 
 
 func _al_morir() -> void:

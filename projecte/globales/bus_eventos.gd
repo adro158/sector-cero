@@ -37,6 +37,8 @@ signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 ## Cada vez que la herramienta del personaje ataca. Para el sonido.
 signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
+## El jefe acaba de sacar un anillo de horda a su alrededor.
+signal jefe_invoco
 ## descripcion: los nombres de sus afijos, como "BLINDADO + EXPLOSIVO".
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.
