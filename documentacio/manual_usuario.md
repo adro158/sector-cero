@@ -31,8 +31,9 @@ para más tarde, con el botón en el menú.
 ## Cómo se juega
 
 1. **Solo te mueves.** Tu herramienta ataca sola; tú decides dónde colocarte.
-2. **Recoge los fragmentos de datos** que suelta el malware (cian, verdes o
-   dorados según lo que valen). A los 30 segundos parpadean y se pierden.
+2. **Recoge los fragmentos de datos** que suelta el malware (amarillos,
+   naranjas o magentas según lo que valen). A los 30 segundos parpadean y se
+   pierden.
 3. **Al subir de nivel** el juego se pausa y eliges una de tres mejoras. Cada
    nivel cuesta más, y los enemigos ganan vida con cada nivel que subes.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la

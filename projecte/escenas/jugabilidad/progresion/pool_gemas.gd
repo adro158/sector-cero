@@ -19,12 +19,13 @@ const MAXIMO_GEMAS := 800
 
 @export_group("Colores por valor")
 ## Hasta valor_medio - 1 de experiencia, color_bajo; hasta valor_alto - 1,
-## color_medio; desde valor_alto, color_alto.
-@export var color_bajo := Color(0.4, 0.9, 1.0)
+## color_medio; desde valor_alto, color_alto. Colores cálidos: el cian y el
+## verde son los de las pistas de la placa base y las gemas se camuflaban.
+@export var color_bajo := Color(1.0, 0.92, 0.3)
 @export var valor_medio := 3
-@export var color_medio := Color(0.5, 1.0, 0.55)
+@export var color_medio := Color(1.0, 0.55, 0.2)
 @export var valor_alto := 10
-@export var color_alto := Color(1.0, 0.8, 0.3)
+@export var color_alto := Color(1.0, 0.35, 0.85)
 
 var _posiciones := PackedVector2Array()
 var _valores := PackedInt32Array()
