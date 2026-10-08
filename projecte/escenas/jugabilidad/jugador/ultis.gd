@@ -10,23 +10,23 @@ extends Node2D
 ## cuentan para la resistencia del malware: no son una herramienta. Escalan con
 ## las mejoras de daño. Los efectos se dibujan con _draw, sin sprites.
 
-const CARGA_NECESARIA := 120.0
+const CARGA_NECESARIA := 180.0
 ## Un élite carga como diez enemigos de la horda.
 const CARGA_ELITE := 10.0
 
 const RAYO_LARGO := 900.0
 const RAYO_RADIO := 34.0
-const RAYO_DANO := 220.0
+const RAYO_DANO := 160.0
 const RAYO_GOLPES := [0.0, 0.15, 0.3]
 const GIRO_DURACION := 1.5
 const GIRO_RADIO := 170.0
-const GIRO_DANO := 70.0
+const GIRO_DANO := 50.0
 const GIRO_CADA := 0.2
 const TORMENTA_RADIO := 200.0
-const TORMENTA_DANO := 350.0
+const TORMENTA_DANO := 250.0
 const MINI_RAYOS := 10
 const MINI_RADIO := 80.0
-const MINI_DANO := 140.0
+const MINI_DANO := 100.0
 const MINI_ALCANCE := 320.0
 
 var _cargas: Array[float] = []
