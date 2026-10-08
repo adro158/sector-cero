@@ -31,8 +31,12 @@ func _ready() -> void:
 
 
 func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
-	if tipo != "elite":
-		return
+	if tipo == "elite":
+		soltar(posicion)
+
+
+## Suelta el corazón y el cofre. Público para el menú de desarrollador.
+func soltar(posicion: Vector2) -> void:
 	_soltar("corazon", _corazon, posicion + Vector2(-SEPARACION, 0.0))
 	var cofre := _soltar("cofre", _cofre, posicion + Vector2(SEPARACION, 0.0))
 	# La hoja del cofre tiene 4 fotogramas; en el suelo se ve cerrado.
@@ -54,7 +58,10 @@ func _soltar(tipo: String, textura: Texture2D, posicion: Vector2) -> Sprite2D:
 
 func _physics_process(delta: float) -> void:
 	_tiempo += delta
-	for premio: Sprite2D in get_children():
+	for premio in get_children():
+		# Los recogidos están haciendo su animación: ni flotan ni se recogen otra vez.
+		if not premio is Sprite2D or premio.has_meta("recogido"):
+			continue
 		var suelo: Vector2 = premio.get_meta("suelo")
 		# Cada premio flota con un desfase distinto según dónde cayó.
 		premio.position.y = suelo.y + sin(_tiempo * VELOCIDAD_FLOTE + suelo.x) * ALTURA_FLOTE
@@ -63,10 +70,46 @@ func _physics_process(delta: float) -> void:
 
 
 func _recoger(premio: Sprite2D) -> void:
+	premio.set_meta("recogido", true)
 	if premio.get_meta("tipo") == "corazon":
+		var antes := _salud.vida()
 		_salud.curar(CURACION)
+		_animar_corazon(premio, _salud.vida() - antes)
 	else:
-		BusEventos.cofre_recogido.emit()
-	# free y no queue_free: si en un fotograma hay dos pasos de física, con
-	# queue_free el premio seguiría ahí en el segundo y se recogería dos veces.
-	premio.free()
+		_animar_cofre(premio)
+
+
+## El corazón crece y se desvanece, y sube un "+N" verde con lo que ha curado.
+func _animar_corazon(corazon: Sprite2D, curado: float) -> void:
+	var efecto := create_tween().set_parallel()
+	efecto.tween_property(corazon, "scale", Vector2(2.5, 2.5), 0.4)
+	efecto.tween_property(corazon, "modulate:a", 0.0, 0.4)
+	efecto.tween_property(corazon, "position:y", corazon.position.y - 30.0, 0.4)
+	efecto.chain().tween_callback(corazon.queue_free)
+
+	var texto := Label.new()
+	texto.text = "+%d" % roundi(curado)
+	texto.add_theme_font_size_override("font_size", 20)
+	texto.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+	texto.add_theme_color_override("font_outline_color", Color.BLACK)
+	texto.add_theme_constant_override("outline_size", 4)
+	texto.position = corazon.position + Vector2(-16.0, -40.0)
+	add_child(texto)
+	var sube := create_tween().set_parallel()
+	sube.tween_property(texto, "position:y", texto.position.y - 40.0, 0.9)
+	sube.tween_property(texto, "modulate:a", 0.0, 0.9).set_delay(0.3)
+	sube.chain().tween_callback(texto.queue_free)
+
+
+## El cofre da un salto con un destello dorado y empieza a abrirse; después
+## avisa y se abre la ruleta, que sigue la animación en grande.
+func _animar_cofre(cofre: Sprite2D) -> void:
+	var efecto := create_tween()
+	efecto.tween_property(cofre, "scale", Vector2(1.7, 1.7), 0.12)
+	efecto.parallel().tween_property(cofre, "modulate", Color(2.0, 1.7, 0.8), 0.12)
+	efecto.tween_callback(func(): cofre.frame = 1)
+	efecto.tween_property(cofre, "scale", Vector2(1.3, 1.3), 0.12)
+	efecto.tween_callback(func(): cofre.frame = 2)
+	efecto.tween_interval(0.08)
+	efecto.tween_callback(BusEventos.cofre_recogido.emit)
+	efecto.tween_callback(cofre.queue_free)

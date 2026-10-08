@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" path="res://medios/sprites/fragmento_datos.png" id="23_fragmento"]
 [ext_resource type="Texture2D" path="res://medios/sprites/proyectil_ping.png" id="24_proyectil"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/progresion/premios_elite.gd" id="25_premios"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_trucos.gd" id="26_trucos"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -109,3 +110,6 @@ layer = 100
 [node name="PanelDepuracion" type="Label" parent="CapaDepuracion"]
 script = ExtResource("12_depuracion")
 
+
+[node name="PanelTrucos" type="Control" parent="CapaDepuracion"]
+script = ExtResource("26_trucos")

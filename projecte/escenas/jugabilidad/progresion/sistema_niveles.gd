@@ -76,6 +76,19 @@ func _anadir_pendiente(tipo: String) -> void:
 		_ofrecer_mejoras()
 
 
+## Para el menú de desarrollador: la experiencia que falta para el siguiente
+## nivel.
+func experiencia_para_subir() -> int:
+	return _objetivo - _experiencia
+
+
+## Para el menú de desarrollador: aplica una mejora sin pasar por los paneles
+## y avisa para que el HUD la apunte en su columna.
+func regalar(mejora: DatosMejora) -> void:
+	_aplicar(mejora)
+	BusEventos.mejora_regalada.emit(mejora)
+
+
 func _avisar_experiencia() -> void:
 	BusEventos.experiencia_cambiada.emit(_experiencia, _objetivo, _nivel)
 

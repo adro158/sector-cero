@@ -66,6 +66,26 @@ func _physics_process(delta: float) -> void:
 		gestor.aparecer(_posicion_fuera_de_pantalla())
 
 
+## Para el menú de desarrollador: salta a ese segundo de la partida como si se
+## hubiera llegado jugando. Los enemigos que aparezcan desde ahora tendrán la
+## vida de ese minuto y el siguiente élite llega en su turno. Si se salta al
+## minuto 10 o más, llega el jefe en el siguiente paso.
+func saltar_a(segundos: float) -> void:
+	if _jefe_en_juego:
+		return
+	_tiempo = segundos
+	_tiempo_restante = 0.0
+	_siguiente_elite = config.primer_elite
+	while _siguiente_elite <= segundos:
+		_siguiente_elite += config.intervalo_elites
+	BusEventos.tiempo_partida.emit(_tiempo, config.duracion_partida)
+
+
+## Para el menú de desarrollador: un élite ahora, si queda alguno libre.
+func aparecer_elite() -> void:
+	_aparecer_elite()
+
+
 func _intervalo_actual() -> float:
 	var progreso := clampf(_tiempo / config.tiempo_hasta_dificultad_maxima, 0.0, 1.0)
 	return lerpf(config.intervalo_inicial, config.intervalo_final, progreso)

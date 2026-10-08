@@ -67,6 +67,7 @@ func _ready() -> void:
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
+	BusEventos.mejora_regalada.connect(_al_regalar_mejora)
 
 
 func _crear_experiencia() -> void:
@@ -135,6 +136,13 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		_columna.add_child(icono)
 		_iconos[mejora] = icono
 	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
+
+
+## Las mejoras del menú de desarrollador no pasan por los paneles: se apunta
+## aquí su nivel.
+func _al_regalar_mejora(mejora: DatosMejora) -> void:
+	niveles_mejora[mejora] = niveles_mejora.get(mejora, 0) + 1
+	_al_elegir_mejora(mejora)
 
 
 ## Matar un élite deja en el suelo un corazón y un cofre: se avisa para que se

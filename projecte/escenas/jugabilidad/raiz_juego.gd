@@ -2,6 +2,9 @@ extends Node2D
 
 var _eliminados := 0
 var _terminada := false
+## Si se ha usado el menú de desarrollador: la partida no cuenta para los
+## récords ni para el ranking.
+var _trucos := false
 
 @onready var _salud_jugador: Salud = $Jugador/Salud
 @onready var _sistema_niveles: Node = $SistemaNiveles
@@ -40,6 +43,10 @@ func _al_pausar(en_pausa: bool) -> void:
 	get_tree().paused = en_pausa
 
 
+func usar_trucos() -> void:
+	_trucos = true
+
+
 func _terminar_partida(victoria: bool) -> void:
 	# Morir y superar el tiempo en el mismo fotograma no debe dar dos finales.
 	if _terminada:
@@ -56,4 +63,5 @@ func _terminar_partida(victoria: bool) -> void:
 		"nivel": _sistema_niveles.nivel(),
 		"eliminados": _eliminados,
 		"personaje": $Jugador/CambioPersonaje.personaje_actual().nombre,
+		"trucos": _trucos,
 	})

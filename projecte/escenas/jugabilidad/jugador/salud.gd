@@ -11,6 +11,8 @@ signal murio
 ## Vida que se recupera por segundo. Sin ella, cada roce se acumula hasta matar:
 ## en las partidas simuladas nadie pasaba de los 7 minutos.
 @export var regeneracion: float = 0.0
+## Para el menú de desarrollador: no recibe daño.
+var invencible := false
 
 var _vida: float
 var _tiempo_invulnerable := 0.0
@@ -82,7 +84,7 @@ func aumentar_vida_maxima(cantidad: float) -> void:
 
 
 func recibir_dano(cantidad: float) -> void:
-	if _vida <= 0.0 or _tiempo_invulnerable > 0.0:
+	if _vida <= 0.0 or _tiempo_invulnerable > 0.0 or invencible:
 		return
 
 	_vida = maxf(_vida - cantidad, 0.0)
