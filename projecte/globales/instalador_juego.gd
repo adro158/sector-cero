@@ -1,10 +1,14 @@
 extends Node
 
-## Instala el juego completo de una release: descarga su .zip, saca el
-## ejecutable, lo pone en lugar del actual y reinicia. Se usa cuando una versión
-## nueva necesita un ejecutable más nuevo (HAY_JUEGO_NUEVO; sin esto, el botón
-## abría la página de GitHub) y en el menú de versiones, para instalar
-## cualquiera, también una anterior.
+## Instala el juego completo de una versión: pone su ejecutable en lugar del
+## actual y reinicia. Se usa cuando una versión nueva necesita un ejecutable
+## más nuevo (HAY_JUEGO_NUEVO; sin esto, el botón abría la página de GitHub) y
+## en el menú de versiones, para cambiar a cualquiera, también una anterior.
+##
+## Biblioteca de versiones: cada ejecutable que se instala, y el que había
+## antes de cambiar, se guarda en user://versiones/<versión>/. Volver a una
+## versión ya instalada es copiarla de ahí, al momento y sin descargar nada.
+## Cada una ocupa unos 100 MB; el menú de versiones deja borrarlas.
 ##
 ## Por qué no está en actualizador.gd: ese script lo carga el ejecutable antes
 ## que cualquier actualización, así que un cambio en él solo llegaría con un
@@ -12,9 +16,11 @@ extends Node
 ## carga con el resto del contenido, y por eso funciona también en ejecutables
 ## antiguos que ya han recibido una actualización. Por la misma razón usa del
 ## Actualizador solo lo que tienen todos los ejecutables desde la v0.2: estado,
-## progreso, estado_cambiado y actualizar().
+## progreso, version_nueva, estado_cambiado, actualizar(), version_actual(),
+## version_ejecutable() y sus constantes.
 
 const DESCARGA := "user://juego_nuevo.zip"
+const BIBLIOTECA := "user://versiones/"
 ## Lo que queda del ejecutable anterior tras instalar uno nuevo. Windows no deja
 ## borrar un ejecutable que está en marcha, pero sí cambiarle el nombre: se
 ## aparta así y se borra en el siguiente arranque.
@@ -29,11 +35,17 @@ static func pulsar_actualizar() -> void:
 	if Actualizador.estado != Actualizador.Estado.HAY_JUEGO_NUEVO:
 		Actualizador.actualizar()
 		return
+	instalar_version({})
+
+
+## Para el menú de versiones: cambia a esa release, más nueva o más antigua.
+## Sin release, la última.
+static func instalar_version(release: Dictionary) -> void:
 	# Hijo del Actualizador, que es un autoload: así no desaparece si se cambia
 	# de escena a mitad de la descarga.
 	var instalador: Node = load("res://globales/instalador_juego.gd").new()
 	Actualizador.add_child(instalador)
-	instalador.instalar()
+	instalador.instalar(release)
 
 
 ## Al arrancar: borra el ejecutable apartado en la instalación anterior.
@@ -43,26 +55,61 @@ static func limpiar() -> void:
 		DirAccess.remove_absolute(viejo)
 
 
-## Para el menú de versiones: instala esa release, más nueva o más antigua.
-static func instalar_version(release: Dictionary) -> void:
-	var instalador: Node = load("res://globales/instalador_juego.gd").new()
-	Actualizador.add_child(instalador)
-	instalador.instalar(release)
+## Dónde se guarda el ejecutable de esa versión en la biblioteca.
+static func ruta_guardada(version: String) -> String:
+	return BIBLIOTECA + version + "/" + OS.get_executable_path().get_file()
 
 
-## Instala la release que se le pase o, sin ninguna, la última.
-func instalar(release: Dictionary = {}) -> void:
+static func instalada(version: String) -> bool:
+	return FileAccess.file_exists(ruta_guardada(version))
+
+
+## Borra de la biblioteca una versión guardada, para liberar espacio.
+static func borrar(version: String) -> void:
+	DirAccess.remove_absolute(ruta_guardada(version))
+	DirAccess.remove_absolute(BIBLIOTECA + version)
+
+
+func instalar(release: Dictionary) -> void:
 	if release.is_empty():
 		release = await _ultima_release()
+	var version: String = release.get("tag_name", "").trim_prefix("v")
 	# Antes de cambiar de estado: es la versión del texto "Descargando la
 	# versión X..." del menú.
-	Actualizador.version_nueva = release.get("tag_name", "").trim_prefix("v")
+	Actualizador.version_nueva = version
 	_cambiar(Actualizador.Estado.DESCARGANDO)
-	var url := _zip_de(release)
-	if url == "":
+	_guardar_actual()
+
+	if not instalada(version) and not await _descargar(release, version):
+		_fallar()
+		return
+	if not _sustituir_ejecutable(ruta_guardada(version)):
 		_fallar()
 		return
 
+	# El ejecutable que entra ya trae el contenido de su versión: la
+	# actualización pequeña anterior sobra (y no debe cargarse encima).
+	DirAccess.remove_absolute(Actualizador.PARCHE)
+	DirAccess.remove_absolute(Actualizador.VERSION_PARCHE)
+	OS.set_restart_on_exit(true)
+	get_tree().quit()
+
+
+## Guarda en la biblioteca el ejecutable que está en marcha, si no está ya,
+## para poder volver a él sin descargarlo.
+func _guardar_actual() -> void:
+	var version := Actualizador.version_ejecutable()
+	if version == "" or instalada(version):
+		return
+	DirAccess.make_dir_recursive_absolute(BIBLIOTECA + version)
+	DirAccess.copy_absolute(OS.get_executable_path(), ruta_guardada(version))
+
+
+## Descarga el .zip de la release y deja su ejecutable en la biblioteca.
+func _descargar(release: Dictionary, version: String) -> bool:
+	var url := _zip_de(release)
+	if url == "":
+		return false
 	_descarga = HTTPRequest.new()
 	_descarga.download_file = DESCARGA
 	add_child(_descarga)
@@ -73,18 +120,25 @@ func instalar(release: Dictionary = {}) -> void:
 	var completo: bool = resultado[0] == HTTPRequest.RESULT_SUCCESS and resultado[1] == 200 \
 		and FileAccess.file_exists(DESCARGA) \
 		and FileAccess.open(DESCARGA, FileAccess.READ).get_length() == _tamano
-	if not completo or not _sustituir_ejecutable():
-		DirAccess.remove_absolute(DESCARGA)
-		_fallar()
-		return
-
+	var bien := completo and _sacar_del_zip(version)
 	DirAccess.remove_absolute(DESCARGA)
-	# El ejecutable nuevo ya trae el contenido de su versión: la actualización
-	# pequeña anterior sobra (y no debe cargarse encima).
-	DirAccess.remove_absolute(Actualizador.PARCHE)
-	DirAccess.remove_absolute(Actualizador.VERSION_PARCHE)
-	OS.set_restart_on_exit(true)
-	get_tree().quit()
+	return bien
+
+
+## El .zip solo lleva un fichero: el juego con todo dentro.
+func _sacar_del_zip(version: String) -> bool:
+	var zip := ZIPReader.new()
+	if zip.open(DESCARGA) != OK or zip.get_files().size() != 1:
+		return false
+	var contenido := zip.read_file(zip.get_files()[0])
+	zip.close()
+	DirAccess.make_dir_recursive_absolute(BIBLIOTECA + version)
+	var fichero := FileAccess.open(ruta_guardada(version), FileAccess.WRITE)
+	if fichero == null:
+		return false
+	fichero.store_buffer(contenido)
+	fichero.close()
+	return true
 
 
 func _process(_delta: float) -> void:
@@ -121,23 +175,14 @@ func _zip_de(release: Dictionary) -> String:
 	return ""
 
 
-## Saca el ejecutable del .zip y lo pone en el sitio del que está en marcha.
-## El .zip solo lleva un fichero: el juego con todo dentro.
-func _sustituir_ejecutable() -> bool:
-	var zip := ZIPReader.new()
-	if zip.open(DESCARGA) != OK or zip.get_files().size() != 1:
-		return false
-	var contenido := zip.read_file(zip.get_files()[0])
-	zip.close()
-
+## Pone una copia del ejecutable de la biblioteca en el sitio del que está en
+## marcha.
+func _sustituir_ejecutable(origen: String) -> bool:
 	var actual := OS.get_executable_path()
 	var nuevo := actual + ".nuevo"
-	var fichero := FileAccess.open(nuevo, FileAccess.WRITE)
-	if fichero == null:
+	if DirAccess.copy_absolute(origen, nuevo) != OK:
 		# Sin permiso para escribir en la carpeta del juego.
 		return false
-	fichero.store_buffer(contenido)
-	fichero.close()
 	if OS.get_name() == "Linux":
 		# rwxr-xr-x (0755 en octal): sin permiso de ejecución no arrancaría.
 		FileAccess.set_unix_permissions(nuevo, 493)

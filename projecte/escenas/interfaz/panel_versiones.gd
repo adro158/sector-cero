@@ -1,9 +1,11 @@
 extends Control
 
 ## Ventana de versiones del menú: todas las releases publicadas en GitHub, de
-## la más nueva a la más antigua, y un botón para instalar cualquiera. Instalar
-## una anterior deja jugar a versiones viejas del juego; para volver, el botón
-## ACTUALIZAR o esta misma ventana (desde la v0.8).
+## la más nueva a la más antigua. La que se está jugando sale como tal; las ya
+## instaladas (guardadas en la biblioteca de instalador_juego.gd) se cambian al
+## momento con CAMBIAR o se borran con BORRAR; las demás se descargan con
+## INSTALAR. Desde la v0.8 está también en las versiones anteriores, que se
+## volvieron a publicar con esta ventana añadida, para poder volver de ellas.
 ##
 ## Instala el juego completo de esa versión con instalador_juego.gd: el
 ## ejecutable de entonces, con su contenido. Solo en el juego descargado de
@@ -88,7 +90,7 @@ func _rellenar(releases: Array) -> void:
 	if releases.is_empty():
 		_estado.text = "No se ha podido conectar con GitHub. Inténtalo más tarde."
 		return
-	_estado.text = "Estás jugando la versión %s. Elige otra para instalarla; el juego se reinicia." % Actualizador.version_actual()
+	_estado.text = "Estás jugando la versión %s. Al cambiar, el juego se reinicia.\nLas instaladas cambian al momento; cada una ocupa unos 100 MB." % Actualizador.version_actual()
 	for release in releases:
 		# Las pruebas (prerelease) no se ofrecen: la v0.1 ni siquiera tiene el
 		# zip con el nombre de ahora.
@@ -103,6 +105,10 @@ func _rellenar(releases: Array) -> void:
 		fila.add_child(texto)
 		if version == Actualizador.version_actual():
 			fila.add_child(EstiloInterfaz.etiqueta("LA QUE TIENES", 14, EstiloInterfaz.VICTORIA))
+		elif InstaladorJuego.instalada(version):
+			fila.add_child(EstiloInterfaz.etiqueta("INSTALADA", 14, EstiloInterfaz.NEON))
+			fila.add_child(EstiloInterfaz.boton("CAMBIAR", _instalar.bind(release), 130))
+			fila.add_child(EstiloInterfaz.boton("BORRAR", _borrar.bind(version, fila), 110))
 		else:
 			fila.add_child(EstiloInterfaz.boton("INSTALAR", _instalar.bind(release), 160))
 		_lista.add_child(fila)
@@ -115,6 +121,14 @@ func _instalar(release: Dictionary) -> void:
 	InstaladorJuego.instalar_version(release)
 
 
+## Borra la versión de la biblioteca y deja su fila para instalarla de nuevo.
+func _borrar(version: String, fila: HBoxContainer) -> void:
+	InstaladorJuego.borrar(version)
+	for hijo in fila.get_children().slice(1):
+		hijo.queue_free()
+	fila.add_child(EstiloInterfaz.etiqueta("BORRADA", 14, EstiloInterfaz.TEXTO_SUAVE))
+
+
 ## Mientras descarga, el progreso; si falla, el instalador ya abre la página.
 func _al_cambiar_estado() -> void:
 	if visible and Actualizador.estado == Actualizador.Estado.DESCARGANDO:
@@ -122,7 +136,11 @@ func _al_cambiar_estado() -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if visible and evento.is_action_pressed("ui_cancel") and not _volver.disabled:
+	if not visible or not evento is InputEventKey:
+		return
+	# Con la ventana abierta, ninguna tecla llega al menú de debajo: Enter
+	# empezaría una partida y Esc saldría del juego. Así no hace falta tocar el
+	# menú, ni en esta versión ni en las anteriores.
+	get_viewport().set_input_as_handled()
+	if evento.is_action_pressed("ui_cancel") and not _volver.disabled:
 		cerrar()
-		# Que no llegue al menú de debajo, que con Esc saldría del juego.
-		get_viewport().set_input_as_handled()
