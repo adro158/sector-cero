@@ -116,6 +116,24 @@ quién sigue (`personaje_caido` y `personaje_elegido`), y entra con 2 s sin
 recibir daño; la partida se pierde al caer los tres. Con C se ve la vida de
 todos.
 
+**Las ultis.** Cada personaje carga la suya matando mientras juega (180
+enemigos; un élite cuenta por 10) y la lanza con R: el Mago, un rayo morado
+hacia el enemigo más cercano; el Espadachín, un giro con seis hojas de luz; el
+Segador, un rayo sobre su guadaña y diez mini rayos alrededor. Pegan con el
+mismo `danar_en_area` que las armas, a todo el grupo `objetivos`, y escalan con
+las mejoras de daño, pero no cuentan para la resistencia del malware: no son
+una herramienta. El rayo es una fila de círculos seguidos, sin solaparse, para
+que cada enemigo del camino reciba un golpe por pasada. Los efectos se dibujan
+con `_draw` (líneas, polígonos y arcos), sin sprites.
+
+**El menú de desarrollador (F1).** Para probar cualquier parte del juego sin
+jugar hasta ella: saltar a un minuto, darse mejoras, subir de nivel, ser
+invencible, llenar las ultis, sacar el jefe, un élite o los premios, revivir al
+equipo, limpiar la horda y acelerar el juego. Está en todas las versiones; por
+eso la partida en la que se abre no cuenta para los récords ni el ranking. Vive
+en la escena de la partida, como el panel técnico (F3), y usa la jugabilidad
+directamente.
+
 **La resistencia adaptativa.** Cada arma avisa del daño que hace. Cada 20 s, el
 malware mira cuál le ha hecho más y gana un 10 % de resistencia contra ella
 (máximo 50 %); contra las demás pierde un 5 %. Se ve en los números de daño y en
@@ -176,6 +194,11 @@ nuevo en lugar del viejo y reinicia (`instalador_juego.gd`). Ese código va con
 el contenido y no en el `Actualizador`, porque el `Actualizador` ya está en
 marcha antes de cargar ninguna actualización: así funciona también en
 ejecutables antiguos.
+Con el botón VERSIONES del menú, el mismo instalador pone cualquier release,
+también una anterior, para jugar versiones viejas. Las teclas nuevas (Q, E y R)
+están en `project.godot`, que no viaja con la actualización pequeña: si a un
+ejecutable antiguo le faltan, `teclas_antiguas.gd` las añade al empezar la
+partida.
 
 **Audio.** Todos los sonidos los genera un script que suma ondas simples, como
 los chips de sonido antiguos: 17 efectos y 3 músicas. `GestorAudio` escucha el

@@ -41,17 +41,20 @@ botones de cambiar de personaje y de pausa a la derecha.
 No hay que instalar nada. Cuando publicamos una versión nueva, el propio juego
 la encuentra en unos minutos, aunque esté abierto, y avisa con un mensaje: con
 **ACTUALIZAR** se descarga y se reinicia; con **AHORA NO** se sigue jugando y
-el botón queda en el menú para más tarde.
+el botón queda en el menú para más tarde. Con **VERSIONES**, en el menú, se
+puede instalar cualquier versión publicada, también una anterior.
 
 | Acción | Teclado | Mando |
 |---|---|---|
 | Moverse | WASD o flechas | Stick izquierdo |
 | Personaje siguiente / anterior | E o Tab / Q | Y / — |
 | Ver el equipo | C | — |
+| Lanzar la ulti | R | B |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ver la ficha de un enemigo | Click (click derecho la cierra) | — |
 | Panel técnico | F3 | — |
+| Menú de desarrollador | F1 | — |
 
 ## Cómo se juega
 
@@ -63,9 +66,10 @@ personaje.
 
 - **Tres personajes**, cada uno con su vida: el Espadachín (Firewall, golpea
   alrededor), el Mago (Ping, salta de un enemigo a otro) y el Segador (Escáner,
-  un pulso amplio y lento). Si cae el que llevas, eliges quién sigue.
+  un pulso amplio y lento). Si cae el que llevas, eliges quién sigue. Cada uno
+  carga su ulti matando y la lanza con R.
 - **Cinco tipos de malware**, entre ellos el troyano, que avisa en rojo y
-  embiste, y el ransomware, lento y durísimo.
+  embiste, y el ransomware, un tanque durísimo.
 - **Élites** cada minuto con habilidades al azar; si los matas, dejan un
   corazón que cura y un cofre con una ruleta de mejoras.
 - **Evoluciones**: repite tres veces una mejora y tu herramienta evoluciona.

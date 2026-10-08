@@ -13,7 +13,9 @@ descomprímelo y abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`; si no
 arranca, dale permiso con `chmod +x SectorCero.x86_64`). No hay que instalar
 nada. Si sale una versión nueva, el juego avisa solo (también en plena
 partida): **ACTUALIZAR** la descarga y reinicia el juego, y **AHORA NO** lo deja
-para más tarde, con el botón en el menú.
+para más tarde, con el botón en el menú. Con **VERSIONES** se puede
+instalar cualquier versión publicada, también una anterior; en Opciones se
+puede apagar el aviso.
 
 ## Controles
 
@@ -22,11 +24,13 @@ para más tarde, con el botón en el menú.
 | Moverse | WASD o flechas | Stick izquierdo |
 | Personaje siguiente / anterior | E o Tab / Q | Y / — |
 | Ver el equipo (vida de cada personaje) | C | — |
+| Lanzar la ulti (cuando está cargada) | R | B |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ficha de un enemigo | Click (click derecho la cierra) | — |
 | Empezar / reintentar | Enter | A |
 | Panel técnico | F3 | — |
+| Menú de desarrollador (la partida deja de contar) | F1 | — |
 
 ## Cómo se juega
 
@@ -47,6 +51,9 @@ para más tarde, con el botón en el menú.
    - **Mago · Ping (90 de vida):** un paquete que salta de un enemigo a otro, a
      distancia.
    - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.
+   Cada uno carga su **ulti** matando (la barra amarilla bajo su vida); llena,
+   se lanza con **R**: el Mago dispara un rayo morado, el Espadachín gira con
+   sus hojas y al Segador le cae una tormenta de rayos.
 6. **Evoluciones.** Elige tres veces la misma mejora de daño, cadencia o
    alcance y tu herramienta evoluciona.
 7. **Cuidado con:** el **troyano** (caballo verde), que parpadea en rojo y

@@ -75,11 +75,14 @@ signal equipo_cambiado(personajes: Array, activo: int)
 signal personaje_caido(personajes: Array, caido: int)
 signal personaje_elegido(indice: int)
 signal jugador_danado(cantidad: float)
+signal ulti_cambiada(cargas: Array, activo: int)
+signal ulti_lanzada(personaje: DatosPersonaje)
 signal arma_evolucionada(arma: DatosArma)
 signal jugador_subio_nivel(opciones: Array[DatosMejora])
 signal cofre_recogido
 signal ruleta_abierta(opciones: Array[DatosMejora], premio: DatosMejora)
 signal mejora_seleccionada(mejora: DatosMejora)
+signal mejora_regalada(mejora: DatosMejora)
 signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
@@ -115,17 +118,24 @@ Detalles que la interfaz tiene que respetar:
   interfaz contesta con `personaje_elegido(indice)`. Al caer los tres llega
   `partida_terminada`. Acciones de input: `cambiar_personaje` (E, Tab, Y del
   mando) pasa al siguiente y `personaje_anterior` (Q) vuelve al anterior.
+- **Ulti.** Cada personaje carga la suya matando; `ulti_cambiada` trae la carga
+  de los tres (de 0 a 1) y el activo, y `ulti_lanzada` avisa al lanzarla. La
+  acción de input es `ulti` (R y B del mando).
+- **Menú de desarrollador (F1).** Vive en la partida (`depuracion/`), no en la
+  interfaz. Las mejoras que regala llegan a la interfaz con `mejora_regalada`.
+  Si se ha abierto, `partida_terminada` trae `trucos: true` y la partida no
+  cuenta para los récords ni el ranking.
 - **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
   jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o
   personaje, o tras el fin de partida. La acción de input es `pausar` (Esc, P y
   Start del mando).
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
-  (int), `eliminados` (int) y `personaje` (String, el que llevaba al acabar;
-  para el ranking). Al cumplirse `duracion_partida`
-  (`recursos/oleadas/datos/config_principal.tres`, 10 minutos) deja de
-  aparecer horda, la que queda huye y llega el jefe final, que invoca anillos
-  de horda (`jefe_invoco`); se gana al derrotarlo.
+  (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
+  para el ranking) y `trucos` (bool, si se usó el menú de desarrollador). Al
+  cumplirse `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`,
+  10 minutos) deja de aparecer horda, la que queda huye y llega el jefe final,
+  que invoca anillos de horda (`jefe_invoco`); se gana al derrotarlo.
 
 Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 

@@ -35,9 +35,10 @@ const COMO_SE_JUEGA := [
 	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes y, desde el minuto 3, con cada minuto que pasa."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
 	["CAMBIA DE PERSONAJE", "Con E (o Tab) pasas al siguiente personaje y con Q vuelves al anterior. Cada uno lleva otra herramienta, contra la que el malware aún no se ha protegido, y su propia vida: los que esperan se curan poco a poco. Después hay que esperar 10 s para volver a cambiar. Con C ves cómo está cada uno."],
+	["ULTI", "Cada personaje carga su ulti matando mientras juega: la barra amarilla bajo su vida. Llena, parpadea con una R: púlsala y la lanza. El Mago dispara un rayo morado enorme, el Espadachín gira con sus hojas y al Segador le cae una tormenta de rayos."],
 	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
 	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
-	["CONTROLES", "Moverse: WASD, flechas o stick · Personaje siguiente: E, Tab o Y · Anterior: Q · Equipo: C · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3"],
+	["CONTROLES", "Moverse: WASD, flechas o stick · Personaje siguiente: E, Tab o Y · Anterior: Q · Ulti: R o B · Equipo: C · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3 · Menú de desarrollador: F1 (la partida deja de contar para el ranking)"],
 ]
 
 var _ventana: ColorRect
@@ -115,7 +116,8 @@ func _personajes() -> VBoxContainer:
 		# Las hojas tienen 6 columnas (pasos) y 8 filas (direcciones).
 		var icono := _primer_fotograma(personaje.hoja, 6, 8)
 		var titulo := "%s · %s · %d de vida" % [personaje.nombre.to_upper(), personaje.arma.nombre, personaje.vida_maxima]
-		lista.add_child(_fila(icono, titulo, personaje.color, personaje.descripcion))
+		var texto := "%s\nULTI (R), %s: %s" % [personaje.descripcion, personaje.nombre_ulti, personaje.descripcion_ulti]
+		lista.add_child(_fila(icono, titulo, personaje.color, texto))
 	return lista
 
 

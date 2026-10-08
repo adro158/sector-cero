@@ -167,8 +167,8 @@ de lanzar Godot.
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
   que se va a publicar: el `.pck` de actualización no lleva esas cosas. Salvo
   que el contenido sepa arreglárselas con el `project.godot` viejo: las teclas
-  Q y E de la v0.7 se corrigen al empezar la partida
-  (`cambio_personaje.gd`, `_configurar_teclas_antiguas`). Un
+  Q y E de la v0.7 y la R de la v0.8 se añaden al empezar la partida si
+  faltan (`escenas/jugabilidad/jugador/teclas_antiguas.gd`). Un
   script auxiliar nuevo que no necesite ser global se carga con `preload` y
   sin `class_name` (como `embestida_horda.gd`), y así no hace falta subirlo.
   Se comprueba en `.godot/global_script_class_cache.cfg`: el número de clases
