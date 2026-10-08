@@ -45,6 +45,10 @@ func _physics_process(delta: float) -> void:
 
 	if _tiempo >= config.duracion_partida:
 		_jefe_en_juego = true
+		# La horda que queda huye: el final es a solas contra el jefe y lo que
+		# él invoque.
+		for gestor in _gestores:
+			gestor.huir()
 		llega_el_jefe.emit(_posicion_fuera_de_pantalla())
 		return
 

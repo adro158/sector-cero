@@ -10,6 +10,8 @@ signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 const MAXIMO_ENEMIGOS := 600
 ## Segundos que un enemigo se queda en blanco al recibir un golpe.
 const DURACION_DESTELLO := 0.1
+## Lo que tarda la horda en huir y desvanecerse cuando llega el jefe.
+const DURACION_HUIDA := 1.2
 const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
 const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_horda.gd")
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
@@ -34,11 +36,15 @@ var _siguiente_id := 1
 var _vivos := 0
 ## Nivel del jugador: los que aparecen a partir de ahora tienen más vida.
 var _nivel := 1
+## Segundos de partida: también dan más vida a los que aparecen.
+var _segundos := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
 ## Solo en los tipos que embisten (el troyano). En los demás se queda en null.
 var _embestida: EmbestidaHorda
+## Segundos que le quedan a la huida (0 si no está huyendo).
+var _huida := 0.0
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -59,6 +65,7 @@ func _ready() -> void:
 	# detrás para que no las tape.
 	_horda.show_behind_parent = datos.mostrar_vida
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
+	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _segundos = segundos)
 
 
 func vivos() -> int:
@@ -74,12 +81,19 @@ func cabe_otro() -> bool:
 	return datos.maximo_vivos == 0 or _vivos < datos.maximo_vivos
 
 
+## Al llegar el jefe la horda huye: durante DURACION_HUIDA se aleja del jugador
+## sin hacerle daño y se desvanece, y después desaparece. No suelta
+## experiencia ni cuenta como eliminada: no la ha matado el jugador.
+func huir() -> void:
+	_huida = DURACION_HUIDA
+
+
 func aparecer(posicion: Vector2) -> void:
 	if _vivos >= MAXIMO_ENEMIGOS:
 		return
 
 	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = datos.vida_para_nivel(_nivel)
+	_vidas[_vivos] = datos.vida_para(_nivel, _segundos)
 	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
 	_ids[_vivos] = _siguiente_id
@@ -186,7 +200,10 @@ func _physics_process(delta: float) -> void:
 	_retirar_muertos()
 	_reconstruir_rejilla()
 	_mover(delta)
-	_danar_jugador()
+	if _huida > 0.0:
+		_avanzar_huida(delta)
+	else:
+		_danar_jugador()
 	_volcar_al_multimesh(delta)
 	if datos.mostrar_vida:
 		queue_redraw()
@@ -220,7 +237,7 @@ func _mover(delta: float) -> void:
 			_posiciones[i] = destino + (destino - _posiciones[i]) * 0.6
 
 		# Mientras avisa o embiste, no persigue: se mueve por su cuenta.
-		if _embestida != null:
+		if _embestida != null and _huida <= 0.0:
 			_embestida.actualizar(i, _posiciones[i], destino, delta)
 			if not _embestida.persigue(i):
 				_posiciones[i] += _embestida.avance(i, delta)
@@ -233,7 +250,18 @@ func _mover(delta: float) -> void:
 		# normalizara, la separación solo podría girar la dirección y nunca
 		# llegaría a vencer al impulso hacia el jugador, que es justo lo que
 		# hace falta cuando dos enemigos están encima el uno del otro.
+		# Huyendo, al revés y al doble de velocidad.
+		if _huida > 0.0:
+			hacia_jugador *= -2.0
 		_posiciones[i] += (hacia_jugador + empuje) * datos.velocidad * delta
+
+
+func _avanzar_huida(delta: float) -> void:
+	_huida -= delta
+	_horda.modulate.a = maxf(_huida / DURACION_HUIDA, 0.0)
+	if _huida <= 0.0:
+		_vivos = 0
+		_horda.modulate.a = 1.0
 
 
 func _separacion(indice: int) -> Vector2:

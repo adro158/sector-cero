@@ -11,6 +11,12 @@ extends Resource
 ## nivel 10 tiene un 36 % más. Sin esto, al subir de nivel los enemigos
 ## morían de un golpe. Con 0.08 el bot no ganaba ninguna partida.
 @export var vida_extra_por_nivel: float = 0.04
+## Vida de más por cada minuto de partida a partir de desde_minuto, que se
+## multiplica con la del nivel. El principio sigue igual y a mitad de partida
+## cuesta más matarlos: con 0.15 desde el minuto 3, al 6:00 tienen un 45 % más
+## y al 9:00 un 90 % más.
+@export var vida_extra_por_minuto: float = 0.15
+@export var desde_minuto: float = 3.0
 @export var velocidad: float = 90.0
 @export var tamano: float = 24.0
 ## Sprite de este tipo. Todos los enemigos de un tipo lo comparten, porque se
@@ -45,6 +51,8 @@ extends Resource
 @export var espera_embestida: float = 2.5
 
 
-## La vida con la que aparece si el jugador va por ese nivel.
-func vida_para_nivel(nivel: int) -> float:
-	return vida * (1.0 + vida_extra_por_nivel * (nivel - 1))
+## La vida con la que aparece si el jugador va por ese nivel y la partida
+## lleva esos segundos.
+func vida_para(nivel: int, segundos: float) -> float:
+	var minutos_de_mas := maxf(segundos / 60.0 - desde_minuto, 0.0)
+	return vida * (1.0 + vida_extra_por_nivel * (nivel - 1)) * (1.0 + vida_extra_por_minuto * minutos_de_mas)

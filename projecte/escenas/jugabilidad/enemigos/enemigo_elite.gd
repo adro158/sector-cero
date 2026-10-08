@@ -26,6 +26,7 @@ var _afijos: Array[DatosAfijoElite] = []
 var _cuenta_atras := 0.0
 ## Nivel del jugador: como la horda, aparece con más vida cuanto más alto.
 var _nivel := 1
+var _segundos := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 
@@ -40,6 +41,7 @@ func _ready() -> void:
 	_sprite.texture = datos.textura
 	_salud.murio.connect(_al_morir)
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
+	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _segundos = segundos)
 
 
 func activo() -> bool:
@@ -49,7 +51,7 @@ func activo() -> bool:
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
 	global_position = posicion
 	_afijos = afijos
-	_salud.reiniciar(datos.vida_para_nivel(_nivel))
+	_salud.reiniciar(datos.vida_para(_nivel, _segundos))
 	_activo = true
 	visible = true
 	queue_redraw()
