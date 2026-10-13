@@ -1668,3 +1668,228 @@ esta lista, en este orden, cada bloque en su commit:
 
 Después: vídeo demostrativo (Adam pidió que se le recuerde) y ensayo de la
 defensa.
+
+---
+
+## Sesión 10 — 08/10/2026
+
+**Duración:** 2 h · **Fitas:** 5 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 19 h de las 60 sugeridas (32 %)
+
+### Qué se ha hecho
+
+Al empezar no había nada nuevo en GitHub ni en la rama de Alan. Adam preguntó
+cómo hacer un ranking mundial con Supabase; se le explicó (tabla con reglas de
+acceso, clave `anon` pública, pestaña «Mundial», límites contra trampas
+evidentes, pausa del plan gratuito tras 7 días sin uso) y lo deja para más
+adelante.
+
+El encargo de la sesión 9 y el equilibrio que pidió tras jugar la v0.7:
+
+- **Gemas amarillas, naranjas y magentas** (la opción 2 de la vista previa de
+  Adam): el cian y el verde se camuflaban con las pistas del suelo.
+- **Ransomware más rápido:** de 70 a 105.
+- **La horda huye al llegar el jefe:** se aleja al doble de velocidad durante
+  1,2 s, sin hacer daño, se desvanece y desaparece. No da experiencia ni cuenta
+  como eliminada.
+- **Enemigos más duros a mitad de partida:** desde el minuto 3, un 15 % más de
+  vida por minuto, multiplicado por el +4 % por nivel. Horda y élites.
+- **Jefe más difícil:** cada 15 s se para, late en morado mientras crece un
+  anillo e invoca un círculo de 12 a 24 enemigos (más cuanto menos vida le
+  queda); pega 25 por contacto (antes 15) y 40 embistiendo, embiste cada 6 s
+  (antes 7) y tiene 4000 de vida (antes 2500).
+- **Segador más flojo:** el Escáner pasa de 27,5 a 22 de daño y su evolución de
+  35 a 28, con alcance 170 (antes 190).
+
+Y lo que pidió a mitad de la sesión:
+
+- **Ultis con R** (B en el mando, botón ULTI en el móvil). Cada personaje carga
+  la suya matando (180 enemigos; un élite cuenta por 10). Mago: rayo morado
+  hacia el enemigo más cercano. Espadachín: giro con seis hojas de luz. Segador:
+  un rayo sobre la guadaña y diez mini rayos alrededor. La carga se ve bajo la
+  vida del personaje, en la línea de abajo y en el panel del equipo (C).
+- **Recoger premios, más visual:** el corazón crece, se desvanece y suelta un
+  «+N» verde; el cofre salta con un destello dorado y empieza a abrirse antes
+  de la ruleta.
+- **Menú de desarrollador con F1**, en todas las versiones: ir a un minuto y
+  segundo, jefe ya, élite ahora, corazón y cofre aquí, limpiar la horda,
+  velocidad x1, x2 o x4, subir de nivel, invencible, llenar las ultis, revivir
+  al equipo, cambiar sin espera y darse cualquier mejora o evolución.
+- **Menú VERSIONES** para instalar cualquier versión publicada, también una
+  anterior, y en Opciones «Avisar de versiones nuevas» para apagar el aviso.
+- **Biblioteca de versiones** (tras probar la v0.8, Adam vio que al volver a
+  ella todo salía otra vez como INSTALAR): cada versión instalada, y la que
+  había antes de cambiar, se guarda en `user://versiones/`. En la ventana
+  salen como INSTALADA, con CAMBIAR (al momento, sin descargar) y BORRAR.
+- **Las versiones v0.2 a v0.7, republicadas con el botón VERSIONES**, para
+  poder cambiar también desde ellas (Adam lo autorizó: «solo añadiendo eso al
+  menú»). Se recompilaron desde su etiqueta con
+  `herramientas/recompilar_version.sh`, que añade la ventana y el instalador y
+  el botón en el menú, y nada más; se sustituyeron sus `.zip` en GitHub (los
+  `.pck` no) y se añadió una nota a cada release.
+
+### Decisiones técnicas y por qué
+
+Todas las preguntas se hicieron a Adam con opciones. Eligió las recomendadas
+salvo dónde va el menú de desarrollador: lo quiere en todas las versiones, con
+F1, aunque cualquiera pueda usarlo.
+
+**El «personaje naranja» era el Segador.** El Escáner pega a todos los que
+pilla en su radio: cada mejora de daño y de alcance le rinde más que a las
+otras herramientas, por eso se rebaja su base y no las mejoras.
+
+**La horda huye en vez de bajar la densidad del último minuto**: deja claro
+que empieza otra fase. Está en el gestor (`huir`): se invierte la dirección y
+se baja la transparencia de su `MultiMeshInstance2D`, porque huyen todos los de
+ese tipo a la vez. No se emite `enemigo_muerto`: no los ha matado el jugador.
+
+**La vida por minuto en `DatosTipoEnemigo`** (`vida_para(nivel, segundos)`),
+junto a la de nivel: la dificultad depende del reloj y es fácil de explicar.
+Los segundos llegan por `tiempo_partida`, una señal que ya existía.
+
+**La invocación, tercer estado del jefe** (`INVOCAR`), como el aviso y la
+embestida. El aviso da tiempo a apartarse. Los enemigos los crean los gestores
+con `aparecer`, como el élite replicante, y solo de los tipos sin límite de
+vivos. Señal nueva: `jefe_invoco`, para el sonido.
+
+**Las ultis** (`ultis.gd`, un nodo del jugador):
+- Una carga por personaje (decisión de Adam), por lo que se mata mientras ese
+  personaje está activo: premia jugar con cada uno.
+- Pegan con `danar_en_area` al grupo `objetivos`, como las armas, y escalan con
+  las mejoras de daño. No cuentan para la resistencia: no son una herramienta.
+- Cada ulti es una lista de golpes con su segundo y su zona; se aplican cuando
+  llega su momento. El rayo es una fila de círculos seguidos, sin solaparse,
+  para que cada enemigo del camino reciba un golpe por pasada.
+- Los efectos se dibujan con `_draw` (líneas, polígonos y arcos), sin sprites.
+- La R está en `project.godot`, que no viaja en el `.pck`: la corrección de
+  teclas de los ejecutables viejos pasa a `teclas_antiguas.gd` y añade la R si
+  falta, como ya hacía con Q y E. Así `EJECUTABLE_MINIMO` sigue en 0.2.
+
+**El menú de desarrollador** vive en la partida (`depuracion/panel_trucos.gd`),
+como el panel técnico (F3), y usa la jugabilidad directamente. Como lo puede
+usar cualquiera, la partida en la que se abre lleva `trucos: true` en
+`partida_terminada` y no cuenta para los récords ni el ranking. Las mejoras que
+regala avisan con `mejora_regalada` para que el HUD las apunte. Pausa el juego
+sin quitar una pausa que no sea suya.
+
+**El menú de versiones** reutiliza el instalador del juego completo
+(`instalador_juego.gd`), que ahora acepta cualquier release. Instala el
+ejecutable de esa versión con su contenido. No ofrece las releases de prueba.
+
+**La biblioteca, en el instalador.** Antes de cambiar, el ejecutable en marcha
+se copia a `user://versiones/<versión>/` (Windows deja leer un ejecutable en
+marcha); el que entra sale de ahí, descargado o no. Cada uno ocupa unos 100 MB:
+por eso el botón BORRAR. La ventana se queda con todas las teclas mientras está
+abierta: así no hace falta tocar el código del menú de las versiones antiguas,
+solo poner el botón.
+
+### Cambios de rumbo y su justificación
+
+**El equilibrio, en tres pasos** (simulador, 10 partidas, mismas semillas):
+
+| Versión | Victorias |
+|---|---|
+| v0.7 | 7 de 10 |
+| Jefe nuevo, horda que huye, vida por minuto (15 %), Segador rebajado | 3 de 10 |
+| Lo mismo con un 10 % por minuto | 2 de 10 |
+| Con las ultis (120 de carga, daño inicial) | 8 de 10 |
+| **Ultis con 180 de carga y un 25-30 % menos de daño** | **6 de 10** |
+
+Lo que más pesó fue el jefe: las derrotas de la segunda fila llegan casi todas
+después del minuto 10. Entre el 10 % y el 15 % por minuto no hubo diferencia
+clara, y se quedó el 15 %. Las ultis, con los valores de partida, derribaban al
+jefe enseguida.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Con la vida por minuto, la horda se acumula** entre el minuto 8 y el 10
+(unos 1300 enemigos en pantalla al llegar el jefe, antes unos 950). La huida al
+llegar el jefe lo resuelve para el final; queda anotado por si en las pruebas
+se hace pesado.
+
+**Una sustitución con `perl` metió un salto de línea real** dentro de una
+cadena de las reglas y rompía el script. Se vio al importar y se corrigió.
+
+### Uso de IA
+
+Claude programó los cambios, propuso las opciones, midió el equilibrio con el
+simulador y redactó la documentación. Las decisiones de diseño y de
+equilibrio las tomó Adam tras jugar la v0.7.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless tras cada cambio.
+- Prueba temporal del jefe y la horda: vida por minuto (un bit, 20 de vida
+  hasta el 3:00, 29 al 6:00 y 38 al 9:00), huida de 46 enemigos en 1,2 s sin
+  contar como eliminados, e invocaciones de 12 y de 21 enemigos (con 1000 de
+  4000 de vida).
+- Prueba temporal de las ultis y del menú de desarrollador:
+  - La ulti se llena con 120 eliminaciones (el valor de entonces) y cada
+    personaje tiene la suya.
+  - El giro deja 1 de 13 procesos colgados, el rayo 1 de 11 y la tormenta 0
+    de 17.
+  - F1 pausa y marca la partida con trucos. Saltar a 7:30 deja el siguiente
+    élite en el 8:30, y regalar una mejora la aplica y la apunta en el HUD.
+  - El corazón cura y suelta su «+N», y el cofre se anima antes de la ruleta.
+- Menú de versiones, de punta a punta con un servidor local que imita la API:
+  un juego 0.8 lista la 0.8 y la 0.5 (la 0.1, de prueba, no), instala la 0.5
+  y arranca con ella.
+- Biblioteca, con el mismo servidor y una v0.5 recompilada con el botón:
+  desde la 0.8 se instala la 0.5 (descargando); desde la 0.5, la 0.8 sale como
+  INSTALADA y se vuelve con CAMBIAR (sin zip en el servidor: sale de la
+  biblioteca); y en la 0.8 la 0.5 sale como INSTALADA.
+- Las seis versiones recompiladas arrancan sin errores de script.
+- Capturas con ventana: gemas de colores, horda huyendo, jefe invocando, las
+  tres ultis y el menú de desarrollador.
+- Simulador: la tabla de «Cambios de rumbo».
+
+### Estado al cerrar
+
+La sesión se cortó por falta de tiempo antes de cerrarla: esta entrada se
+escribió al empezar la sesión 11. La v0.8 quedó publicada (ultis, jefe nuevo,
+menú de desarrollador y de versiones) y subido a `main` todo menos la
+biblioteca de versiones, que llega con la v0.9. La subida de las releases v0.2
+a v0.7 recompiladas se cortó tras la v0.3; se terminó en la sesión 11.
+
+### Siguiente paso
+
+Encargado por Adam al final de la sesión para la siguiente. Cuando diga
+«hazlo», es esto:
+
+1. **Las ultis con sprites** (prompt de `ultis_sector_cero.zip`, en Descargas
+   del ordenador del instituto; Adam lo descomprime en la raíz del repositorio).
+   La lógica no cambia (golpes, daño, radios, tiempos y carga): solo el dibujo.
+   - PNG en `projecte/medios/sprites/ultis/`, a 1x, fotogramas en horizontal:
+     `ulti_rayo_tramo` (32x80, 4; se repite cada 32 px, centro en y = 40),
+     `ulti_rayo_punta` (48x80, 4), `ulti_rayo_origen` (96x96, 4; centrado en el
+     origen), `ulti_torbellino` (352x352, 6; cada fotograma gira 10 grados),
+     `ulti_tormenta_rayo` (96x448, 4; el impacto es el centro del borde de
+     abajo), `ulti_tormenta_impacto` (416x416, 6; onda hasta 200 px),
+     `ulti_tormenta_mini` (32x384, 3) y `ulti_tormenta_chispa` (128x128, 5).
+   - `referencia/dibujo_ultis.gd` (no se commitea) tiene las funciones
+     estáticas `rayo`, `torbellino` y `tormenta` con las que se grabaron los
+     GIF: pasarlas a `escenas/jugabilidad/jugador/dibujo_ultis.gd` (preload, sin
+     class_name) y llamarlas desde el `_draw` de `ultis.gd`. Borrar `_rayo()` y
+     lo que deje de usarse.
+   - El nodo `Ultis` de `jugador.tscn`, con `texture_filter = Nearest`.
+   - Rayo: sale 22 px más arriba (el pecho) y 40 px por delante, largo 860;
+     el grosor se abre en 0,08 s y se cierra en los últimos 0,2 s. Los golpes
+     pueden seguir saliendo de `_origen`.
+   - Torbellino: el 1,7 de vueltas por segundo, a una constante
+     (`GIRO_VUELTAS`).
+   - Tormenta: el rayo grande, 0,35 s; la onda, 0,48 s (6 fotogramas de 0,08);
+     cada mini rayo en su punto de `_mini` en el segundo 0,3 + i·0,08, con una
+     chispa de 0,25 s.
+   - Validar, capturas con ventana de las tres ultis (F1, llenar las ultis)
+     comparadas con los GIF, una partida del simulador para ver que no hay
+     errores, `creditos.md` y `documentacion_tecnica.md`. Commits: uno
+     `assets` con los PNG y otro `feat` con el dibujo.
+2. **El rayo del Mago se apunta con el ratón:** al pulsar R sale el rayo que se
+   va a lanzar siguiendo al ratón, y con el click se lanza (ahora va solo al
+   enemigo más cercano). Pensar qué pasa con el mando y en el móvil (sin
+   ratón): por ejemplo, que allí siga apuntando solo.
+3. Publicar la v0.9 cuando Adam lo pida: lleva la biblioteca de versiones,
+   que su v0.8 aún no tiene.
+4. Ranking mundial con Supabase (más adelante), vídeo demostrativo y ensayo de
+   la defensa.

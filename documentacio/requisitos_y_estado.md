@@ -4,9 +4,9 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 06/10/2026** contra la bitácora (hasta la sesión 9,
-17 h de 60) y contra el código del repositorio. Se actualiza al
-cerrar cada sesión, junto con la bitácora y las casillas de `planificacion.md`.
+**Estado verificado el 13/10/2026** contra la bitácora (hasta la sesión 11) y
+contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
+la bitácora y las casillas de `planificacion.md`.
 
 ## Qué es esto, en tres líneas
 
@@ -40,7 +40,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 (01/10), v0.3 a v0.5 (02/10) y v0.6 (06/10, con la versión web) publicadas por la GitHub Action. Adam probó el botón ACTUALIZAR en Windows y Linux (06/10): abría GitHub, ya corregido para la v0.7. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v0.8 publicadas por la GitHub Action, también en la web; las v0.2 a v0.7 se republicaron el 08/10 con el botón VERSIONES. Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v0.7 publicada el 06/10, también en la web. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v0.8 publicada el 08/10, también en la web. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -94,23 +94,31 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Lo que Adam encargó tras jugar la v0.7** (detalle en la bitácora, sesión
-   9, «Siguiente paso»): gemas amarillas, naranjas y magentas; menos horda al
-   llegar el jefe; ransomware más rápido; un jefe más duro que invoque oleadas
-   con un movimiento propio; y medirlo con el simulador (hoy 7 de 10, objetivo
-   4-6). Comprobar también que la v0.5 y la v0.6 se actualizan solas a la v0.7
-   en Windows y en Linux.
-3. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+2. **Publicar la v0.9** cuando Adam lo pida: lleva la biblioteca de versiones,
+   las ultis con sprites y el rayo del Mago apuntado con el ratón. Jugarla y
+   comprobar el equilibrio (el simulador da 6 de 10, dentro del objetivo).
+3. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+   le pasa el script SQL y los pasos).
+4. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
-4. **Vídeo demostrativo** (2-4 min).
-5. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+5. **Vídeo demostrativo** (2-4 min).
+6. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-6. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-7. Opcional: sustituir los sprites de IA por pixel art propio.
+7. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+8. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
 El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
+
+- **Sesiones 10 y 11** (decisiones de Adam): gemas amarillas, naranjas y
+  magentas; la horda huye al llegar el jefe; +15 % de vida por minuto desde el
+  3:00; jefe que invoca anillos de horda cada 15 s, con 4000 de vida; Segador
+  rebajado; una ulti por personaje con R, cargada matando (180) y dibujada con
+  sprites, y la del Mago apuntada con el ratón (con el mando, sola); menú de
+  desarrollador (F1) en todas las versiones, con la partida fuera de récords y
+  ranking; menú de versiones con biblioteca, y las v0.2 a v0.7 republicadas
+  con el botón VERSIONES.
 
 - **2D, no 3D**, para reducir el alcance (sesión 2).
 - **Renderizador Compatibility** (OpenGL), no Forward+ (sesión 2).
@@ -137,12 +145,14 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
 - **El balance se decide con el simulador de partidas**, con semillas fijas
   (sesión 4). Objetivo: **2-3 victorias de 5** desde la sesión 8 (antes 3-4),
   medido con el bot que elige mejoras como un jugador (evolución y, si no,
-  ataque) y con 10 partidas. Hoy da 6 de 10.
+  ataque, recoge los premios y lanza la ulti en cuanto puede) y con 10
+  partidas. Hoy da 6 de 10 (sesión 10).
 - **Presión de la sesión 8** (decisiones de Adam): el doble de enemigos, +4 %
   de vida por nivel del jugador, cada nivel un 50 % más caro, experiencia que
   caduca a los 30 s. Los élites curaban el 50 % y regalaban una mejora; desde
   la sesión 9 dejan un corazón y un cofre que hay que ir a buscar.
-- **Ranking local con nombre**, sin servidor (sesión 8).
+- **Ranking local con nombre**, sin servidor (sesión 8). Adam quiere uno mundial con
+  Supabase más adelante (sesión 10).
 - **Un tipo de horda puede limitar cuántos hay vivos a la vez**
   (`maximo_vivos`), en lugar de repartir las apariciones con pesos: el
   ransomware, 8 (sesión 7, decisión de Adam).
