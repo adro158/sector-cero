@@ -14,6 +14,7 @@ extends PanelContainer
 ## Distancia, en el mundo, a la que un click todavía cuenta como encima del
 ## enemigo: la horda es pequeña y se mueve.
 const RADIO_CLICK := 30.0
+const Dificultad := preload("res://globales/dificultad.gd")
 
 var _objetivo: Node
 var _id := -1
@@ -112,7 +113,9 @@ func _mostrar(ficha: Dictionary) -> void:
 	_barra.value = ficha.vida
 	_relleno.bg_color = ficha.color
 	_vida.text = "Vida %d / %d" % [ceili(ficha.vida), roundi(ficha.vida_maxima)]
-	_datos.text = "Daño al tocarte %d · Velocidad %d\n%s" % [roundi(ficha.dano), roundi(ficha.velocidad), _texto_resistencia()]
+	# El daño que hace de verdad, con el de la dificultad elegida.
+	var dano: float = ficha.dano * Dificultad.dato("dano")
+	_datos.text = "Daño al tocarte %d · Velocidad %d\n%s" % [roundi(dano), roundi(ficha.velocidad), _texto_resistencia()]
 
 
 ## La resistencia del malware a la herramienta que llevas ahora: es la misma

@@ -1,5 +1,7 @@
 extends Node2D
 
+const Dificultad := preload("res://globales/dificultad.gd")
+
 var _eliminados := 0
 var _terminada := false
 ## Si se ha usado el menú de desarrollador: la partida no cuenta para los
@@ -15,6 +17,9 @@ func _ready() -> void:
 	var aparicion: Node2D = get_tree().get_first_node_in_group("aparicion_jugador")
 	$Jugador.global_position = aparicion.global_position
 
+	# La vida de los enemigos la multiplica cada uno al aparecer; el daño que
+	# recibe el jugador, su salud.
+	_salud_jugador.multiplicador_dano = Dificultad.dato("dano")
 	_salud_jugador.vida_cambiada.connect(_al_cambiar_vida)
 	_salud_jugador.danado.connect(BusEventos.jugador_danado.emit)
 	# Cuando cae un personaje se elige otro; la partida se pierde al caer todos.
@@ -64,4 +69,5 @@ func _terminar_partida(victoria: bool) -> void:
 		"eliminados": _eliminados,
 		"personaje": $Jugador/CambioPersonaje.personaje_actual().nombre,
 		"trucos": _trucos,
+		"dificultad": Dificultad.actual(),
 	})

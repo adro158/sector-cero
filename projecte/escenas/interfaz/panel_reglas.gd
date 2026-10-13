@@ -31,6 +31,7 @@ const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
 
 const COMO_SE_JUEGA := [
 	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
+	["DIFICULTAD", "Se elige en el menú principal, antes de jugar. En FÁCIL el malware tiene menos vida, hace menos daño y huye cuando llega el jefe. En MEDIA, la partida como la hemos equilibrado. En DIFÍCIL tiene más vida y hace más daño. En MEDIA y DIFÍCIL la horda sigue cuando llega el jefe."],
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
 	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes y, desde el minuto 3, con cada minuto que pasa."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
@@ -142,7 +143,7 @@ func _enemigos() -> VBoxContainer:
 
 	# El jefe no tiene recurso de datos: es único y su texto va aquí.
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "Jefe final", EstiloInterfaz.DERROTA,
-		"Llega a los 10 minutos: la horda que queda huye y ya no sale más. Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Derrótalo para ganar. El Ping y el Escáner le pegan sin acercarse."))
+		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil, huye). Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Derrótalo para ganar. El Ping y el Escáner le pegan sin acercarse."))
 
 	lista.add_child(EstiloInterfaz.etiqueta("AFIJOS DE LOS ÉLITES", 20, Color(1.0, 0.85, 0.3)))
 	var oleadas: DatosConfigOleada = load(OLEADAS)

@@ -8,6 +8,7 @@ const PARTIDA := "res://escenas/juego.tscn"
 const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
 const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 const PanelVersiones := preload("res://escenas/interfaz/panel_versiones.gd")
+const SelectorDificultad := preload("res://escenas/menu_principal/selector_dificultad.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -51,6 +52,7 @@ func _ready() -> void:
 	var record := EstiloInterfaz.etiqueta(_texto_record(), 15, EstiloInterfaz.VICTORIA)
 	record.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(record)
+	caja.add_child(SelectorDificultad.new())
 
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER

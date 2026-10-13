@@ -4,6 +4,8 @@ extends Node
 ## fuera de la pantalla como la horda.
 signal llega_el_jefe(posicion: Vector2)
 
+const Dificultad := preload("res://globales/dificultad.gd")
+
 @export var config: DatosConfigOleada
 
 var _tiempo := 0.0
@@ -45,10 +47,11 @@ func _physics_process(delta: float) -> void:
 
 	if _tiempo >= config.duracion_partida:
 		_jefe_en_juego = true
-		# La horda que queda huye: el final es a solas contra el jefe y lo que
-		# él invoque.
-		for gestor in _gestores:
-			gestor.huir()
+		# En fácil, la horda que queda huye: el final es a solas contra el jefe
+		# y lo que él invoque. En media y difícil se queda.
+		if Dificultad.dato("horda_huye"):
+			for gestor in _gestores:
+				gestor.huir()
 		llega_el_jefe.emit(_posicion_fuera_de_pantalla())
 		return
 

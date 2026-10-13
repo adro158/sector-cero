@@ -13,6 +13,8 @@ signal murio
 @export var regeneracion: float = 0.0
 ## Para el menú de desarrollador: no recibe daño.
 var invencible := false
+## Para la dificultad: el del jugador lo pone la partida al empezar.
+var multiplicador_dano := 1.0
 
 var _vida: float
 var _tiempo_invulnerable := 0.0
@@ -87,6 +89,7 @@ func recibir_dano(cantidad: float) -> void:
 	if _vida <= 0.0 or _tiempo_invulnerable > 0.0 or invencible:
 		return
 
+	cantidad *= multiplicador_dano
 	_vida = maxf(_vida - cantidad, 0.0)
 	_tiempo_invulnerable = invulnerabilidad
 	vida_cambiada.emit(_vida, vida_maxima)

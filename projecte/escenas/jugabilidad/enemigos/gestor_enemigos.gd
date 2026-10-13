@@ -15,6 +15,7 @@ const DURACION_HUIDA := 1.2
 const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
 const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_horda.gd")
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
+const Dificultad := preload("res://globales/dificultad.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
@@ -38,6 +39,8 @@ var _vivos := 0
 var _nivel := 1
 ## Segundos de partida: también dan más vida a los que aparecen.
 var _segundos := 0.0
+## Multiplica la vida de los que aparecen, según la dificultad elegida.
+var _vida_dificultad := 1.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
@@ -52,6 +55,7 @@ var _huida := 0.0
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_salud_jugador = _jugador.get_node("Salud")
+	_vida_dificultad = Dificultad.dato("vida")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
 	_vidas_maximas.resize(MAXIMO_ENEMIGOS)
@@ -81,8 +85,8 @@ func cabe_otro() -> bool:
 	return datos.maximo_vivos == 0 or _vivos < datos.maximo_vivos
 
 
-## Al llegar el jefe la horda huye: durante DURACION_HUIDA se aleja del jugador
-## sin hacerle daño y se desvanece, y después desaparece. No suelta
+## En fácil, al llegar el jefe la horda huye: durante DURACION_HUIDA se aleja
+## del jugador sin hacerle daño y se desvanece, y después desaparece. No suelta
 ## experiencia ni cuenta como eliminada: no la ha matado el jugador.
 func huir() -> void:
 	_huida = DURACION_HUIDA
@@ -93,7 +97,7 @@ func aparecer(posicion: Vector2) -> void:
 		return
 
 	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = datos.vida_para(_nivel, _segundos)
+	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad
 	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
 	_ids[_vivos] = _siguiente_id

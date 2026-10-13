@@ -8,7 +8,8 @@ extends Control
 
 signal cerrado
 
-const COLUMNAS := ["#", "NOMBRE", "RESULTADO", "TIEMPO", "NIVEL", "ELIMINADOS", "PERSONAJE"]
+const Dificultad := preload("res://globales/dificultad.gd")
+const COLUMNAS := ["#", "NOMBRE", "RESULTADO", "TIEMPO", "NIVEL", "ELIMINADOS", "PERSONAJE", "DIFICULTAD"]
 
 var _tabla: GridContainer
 var _volver: Button
@@ -44,21 +45,21 @@ func _ready() -> void:
 func abrir() -> void:
 	for hijo in _tabla.get_children():
 		hijo.queue_free()
-	for columna in COLUMNAS:
-		_tabla.add_child(EstiloInterfaz.etiqueta(columna, 14, EstiloInterfaz.TEXTO_SUAVE))
-
 	var partidas := GestorGuardado.ranking()
 	if partidas.is_empty():
 		_tabla.columns = 1
 		_tabla.add_child(EstiloInterfaz.etiqueta("Todavía no hay partidas en el ranking.", 16))
 	else:
 		_tabla.columns = COLUMNAS.size()
+		for columna in COLUMNAS:
+			_tabla.add_child(EstiloInterfaz.etiqueta(columna, 14, EstiloInterfaz.TEXTO_SUAVE))
 	for i in partidas.size():
 		var partida: Dictionary = partidas[i]
 		var color := EstiloInterfaz.VICTORIA if partida.victoria else EstiloInterfaz.TEXTO
 		var tiempo := int(partida.tiempo)
 		for texto in [str(i + 1), partida.nombre, "Victoria" if partida.victoria else "Derrota",
-				"%02d:%02d" % [tiempo / 60, tiempo % 60], str(partida.nivel), str(partida.eliminados), partida.personaje]:
+				"%02d:%02d" % [tiempo / 60, tiempo % 60], str(partida.nivel), str(partida.eliminados), partida.personaje,
+				Dificultad.DIFICULTADES[partida.get("dificultad", "media")].nombre]:
 			_tabla.add_child(EstiloInterfaz.etiqueta(texto, 16, color))
 
 	visible = true

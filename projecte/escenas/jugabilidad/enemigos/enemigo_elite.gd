@@ -16,6 +16,7 @@ const RADIO_EXPLOSION := 130.0
 ## Segundos de aviso entre la muerte de un explosivo y su explosión.
 const AVISO_EXPLOSION := 0.8
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
+const Dificultad := preload("res://globales/dificultad.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -51,7 +52,7 @@ func activo() -> bool:
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
 	global_position = posicion
 	_afijos = afijos
-	_salud.reiniciar(datos.vida_para(_nivel, _segundos))
+	_salud.reiniciar(datos.vida_para(_nivel, _segundos) * Dificultad.dato("vida"))
 	_activo = true
 	visible = true
 	queue_redraw()

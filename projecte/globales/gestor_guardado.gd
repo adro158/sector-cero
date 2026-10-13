@@ -20,6 +20,8 @@ const OPCIONES_POR_DEFECTO := {
 	# Si sale el aviso de versión nueva (aviso_actualizacion.gd). Con él apagado
 	# se puede seguir jugando una versión anterior sin que insista.
 	"avisar_versiones": true,
+	# Se elige en el menú principal (globales/dificultad.gd).
+	"dificultad": "media",
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves
@@ -62,8 +64,9 @@ func record(clave: String) -> float:
 
 
 ## Las mejores partidas de este ordenador, ya ordenadas. Cada una es un
-## diccionario con nombre, victoria, tiempo, nivel, eliminados, personaje y
-## fecha. No hay servidor: el ranking es local.
+## diccionario con nombre, victoria, tiempo, nivel, eliminados, personaje,
+## dificultad y fecha (las guardadas antes de que hubiera dificultades no la
+## traen: eran de la media). No hay servidor: el ranking es local.
 func ranking() -> Array:
 	return _fichero.get_value("ranking", "partidas", [])
 
@@ -85,6 +88,7 @@ func anadir_al_ranking(estadisticas: Dictionary, nombre: String) -> int:
 		"nivel": estadisticas.nivel,
 		"eliminados": estadisticas.eliminados,
 		"personaje": estadisticas.personaje,
+		"dificultad": estadisticas.dificultad,
 		"fecha": Time.get_date_string_from_system(),
 	}
 	var lista := ranking()

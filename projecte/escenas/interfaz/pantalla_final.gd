@@ -5,6 +5,7 @@ extends Control
 ## volver al menú.
 
 const MENU_PRINCIPAL := "res://escenas/menu_principal/menu_principal.tscn"
+const Dificultad := preload("res://globales/dificultad.gd")
 
 const NOMBRES_RECORD := {
 	"tiempo": "tiempo",
@@ -47,6 +48,7 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		["Tiempo", "%02d:%02d" % [int(estadisticas.tiempo) / 60, int(estadisticas.tiempo) % 60]],
 		["Nivel", str(estadisticas.nivel)],
 		["Malware eliminado", str(estadisticas.eliminados)],
+		["Dificultad", Dificultad.DIFICULTADES[estadisticas.dificultad].nombre],
 	]:
 		datos.add_child(EstiloInterfaz.etiqueta(fila[0], 18, EstiloInterfaz.TEXTO_SUAVE))
 		datos.add_child(EstiloInterfaz.etiqueta(fila[1], 18, EstiloInterfaz.TEXTO))

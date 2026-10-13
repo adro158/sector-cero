@@ -20,6 +20,7 @@ enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR }
 
 const FOTOGRAMAS_ANDAR := 12
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
+const Dificultad := preload("res://globales/dificultad.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -68,6 +69,8 @@ func _ready() -> void:
 
 func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
+	# La vida de la escena es la de la dificultad media.
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida"))
 	visible = true
 	_activo = true
 	_hasta_invocar = intervalo_invocacion
