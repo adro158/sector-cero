@@ -40,7 +40,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v0.9 publicadas por la GitHub Action, también en la web; las v0.2 a v0.7 se republicaron el 08/10 con el botón VERSIONES. Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.0 publicadas por la GitHub Action, también en la web; las v0.2 a v0.7 se republicaron el 08/10 con el botón VERSIONES. Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v0.9 publicada el 13/10, también en la web. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.0 publicada el 13/10, también en la web. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -94,17 +94,22 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Jugar la v0.9** (publicada el 13/10): la biblioteca de versiones, las
-   ultis con sprites, el rayo del Mago apuntado con el ratón y el salto de
-   minuto del F1 con el nivel y las mejoras de ese minuto. El simulador da 6 de
-   10, dentro del objetivo.
-3. **Jugar las tres dificultades** (aún sin publicar) y decidir si la media se
-   queda así: con la horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la
-   horda huyendo, como en la v0.9).
+2. **Jugar la v1.0** (publicada el 13/10): la biblioteca de versiones, las
+   ultis con sprites, el rayo del Mago apuntado con el ratón, el salto de
+   minuto del F1 con el nivel y las mejoras de ese minuto y las tres
+   dificultades.
+3. **Decidir si la media se queda así**: con la horda que ya no huye, el bot
+   gana 1 de 10 (4 de 10 con la horda huyendo, como en la v0.9). Si no, se
+   compensa (por ejemplo, menos vida para el jefe en media).
 4. **Descargar versiones sin cambiar a ellas**, en todas las versiones: el
    encargo está explicado en `CLAUDE.md`. Adam dirá cuándo hay tiempo.
-5. **Explosión del élite Rootkit más vistosa**: Adam pasará el asset; no da
-   tiempo en la sesión 11.
+5. **Explosión del élite Rootkit más vistosa**: Adam pasó el asset al final
+   de la sesión 11 (`explosion_rootkit.zip`, en las Descargas del ordenador
+   del instituto), sin tiempo para aplicarlo. Trae los sprites
+   (`medios/sprites/explosion/`), código de referencia y
+   `PROMPT_CLAUDE_CODE.md` con cómo integrarlo: se descomprime en la raíz del
+   repo y se sigue el prompt. Si la sesión es en otro ordenador, pedirle el
+   zip.
 6. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
 7. **Probar en un ordenador limpio** (sin Godot) una release y su botón

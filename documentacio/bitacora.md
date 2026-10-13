@@ -1893,3 +1893,201 @@ Encargado por Adam al final de la sesión para la siguiente. Cuando diga
    que su v0.8 aún no tiene.
 4. Ranking mundial con Supabase (más adelante), vídeo demostrativo y ensayo de
    la defensa.
+
+---
+
+## Sesión 11 — 13/10/2026
+
+**Duración:** por confirmar · **Fitas:** 5 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 19 h más las de esta sesión (Adam cerró sin tiempo: preguntárselas)
+
+### Qué se ha hecho
+
+La sesión 10 se cortó por falta de tiempo a mitad de subir las versiones
+antiguas recompiladas. Al empezar:
+
+- **La subida de las v0.2 a v0.7, terminada.** Se había cortado tras la v0.3, y
+  la v0.4 había quedado sin descarga del juego completo: al sustituir un
+  fichero en GitHub, el anterior se borra antes de subir el nuevo. Se subieron
+  la v0.4 a la v0.7, una cada vez, y se añadió la nota a cada release.
+- **El script que las recompila**, en el repositorio:
+  `projecte/herramientas/recompilar_version.sh`.
+
+Después, el encargo de la sesión 10:
+
+- **Las ultis, dibujadas con sprites** (`medios/sprites/ultis/`, dibujos de
+  Adam con Claude en el chat): el rayo de datos del Mago, el torbellino del
+  Espadachín y la tormenta del Segador. La lógica no cambia.
+- **El rayo del Mago se apunta con el ratón:** con el teclado, R pone a apuntar,
+  una línea morada a trazos sigue al ratón y el click lo lanza; el click
+  derecho u otra R cancelan sin gastar la carga.
+
+Después, a petición de Adam:
+
+- **El salto de minuto del F1 da el nivel y las mejoras de ese minuto.** Antes
+  solo cambiaba el reloj: se llegaba al jefe con nivel 1 y sin mejoras, y así
+  no se podía probar. Ahora, al saltar a las 10:00, se llega con nivel 12 y 12
+  mejoras (con evoluciones), como en una partida de verdad. Se puede
+  desmarcar con una casilla nueva del menú.
+- **Publicada la v0.9**, con todo lo de las sesiones 10 y 11.
+- **Tres dificultades** (FÁCIL, MEDIA y DIFÍCIL), que se eligen en el menú
+  principal. La media es el juego de la v0.9; en media y difícil la horda ya
+  no huye cuando llega el jefe, y en fácil sí (decisión de Adam). El ranking y
+  la pantalla final enseñan la dificultad de cada partida.
+- **Las tarjetas de mejora, más grandes.** Adam vio que el texto del Ping de
+  inundación se salía de la tarjeta: las descripciones de las evoluciones son
+  las más largas del juego y no cabían en 230x260 (con la fuente de Linux,
+  más ancha, tampoco la del Ping). Ahora miden 260x320 y el texto queda
+  centrado.
+- **La explosión del élite Rootkit, para otra sesión.** Adam pasó al final el
+  asset (`explosion_rootkit.zip`: sprites, código de referencia y un
+  `PROMPT_CLAUDE_CODE.md` con cómo integrarlo), pero no quedaba tiempo para
+  aplicarlo. Está en las Descargas del ordenador del instituto.
+- **Publicada la v1.0** con todo lo de la sesión, también en la web. Las
+  versiones se comparan número a número (también en los ejecutables de la
+  v0.2), así que la 1.0 llega como más nueva que la 0.9.
+- **Encargo apuntado para más adelante:** en VERSIONES, descargar una versión
+  sin cambiar a ella, y desde todas las versiones. Adam lo pidió tras probar la
+  v0.9; está explicado en `CLAUDE.md` y él dirá cuándo hay tiempo.
+
+### Decisiones técnicas y por qué
+
+**El dibujo, en `dibujo_ultis.gd`** (el código con el que Adam grabó los GIF de
+muestra): funciones estáticas a las que `ultis.gd` se pasa como lienzo. La
+lógica (golpes, carga) y el dibujo quedan en ficheros separados. También va ahí
+la mira del apuntado, para que todo lo que se dibuja esté en el mismo sitio. El
+nodo `Ultis` usa el filtro nearest para que el pixel art no salga borroso.
+
+**El rayo sale del pecho del Mago** (22 px más arriba) y 40 px por delante,
+para que el círculo del origen no le tape. Los golpes siguen saliendo de su
+centro: la diferencia es pequeña al lado del radio de 34.
+
+**Apuntar solo con el teclado.** La R del teclado pone a apuntar; la B del mando
+y el botón ULTI del móvil, que no tienen ratón, lanzan el rayo solo hacia el
+enemigo más cercano, como antes, y el bot del simulador también. El click se
+lee en `_input` y no en `_unhandled_input`: la interfaz recibe los clicks antes
+que el jugador y, si no, el click izquierdo abriría también la ficha del
+enemigo pinchado.
+
+**El nivel y las mejoras de cada minuto salen del simulador.** Para que el
+salto sea preciso hacía falta saber qué tiene un jugador en cada minuto. El
+simulador ahora anota también las mejoras de cada minuto; se jugaron 10
+partidas y la media quedó en una tabla
+(`depuracion/progreso_por_minuto.gd`): nivel 2 en el minuto 1, 9 en el 5 y
+12 en el 10. Nivel y mejoras van por separado porque cada cofre de élite da
+una mejora sin subir de nivel. Las mejoras se eligen como las elige el bot (la
+evolución si sale y, si no, una de ataque), entre las mismas opciones que
+saldrían en el panel; así el jugador llega igual que las partidas que dan la
+tabla. Entre dos minutos se toma lo que queda en medio (a las 7:30, la mitad
+entre el 7 y el 8) y, volviendo atrás en el tiempo, no se quita nada. Si
+cambia el balance, la tabla se vuelve a medir.
+
+**Las dificultades, en una tabla con tres datos.** `globales/dificultad.gd`
+dice, para cada una, cuánto se multiplica la vida de los enemigos (0,7, 1 y
+1,2), cuánto el daño que recibe el jugador (0,6, 1 y 1,3) y si la horda huye
+al llegar el jefe (solo en fácil). Se eligió así porque son los dos números que
+más cambian la partida y se aplican en pocos sitios: la vida, donde aparece
+cada enemigo (horda, élite y jefe); el daño, en la salud del jugador, que es
+por donde pasan todos los golpes. Sin `class_name` y sin autoload nuevo: con
+ellos haría falta un ejecutable nuevo para recibir la actualización. La
+elegida se guarda con las opciones, y el simulador la cambia solo en memoria
+(`dificultad=facil`) para no tocar las del jugador.
+
+**La media se ha endurecido, y es por la horda que se queda.** Medido con 10
+partidas de cada una: fácil, 10 victorias; media, 1; difícil, ninguna (en la
+mitad ni llega al jefe). Con la horda huyendo, como en la v0.9, el mismo bot
+gana 4 de 10 en media. Se le dijo a Adam para que decida si la media se queda
+así o se compensa. Difícil se dejó en 1,2 y 1,3: con 1,3 y 1,4 casi nunca
+llegaba al jefe, y con 1,15 y 1,25 llegaba siempre.
+
+**El bot va ahora a por el jefe aunque tenga enemigos cerca.** Antes solo iba
+cuando no tenía a nadie alrededor; con la horda presente en el final no llegaba
+nunca y todas las partidas acababan por tiempo. Ahora se acerca hasta 120 px
+(dentro del alcance del Firewall) apartándose de lo que tiene encima, igual que
+con los premios. Con la horda huyendo da 4 de 10 en media en vez de 6: es algo
+más torpe contra el jefe, pero sigue dentro del objetivo. Al acabarse el
+tiempo, el simulador dice cuánta vida le quedaba al jefe.
+
+**Las 10 partidas, en tres procesos a la vez.** Cada partida simulada tarda
+unos 4 minutos. Como cada una empieza con su propia semilla (1000 más su
+número), se pueden repartir entre varias copias del proyecto empezando por
+otro número y dan las mismas partidas que en serie. El simulador acepta ahora
+`desde=6` para eso.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Una release se quedó sin descarga** (la v0.4): `gh release upload --clobber`
+borra el fichero viejo antes de subir el nuevo, y la subida se cortó entre las
+dos cosas. Se resubió sola; las demás, de una en una, para no pasar del límite
+de tiempo de los comandos.
+
+**En las pruebas, el ratón simulado no movía el cursor real**: el juego lee la
+posición real del ratón, así que la dirección del rayo de la prueba no era la
+del punto simulado. Lo importante se comprobó en las capturas: la mira y el
+rayo lanzado siguen la misma dirección.
+
+**El ranking vacío ponía los títulos de las columnas uno debajo de otro.** Se
+vio en la captura del ranking al añadirle la columna de la dificultad: con
+cero partidas, la tabla pasa a una columna para el mensaje, pero los títulos ya
+estaban puestos. Ahora solo se ponen si hay partidas.
+
+**El simulador fallaba en su primer fotograma** al empezar la primera partida
+diferida (para poner la dificultad después de que GestorGuardado lea su
+fichero): `_paso` ya se ejecutaba sin partida. Ahora espera a que la haya.
+
+### Uso de IA
+
+Claude terminó la subida, integró los sprites a partir del código de
+referencia de Adam y programó el apuntado con el ratón. Los sprites y el
+código de dibujo los hizo Adam con Claude en el chat; la idea del apuntado es
+de Adam. También es suya la del salto con nivel y mejoras: Claude midió la
+tabla con el simulador y lo programó. Las tres dificultades y que la horda se
+quede en media y difícil son idea de Adam; Claude eligió qué cambia cada una,
+midió los valores con el simulador y lo programó.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless.
+- Capturas con ventana de las tres ultis a mitad del efecto y de la mira del
+  Mago, comparadas con los GIF de Adam.
+- Prueba del apuntado: R pone a apuntar sin lanzar, el click izquierdo lanza el
+  rayo, el click derecho cancela sin gastar la carga, y el resto de personajes
+  lanzan la ulti directamente con R.
+- Una partida del simulador: 7 ultis lanzadas, sin errores y con el mismo
+  resultado que con el dibujo anterior (el equilibrio no cambia).
+- Las releases v0.2 a v0.7 tienen su descarga nueva y su nota.
+- 10 partidas del simulador para la tabla del salto: 6 victorias de 10, como
+  antes (el equilibrio no cambia).
+- Prueba del salto: a las 5:00, nivel 9 y 8 mejoras; a las 10:00 (JEFE YA),
+  nivel 12 y 12 mejoras con dos evoluciones; volviendo a las 2:00 no se quita
+  nada; no se abre ningún panel y el HUD muestra el nivel y las mejoras.
+  Captura con ventana del F1 tras el salto.
+- Dificultades: prueba de las tres (multiplicadores, vida de un bit nuevo y
+  del jefe, golpe al jugador, huida de la horda y la clave en
+  `partida_terminada`), sin tocar las opciones guardadas del jugador.
+  Capturas del menú con el selector y del ranking con partidas de cada
+  dificultad y una antigua sin ella (sale como MEDIA).
+- 10 partidas del simulador por dificultad y dos variantes de difícil, más dos
+  comprobaciones: el bot nuevo con la horda huyendo y el bot viejo sin límite
+  de tiempo contra el jefe (3 de 10, y en 7 le queda vida tras 10 minutos).
+- Captura de las tarjetas con las tres evoluciones antes y después.
+
+### Estado al cerrar
+
+Todo subido a GitHub y publicada la v1.0 (también en la web), con las tres
+dificultades. Adam cerró sin tiempo: las horas de la sesión quedan por
+confirmar. Pendiente de Adam: decidir si la media se queda como está.
+
+### Siguiente paso
+
+1. Preguntar a Adam las horas de la sesión 11 y apuntarlas arriba. Jugar la
+   v1.0 y decidir si la media se queda así o se compensa.
+2. Descargar versiones sin cambiar a ellas, desde todas las versiones
+   (`CLAUDE.md`), cuando Adam diga.
+3. La explosión del élite Rootkit con el asset de Adam: descomprimir
+   `explosion_rootkit.zip` en la raíz del repo y seguir su
+   `PROMPT_CLAUDE_CODE.md` (si la sesión es en casa, pedirle el zip).
+4. Ranking mundial con Supabase (más adelante): Adam crea el proyecto y Claude
+   le pasa el script SQL y los pasos.
+5. Vídeo demostrativo y ensayo de la defensa.
