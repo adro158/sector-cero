@@ -18,6 +18,12 @@ extends SceneTree
 ##
 ##   Godot --headless --fixed-fps 60 --path . --script res://herramientas/simular_partidas.gd -- partidas=5
 ##
+## Con dificultad=facil (o media, o dificil) se juega en esa dificultad; si no,
+## en la media. No se guarda: las opciones del jugador no cambian. Con desde=6
+## se empieza por la partida 6, con su semilla: así se pueden repartir las
+## partidas entre varias copias del proyecto a la vez (partidas=5 en una y
+## partidas=10 desde=6 en otra dan las mismas 10 partidas que en serie).
+##
 ## Lee campos internos de los nodos (los que empiezan por _) porque necesita
 ## ver lo mismo que vería un jugador; en el código del juego eso no se hace.
 
@@ -28,6 +34,9 @@ const RADIO_PELIGRO := 120.0
 ## Lo mismo con el jefe y los élites: lo justo para no tocarlos y seguir dentro
 ## del alcance del Firewall, que llega a 90 más el radio del enemigo.
 const RADIO_PELIGRO_GRANDES := 100.0
+## Con el jefe en juego, el bot se acerca hasta esta distancia, dentro del
+## alcance del Firewall (90 más los 40 del radio del jefe).
+const DISTANCIA_AL_JEFE := 120.0
 ## Resistencia de la herramienta activa a partir de la cual el bot cambia.
 const RESISTENCIA_PARA_CAMBIAR := 0.3
 ## Si el jefe sigue vivo tanto tiempo después de aparecer, la partida se da por
@@ -40,6 +49,7 @@ const MEJORAS_DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CA
 
 var _partidas := 3
 var _partida := 0
+var _dificultad := "media"
 var _victorias := 0
 var _duraciones: Array[float] = []
 var _cambios := 0
@@ -62,6 +72,10 @@ func _initialize() -> void:
 	for argumento in OS.get_cmdline_user_args():
 		if argumento.begins_with("partidas="):
 			_partidas = int(argumento.split("=")[1])
+		elif argumento.begins_with("dificultad="):
+			_dificultad = argumento.split("=")[1]
+		elif argumento.begins_with("desde="):
+			_partida = int(argumento.split("=")[1]) - 1
 
 	_bus = root.get_node("BusEventos")
 	# Las partidas simuladas no son del jugador: no deben entrar en sus récords.
@@ -78,11 +92,15 @@ func _initialize() -> void:
 	_bus.enemigo_muerto.connect(func(_posicion, tipo): _eliminados_por_tipo[tipo] = _eliminados_por_tipo.get(tipo, 0) + 1)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
-	_empezar_partida()
+	# Diferido: GestorGuardado lee su fichero en su _ready y borraría la
+	# dificultad puesta antes.
+	_empezar_partida.call_deferred()
 
 
 func _empezar_partida() -> void:
 	_partida += 1
+	# En memoria y sin guardar en el fichero, que es el del jugador.
+	root.get_node("GestorGuardado")._fichero.set_value("opciones", "dificultad", _dificultad)
 	# Semilla fija por partida: la misma partida se repite igual tras un cambio,
 	# así se puede comparar el antes y el después.
 	seed(1000 + _partida)
@@ -122,6 +140,9 @@ func _al_caer_personaje(personajes: Array, _caido: int) -> void:
 
 
 func _paso() -> void:
+	# La primera partida empieza diferida: puede pasar un fotograma sin ella.
+	if _raiz == null:
+		return
 	# Los gestores se buscan aquí y no al crear la partida: en ese momento
 	# todavía no están registrados en su grupo.
 	if _gestores.is_empty():
@@ -134,7 +155,8 @@ func _paso() -> void:
 		_informe("t=%3ds" % int(_siguiente_informe))
 		_siguiente_informe += 60.0
 	if director.tiempo() > director.config.duracion_partida + TIEMPO_MAXIMO_JEFE:
-		print("TIEMPO AGOTADO contra el jefe")
+		var salud_jefe: Node = _raiz.get_node("Jefe/Salud")
+		print("TIEMPO AGOTADO contra el jefe (le quedan %.0f de %.0f de vida)" % [salud_jefe.vida(), salud_jefe.vida_maxima])
 		_raiz._terminar_partida(false)
 		return
 
@@ -181,8 +203,7 @@ func _mover_bot() -> void:
 			huida += diferencia / (distancia * distancia) * 6.0
 
 	# El mapa no tiene bordes: sin peligro cerca, da vueltas alrededor del
-	# origen para no alejarse sin fin. Con el jefe en juego, va a por él: el
-	# jefe es más lento que el jugador y, si no, no se encontrarían nunca.
+	# origen para no alejarse sin fin.
 	var direccion := huida.normalized()
 	var jefe: Node2D = _raiz.get_node("Jefe")
 	# El corazón y el cofre de los élites hay que ir a buscarlos: el bot va a
@@ -190,9 +211,12 @@ func _mover_bot() -> void:
 	var premio := _premio_mas_cercano(posicion)
 	if premio != Vector2.INF:
 		direccion = ((premio - posicion).normalized() + huida.normalized() * 0.7).normalized()
-	elif huida == Vector2.ZERO and jefe._activo:
-		direccion = (jefe.global_position - posicion).normalized()
-	elif huida == Vector2.ZERO:
+	# Con el jefe en juego, va a por él de la misma forma. Hasta la sesión 11
+	# solo iba cuando no tenía a nadie cerca, pero con la horda que se queda
+	# (media y difícil) no llegaba nunca y se le acababa el tiempo.
+	elif jefe._activo and posicion.distance_to(jefe.global_position) > DISTANCIA_AL_JEFE:
+		direccion = ((jefe.global_position - posicion).normalized() + huida.normalized() * 0.7).normalized()
+	elif huida == Vector2.ZERO and not jefe._activo:
 		direccion = Vector2(-posicion.y, posicion.x).normalized() * 0.6
 		if posicion.length() < 50.0:
 			direccion = Vector2.RIGHT
@@ -265,7 +289,7 @@ func _siguiente() -> void:
 	var suma := 0.0
 	for duracion in _duraciones:
 		suma += duracion
-	print("\nRESUMEN victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d cofres=%d caidas=%d ultis=%d" % [
-		_victorias, _partidas, suma / _partidas, _cambios, _evoluciones, _cofres, _caidas, _ultis])
+	print("\nRESUMEN dificultad=%s victorias=%d/%d duracion_media=%.0fs cambios_personaje=%d evoluciones=%d cofres=%d caidas=%d ultis=%d" % [
+		_dificultad, _victorias, _duraciones.size(), suma / _duraciones.size(), _cambios, _evoluciones, _cofres, _caidas, _ultis])
 	print("ELIMINADOS POR TIPO %s" % _eliminados_por_tipo)
 	quit()
