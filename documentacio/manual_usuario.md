@@ -34,6 +34,16 @@ puede apagar el aviso.
 
 ## Cómo se juega
 
+Antes de jugar, elige la **dificultad** en el menú principal (se queda
+guardada para la próxima vez):
+
+- **Fácil:** el malware tiene un 30 % menos de vida, hace un 40 % menos de daño
+  y huye cuando llega el jefe.
+- **Media:** la partida como la hemos equilibrado. Cuando llega el jefe, la
+  horda que queda sigue ahí.
+- **Difícil:** el malware tiene un 20 % más de vida y hace un 30 % más de daño.
+  La horda también sigue cuando llega el jefe.
+
 1. **Solo te mueves.** Tu herramienta ataca sola; tú decides dónde colocarte.
 2. **Recoge los fragmentos de datos** que suelta el malware (amarillos,
    naranjas o magentas según lo que valen). A los 30 segundos parpadean y se
@@ -64,7 +74,8 @@ puede apagar el aviso.
    (blindado, replicante, aura lenta o explosivo). Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
-9. **El jefe final** llega a los 10 minutos y la horda huye. Cuando se pone
+9. **El jefe final** llega a los 10 minutos y ya no sale más horda (en fácil,
+   la que queda huye). Cuando se pone
    rojo, va a embestir: apártate. Cuando late en morado, va a sacar un anillo
    de malware a su alrededor.
 
@@ -73,9 +84,10 @@ herramienta.
 
 ## Pantallas
 
-- **Menú:** jugar, reglas (qué hace cada personaje, mejora y enemigo),
-  ranking, opciones y salir.
-- **Ranking:** las 10 mejores partidas del ordenador. Si tu partida entra, al
-  acabar te pide un nombre.
+- **Menú:** dificultad, jugar, reglas (qué hace cada personaje, mejora y
+  enemigo), ranking, opciones y salir.
+- **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de
+  cada una. Si tu partida entra, al acabar te pide un nombre.
 - **Opciones:** volumen, pantalla completa y filtro CRT. Se guardan solas.
-- **Resultados:** tiempo, nivel y malware eliminado, y si has batido un récord.
+- **Resultados:** tiempo, nivel, malware eliminado y dificultad, y si has
+  batido un récord.

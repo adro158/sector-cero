@@ -98,23 +98,31 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    ultis con sprites, el rayo del Mago apuntado con el ratón y el salto de
    minuto del F1 con el nivel y las mejoras de ese minuto. El simulador da 6 de
    10, dentro del objetivo.
-3. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+3. **Jugar las tres dificultades** (aún sin publicar) y decidir si la media se
+   queda así: con la horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la
+   horda huyendo, como en la v0.9).
+4. **Descargar versiones sin cambiar a ellas**, en todas las versiones: el
+   encargo está explicado en `CLAUDE.md`. Adam dirá cuándo hay tiempo.
+5. **Explosión del élite Rootkit más vistosa**: Adam pasará el asset; no da
+   tiempo en la sesión 11.
+6. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
-4. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+7. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
-5. **Vídeo demostrativo** (2-4 min).
-6. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+8. **Vídeo demostrativo** (2-4 min).
+9. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-7. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-8. Opcional: sustituir los sprites de IA por pixel art propio.
+10. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+11. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
 El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
 
 - **Sesiones 10 y 11** (decisiones de Adam): gemas amarillas, naranjas y
-  magentas; la horda huye al llegar el jefe; +15 % de vida por minuto desde el
-  3:00; jefe que invoca anillos de horda cada 15 s, con 4000 de vida; Segador
+  magentas; la horda huye al llegar el jefe solo en fácil (tres dificultades:
+  vida de los enemigos x0,7, x1 y x1,2 y daño recibido x0,6, x1 y x1,3, elegidas
+  en el menú); +15 % de vida por minuto desde el 3:00; jefe que invoca anillos de horda cada 15 s, con 4000 de vida; Segador
   rebajado; una ulti por personaje con R, cargada matando (180) y dibujada con
   sprites, y la del Mago apuntada con el ratón (con el mando, sola); menú de
   desarrollador (F1) en todas las versiones, con la partida fuera de récords y

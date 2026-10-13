@@ -132,10 +132,16 @@ Detalles que la interfaz tiene que respetar:
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
-  para el ranking) y `trucos` (bool, si se usó el menú de desarrollador). Al
-  cumplirse `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`,
-  10 minutos) deja de aparecer horda, la que queda huye y llega el jefe final,
-  que invoca anillos de horda (`jefe_invoco`); se gana al derrotarlo.
+  para el ranking), `trucos` (bool, si se usó el menú de desarrollador) y
+  `dificultad` (String: `facil`, `media` o `dificil`). Al cumplirse
+  `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
+  minutos) deja de aparecer horda y llega el jefe final, que invoca anillos de
+  horda (`jefe_invoco`); se gana al derrotarlo. En fácil, la horda que queda
+  huye; en media y difícil se queda.
+- **Dificultad.** Se elige en el menú principal y se guarda en las opciones
+  (`GestorGuardado.opcion("dificultad")`). La partida la lee al empezar con
+  `globales/dificultad.gd`: multiplica la vida de los enemigos y el daño que
+  recibe el jugador, y decide si la horda huye al llegar el jefe.
 
 Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 

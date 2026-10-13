@@ -176,12 +176,28 @@ la misma cola que las subidas de nivel, que distingue "nivel" y "cofre" para
 que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las
 mejoras (y una evolución si hay alguna disponible). El premio se sortea antes de
 girar; el disco frena con un `Tween` hasta -45·k grados más unas vueltas, que
-deja el sector k bajo la flecha. A los 10 minutos deja de salir horda, la que
-queda huye (se aleja del jugador y se desvanece en 1,2 s, sin dar experiencia)
-y llega el **jefe**. Además de embestir, el jefe tiene un tercer estado: cada
+deja el sector k bajo la flecha. A los 10 minutos deja de salir horda y llega
+el **jefe**; en fácil, la horda que queda huye (se aleja del jugador y se
+desvanece en 1,2 s, sin dar experiencia), y en media y difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
 15 s se para, late en morado mientras crece un anillo y saca un círculo de 12 a
 24 enemigos, más cuanto menos vida le queda; los crean los gestores de la
 horda, como hace el élite replicante.
+
+**Las dificultades.** Se eligen en el menú principal y se guardan con las
+opciones. Están en una tabla (`globales/dificultad.gd`) con tres datos cada una:
+cuánto se multiplica la vida de la horda, los élites y el jefe (0,7, 1 y 1,2),
+cuánto se multiplica el daño que recibe el jugador (0,6, 1 y 1,3) y si la horda
+huye al llegar el jefe (solo en fácil). La media es el juego tal como estaba
+equilibrado. Cada sistema lee la dificultad en su sitio: los enemigos al
+aparecer, la salud del jugador al empezar la partida (la pone la raíz) y el
+director al llegar el jefe. La ficha del enemigo enseña el daño que hace de
+verdad, y el ranking y la pantalla final, la dificultad de cada partida.
+Medido con el simulador (10 partidas cada una): fácil, 10 victorias; media, 1;
+difícil, ninguna, y en la mitad no llega al jefe. Que la horda se quede es lo
+que endurece la media: con la horda huyendo, como antes, el mismo bot gana 4.
+Para medir esto el bot cambió: antes solo iba a por el jefe si no tenía a nadie
+cerca, y con la horda presente no llegaba nunca; ahora va a por él
+apartándose de lo que tiene encima.
 
 **El mapa infinito.** El suelo es un rectángulo más grande que la pantalla que
 se coloca bajo la cámara en cada fotograma, y su shader dibuja según la posición

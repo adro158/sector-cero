@@ -74,7 +74,10 @@ personaje.
   corazón que cura y un cofre con una ruleta de mejoras.
 - **Evoluciones**: repite tres veces una mejora y tu herramienta evoluciona.
 - **Ficha del enemigo**: haz click en cualquiera para ver su vida y su daño.
-- **Ranking** con las diez mejores partidas.
+- **Tres dificultades**, que se eligen en el menú: en fácil el malware tiene
+  menos vida, hace menos daño y huye cuando llega el jefe; en difícil, al
+  revés.
+- **Ranking** con las diez mejores partidas y la dificultad de cada una.
 
 El manual completo está en el [manual de usuario](documentacio/manual_usuario.md).
 
