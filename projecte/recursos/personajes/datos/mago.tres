@@ -13,5 +13,5 @@ arma = ExtResource("3_arma")
 vida_maxima = 90.0
 ulti = "rayo"
 nombre_ulti = "Rayo de datos"
-descripcion_ulti = "Un rayo morado enorme hacia el enemigo más cercano que atraviesa todo lo que encuentra."
+descripcion_ulti = "Un rayo morado enorme que atraviesa todo lo que encuentra. Con el teclado, R para apuntar con el ratón y click para lanzarlo (click derecho o R cancelan); con el mando, va solo al enemigo más cercano."
 color = Color(0.75, 0.45, 1, 1)

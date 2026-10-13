@@ -56,5 +56,6 @@ script = ExtResource("9_cambio")
 personajes = Array[ExtResource("10_datos_personaje")]([ExtResource("11_espadachin"), ExtResource("12_mago"), ExtResource("13_segador")])
 
 [node name="Ultis" type="Node2D" parent="."]
+texture_filter = 1
 z_index = 4
 script = ExtResource("14_ultis")

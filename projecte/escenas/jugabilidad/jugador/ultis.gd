@@ -2,13 +2,19 @@ extends Node2D
 
 ## Las ultis de los personajes, con R. Cada personaje carga la suya matando
 ## mientras juega (una carga por personaje) y, llena, la lanza:
-## - "rayo" (Mago): un rayo morado enorme hacia el enemigo más cercano.
+## - "rayo" (Mago): un rayo morado enorme. Con el teclado, R pone a apuntar: el
+##   rayo sigue al ratón y sale con el click (el derecho o otra R cancelan).
+##   Con el mando, en el móvil y en el simulador, que no tienen ratón, va solo
+##   hacia el enemigo más cercano.
 ## - "giro" (Espadachín): gira con sus hojas y golpea todo alrededor.
 ## - "tormenta" (Segador): un rayo sobre la guadaña y luego mini rayos alrededor.
 ##
 ## Pegan con danar_en_area, como las armas, a todo el grupo objetivos. No
 ## cuentan para la resistencia del malware: no son una herramienta. Escalan con
-## las mejoras de daño. Los efectos se dibujan con _draw, sin sprites.
+## las mejoras de daño. Los efectos los dibuja dibujo_ultis.gd con sprites; aquí
+## solo se decide qué toca dibujar.
+
+const DibujoUltis := preload("res://escenas/jugabilidad/jugador/dibujo_ultis.gd")
 
 const CARGA_NECESARIA := 180.0
 ## Un élite carga como diez enemigos de la horda.
@@ -18,10 +24,17 @@ const RAYO_LARGO := 900.0
 const RAYO_RADIO := 34.0
 const RAYO_DANO := 160.0
 const RAYO_GOLPES := [0.0, 0.15, 0.3]
+const RAYO_DURACION := 0.6
+## El dibujo del rayo sale del pecho del Mago y un poco por delante, para que el
+## círculo del origen no le tape; los golpes salen de su centro (la diferencia
+## es pequeña al lado del radio).
+const RAYO_PECHO := Vector2(0.0, -22.0)
+const RAYO_DELANTE := 40.0
 const GIRO_DURACION := 1.5
 const GIRO_RADIO := 170.0
 const GIRO_DANO := 50.0
 const GIRO_CADA := 0.2
+const GIRO_VUELTAS := 1.7
 const TORMENTA_RADIO := 200.0
 const TORMENTA_DANO := 250.0
 const MINI_RAYOS := 10
@@ -39,6 +52,8 @@ var _origen := Vector2.ZERO
 ## Dónde caen los mini rayos de la tormenta, para dibujarlos (los golpes se
 ## van quitando de _golpes al aplicarse).
 var _mini: Array[Vector2] = []
+## El Mago está apuntando el rayo con el ratón.
+var _apuntando := false
 var _equipo: Node
 var _armas: Node
 
@@ -72,11 +87,36 @@ func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if evento.is_action_pressed("ulti"):
+	if not evento.is_action_pressed("ulti"):
+		return
+	if _apuntando:
+		_dejar_de_apuntar()
+	elif lista() and _equipo.personaje_actual().ulti == "rayo" and evento is InputEventKey:
+		_apuntando = true
+	else:
 		lanzar()
 
 
-func lanzar() -> void:
+## El click de apuntar va en _input, antes que la interfaz: si no, el click
+## izquierdo abriría también la ficha del enemigo pinchado.
+func _input(evento: InputEvent) -> void:
+	if not _apuntando or not evento is InputEventMouseButton or not evento.pressed:
+		return
+	get_viewport().set_input_as_handled()
+	if evento.button_index == MOUSE_BUTTON_LEFT:
+		lanzar((get_global_mouse_position() - global_position).normalized())
+	elif evento.button_index == MOUSE_BUTTON_RIGHT:
+		_dejar_de_apuntar()
+
+
+func _dejar_de_apuntar() -> void:
+	_apuntando = false
+	queue_redraw()
+
+
+## Sin dirección (o con Vector2.ZERO), el rayo va al enemigo más cercano.
+func lanzar(direccion := Vector2.ZERO) -> void:
+	_apuntando = false
 	if not lista() or _efecto != "":
 		return
 	var personaje: DatosPersonaje = _equipo.personaje_actual()
@@ -89,7 +129,7 @@ func lanzar() -> void:
 	var dano: float = _armas.multiplicador_dano
 	match _efecto:
 		"rayo":
-			_direccion = _hacia_el_mas_cercano()
+			_direccion = direccion if direccion != Vector2.ZERO else _hacia_el_mas_cercano()
 			# El rayo es una fila de círculos seguidos, sin solaparse: así cada
 			# enemigo del camino recibe un golpe por pasada.
 			for segundo in RAYO_GOLPES:
@@ -111,6 +151,11 @@ func lanzar() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _apuntando:
+		# Si cambia de personaje mientras apunta, ya no es el Mago.
+		if _equipo.personaje_actual().ulti != "rayo":
+			_dejar_de_apuntar()
+		queue_redraw()
 	if _efecto == "":
 		return
 	_tiempo += delta
@@ -129,7 +174,7 @@ func _physics_process(delta: float) -> void:
 func _duracion() -> float:
 	match _efecto:
 		"rayo":
-			return 0.6
+			return RAYO_DURACION
 		"giro":
 			return GIRO_DURACION
 	return 0.3 + MINI_RAYOS * 0.08 + 0.3
@@ -153,40 +198,19 @@ func _avisar() -> void:
 
 
 func _draw() -> void:
+	if _apuntando:
+		var hacia := (get_global_mouse_position() - global_position).normalized()
+		DibujoUltis.mira(self, RAYO_PECHO + hacia * RAYO_DELANTE, hacia, RAYO_LARGO - RAYO_DELANTE)
 	match _efecto:
 		"rayo":
-			var desvanecer := 1.0 - _tiempo / 0.6
-			var desde := to_local(_origen)
-			var hasta := desde + _direccion * RAYO_LARGO
-			draw_line(desde, hasta, Color(0.6, 0.2, 1.0, 0.5 * desvanecer), RAYO_RADIO * 2.4)
-			draw_line(desde, hasta, Color(0.85, 0.5, 1.0, desvanecer), RAYO_RADIO * 1.2)
-			draw_line(desde, hasta, Color(1.0, 1.0, 1.0, desvanecer), RAYO_RADIO * 0.4)
+			var desde := to_local(_origen) + RAYO_PECHO + _direccion * RAYO_DELANTE
+			DibujoUltis.rayo(self, desde, _direccion, RAYO_LARGO - RAYO_DELANTE, _tiempo, RAYO_DURACION)
 		"giro":
-			# Seis hojas de luz girando, dos vueltas y media en todo el giro.
-			for i in 6:
-				var angulo := TAU * i / 6.0 + _tiempo * TAU * 1.7
-				var punta := Vector2.from_angle(angulo) * GIRO_RADIO
-				var lado := Vector2.from_angle(angulo + PI / 2.0) * 14.0
-				draw_colored_polygon(PackedVector2Array([punta * 0.35, punta * 0.7 + lado, punta, punta * 0.7 - lado]), Color(0.4, 1.0, 0.5, 0.85))
-			draw_arc(Vector2.ZERO, GIRO_RADIO, 0.0, TAU, 48, Color(0.4, 1.0, 0.5, 0.35), 3.0)
+			DibujoUltis.torbellino(self, _tiempo, GIRO_DURACION, GIRO_VUELTAS)
 		"tormenta":
-			if _tiempo < 0.35:
-				_rayo(to_local(_origen), 22.0, 1.0 - _tiempo / 0.35)
-				draw_circle(to_local(_origen), TORMENTA_RADIO * _tiempo / 0.35, Color(1.0, 0.6, 0.2, 0.25))
-			for i in MINI_RAYOS:
-				var cae := 0.3 + i * 0.08
-				if _tiempo >= cae and _tiempo < cae + 0.25:
-					_rayo(to_local(_mini[i]), 8.0, 1.0 - (_tiempo - cae) / 0.25)
+			# Los puntos de los mini rayos, del mundo a las coordenadas de este nodo.
+			var mini: Array[Vector2] = []
+			for punto in _mini:
+				mini.append(to_local(punto))
+			DibujoUltis.tormenta(self, to_local(_origen), mini, _tiempo)
 
-
-## Un rayo en zigzag que baja del cielo hasta el punto.
-func _rayo(abajo: Vector2, grosor: float, opacidad: float) -> void:
-	var puntos := PackedVector2Array()
-	var arriba := abajo + Vector2(0.0, -520.0)
-	for tramo in 9:
-		var punto := arriba.lerp(abajo, tramo / 8.0)
-		if tramo > 0 and tramo < 8:
-			punto.x += sin(tramo * 12.9 + abajo.x) * 22.0
-		puntos.append(punto)
-	draw_polyline(puntos, Color(1.0, 0.65, 0.2, opacidad * 0.6), grosor * 2.0)
-	draw_polyline(puntos, Color(1.0, 1.0, 0.85, opacidad), grosor * 0.6)
