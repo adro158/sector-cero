@@ -49,7 +49,7 @@ puede instalar cualquier versión publicada, también una anterior.
 | Moverse | WASD o flechas | Stick izquierdo |
 | Personaje siguiente / anterior | E o Tab / Q | Y / — |
 | Ver el equipo | C | — |
-| Lanzar la ulti | R | B |
+| Lanzar la ulti (el Mago apunta con el ratón y lanza con click) | R | B |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ver la ficha de un enemigo | Click (click derecho la cierra) | — |

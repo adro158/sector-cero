@@ -52,8 +52,9 @@ puede apagar el aviso.
      distancia.
    - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.
    Cada uno carga su **ulti** matando (la barra amarilla bajo su vida); llena,
-   se lanza con **R**: el Mago dispara un rayo morado, el Espadachín gira con
-   sus hojas y al Segador le cae una tormenta de rayos.
+   se lanza con **R**: el Mago dispara un rayo morado (con R apuntas con el
+   ratón y con click lo lanzas), el Espadachín gira con sus hojas y al Segador
+   le cae una tormenta de rayos.
 6. **Evoluciones.** Elige tres veces la misma mejora de daño, cadencia o
    alcance y tu herramienta evoluciona.
 7. **Cuidado con:** el **troyano** (caballo verde), que parpadea en rojo y

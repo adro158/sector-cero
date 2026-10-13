@@ -14,6 +14,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Iconos de las mejoras | 8 propios, generados por código; 3 hechos con IA (Claude) | Del proyecto / ver más abajo |
 | Sprites del fragmento de datos y del proyectil del Ping | Hechos con IA (Claude) | Ver más abajo |
 | Corazón, cofre y ruleta del premio de los élites | Hechos con IA (Claude) | Ver más abajo |
+| Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -74,6 +75,13 @@ scripts no forman parte del repositorio.
   abierto), `ruleta_rueda.png` (96x96, el disco de 8 sectores) y
   `ruleta_marco_a.png` y `ruleta_marco_b.png` (112x112, el marco con las
   bombillas encendidas de dos formas para que parpadeen).
+- **Ultis** (`medios/sprites/ultis/`, 13/10/2026, de la misma forma): el
+  rayo de datos del Mago (`ulti_rayo_origen`, `_tramo` y `_punta`), el
+  torbellino del Espadachín (`ulti_torbellino`, 6 fotogramas que giran 10
+  grados cada uno) y la tormenta del Segador (`ulti_tormenta_rayo`,
+  `_impacto`, `_mini` y `_chispa`). Con ellos vino el código de dibujo
+  (`escenas/jugabilidad/jugador/dibujo_ultis.gd`) con el que se grabaron los
+  GIF de muestra.
 
 ### Sprites de los personajes y del jefe
 

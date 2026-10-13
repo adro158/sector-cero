@@ -118,13 +118,19 @@ todos.
 
 **Las ultis.** Cada personaje carga la suya matando mientras juega (180
 enemigos; un élite cuenta por 10) y la lanza con R: el Mago, un rayo morado
-hacia el enemigo más cercano; el Espadachín, un giro con seis hojas de luz; el
+que atraviesa todo; el Espadachín, un giro con seis hojas de luz; el
 Segador, un rayo sobre su guadaña y diez mini rayos alrededor. Pegan con el
 mismo `danar_en_area` que las armas, a todo el grupo `objetivos`, y escalan con
 las mejoras de daño, pero no cuentan para la resistencia del malware: no son
 una herramienta. El rayo es una fila de círculos seguidos, sin solaparse, para
 que cada enemigo del camino reciba un golpe por pasada. Los efectos se dibujan
-con `_draw` (líneas, polígonos y arcos), sin sprites.
+con sprites (`dibujo_ultis.gd`: funciones estáticas a las que `ultis.gd` se pasa
+a sí mismo como lienzo, para que la lógica y el dibujo vayan separados); el
+rayo se arma con un tramo de 32 px repetido, se gira con `draw_set_transform` y
+sale del pecho del Mago. Con el teclado, el Mago apunta el rayo con el ratón (R
+para apuntar, click para lanzar); con el mando, en el móvil y en el simulador,
+sin ratón, va solo al enemigo más cercano. El click de apuntar se lee en
+`_input`, antes que la interfaz, para que no abra también la ficha del enemigo.
 
 **El menú de desarrollador (F1).** Para probar cualquier parte del juego sin
 jugar hasta ella: saltar a un minuto, darse mejoras, subir de nivel, ser
