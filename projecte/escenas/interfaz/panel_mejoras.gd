@@ -43,7 +43,11 @@ func _ready() -> void:
 
 func _crear_tarjeta(indice: int) -> Button:
 	var tarjeta := Button.new()
-	tarjeta.custom_minimum_size = Vector2(230, 260)
+	# Un botón no crece con lo que lleva dentro: el tamaño tiene que dar para
+	# el texto más largo, las descripciones de las evoluciones (hasta 135
+	# letras), también con la fuente de Linux, que es más ancha. Con 230x260
+	# se salían por abajo.
+	tarjeta.custom_minimum_size = Vector2(260, 320)
 	tarjeta.pressed.connect(_elegir.bind(indice))
 
 	var contenido := VBoxContainer.new()
