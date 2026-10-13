@@ -1898,9 +1898,9 @@ Encargado por Adam al final de la sesión para la siguiente. Cuando diga
 
 ## Sesión 11 — 13/10/2026
 
-**Duración:** por confirmar · **Fitas:** 5 · **Participantes:** Adam (con Claude)
+**Duración:** 2 h · **Fitas:** 5 · **Participantes:** Adam (con Claude)
 
-**Horas acumuladas:** 19 h más las de esta sesión (Adam cerró sin tiempo: preguntárselas)
+**Horas acumuladas:** 21 h de las 60 sugeridas (35 %)
 
 ### Qué se ha hecho
 
@@ -2076,13 +2076,11 @@ midió los valores con el simulador y lo programó.
 ### Estado al cerrar
 
 Todo subido a GitHub y publicada la v1.0 (también en la web), con las tres
-dificultades. Adam cerró sin tiempo: las horas de la sesión quedan por
-confirmar. Pendiente de Adam: decidir si la media se queda como está.
+dificultades. Pendiente de Adam: decidir si la media se queda como está.
 
 ### Siguiente paso
 
-1. Preguntar a Adam las horas de la sesión 11 y apuntarlas arriba. Jugar la
-   v1.0 y decidir si la media se queda así o se compensa.
+1. Jugar la v1.0 y decidir si la media se queda así o se compensa.
 2. Descargar versiones sin cambiar a ellas, desde todas las versiones
    (`CLAUDE.md`), cuando Adam diga.
 3. La explosión del élite Rootkit con el asset de Adam: descomprimir
