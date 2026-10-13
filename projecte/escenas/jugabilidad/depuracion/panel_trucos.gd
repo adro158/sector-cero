@@ -1,7 +1,8 @@
 extends Control
 
 ## Menú de desarrollador, con F1: para probar cualquier parte del juego sin
-## jugar hasta ella. Saltar a un minuto, darse mejoras, subir de nivel, ser
+## jugar hasta ella. Saltar a un minuto (con el nivel y las mejoras que se
+## tendrían en él), darse mejoras, subir de nivel, ser
 ## invencible, llenar las ultis, sacar el jefe, un élite o los premios, revivir
 ## al equipo, limpiar la horda y acelerar el juego.
 ##
@@ -12,10 +13,12 @@ extends Control
 ## escena de la partida y usa los nodos de la jugabilidad directamente, por sus
 ## grupos y nombres, sin pasar por el bus.
 
+const ProgresoPorMinuto := preload("res://escenas/jugabilidad/depuracion/progreso_por_minuto.gd")
 const COLOR := Color(1.0, 0.75, 0.2)
 
 var _ventana: ColorRect
 var _tiempo: LineEdit
+var _con_progreso: CheckButton
 var _velocidad: Label
 ## Si la pausa la ha puesto este menú: al cerrarlo solo se quita esa.
 var _pauso_yo := false
@@ -60,7 +63,12 @@ func _columna_partida() -> VBoxContainer:
 	fila.add_child(_tiempo)
 	fila.add_child(_boton("IR AL MINUTO", _saltar, 160))
 	columna.add_child(fila)
-	columna.add_child(_boton("JEFE YA (10:00)", func(): _director().saltar_a(600.0)))
+	_con_progreso = CheckButton.new()
+	_con_progreso.text = "Con el nivel y las mejoras de ese minuto"
+	_con_progreso.button_pressed = true
+	_con_progreso.add_theme_font_size_override("font_size", 13)
+	columna.add_child(_con_progreso)
+	columna.add_child(_boton("JEFE YA (10:00)", _ir_a.bind(600.0)))
 	columna.add_child(_boton("ÉLITE AHORA", func(): _director().aparecer_elite()))
 	columna.add_child(_boton("CORAZÓN Y COFRE AQUÍ", func(): _raiz.get_node("PremiosElite").soltar(_jugador.global_position + Vector2(0, 70))))
 	columna.add_child(_boton("LIMPIAR LA HORDA", _limpiar_horda))
@@ -130,7 +138,12 @@ func _saltar() -> void:
 	# "7:30" o solo segundos: "450".
 	var partes := _tiempo.text.strip_edges().split(":")
 	var segundos := float(partes[0]) if partes.size() == 1 else float(partes[0]) * 60.0 + float(partes[1])
-	_director().saltar_a(segundos)
+	_ir_a(segundos)
+
+
+func _ir_a(segundos: float) -> void:
+	if _director().saltar_a(segundos) and _con_progreso.button_pressed:
+		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), segundos)
 
 
 func _subir_nivel() -> void:

@@ -7,7 +7,7 @@ extends SceneTree
 ## peligro, elige mejoras como un jugador (la evolución si sale y, si no, una
 ## de ataque si la hay) y cambia de personaje cuando el malware se ha hecho
 ## resistente a su herramienta. Cada minuto de partida anota vida, nivel,
-## enemigos (en total y por tipo), herramienta y resistencias, y al final
+## mejoras, enemigos (en total y por tipo), herramienta y resistencias, y al final
 ## resume victorias, duración media, cambios de personaje, cofres recogidos,
 ## personajes caídos, ultis lanzadas y eliminados por tipo. Cuando cae el
 ## personaje activo, sigue con el que tenga más vida, y lanza la ulti en cuanto
@@ -235,8 +235,9 @@ func _informe(etiqueta: String) -> void:
 		resistencias.append("%s %d%%" % [arma.nombre, roundi(tabla[arma] * 100.0)])
 
 	var salud = _jugador.get_node("Salud")
-	print("%s vida=%3.0f/%3.0f nivel=%2d en_pantalla=%3d arma=%s resiste=%s" % [
-		etiqueta, salud._vida, salud.vida_maxima, _raiz.get_node("SistemaNiveles").nivel(),
+	var niveles := _raiz.get_node("SistemaNiveles")
+	print("%s vida=%3.0f/%3.0f nivel=%2d mejoras=%2d en_pantalla=%3d arma=%s resiste=%s" % [
+		etiqueta, salud._vida, salud.vida_maxima, niveles.nivel(), niveles.mejoras_aplicadas(),
 		vivos, _jugador.get_node("GestorArmas").armas[0].nombre, resistencias])
 	print("        por tipo: %s" % ", ".join(por_tipo))
 

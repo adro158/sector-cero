@@ -69,16 +69,18 @@ func _physics_process(delta: float) -> void:
 ## Para el menú de desarrollador: salta a ese segundo de la partida como si se
 ## hubiera llegado jugando. Los enemigos que aparezcan desde ahora tendrán la
 ## vida de ese minuto y el siguiente élite llega en su turno. Si se salta al
-## minuto 10 o más, llega el jefe en el siguiente paso.
-func saltar_a(segundos: float) -> void:
+## minuto 10 o más, llega el jefe en el siguiente paso. Devuelve false si no
+## se puede saltar porque el jefe ya ha llegado.
+func saltar_a(segundos: float) -> bool:
 	if _jefe_en_juego:
-		return
+		return false
 	_tiempo = segundos
 	_tiempo_restante = 0.0
 	_siguiente_elite = config.primer_elite
 	while _siguiente_elite <= segundos:
 		_siguiente_elite += config.intervalo_elites
 	BusEventos.tiempo_partida.emit(_tiempo, config.duracion_partida)
+	return true
 
 
 ## Para el menú de desarrollador: un élite ahora, si queda alguno libre.

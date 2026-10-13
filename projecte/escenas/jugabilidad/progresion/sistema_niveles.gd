@@ -89,6 +89,29 @@ func regalar(mejora: DatosMejora) -> void:
 	BusEventos.mejora_regalada.emit(mejora)
 
 
+## Para el menú de desarrollador: las tres opciones que saldrían ahora al
+## subir de nivel.
+func opciones_de_nivel() -> Array[DatosMejora]:
+	return _sortear_opciones()
+
+
+## Cuántas mejoras se han aplicado en la partida, contando las repetidas.
+func mejoras_aplicadas() -> int:
+	var total := 0
+	for mejora in _veces:
+		total += _veces[mejora]
+	return total
+
+
+## Para el menú de desarrollador: pone ese nivel con la barra de experiencia
+## vacía, sin abrir paneles. Las mejoras se dan aparte, con regalar().
+func poner_nivel(nuevo: int) -> void:
+	_nivel = nuevo
+	_experiencia = 0
+	_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
+	_avisar_experiencia()
+
+
 func _avisar_experiencia() -> void:
 	BusEventos.experiencia_cambiada.emit(_experiencia, _objetivo, _nivel)
 
