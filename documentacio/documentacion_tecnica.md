@@ -140,6 +140,15 @@ eso la partida en la que se abre no cuenta para los récords ni el ranking. Vive
 en la escena de la partida, como el panel técnico (F3), y usa la jugabilidad
 directamente.
 
+Al saltar a un minuto, el jugador llega con el nivel y las mejoras que tendría
+si hubiera jugado hasta ahí (se puede desmarcar). Las cifras de cada minuto son
+la media de 10 partidas del simulador
+(`depuracion/progreso_por_minuto.gd`), y las mejoras se eligen como las elige
+su bot: la evolución si sale y, si no, una de ataque. Entre dos minutos se
+toma lo que queda en medio (a las 7:30, la mitad entre el minuto 7 y el 8), y
+volviendo atrás no se quita nada. Si cambia el balance, la tabla se vuelve a
+medir: el simulador anota el nivel y las mejoras de cada minuto.
+
 **La resistencia adaptativa.** Cada arma avisa del daño que hace. Cada 20 s, el
 malware mira cuál le ha hecho más y gana un 10 % de resistencia contra ella
 (máximo 50 %); contra las demás pierde un 5 %. Se ve en los números de daño y en
