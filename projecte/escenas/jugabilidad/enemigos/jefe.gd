@@ -181,9 +181,12 @@ func _cambiar_estado(nuevo: Estado) -> void:
 
 
 func _animar(delta: float) -> void:
-	# Quieto (avisando o invocando), no mueve las piernas.
-	if _estado != Estado.AVISO and _estado != Estado.INVOCAR:
+	# Las piernas van al ritmo al que se mueve: embistiendo, tantas veces más
+	# deprisa como lo es la embestida, y quieto (avisando o invocando), nada.
+	if _estado == Estado.PERSEGUIR:
 		_tiempo_andando += delta
+	elif _estado == Estado.EMBESTIDA:
+		_tiempo_andando += delta * velocidad_embestida / velocidad
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	_sprite.frame = Direcciones8.fila(_direccion) * FOTOGRAMAS_ANDAR + columna
 

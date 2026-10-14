@@ -12,6 +12,9 @@ extends CharacterBody2D
 @export_group("Animación")
 ## Las hojas de los personajes están hechas para 130 ms por fotograma.
 @export var fotogramas_por_segundo: float = 7.7
+## La velocidad para la que se ajustaron esos fotogramas, sin mejoras ni auras:
+## a ella los pies no patinan. Las piernas van en proporción a la de verdad.
+@export var velocidad_animacion: float = 240.0
 
 ## La hoja del sprite tiene una fila por dirección y una columna por fotograma
 ## del ciclo de andar.
@@ -76,7 +79,10 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		_tiempo_andando = 0.0
 	else:
 		_fila = Direcciones8.fila(direccion)
-		_tiempo_andando += delta
+		# Con la mejora de velocidad el cuerpo va más deprisa, y en el aura
+		# lenta o contra una pared, más despacio: si las piernas fueran siempre
+		# al mismo ritmo, los pies patinarían.
+		_tiempo_andando += delta * velocity.length() / velocidad_animacion
 
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
