@@ -1,9 +1,10 @@
 extends Control
 
-## HUD de la partida: nivel y experiencia arriba a la izquierda, reloj y cuenta
-## atrás hasta el jefe arriba en el centro, y la columna de mejoras elegidas a
-## la izquierda. La vida va en una barra sobre el propio personaje; el equipo
-## (abajo y con C) lo lleva panel_equipo.gd.
+## HUD de la partida: nivel y experiencia arriba a la izquierda
+## (panel_experiencia.gd), reloj y cuenta atrás hasta el jefe arriba en el
+## centro, y la columna de mejoras elegidas a la izquierda. La vida va en una
+## barra sobre el propio personaje; el equipo (abajo y con C) lo lleva
+## panel_equipo.gd.
 ##
 ## Solo escucha señales del BusEventos. Los niveles de cada mejora los anotan
 ## el panel de mejoras y la ruleta al elegir, en un diccionario que comparten.
@@ -12,12 +13,10 @@ const FichaEnemigo := preload("res://escenas/interfaz/ficha_enemigo.gd")
 const PanelRuleta := preload("res://escenas/interfaz/panel_ruleta.gd")
 const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
 const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
+const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 
 var niveles_mejora := {}
 
-var _etiqueta_nivel: Label
-var _barra_experiencia: ProgressBar
-var _etiqueta_experiencia: Label
 var _etiqueta_tiempo: Label
 var _etiqueta_jefe: Label
 var _columna: VBoxContainer
@@ -29,7 +28,7 @@ var _efecto_aviso: Tween
 func _ready() -> void:
 	theme = EstiloInterfaz.tema()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_crear_experiencia()
+	add_child(PanelExperiencia.new())
 	_crear_reloj()
 
 	_columna = VBoxContainer.new()
@@ -64,36 +63,9 @@ func _ready() -> void:
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
-	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 	BusEventos.mejora_regalada.connect(_al_regalar_mejora)
-
-
-func _crear_experiencia() -> void:
-	var panel := PanelContainer.new()
-	panel.position = Vector2(16, 16)
-	panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(EstiloInterfaz.NEON, 10))
-	add_child(panel)
-
-	var caja := VBoxContainer.new()
-	panel.add_child(caja)
-	_etiqueta_nivel = EstiloInterfaz.etiqueta("NIVEL 1", 20, EstiloInterfaz.NEON)
-	caja.add_child(_etiqueta_nivel)
-
-	_barra_experiencia = ProgressBar.new()
-	_barra_experiencia.custom_minimum_size = Vector2(240, 10)
-	_barra_experiencia.show_percentage = false
-	var fondo := StyleBoxFlat.new()
-	fondo.bg_color = Color(0.1, 0.15, 0.2)
-	var relleno := StyleBoxFlat.new()
-	relleno.bg_color = EstiloInterfaz.NEON
-	_barra_experiencia.add_theme_stylebox_override("background", fondo)
-	_barra_experiencia.add_theme_stylebox_override("fill", relleno)
-	caja.add_child(_barra_experiencia)
-
-	_etiqueta_experiencia = EstiloInterfaz.etiqueta("EXP 0 / 0", 12, EstiloInterfaz.TEXTO_SUAVE)
-	caja.add_child(_etiqueta_experiencia)
 
 
 func _crear_reloj() -> void:
@@ -111,13 +83,6 @@ func _crear_reloj() -> void:
 	_etiqueta_jefe = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_etiqueta_jefe.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(_etiqueta_jefe)
-
-
-func _al_cambiar_experiencia(actual: int, necesaria: int, nivel: int) -> void:
-	_etiqueta_nivel.text = "NIVEL %d" % nivel
-	_barra_experiencia.max_value = necesaria
-	_barra_experiencia.value = actual
-	_etiqueta_experiencia.text = "EXP %d / %d" % [actual, necesaria]
 
 
 func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
