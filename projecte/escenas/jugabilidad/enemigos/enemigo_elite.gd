@@ -17,6 +17,7 @@ const RADIO_EXPLOSION := 130.0
 const AVISO_EXPLOSION := 0.8
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
+const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -31,7 +32,7 @@ var _segundos := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 
-@onready var _sprite: Sprite2D = $Sprite
+@onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
 
 
@@ -74,6 +75,7 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 
 	var blindaje := _valor(DatosAfijoElite.Efecto.BLINDADO)
 	_salud.recibir_dano(cantidad * (1.0 - blindaje))
+	_sprite.destellar()
 	queue_redraw()
 	enemigo_danado.emit(global_position + Vector2(randf_range(-16.0, 16.0), -30.0), cantidad * (1.0 - blindaje), resistencia)
 	return 1

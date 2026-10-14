@@ -21,6 +21,7 @@ enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR }
 const FOTOGRAMAS_ANDAR := 12
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
+const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -55,7 +56,7 @@ var _hasta_invocar := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 
-@onready var _sprite: Sprite2D = $Sprite
+@onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
 
 
@@ -83,6 +84,7 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 		return 0
 
 	_salud.recibir_dano(cantidad)
+	_sprite.destellar()
 	# El número sale sobre el cuerpo y un poco desplazado, para que varios
 	# golpes seguidos no se pinten uno encima de otro.
 	enemigo_danado.emit(global_position + Vector2(randf_range(-24.0, 24.0), -40.0), cantidad, resistencia)
