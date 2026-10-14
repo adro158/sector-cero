@@ -14,6 +14,7 @@ const DURACION_DESTELLO := 0.1
 const DURACION_HUIDA := 1.2
 const MATERIAL_HORDA := preload("res://medios/shaders/horda.tres")
 const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_horda.gd")
+const VolteoHorda := preload("res://escenas/jugabilidad/enemigos/volteo_horda.gd")
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 
@@ -46,6 +47,8 @@ var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
 ## Solo en los tipos que embisten (el troyano). En los demás se queda en null.
 var _embestida: EmbestidaHorda
+## Solo en los tipos que se voltean (también el troyano). Si no, null.
+var _volteo: VolteoHorda
 ## Segundos que le quedan a la huida (0 si no está huyendo).
 var _huida := 0.0
 
@@ -64,6 +67,8 @@ func _ready() -> void:
 	_rejilla = RejillaEspacial.new(radio_separacion)
 	if datos.embiste:
 		_embestida = EmbestidaHorda.new(datos, MAXIMO_ENEMIGOS)
+	if datos.se_voltea:
+		_volteo = VolteoHorda.new(MAXIMO_ENEMIGOS)
 	_preparar_multimesh()
 	# Las barras de vida se dibujan en este nodo: la horda, que es su hijo, va
 	# detrás para que no las tape.
@@ -104,6 +109,8 @@ func aparecer(posicion: Vector2) -> void:
 	_siguiente_id += 1
 	if _embestida != null:
 		_embestida.reiniciar(_vivos)
+	if _volteo != null:
+		_volteo.reiniciar(_vivos)
 	_vivos += 1
 
 
@@ -190,8 +197,16 @@ func _preparar_multimesh() -> void:
 	multimesh.visible_instance_count = 0
 
 	_horda.multimesh = multimesh
-	_horda.material = MATERIAL_HORDA
+	# Una copia del material por tipo: cada uno tiene sus fotogramas y su
+	# velocidad de animación.
+	var material: ShaderMaterial = MATERIAL_HORDA.duplicate()
+	_horda.material = material
 	_horda.texture = datos.textura
+	if datos.animacion != null:
+		_horda.texture = datos.animacion
+		# Los fotogramas son cuadrados: caben tantos como el ancho entre el alto.
+		material.set_shader_parameter("fotogramas", float(datos.animacion.get_width() / datos.animacion.get_height()))
+		material.set_shader_parameter("fotogramas_por_segundo", datos.fotogramas_por_segundo)
 	_horda.modulate = Color.WHITE if datos.textura else datos.color
 	_horda.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
@@ -321,14 +336,19 @@ func _eliminar(indice: int) -> void:
 	_ids[indice] = _ids[_vivos]
 	if _embestida != null:
 		_embestida.copiar(_vivos, indice)
+	if _volteo != null:
+		_volteo.copiar(_vivos, indice)
 
 
 func _volcar_al_multimesh(delta: float) -> void:
 	var multimesh := _horda.multimesh
+	var jugador := _jugador.global_position
 
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
+	# La horizontal es -1 en los que se dan la vuelta para mirar al jugador.
 	for i in _vivos:
-		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(1.0, -1.0), 0.0, _posiciones[i]))
+		var escala_x := _volteo.escala_x(i, _posiciones[i], jugador) if _volteo != null else 1.0
+		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(escala_x, -1.0), 0.0, _posiciones[i]))
 		_destellos[i] = maxf(_destellos[i] - delta, 0.0)
 		var aviso := _embestida.avisando(i) if _embestida != null else 0.0
 		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, 0.0, 0.0))

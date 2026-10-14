@@ -22,6 +22,14 @@ extends Resource
 ## Sprite de este tipo. Todos los enemigos de un tipo lo comparten, porque se
 ## dibujan con un único MultiMesh. Sin sprite, se dibuja un cuadrado del color.
 @export var textura: Texture2D
+## Tira de fotogramas cuadrados en horizontal para animar a la horda: el shader
+## elige el fotograma de cada uno. Sin tira, la horda usa textura, quieta.
+## textura sigue haciendo falta: es la que sale en la ficha y en las reglas.
+@export var animacion: Texture2D
+@export var fotogramas_por_segundo: float = 8.0
+## Si el dibujo mira hacia un lado (el troyano mira a la izquierda), se voltea
+## para mirar siempre al jugador.
+@export var se_voltea: bool = false
 @export var color: Color = Color.WHITE
 @export var dano_contacto: float = 8.0
 @export var experiencia: int = 1

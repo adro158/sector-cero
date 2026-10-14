@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DatosTipoEnemigo" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://recursos/enemigos/datos_tipo_enemigo.gd" id="1_tipo"]
 [ext_resource type="Texture2D" uid="uid://dlfsv2106xjjx" path="res://recursos/enemigos/sprites/paquete_perdido.png" id="2_textura"]
+[ext_resource type="Texture2D" path="res://recursos/enemigos/sprites/paquete_perdido_anim.png" id="3_animacion"]
 
 [resource]
 script = ExtResource("1_tipo")
@@ -12,6 +13,8 @@ vida = 10.0
 velocidad = 230.0
 tamano = 20.0
 textura = ExtResource("2_textura")
+animacion = ExtResource("3_animacion")
+fotogramas_por_segundo = 10.0
 color = Color(0.95, 0.65, 0.25, 1)
 dano_contacto = 3.0
 experiencia = 2
