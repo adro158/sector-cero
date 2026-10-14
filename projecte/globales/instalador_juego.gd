@@ -5,10 +5,12 @@ extends Node
 ## más nuevo (HAY_JUEGO_NUEVO; sin esto, el botón abría la página de GitHub) y
 ## en el menú de versiones, para cambiar a cualquiera, también una anterior.
 ##
-## Biblioteca de versiones: cada ejecutable que se instala, y el que había
-## antes de cambiar, se guarda en user://versiones/<versión>/. Volver a una
-## versión ya instalada es copiarla de ahí, al momento y sin descargar nada.
-## Cada una ocupa unos 100 MB; el menú de versiones deja borrarlas.
+## Biblioteca de versiones: cada ejecutable que se descarga, y el que había
+## antes de cambiar, se guarda en user://versiones/<versión>/. En el menú de
+## versiones, INSTALAR solo descarga a la biblioteca (descargar_version) y
+## CAMBIAR es lo único que pasa a otra versión (instalar_version): copiarla de
+## ahí es al momento. Lo pidió Adam el 14/10/2026: antes INSTALAR también
+## cambiaba y reiniciaba. Cada una ocupa unos 100 MB; el menú deja borrarlas.
 ##
 ## Por qué no está en actualizador.gd: ese script lo carga el ejecutable antes
 ## que cualquier actualización, así que un cambio en él solo llegaría con un
@@ -26,8 +28,13 @@ const BIBLIOTECA := "user://versiones/"
 ## aparta así y se borra en el siguiente arranque.
 const SUFIJO_VIEJO := ".viejo"
 
+## Para el menú de versiones: cómo va una descarga a la biblioteca y cómo acaba.
+signal progreso(fraccion: float)
+signal descargada(bien: bool)
+
 var _descarga: HTTPRequest
 var _tamano := 0
+var _progreso := 0.0
 
 
 ## Lo que hacen los botones ACTUALIZAR del menú y del aviso.
@@ -46,6 +53,16 @@ static func instalar_version(release: Dictionary) -> void:
 	var instalador: Node = load("res://globales/instalador_juego.gd").new()
 	Actualizador.add_child(instalador)
 	instalador.instalar(release)
+
+
+## Para el menú de versiones: deja esa versión en la biblioteca, sin cambiar a
+## ella. Devuelve el instalador para seguir sus señales.
+static func descargar_version(release: Dictionary) -> Node:
+	var instalador: Node = load("res://globales/instalador_juego.gd").new()
+	Actualizador.add_child(instalador)
+	# Diferido: así quien la pide se conecta a las señales antes de que empiece.
+	instalador.descargar.call_deferred(release)
+	return instalador
 
 
 ## Al arrancar: borra el ejecutable apartado en la instalación anterior.
@@ -93,6 +110,13 @@ func instalar(release: Dictionary) -> void:
 	DirAccess.remove_absolute(Actualizador.VERSION_PARCHE)
 	OS.set_restart_on_exit(true)
 	get_tree().quit()
+
+
+func descargar(release: Dictionary) -> void:
+	var version: String = release.get("tag_name", "").trim_prefix("v")
+	var bien: bool = instalada(version) or await _descargar(release, version)
+	descargada.emit(bien)
+	queue_free()
 
 
 ## Guarda en la biblioteca el ejecutable que está en marcha, si no está ya,
@@ -145,7 +169,14 @@ func _process(_delta: float) -> void:
 	if _descarga == null or _descarga.get_body_size() <= 0:
 		return
 	var nuevo := float(_descarga.get_downloaded_bytes()) / _descarga.get_body_size()
-	if roundi(nuevo * 100.0) != roundi(Actualizador.progreso * 100.0):
+	if roundi(nuevo * 100.0) == roundi(_progreso * 100.0):
+		return
+	_progreso = nuevo
+	progreso.emit(nuevo)
+	# Al instalar (ACTUALIZAR, o CAMBIAR sin tenerla), también en el texto del
+	# menú. Solo descargando a la biblioteca, el estado no cambia: se puede
+	# seguir jugando.
+	if Actualizador.estado == Actualizador.Estado.DESCARGANDO:
 		Actualizador.progreso = nuevo
 		Actualizador.estado_cambiado.emit()
 

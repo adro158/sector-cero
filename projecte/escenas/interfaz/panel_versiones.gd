@@ -1,15 +1,16 @@
 extends Control
 
 ## Ventana de versiones del menú: todas las releases publicadas en GitHub, de
-## la más nueva a la más antigua. La que se está jugando sale como tal; las ya
-## instaladas (guardadas en la biblioteca de instalador_juego.gd) se cambian al
-## momento con CAMBIAR o se borran con BORRAR; las demás se descargan con
-## INSTALAR. Desde la v0.8 está también en las versiones anteriores, que se
-## volvieron a publicar con esta ventana añadida, para poder volver de ellas.
+## la más nueva a la más antigua. La que se está jugando sale como tal. Las
+## demás se descargan con INSTALAR a la biblioteca de instalador_juego.gd, sin
+## cambiar de versión, y quedan como INSTALADA: CAMBIAR pasa a ella (el juego
+## se reinicia) y BORRAR la quita. Está también en las versiones anteriores,
+## que se volvieron a publicar con esta ventana, para poder cambiar desde
+## cualquiera.
 ##
-## Instala el juego completo de esa versión con instalador_juego.gd: el
-## ejecutable de entonces, con su contenido. Solo en el juego descargado de
-## escritorio: jugando desde Godot o en la web no hay nada que instalar.
+## Lo que se instala es el juego completo de esa versión: el ejecutable de
+## entonces, con su contenido. Solo en el juego descargado de escritorio:
+## jugando desde Godot o en la web no hay nada que instalar.
 ##
 ## Sin class_name: el menú la carga con preload (ver embestida_horda.gd).
 
@@ -52,7 +53,6 @@ func _ready() -> void:
 
 	add_child(EstiloInterfaz.ventana_centrada(caja))
 	visible = false
-	Actualizador.estado_cambiado.connect(_al_cambiar_estado)
 
 
 func abrir() -> void:
@@ -90,49 +90,72 @@ func _rellenar(releases: Array) -> void:
 	if releases.is_empty():
 		_estado.text = "No se ha podido conectar con GitHub. Inténtalo más tarde."
 		return
-	_estado.text = "Estás jugando la versión %s. Al cambiar, el juego se reinicia.\nLas instaladas cambian al momento; cada una ocupa unos 100 MB." % Actualizador.version_actual()
+	_estado.text = "Estás jugando la versión %s. INSTALAR la descarga sin cambiar de versión;\nCAMBIAR la abre (el juego se reinicia). Cada una ocupa unos 100 MB." % Actualizador.version_actual()
 	for release in releases:
 		# Las pruebas (prerelease) no se ofrecen: la v0.1 ni siquiera tiene el
 		# zip con el nombre de ahora.
 		if release.prerelease or release.draft:
 			continue
-		var version: String = release.tag_name.trim_prefix("v")
 		var fila := HBoxContainer.new()
 		fila.add_theme_constant_override("separation", 16)
 		var fecha: String = release.published_at.substr(0, 10)
-		var texto := EstiloInterfaz.etiqueta("v%s   ·   %s" % [version, fecha], 16)
+		var texto := EstiloInterfaz.etiqueta("%s   ·   %s" % [release.tag_name, fecha], 16)
 		texto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		fila.add_child(texto)
-		if version == Actualizador.version_actual():
-			fila.add_child(EstiloInterfaz.etiqueta("LA QUE TIENES", 14, EstiloInterfaz.VICTORIA))
-		elif InstaladorJuego.instalada(version):
-			fila.add_child(EstiloInterfaz.etiqueta("INSTALADA", 14, EstiloInterfaz.NEON))
-			fila.add_child(EstiloInterfaz.boton("CAMBIAR", _instalar.bind(release), 130))
-			fila.add_child(EstiloInterfaz.boton("BORRAR", _borrar.bind(version, fila), 110))
-		else:
-			fila.add_child(EstiloInterfaz.boton("INSTALAR", _instalar.bind(release), 160))
 		_lista.add_child(fila)
+		_poner_botones(fila, release)
 
 
-func _instalar(release: Dictionary) -> void:
-	for boton in _lista.find_children("*", "Button", true, false):
-		boton.disabled = true
-	_volver.disabled = true
+## Lo que sale a la derecha de una versión: si es la que se juega, si ya está
+## instalada o si hay que descargarla. Se vuelve a llamar cuando cambia.
+func _poner_botones(fila: HBoxContainer, release: Dictionary) -> void:
+	for hijo in fila.get_children().slice(1):
+		hijo.queue_free()
+	var version: String = release.tag_name.trim_prefix("v")
+	if version == Actualizador.version_actual():
+		fila.add_child(EstiloInterfaz.etiqueta("LA QUE TIENES", 14, EstiloInterfaz.VICTORIA))
+	elif InstaladorJuego.instalada(version):
+		fila.add_child(EstiloInterfaz.etiqueta("INSTALADA", 14, EstiloInterfaz.NEON))
+		fila.add_child(EstiloInterfaz.boton("CAMBIAR", _cambiar.bind(release), 130))
+		fila.add_child(EstiloInterfaz.boton("BORRAR", _borrar.bind(fila, release), 110))
+	else:
+		fila.add_child(EstiloInterfaz.boton("INSTALAR", _instalar.bind(fila, release), 160))
+
+
+## Descarga la versión a la biblioteca y nada más: se sigue en esta. Una
+## descarga cada vez, porque todas usan el mismo fichero temporal.
+func _instalar(fila: HBoxContainer, release: Dictionary) -> void:
+	_bloquear(true)
+	for hijo in fila.get_children().slice(1):
+		hijo.queue_free()
+	var aviso := EstiloInterfaz.etiqueta("DESCARGANDO  0 %", 14, EstiloInterfaz.NEON)
+	fila.add_child(aviso)
+	var instalador := InstaladorJuego.descargar_version(release)
+	instalador.progreso.connect(func(fraccion): aviso.text = "DESCARGANDO  %d %%" % roundi(fraccion * 100.0))
+	var bien: bool = await instalador.descargada
+	_bloquear(false)
+	_poner_botones(fila, release)
+	if not bien:
+		_estado.text = "No se ha podido descargar la %s. Inténtalo otra vez." % release.tag_name
+
+
+## Pasa a una versión ya instalada: el juego se reinicia con ella.
+func _cambiar(release: Dictionary) -> void:
+	_bloquear(true)
+	_estado.text = "Cambiando a la %s. El juego se reinicia..." % release.tag_name
 	InstaladorJuego.instalar_version(release)
 
 
-## Borra la versión de la biblioteca y deja su fila para instalarla de nuevo.
-func _borrar(version: String, fila: HBoxContainer) -> void:
-	InstaladorJuego.borrar(version)
-	for hijo in fila.get_children().slice(1):
-		hijo.queue_free()
-	fila.add_child(EstiloInterfaz.etiqueta("BORRADA", 14, EstiloInterfaz.TEXTO_SUAVE))
+## Borra la versión de la biblioteca: su fila vuelve a ofrecer INSTALAR.
+func _borrar(fila: HBoxContainer, release: Dictionary) -> void:
+	InstaladorJuego.borrar(release.tag_name.trim_prefix("v"))
+	_poner_botones(fila, release)
 
 
-## Mientras descarga, el progreso; si falla, el instalador ya abre la página.
-func _al_cambiar_estado() -> void:
-	if visible and Actualizador.estado == Actualizador.Estado.DESCARGANDO:
-		_estado.text = Actualizador.texto()
+func _bloquear(bloqueado: bool) -> void:
+	for boton in _lista.find_children("*", "Button", true, false):
+		boton.disabled = bloqueado
+	_volver.disabled = bloqueado
 
 
 func _unhandled_input(evento: InputEvent) -> void:
