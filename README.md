@@ -42,7 +42,9 @@ No hay que instalar nada. Cuando publicamos una versión nueva, el propio juego
 la encuentra en unos minutos, aunque esté abierto, y avisa con un mensaje: con
 **ACTUALIZAR** se descarga y se reinicia; con **AHORA NO** se sigue jugando y
 el botón queda en el menú para más tarde. Con **VERSIONES**, en el menú, se
-puede instalar cualquier versión publicada, también una anterior.
+puede instalar cualquier versión publicada, también una anterior, sin dejar la
+que tienes: la instalada queda lista y con **CAMBIAR** pasas a ella cuando
+quieras. Funciona desde todas las versiones.
 
 | Acción | Teclado | Mando |
 |---|---|---|

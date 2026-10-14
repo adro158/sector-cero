@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 13/10/2026** contra la bitácora (hasta la sesión 11) y
+**Estado verificado el 14/10/2026** contra la bitácora (hasta la sesión 12) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -40,7 +40,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.0 publicadas por la GitHub Action, también en la web; las v0.2 a v0.7 se republicaron el 08/10 con el botón VERSIONES. Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.0 publicadas por la GitHub Action, también en la web; todas se republicaron el 14/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -101,24 +101,22 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 3. **Decidir si la media se queda así**: con la horda que ya no huye, el bot
    gana 1 de 10 (4 de 10 con la horda huyendo, como en la v0.9). Si no, se
    compensa (por ejemplo, menos vida para el jefe en media).
-4. **Descargar versiones sin cambiar a ellas**, en todas las versiones: el
-   encargo está explicado en `CLAUDE.md`. Adam dirá cuándo hay tiempo.
-5. **Explosión del élite Rootkit más vistosa**: Adam pasó el asset al final
+4. **Explosión del élite Rootkit más vistosa**: Adam pasó el asset al final
    de la sesión 11 (`explosion_rootkit.zip`, en las Descargas del ordenador
    del instituto), sin tiempo para aplicarlo. Trae los sprites
    (`medios/sprites/explosion/`), código de referencia y
    `PROMPT_CLAUDE_CODE.md` con cómo integrarlo: se descomprime en la raíz del
    repo y se sigue el prompt. Si la sesión es en otro ordenador, pedirle el
    zip.
-6. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+5. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
-7. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+6. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
-8. **Vídeo demostrativo** (2-4 min).
-9. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+7. **Vídeo demostrativo** (2-4 min).
+8. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-10. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-11. Opcional: sustituir los sprites de IA por pixel art propio.
+9. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+10. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
@@ -132,8 +130,9 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   sprites, y la del Mago apuntada con el ratón (con el mando, sola); menú de
   desarrollador (F1) en todas las versiones, con la partida fuera de récords y
   ranking, y cuyo salto de minuto da el nivel y las mejoras medidos con el
-  simulador; menú de versiones con biblioteca, y las v0.2 a v0.7 republicadas
-  con el botón VERSIONES.
+  simulador; menú de versiones con biblioteca, donde INSTALAR solo descarga y
+  CAMBIAR es lo único que cambia de versión, igual en las v0.2 a v1.0
+  (republicadas el 14/10).
 
 - **2D, no 3D**, para reducir el alcance (sesión 2).
 - **Renderizador Compatibility** (OpenGL), no Forward+ (sesión 2).

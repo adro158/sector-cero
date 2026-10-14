@@ -226,7 +226,14 @@ el contenido y no en el `Actualizador`, porque el `Actualizador` ya está en
 marcha antes de cargar ninguna actualización: así funciona también en
 ejecutables antiguos.
 Con el botón VERSIONES del menú, el mismo instalador pone cualquier release,
-también una anterior, para jugar versiones viejas. Las teclas nuevas (Q, E y R)
+también una anterior, para jugar versiones viejas. Tiene una biblioteca
+(`user://versiones/<versión>/`): INSTALAR solo descarga ahí el ejecutable de
+esa versión, sin cambiar de versión, y CAMBIAR es lo único que lo pone en el
+sitio del que está en marcha y reinicia; el de antes se guarda también, para
+volver sin descargar. Todas las versiones comparten esa carpeta, así que lo
+instalado desde una sale como instalado en las demás. Las v0.2 a v1.0 se
+volvieron a publicar con esta ventana (`herramientas/recompilar_version.sh`,
+que solo cambia esos dos scripts y el botón del menú). Las teclas nuevas (Q, E y R)
 están en `project.godot`, que no viaja con la actualización pequeña: si a un
 ejecutable antiguo le faltan, `teclas_antiguas.gd` las añade al empezar la
 partida.

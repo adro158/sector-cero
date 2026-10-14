@@ -182,44 +182,16 @@ de lanzar Godot.
 - Build: `--headless --path projecte --export-release "Windows Desktop"
   ../build/windows/SectorCero.exe` (igual con "Linux"). La exportación funciona
   en headless aunque el driver gráfico de la VM esté caído.
-
-## Encargo pendiente: descargar versiones sin cambiar a ellas (13/10/2026)
-
-Adam lo pidió el 13/10 tras probar la v0.9 y quedó por hacer: él dirá cuándo hay
-tiempo. **Solo esto**: en las versiones antiguas no se toca nada más del juego.
-
-**Ahora:** en VERSIONES, INSTALAR descarga la versión, guarda la que está en
-marcha en la biblioteca (`user://versiones/<v>/`), cambia el ejecutable y
-reinicia: la versión se abre sola. Adam no quiere eso.
-
-**Lo que quiere:**
-
-1. VERSIONES lista todas las versiones publicadas, como ahora.
-2. Todas se pueden descargar. Descargar solo la deja en la biblioteca: no
-   cambia el ejecutable ni reinicia. Al acabar, su fila pasa a INSTALADA.
-3. Una versión instalada sale como INSTALADA, con CAMBIAR (y BORRAR). Solo
-   CAMBIAR pasa a ella, y solo cuando el jugador lo pulsa.
-4. Igual desde todas las versiones (v0.2 a la última). La biblioteca es
-   común: todas se llaman "Sector Cero" y comparten `user://`, así que lo
-   descargado desde una sale como INSTALADA en las demás.
-
-**Cómo hacerlo:**
-
-- En `globales/instalador_juego.gd`, separar descargar de cambiar: una función
-  que solo haga `_descargar` (y `_guardar_actual`). `instalar()` sigue siendo
-  CAMBIAR. En `escenas/interfaz/panel_versiones.gd`, el botón DESCARGAR (en
-  lugar de INSTALAR), con el progreso en su fila y la lista refrescada al
-  terminar.
-- Volver a publicar la v0.2 a la v0.9 con
-  `projecte/herramientas/recompilar_version.sh`, que copia esos dos scripts de
-  `main` y añade solo el botón VERSIONES. La v0.8 y la v0.9 ya tienen el botón:
-  el paso 2 del script tiene que saltárselo en ellas. Subir los `.zip` de uno
-  en uno: `gh release upload --clobber` borra el viejo antes de subir el nuevo
-  (así se quedó la v0.4 sin descarga el 08/10); comprobar cada release después.
-- El botón ACTUALIZAR (versión nueva disponible) sigue actualizando y
-  reiniciando. Si Adam lo quiere también sin cambio automático, preguntárselo.
-- Probarlo con el servidor local que imita la API de GitHub (bitácora, sesión
-  6), con un ejecutable antiguo y uno nuevo.
+- Menú VERSIONES (decisión de Adam, 13 y 14/10): INSTALAR solo descarga la
+  versión a la biblioteca (`user://versiones/<v>/`), sin cambiar de versión;
+  CAMBIAR es lo único que pasa a otra y reinicia. Tiene que funcionar igual
+  desde todas las versiones publicadas: si cambian `panel_versiones.gd` o
+  `instalador_juego.gd`, las releases anteriores se vuelven a publicar con
+  `projecte/herramientas/recompilar_version.sh` (solo esos dos scripts y el
+  botón del menú), subiendo los `.zip` de uno en uno (`gh release upload
+  --clobber` borra el viejo antes de subir el nuevo) y, en la última, también
+  los `.pck`. Se prueba con su modo `prueba` y un servidor local que imita la
+  API de GitHub (bitácora, sesión 12).
 
 ## Git
 

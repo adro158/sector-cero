@@ -14,8 +14,10 @@ arranca, dale permiso con `chmod +x SectorCero.x86_64`). No hay que instalar
 nada. Si sale una versión nueva, el juego avisa solo (también en plena
 partida): **ACTUALIZAR** la descarga y reinicia el juego, y **AHORA NO** lo deja
 para más tarde, con el botón en el menú. Con **VERSIONES** se puede
-instalar cualquier versión publicada, también una anterior; en Opciones se
-puede apagar el aviso.
+instalar cualquier versión publicada, también una anterior: **INSTALAR** la
+descarga sin salir de la que tienes, y después **CAMBIAR** pasa a ella (el
+juego se reinicia) y **BORRAR** la quita. En Opciones se puede apagar el
+aviso.
 
 ## Controles
 
