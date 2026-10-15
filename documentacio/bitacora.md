@@ -2493,6 +2493,16 @@ Al final de la clase, Adam pasó dos encargos más, que quedan sin empezar:
   personajes y a la horda. Los dibujos los hizo Adam con Claude en el chat
   (`jefe_final.zip`, que no está en el repo).
 
+Antes de irse, Adam pidió arreglar ya lo del F1 que se pudiera en 20
+minutos. Lo de volver al 0 está hecho: saltar a un minuto recarga la escena
+de la partida y después la pone en ese minuto. El salto pendiente se apunta
+con `get_tree().root.set_meta()`, porque la raíz del árbol sigue ahí al
+recargar. Así cada salto deja lo mismo, venga de donde venga, y se reinician
+también la horda, los élites y las resistencias. Se probó en headless con un
+script temporal: tras ir a 5:00 queda en nivel 9 con 8 mejoras y tras volver
+a 0:00 en nivel 1 con 0. El nivel bajo (las tablas del bot) no cabía en el
+tiempo y queda pendiente.
+
 Lo pedido, el plan propuesto y las preguntas para Adam están en
 `encargo_fase2.md`. Se quedan esperando a que él diga que sí al plan. Para
 retomarlo en casa se añadió a CLAUDE.md la frase clave "Estoy en casa": bajar

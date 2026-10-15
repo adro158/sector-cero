@@ -111,10 +111,11 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la horda
      huyendo, como en la v0.9); por ejemplo, menos vida para el jefe en media.
    Si todo va bien, publicar la v1.2 con la explosión del rootkit.
-2. **Arreglar el menú F1** (lo vio Adam el 15/10; sin hacer): al saltar a un
+2. **Arreglar el nivel del menú F1** (lo vio Adam el 15/10): al saltar a un
    minuto da un nivel muy bajo (12 en el minuto 10, y jugando Adam va por el
-   14 en el 5), y al volver al minuto 0 no quita las mejoras. Plan en
-   `encargo_fase2.md`.
+   14 en el 5). Falta que el bot recoja fragmentos y volver a medir las tablas
+   (plan en `encargo_fase2.md`). Lo de volver al minuto 0 con las mejoras ya
+   está arreglado (15/10): saltar recarga la partida; falta probarlo jugando.
 3. **Fase 2 y jefe final NÚCLEO CERO en el minuto 15** (encargo de Adam del
    15/10, con dibujos suyos hechos con Claude). Encargo, plan y preguntas en
    `encargo_fase2.md`: **pendiente de que Adam diga que sí** al plan. Los

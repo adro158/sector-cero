@@ -51,7 +51,8 @@ Plan:
   contrastarlas con una partida de Adam (su nivel en los minutos 5, 10 y 15,
   mirando F3). Ojo: con un bot más fuerte cambian las victorias del
   simulador, así que lo de la dificultad media se decide después de esto.
-- **Saltar = empezar de nuevo y ponerse en ese minuto:** se recarga la escena
+- **Hecho el 15/10 (19:00), probado en headless: saltar = empezar de nuevo y
+  ponerse en ese minuto.** Se recarga la escena
   de la partida y el salto pendiente se apunta en el árbol
   (`get_tree().root.set_meta(...)`), que sigue ahí al cambiar de escena. Así
   volver al 0 deja la partida como al empezar (sin mejoras, sin resistencias,
