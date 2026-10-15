@@ -35,6 +35,12 @@ signal descargada(bien: bool)
 var _descarga: HTTPRequest
 var _tamano := 0
 var _progreso := 0.0
+## Dónde se descarga el .zip. Las descargas a la biblioteca usan uno por
+## versión: así no pisan el de un ACTUALIZAR que esté bajando a la vez.
+var _temporal := DESCARGA
+## Si este instalador es el que cambia de juego (ACTUALIZAR o CAMBIAR). Solo
+## entonces su progreso sale en el texto del menú.
+var _instalando := false
 
 
 ## Lo que hacen los botones ACTUALIZAR del menú y del aviso.
@@ -91,16 +97,28 @@ func instalar(release: Dictionary) -> void:
 	if release.is_empty():
 		release = await _ultima_release()
 	var version: String = release.get("tag_name", "").trim_prefix("v")
+	var estado_antes := Actualizador.estado
+	var version_antes := Actualizador.version_nueva
+	var ya_estaba := instalada(version)
+	_instalando = true
 	# Antes de cambiar de estado: es la versión del texto "Descargando la
 	# versión X..." del menú.
 	Actualizador.version_nueva = version
 	_cambiar(Actualizador.Estado.DESCARGANDO)
 	_guardar_actual()
 
-	if not instalada(version) and not await _descargar(release, version):
+	if not ya_estaba and not await _descargar(release, version):
 		_fallar()
 		return
 	if not _sustituir_ejecutable(ruta_guardada(version)):
+		if ya_estaba:
+			# CAMBIAR desde la biblioteca, sin permiso para escribir en la
+			# carpeta del juego: no hay ninguna página que abrir. Todo queda
+			# como estaba y el menú de versiones lo dice.
+			Actualizador.version_nueva = version_antes
+			_cambiar(estado_antes)
+			queue_free()
+			return
 		_fallar()
 		return
 
@@ -114,6 +132,7 @@ func instalar(release: Dictionary) -> void:
 
 func descargar(release: Dictionary) -> void:
 	var version: String = release.get("tag_name", "").trim_prefix("v")
+	_temporal = "user://version_%s.zip" % version
 	var bien: bool = instalada(version) or await _descargar(release, version)
 	descargada.emit(bien)
 	queue_free()
@@ -135,24 +154,27 @@ func _descargar(release: Dictionary, version: String) -> bool:
 	if url == "":
 		return false
 	_descarga = HTTPRequest.new()
-	_descarga.download_file = DESCARGA
+	_descarga.download_file = _temporal
+	# Media hora como mucho (el juego pesa unos 40 MB): si la conexión se
+	# cuelga, se da por fallida en lugar de esperar para siempre.
+	_descarga.timeout = 1800.0
 	add_child(_descarga)
 	_descarga.request(url, Actualizador.CABECERAS)
 	var resultado: Array = await _descarga.request_completed
 	_descarga.queue_free()
 	_descarga = null
 	var completo: bool = resultado[0] == HTTPRequest.RESULT_SUCCESS and resultado[1] == 200 \
-		and FileAccess.file_exists(DESCARGA) \
-		and FileAccess.open(DESCARGA, FileAccess.READ).get_length() == _tamano
+		and FileAccess.file_exists(_temporal) \
+		and FileAccess.open(_temporal, FileAccess.READ).get_length() == _tamano
 	var bien := completo and _sacar_del_zip(version)
-	DirAccess.remove_absolute(DESCARGA)
+	DirAccess.remove_absolute(_temporal)
 	return bien
 
 
 ## El .zip solo lleva un fichero: el juego con todo dentro.
 func _sacar_del_zip(version: String) -> bool:
 	var zip := ZIPReader.new()
-	if zip.open(DESCARGA) != OK or zip.get_files().size() != 1:
+	if zip.open(_temporal) != OK or zip.get_files().size() != 1:
 		return false
 	var contenido := zip.read_file(zip.get_files()[0])
 	zip.close()
@@ -176,7 +198,7 @@ func _process(_delta: float) -> void:
 	# Al instalar (ACTUALIZAR, o CAMBIAR sin tenerla), también en el texto del
 	# menú. Solo descargando a la biblioteca, el estado no cambia: se puede
 	# seguir jugando.
-	if Actualizador.estado == Actualizador.Estado.DESCARGANDO:
+	if _instalando:
 		Actualizador.progreso = nuevo
 		Actualizador.estado_cambiado.emit()
 

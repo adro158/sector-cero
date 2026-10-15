@@ -125,6 +125,8 @@ func _poner_botones(fila: HBoxContainer, release: Dictionary) -> void:
 ## Descarga la versión a la biblioteca y nada más: se sigue en esta. Una
 ## descarga cada vez, porque todas usan el mismo fichero temporal.
 func _instalar(fila: HBoxContainer, release: Dictionary) -> void:
+	if _actualizando():
+		return
 	_bloquear(true)
 	for hijo in fila.get_children().slice(1):
 		hijo.queue_free()
@@ -135,27 +137,51 @@ func _instalar(fila: HBoxContainer, release: Dictionary) -> void:
 	var bien: bool = await instalador.descargada
 	_bloquear(false)
 	_poner_botones(fila, release)
-	if not bien:
+	if bien:
+		_estado.text = "La %s ya está instalada: CAMBIAR la abre (el juego se reinicia)." % release.tag_name
+	else:
 		_estado.text = "No se ha podido descargar la %s. Inténtalo otra vez." % release.tag_name
 
 
 ## Pasa a una versión ya instalada: el juego se reinicia con ella.
 func _cambiar(release: Dictionary) -> void:
+	if _actualizando():
+		return
 	_bloquear(true)
 	_estado.text = "Cambiando a la %s. El juego se reinicia..." % release.tag_name
 	InstaladorJuego.instalar_version(release)
+	# Si ha ido bien, el juego ya se está cerrando y el estado sigue en
+	# DESCARGANDO. Si no (la carpeta del juego no deja escribir), el instalador
+	# lo ha devuelto a como estaba: la ventana se desbloquea y lo dice.
+	if Actualizador.estado != Actualizador.Estado.DESCARGANDO:
+		_bloquear(false)
+		_estado.text = "No se ha podido cambiar a la %s: la carpeta del juego no deja escribir." % release.tag_name
 
 
 ## Borra la versión de la biblioteca: su fila vuelve a ofrecer INSTALAR.
 func _borrar(fila: HBoxContainer, release: Dictionary) -> void:
 	InstaladorJuego.borrar(release.tag_name.trim_prefix("v"))
 	_poner_botones(fila, release)
+	_volver.grab_focus()
+
+
+## Mientras se descarga una actualización (ACTUALIZAR), no se instala ni se
+## cambia nada: las dos cosas a la vez se pisarían.
+func _actualizando() -> bool:
+	if Actualizador.estado != Actualizador.Estado.DESCARGANDO:
+		return false
+	_estado.text = "Espera a que termine la actualización que se está descargando."
+	return true
 
 
 func _bloquear(bloqueado: bool) -> void:
 	for boton in _lista.find_children("*", "Button", true, false):
 		boton.disabled = bloqueado
 	_volver.disabled = bloqueado
+	# El botón pulsado desaparece al rehacer su fila: el foco vuelve a VOLVER
+	# para que con el teclado o el mando se pueda seguir y salir.
+	if not bloqueado:
+		_volver.grab_focus()
 
 
 func _unhandled_input(evento: InputEvent) -> void:
