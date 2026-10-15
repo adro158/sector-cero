@@ -110,7 +110,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    - **La dificultad media**: decidir si se queda así o se compensa. Con la
      horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la horda
      huyendo, como en la v0.9); por ejemplo, menos vida para el jefe en media.
-   Si todo va bien, publicar la v1.2 con la explosión del rootkit.
+   **La v1.2 ya está publicada** (15/10, a petición de Adam, sin probarla antes en casa): lleva la explosión del rootkit y el arreglo del F1. Si al probar sale algo, se arregla y se saca una v1.3.
 2. **Arreglar el nivel del menú F1** (lo vio Adam el 15/10): al saltar a un
    minuto da un nivel muy bajo (12 en el minuto 10, y jugando Adam va por el
    14 en el 5). Falta que el bot recoja fragmentos y volver a medir las tablas

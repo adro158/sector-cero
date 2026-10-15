@@ -2507,3 +2507,9 @@ Lo pedido, el plan propuesto y las preguntas para Adam están en
 `encargo_fase2.md`. Se quedan esperando a que él diga que sí al plan. Para
 retomarlo en casa se añadió a CLAUDE.md la frase clave "Estoy en casa": bajar
 lo último, resumir qué está hecho y qué falta, y ponerse a probar.
+
+Al cerrar, Adam pidió publicar ya la v1.2, sin esperar a probarla en casa.
+Lleva la explosión del rootkit y el arreglo del F1. No cambian
+`project.godot`, `version.gd`, el actualizador, el instalador ni el panel de
+versiones, ni hay `class_name` nuevos: `EJECUTABLE_MINIMO` sigue en 0.2 y no
+hace falta volver a publicar las versiones anteriores.
