@@ -137,10 +137,13 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 - [x] Ajuste de balance y sensaciones de juego con el simulador de partidas (29/09,
       01/10 y 02/10)
 - [x] **Validación de rendimiento en una máquina con GPU real** (01/10, RTX 5070)
+- [x] Pulido de animaciones (14/10): horda animada con una tira de fotogramas
+      por tipo, destello de élites y jefe al recibir golpes, piernas al ritmo
+      de la velocidad y barra de experiencia que se llena y destella
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
-      v0.2, 01/10, a la v1.0, 13/10, publicadas; falta probarlas en un
+      v0.2, 01/10, a la v1.1, 15/10, publicadas; falta probarlas en un
       ordenador sin Godot)
 
 ---

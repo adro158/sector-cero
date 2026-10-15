@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 14/10/2026** contra la bitácora (hasta la sesión 12) y
+**Estado verificado el 15/10/2026** contra la bitácora (hasta la sesión 13) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -36,11 +36,11 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
 | 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
 | 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
-| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones, glitch de la horda, suelo animado (pulsos, LEDs, ventiladores), tweens en menús y avisos |
+| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, suelo animado (pulsos, LEDs, ventiladores), barra de experiencia que se llena y destella, tweens en menús y avisos |
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.0 publicadas por la GitHub Action, también en la web; todas se republicaron el 14/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.1 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -58,7 +58,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.0 publicada el 13/10, también en la web. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.1 publicada el 15/10, también en la web. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -94,10 +94,13 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
    `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
    menciona el contenido del 02/10.
-2. **Jugar la v1.0** (publicada el 13/10): la biblioteca de versiones, las
-   ultis con sprites, el rayo del Mago apuntado con el ratón, el salto de
-   minuto del F1 con el nivel y las mejoras de ese minuto y las tres
-   dificultades.
+2. **Jugar la v1.1** (publicada el 15/10): la horda animada, el destello de
+   élites y jefe, las piernas que ya no patinan, la barra de experiencia y el
+   menú de versiones que instala sin cambiar; además de lo de la v1.0 (ultis
+   con sprites, rayo del Mago con el ratón, salto del F1 y dificultades).
+   **Medir el rendimiento en casa** con `herramientas/medir_rendimiento.gd`:
+   en el instituto, antes y después de animar la horda dan lo mismo dentro del
+   ruido de la máquina virtual, que no vale para medir.
 3. **Decidir si la media se queda así**: con la horda que ya no huye, el bot
    gana 1 de 10 (4 de 10 con la horda huyendo, como en la v0.9). Si no, se
    compensa (por ejemplo, menos vida para el jefe en media).
@@ -141,6 +144,8 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   enunciado exige en catalán, y los términos técnicos sin traducción (sesión 2).
   También el informe del seguimiento y la documentación (sesión 6).
 - **Horda con `MultiMeshInstance2D`, arrays de tamaño fijo y rejilla espacial.**
+  Desde la sesión 12, animada con una tira de fotogramas por tipo que elige el
+  shader (sigue siendo una llamada de dibujo por tipo); el troyano se voltea.
   Un enemigo de horda no es un nodo (sesión 2).
 - **Las mejoras son multiplicadores y nunca modifican el `.tres`** del arma, porque
   los recursos están compartidos y en caché (sesión 2). Igual con las

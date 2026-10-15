@@ -2089,3 +2089,331 @@ dificultades. Pendiente de Adam: decidir si la media se queda como está.
 4. Ranking mundial con Supabase (más adelante): Adam crea el proyecto y Claude
    le pasa el script SQL y los pasos.
 5. Vídeo demostrativo y ensayo de la defensa.
+
+---
+
+## Sesión 12 — 14/10/2026
+
+**Duración:** 2 h · **Fitas:** 5 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 23 h de las 60 sugeridas (38 %)
+
+### Qué se ha hecho
+
+Al empezar no había nada nuevo en GitHub ni en la rama de Alan. Adam pidió
+directamente arreglar el menú de versiones, el encargo apuntado en la sesión 11
+en `CLAUDE.md`: "sigue sin interactuar bien".
+
+- **INSTALAR solo descarga.** En VERSIONES, INSTALAR descargaba la versión,
+  cambiaba el ejecutable y reiniciaba: la versión se abría sola. Ahora solo la
+  deja en la biblioteca (`user://versiones/<v>/`), con el porcentaje en su
+  fila, y la fila pasa a INSTALADA con CAMBIAR y BORRAR. Se sigue en la
+  versión que se tenía.
+- **CAMBIAR es lo único que cambia de versión** (el juego se reinicia con
+  ella). Mientras cambia, la ventana dice "Cambiando a la vX" en lugar del
+  "Descargando la versión X... 0 %" de antes, que no era verdad: no descarga
+  nada.
+- **BORRAR** vuelve a dejar la fila con INSTALAR; antes la dejaba como
+  "BORRADA", sin forma de volver a instalarla sin cerrar la ventana.
+- **Las v0.2 a v1.0, vueltas a publicar** con esta ventana, para que funcione
+  igual desde todas. Solo cambian los dos scripts del menú de versiones (y el
+  botón VERSIONES en las que no lo traían); el resto de cada versión es el de
+  su etiqueta. En la v1.0 también los `.pck`, que son lo que descargan las
+  demás al pulsar ACTUALIZAR. Cada release lleva una nota con el cambio.
+
+Después, Adam pasó `horda_animada.zip` (dibujos hechos con Claude en el chat,
+con un prompt de lo que había que hacer) para pulir animaciones, y pidió
+publicar la v1.1 al acabar:
+
+- **La horda, animada.** Cada tipo tiene una tira de 4 fotogramas
+  (`recursos/enemigos/sprites/*_anim.png`) cuyo primer fotograma es el sprite
+  de siempre, que se queda para la ficha y las reglas. El bit corrupto estira
+  los pinchos y muerde, el paquete perdido bate las alas, el proceso colgado
+  gira los ojos de "cargando", el troyano trota y el ransomware da tirones.
+- **El troyano mira al jugador:** está dibujado mirando a la izquierda y se da
+  la vuelta cuando el jugador está a su derecha.
+- **Las piernas ya no patinan:** el jugador y el jefe mueven las piernas al
+  ritmo al que se mueven de verdad (mejora de velocidad, aura lenta, paredes,
+  embestida del jefe).
+- **Los élites y el jefe destellan en blanco** al recibir un golpe, como la
+  horda: antes no se notaba si se les estaba dando.
+- **La barra de experiencia** se llena poco a poco y, al subir de nivel, la
+  barra y "NIVEL N" se ponen blancas y la etiqueta da un pequeño salto.
+- **Una revisión de todo lo del día** con cinco agentes (ver "Uso de IA"):
+  encontró diez defectos reales, que se arreglaron y se probaron (ver
+  "Problemas"). Se acabó el tiempo antes de commitear los arreglos, volver a
+  publicar las versiones antiguas y publicar la v1.1: quedó para la sesión 13.
+
+### Decisiones técnicas y por qué
+
+**Descargar y cambiar, separados en el instalador.** `instalador_juego.gd`
+tiene ahora `descargar_version()`, que solo baja el `.zip` a la biblioteca y
+avisa con dos señales propias (`progreso` y `descargada`), y
+`instalar_version()`, que es CAMBIAR. La descarga a la biblioteca no toca el
+estado del `Actualizador`: si lo pusiera en DESCARGANDO, el menú desactivaría
+JUGAR y el texto de la versión diría que se va a reiniciar. Las señales son
+del propio instalador, no del bus: solo le interesan a la ventana de
+versiones, y el bus es para lo que cruza de la jugabilidad a la interfaz.
+
+**La descarga empieza diferida** (`call_deferred`): así la ventana se conecta
+a las señales antes de que empiece. Si la versión ya estuviera, avisaría al
+momento y nadie lo oiría.
+
+**Una descarga cada vez.** Mientras descarga, los demás botones y VOLVER se
+desactivan: así solo hay un porcentaje que seguir y nada que se pise.
+
+**Cada fila se pinta con una función** (`_poner_botones`), que se vuelve a
+llamar al terminar de descargar o al borrar: así la fila siempre enseña lo
+que hay en la biblioteca en ese momento.
+
+**El script que vuelve a publicar versiones** se salta añadir el botón en las
+que ya lo tienen (desde la v0.8), exporta también los `.pck` y, en modo
+prueba, añade al menú un gancho que pulsa en VERSIONES lo que se le pase al
+arrancar (`SectorCero.exe -- instalar=v0.5 salir`) y escribe cómo queda cada
+fila en el registro del juego. Así se probó el ejecutable de verdad, sin
+nadie delante.
+
+**La horda se anima en el shader, sin dejar de ser una llamada de dibujo por
+tipo.** Un MultiMesh comparte textura y material entre todos sus enemigos,
+pero esa textura puede ser una tira: el shader elige el fotograma de cada uno
+con el reloj de la partida y un desfase por enemigo, para que no se muevan a
+la vez (al principio eran `TIME` y su `INSTANCE_ID`; la revisión mostró por
+qué no, ver "Problemas"). `UV` va de 0 a 1 en el cuadrado del enemigo, así que se
+lleva al trozo de la tira que toca: `(UV.x + fotograma) / fotogramas`. El
+`COLOR` que llega a `fragment()` ya trae la textura leída con `UV` (el
+fotograma 0); por eso se lee la buena y se multiplica por el color del
+vértice, guardado en un `varying` en `vertex()`: así el `modulate` de la
+huida sigue desvaneciendo la horda. Cada tipo lleva su copia del material,
+con sus fotogramas y su velocidad.
+
+**El volteo, en su propio script** (`volteo_horda.gd`), como la embestida:
+`gestor_enemigos.gd` ya pasaba de 300 líneas y con el volteo dentro llegaba a
+unas 364 (lo señalaba el propio prompt). Un array de tamaño fijo dice hacia
+dónde mira cada uno, viaja con él al eliminar a otro y solo cambia si el
+jugador está a más de 8 px a un lado, para que no parpadee con el jugador
+encima. El volteo es la escala x de su transformación en el MultiMesh.
+
+**El destello de élites y jefe, en un script para su `Sprite2D`**
+(`sprite_destello.gd`): un material propio con un shader que mezcla con
+blanco, y una cuenta atrás de 0,1 s como la de la horda. Así élites y jefe
+solo llaman a `destellar()` y casi no crecen (el élite se queda en 192 líneas).
+Va en un shader y no en el `modulate` porque el jefe ya lo usa para su aviso
+rojo y su latido morado; se comprobó que, avisando, el golpe lo pone rosado
+sin perder el rojo. Cada uno tiene su material: si lo compartieran,
+destellarían todos los élites a la vez.
+
+**La barra de experiencia, fuera del HUD** (`panel_experiencia.gd`, como los
+demás paneles): el HUD pasa de 169 a 134 líneas. Se llena con un `Tween` y,
+al subir de nivel, empieza desde cero con lo que sobró. Al subir de nivel el
+juego ya está en pausa cuando llega el aviso, así que sus `Tween` usan
+`TWEEN_PAUSE_PROCESS`; la etiqueta crece desde su borde izquierdo para no
+salirse del panel. La barra no tiene escalones (`step = 0`): con los de un
+punto, el llenado iría a saltos.
+
+**Las piernas, en proporción a la velocidad real:** `velocity.length()` entre
+los 240 para los que se ajustaron los 7,7 fotogramas por segundo. Medido: 31,2
+px por fotograma de andar sin mejora, con la mejora de velocidad y en el aura
+lenta. El jefe, embistiendo, las mueve tantas veces más deprisa como lo es su
+embestida (480 frente a 90).
+
+### Problemas encontrados y cómo se resolvieron
+
+**No se podía comprobar en los `.pck` qué ventana llevaban:** los scripts no
+se exportan como texto, así que buscar el texto nuevo dentro no lo
+encuentra. Se comprobó el código del que salió cada una: los dos scripts
+iguales que en `main`, el botón una sola vez, sin el gancho de prueba, el
+nombre de verdad y su número de versión.
+
+**En headless, el MultiMesh no guarda nada.** La primera prueba del volteo
+leía las transformaciones del MultiMesh y salían todas sin voltear: sin
+ventana, el servidor de dibujo es de mentira y devuelve siempre la
+identidad. El volteo estaba bien (el array decía lo correcto); se comprobó
+con una captura con ventana.
+
+**La medida de rendimiento parecía decir que todo iba el doble de lento.** La
+primera medida "después" daba la física al doble que la "antes". Midiendo las
+dos versiones una detrás de otra, dos veces, la misma versión variaba más de
+una vuelta a otra que entre versiones: era el ruido de la máquina virtual. En
+el instituto no se puede medir; queda para casa.
+
+**Al cerrar salían más avisos de memoria que otras veces** (18 objetos y 7
+recursos). Con `--verbose` son todos de audio (los sonidos que sonaban al
+acabar la partida): el aviso conocido del motor.
+
+**Lo que encontró la revisión, y cómo se arregló.** Todo eran cosas que no
+se veían en las pruebas normales:
+
+- *El destello del jefe tapaba el aviso rojo de su embestida* con el Ping
+  rebotando contra él (cada rebote lo vuelve a poner blanco), y ese aviso es lo
+  que deja esquivarla. Ahora no destella mientras avisa ni mientras invoca.
+- *La horda andaba en el sitio con el juego en pausa*: el shader usaba `TIME`,
+  que no se para con la pausa. El gestor lleva ahora el reloj de la animación
+  (un uniforme `tiempo` que avanza en `_physics_process`, que sí se para).
+- *Al morir un enemigo, el que ocupaba su hueco saltaba de fotograma*: el
+  desfase salía de `INSTANCE_ID`, que es el hueco en el MultiMesh y cambia al
+  mover el último vivo al hueco del muerto. Ahora sale de su id, que viaja con
+  él, y llega al shader en el tercer dato de cada enemigo (`INSTANCE_CUSTOM.b`).
+- *El troyano se daba la vuelta en plena embestida* al pasar al jugador, y en
+  fácil huía de espaldas. Ahora mira hacia donde embiste o hacia donde huye.
+- *El salto de "NIVEL N" casi nunca se veía*: la caja que contiene la etiqueta
+  le devuelve la escala a 1 cuando cambia de largo el texto de la experiencia,
+  antes de que empiece el `Tween`. La escala de salida va en `from()`.
+- *Si CAMBIAR fallaba* (carpeta del juego sin permiso de escritura), la
+  ventana de versiones se quedaba bloqueada y salía un aviso falso de versión
+  nueva. Ahora todo queda como estaba y la ventana lo dice.
+- *Una descarga colgada bloqueaba la ventana para siempre*: ahora hay media
+  hora de límite.
+- *Las descargas a la biblioteca compartían el fichero temporal* con las de
+  ACTUALIZAR: ahora cada una usa el suyo, y mientras se actualiza no se instala
+  ni se cambia nada.
+- *Tras INSTALAR o BORRAR nada tenía el foco* y con el mando no se podía salir:
+  el foco vuelve a VOLVER.
+- *Un reintento que salía bien dejaba el mensaje de error*: ahora dice que ya
+  está instalada.
+
+Los dos hallazgos sobre el largo de `instalador_juego.gd` (246 líneas) se
+descartaron: es una norma orientativa que el fichero ya pasaba, y partirlo
+obligaría a llevar otro fichero a todas las versiones antiguas.
+
+### Uso de IA
+
+Claude separó la descarga del cambio de versión, preparó el modo de prueba
+del script, probó el flujo completo con un servidor local, recompiló y
+volvió a publicar las nueve versiones. La idea y cómo tenía que funcionar son
+de Adam.
+
+Las tiras de la horda las dibujó Claude en otra conversación con Adam, que
+trajo también el cambio probado del shader y los datos y la lista de
+arreglos. Claude los integró, sacó el volteo y el panel de experiencia a sus
+scripts, hizo el destello con un script para el sprite y lo probó todo. Al
+final, como Adam tiene activado ultracode, cuatro agentes revisaron los
+cambios del día desde enfoques distintos (shaders, lógica, interfaz y
+versiones, y normas del proyecto) y un quinto intentó desmentir cada hallazgo
+antes de aceptarlo.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless; las clases globales siguen siendo 16
+  (los dos scripts viajan con la actualización pequeña).
+- De punta a punta con un servidor local que imita la API de GitHub y dos
+  versiones de prueba (la v1.0 y la v0.5 recompiladas), desde una biblioteca
+  vacía:
+  1. En la 1.0, INSTALAR la 0.5: se descarga, la fila pasa a INSTALADA con
+     CAMBIAR y BORRAR, y el ejecutable sigue siendo el de la 1.0.
+  2. En la 1.0, CAMBIAR a la 0.5: el ejecutable pasa a ser el de la 0.5 y el
+     juego se reinicia; la biblioteca guarda las dos.
+  3. En la 0.5, BORRAR la 1.0 (vuelve a INSTALAR) e INSTALARLA otra vez
+     (vuelve a INSTALADA), sin salir de la 0.5.
+  4. En la 0.5, CAMBIAR a la 1.0: vuelve a la 1.0.
+  5. En la 1.0, la 0.5 sale como INSTALADA.
+- Las nueve versiones recompiladas arrancan sin errores de script, y se
+  comprobó de qué código salió cada una.
+- Cada release, con sus `.zip` nuevos del tamaño esperado y su nota.
+- Las cinco tiras: 4 fotogramas cuadrados del tamaño del sprite, el primero
+  idéntico al sprite y los otros tres distintos.
+- Horda: cada tipo con su material, 4 fotogramas y su velocidad, y solo el
+  troyano con volteo; capturas con ventana de los cinco tipos en tres
+  momentos (cambian de fotograma) y de troyanos a los dos lados del jugador
+  (todos lo miran).
+- Piernas: la misma distancia por fotograma de andar sin mejora, con la mejora
+  de velocidad y en el aura lenta (31,2 px).
+- Destello: capturas antes, justo después del golpe y al acabar, de un élite y
+  del jefe, también con el jefe avisando en rojo; cada uno con su material.
+- Barra: capturas mientras se llena y al subir de nivel con el juego en pausa.
+- Una partida con enemigos de los cinco tipos y el élite muriendo, el jefe
+  recibiendo golpes y seis subidas de nivel, sin errores.
+- Una partida del simulador: el mismo resultado que la misma partida del día
+  anterior (las animaciones no cambian el juego), sin errores.
+- Rendimiento antes y después en el instituto: iguales dentro del ruido; no
+  valen para decidir nada.
+- Tras los arreglos de la revisión: el troyano mantiene el lado al pasar al
+  jugador embistiendo y vuelve a mirarlo al perseguir; el jefe no destella
+  avisando y sí persiguiendo; el reloj de la animación no avanza en pausa. El
+  menú de versiones, otra vez de punta a punta con el servidor local, y además
+  CAMBIAR con la carpeta sin dejar escribir (se fuerza creando una carpeta con
+  el nombre del fichero que intenta escribir): la ventana se desbloquea, VOLVER
+  queda activo y dice que no ha podido cambiar.
+
+### Estado al cerrar
+
+La sesión se cortó por falta de tiempo con los arreglos de la revisión hechos
+y probados, pero sin commitear, sin volver a publicar las versiones antiguas
+y sin publicar la v1.1. Todo eso se hizo en la sesión 13.
+
+### Siguiente paso
+
+Seguir en la sesión 13 (ver abajo).
+
+---
+
+## Sesión 13 — 15/10/2026
+
+**Duración:** 2 h · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 25 h de las 60 sugeridas (42 %)
+
+### Qué se ha hecho
+
+Se terminó lo que la sesión 12 dejó a medias. Al empezar no había nada nuevo
+en GitHub ni en la rama de Alan.
+
+- **Los arreglos de la revisión, commiteados** (en la sesión 12 quedaron
+  hechos y probados, pero sin commit): la horda animada, el troyano, el
+  destello del jefe, la barra de experiencia y el menú de versiones.
+- **Las v0.2 a v1.0, vueltas a publicar otra vez,** porque el menú de
+  versiones ha cambiado con los arreglos y tiene que funcionar igual desde
+  todas. Como siempre, solo cambian sus dos scripts; cada release lleva una
+  nota con lo que cambia.
+- **Publicada la v1.1**, con la horda animada, el destello de élites y jefe,
+  las piernas que ya no patinan, la barra de experiencia y el menú de
+  versiones arreglado. Los que tienen la v1.0 la reciben con el aviso de
+  ACTUALIZAR.
+- **`CLAUDE.md`, con cuándo usar subagentes y cómo responder:** un bloque que
+  Adam pegó al final de la sesión 12. Se añadió sin la frase que llamaba al
+  proyecto "Projecte de DAM (módulo 0492)", porque chocaba con lo que dice el
+  repo ("Demostra el teu talent"); se lo preguntó a Adam antes.
+
+### Decisiones técnicas y por qué
+
+**Volver a publicar las versiones antiguas, aunque el fallo era raro.** Los
+arreglos del menú de versiones (la ventana que se quedaba bloqueada si fallaba
+un cambio, el foco con el mando, el fichero temporal compartido) van en dos
+scripts que llevan dentro todas las releases. Adam quiere que el menú funcione
+igual desde cualquier versión, así que se recompilaron las nueve.
+
+### Problemas encontrados y cómo se resolvieron
+
+Ninguno nuevo: la recompilación y la subida salieron a la primera.
+
+### Uso de IA
+
+Claude commiteó los arreglos, recompiló y volvió a subir las versiones,
+publicó la v1.1 y cerró la bitácora de las sesiones 12 y 13. Adam decidió las
+horas y si se añadía el bloque de `CLAUDE.md`.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless antes de commitear; las clases globales
+  siguen siendo 16.
+- Las nueve versiones recompiladas: los dos scripts iguales que en `main`, el
+  botón una sola vez, sin el gancho de prueba, con su nombre y su número de
+  versión, y arrancan sin errores de script.
+- Cada release, con sus `.zip` del mismo tamaño que los recompilados y su
+  nota; la v1.1, con sus ficheros, su `version.json` y la web publicada.
+
+### Estado al cerrar
+
+Todo subido a GitHub. Publicada la v1.1 (también en la web) y las v0.2 a v1.0
+vueltas a publicar con el menú de versiones arreglado; las nueve comprobadas.
+
+### Siguiente paso
+
+1. Jugar la v1.1 y decidir si la dificultad media se queda así o se compensa.
+2. En casa, medir el rendimiento con la horda animada
+   (`herramientas/medir_rendimiento.gd`, con la versión de antes y la de
+   ahora): en el instituto no vale.
+3. La explosión del élite Rootkit con el asset de Adam: descomprimir
+   `explosion_rootkit.zip` en la raíz del repo y seguir su
+   `PROMPT_CLAUDE_CODE.md` (si la sesión es en casa, pedirle el zip).
+4. Ranking mundial con Supabase (más adelante), vídeo demostrativo y ensayo
+   de la defensa.
