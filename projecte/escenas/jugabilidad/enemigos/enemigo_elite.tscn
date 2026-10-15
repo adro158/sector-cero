@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c3f4v88yw22qk" path="res://escenas/jugabilidad/enemigos/sprite_destello.gd" id="4_destello"]
 
 [node name="Elite" type="Node2D" groups=["elites", "objetivos"]]
+texture_filter = 1
 script = ExtResource("1_elite")
 datos = ExtResource("2_datos")
 

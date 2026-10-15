@@ -18,6 +18,8 @@ const AVISO_EXPLOSION := 0.8
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
+const SOBRECARGA := preload("res://medios/sprites/explosion/rootkit_sobrecarga.png")
+const ZONA := preload("res://medios/sprites/explosion/rootkit_zona.png")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -170,10 +172,15 @@ func _explotar() -> void:
 
 func _draw() -> void:
 	if _cuenta_atras > 0.0:
-		# Anillo de la explosión que se va llenando hasta que estalla.
+		# La zona se va llenando, su anillo gira (sus 4 fotogramas pasan cuatro
+		# veces) y el rootkit se agrieta y tiembla cada vez más hasta que estalla.
 		var progreso := 1.0 - _cuenta_atras / AVISO_EXPLOSION
-		draw_circle(Vector2.ZERO, RADIO_EXPLOSION * progreso, Color(1.0, 0.4, 0.1, 0.25))
-		draw_arc(Vector2.ZERO, RADIO_EXPLOSION, 0.0, TAU, 48, Color(1.0, 0.4, 0.1, 0.9), 2.0)
+		draw_circle(Vector2.ZERO, RADIO_EXPLOSION * progreso, Color(1.0, 0.4, 0.1, 0.18))
+		var giro := int(progreso * 16.0) % 4
+		draw_texture_rect_region(ZONA, Rect2(-152.0, -152.0, 304.0, 304.0), Rect2(giro * 304.0, 0.0, 304.0, 304.0))
+		var temblor := Vector2(randf_range(-2.0, 2.0), randf_range(-2.0, 2.0)) * progreso
+		var fotograma := mini(int(progreso * 6.0), 5)
+		draw_texture_rect_region(SOBRECARGA, Rect2(Vector2(-32.0, -32.0) + temblor, Vector2(64.0, 64.0)), Rect2(fotograma * 64.0, 0.0, 64.0, 64.0))
 		return
 	if not _activo:
 		return

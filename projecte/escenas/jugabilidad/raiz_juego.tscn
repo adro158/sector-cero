@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -24,9 +24,17 @@
 [ext_resource type="Texture2D" path="res://medios/sprites/proyectil_ping.png" id="24_proyectil"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/progresion/premios_elite.gd" id="25_premios"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_trucos.gd" id="26_trucos"]
+[ext_resource type="Script" uid="uid://dquayuisw5av5" path="res://escenas/jugabilidad/efectos/explosiones_elite.gd" id="27_explosiones"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
+
+[node name="Explosiones" type="Node2D" parent="."]
+texture_filter = 1
+script = ExtResource("27_explosiones")
+
+[node name="Fuego" type="Node2D" parent="Explosiones"]
+z_index = 4
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
 
