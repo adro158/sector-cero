@@ -117,6 +117,18 @@ morado del jefe. Las piernas del jugador y del jefe avanzan en proporción a la
 velocidad a la que se mueven de verdad (con la mejora de velocidad, en el aura
 lenta o embistiendo), para que los pies no patinen.
 
+**La explosión del rootkit.** Un élite explosivo avisa 0,8 s antes de
+estallar: en su `_draw` se agrieta y se pone al rojo (6 fotogramas según lo
+que queda de aviso), tiembla cada vez más y un anillo de peligro gira en el
+borde de la zona de 130 px. El temblor sale de senos y no de `randf()`: un
+número al azar gastado al dibujar cambiaría el azar de la partida y el
+simulador dejaría de repetir las mismas partidas. Al estallar avisa por el
+bus (`elite_exploto`) y `explosiones_elite.gd` dibuja la explosión (12
+fotogramas) y la quemadura que queda 4 s en el suelo. Ese nodo va el primero
+en la partida, así que la quemadura queda debajo del jugador y de la horda; la
+explosión la dibuja su hijo `Fuego`, con más `z_index`, encima de todos. Es
+solo dibujo: el daño, el radio y el tiempo de aviso no cambian.
+
 **El troyano embiste sin ser un nodo.** Persigue y, cerca del jugador, se para,
 parpadea y embiste en línea recta, igual que el jefe. Pero el jefe guarda su
 estado en variables y un troyano es solo una posición en una lista; su estado,

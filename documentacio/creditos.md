@@ -16,6 +16,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Corazón, cofre y ruleta del premio de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
 | Tiras de animación de la horda (5 tipos) | Hechas con IA (Claude) | Ver más abajo |
+| Explosión del rootkit (aviso, anillo, explosión y quemadura) | Hechos con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -89,6 +90,13 @@ scripts no forman parte del repositorio.
   estira los pinchos y muerde, el paquete perdido bate las alas, el proceso
   colgado gira los ojos de "cargando", el troyano trota y el ransomware da
   tirones al arco y mueve las cadenas.
+- **Explosión del rootkit** (`medios/sprites/explosion/`, 15/10/2026, de la
+  misma forma): `rootkit_sobrecarga.png` (6 fotogramas de 64x64: el rootkit
+  agrietándose y al rojo), `rootkit_zona.png` (4 fotogramas de 304x304: el
+  anillo de peligro que gira), `rootkit_explosion.png` (12 fotogramas de
+  288x288: destello, bola de fuego, onda, trozos, brasas y humo) y
+  `rootkit_quemadura.png` (128x128: la marca que queda en el suelo). Con ellos
+  vino el código de referencia del aviso y de `explosiones_elite.gd`.
 
 ### Sprites de los personajes y del jefe
 

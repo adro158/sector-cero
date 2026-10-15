@@ -19,8 +19,10 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 
 ## Fechas
 
-- **2 de octubre de 2026:** entrega de la propuesta (Fase 1) e informe del primer
-  seguimiento (redactado en `informe_primer_seguimiento.md`).
+- **Solo cuenta la entrega final** (lo aclaró Adam el 15/10). Las entregas de
+  antes (la del 2 de octubre, con la propuesta y el informe del primer
+  seguimiento) eran subir el enlace del GitHub para que los profesores vieran
+  cómo iba el proyecto en esas fechas.
 - Entrega final y defensa: la fecha no consta en el enunciado ni en el repositorio.
   Preguntar a Adam si hace falta.
 
@@ -36,7 +38,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
 | 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
 | 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
-| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, suelo animado (pulsos, LEDs, ventiladores), barra de experiencia que se llena y destella, tweens en menús y avisos |
+| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, explosión del rootkit (aviso, explosión y quemadura), suelo animado (pulsos, LEDs, ventiladores), barra de experiencia que se llena y destella, tweens en menús y avisos |
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
@@ -91,35 +93,33 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-1. **Entregar el informe del primer seguimiento** (hoy, 2 de octubre):
-   `informe_primer_seguimiento.md`. Está redactado con el estado del 01/10: no
-   menciona el contenido del 02/10.
-2. **Jugar la v1.1** (publicada el 15/10): la horda animada, el destello de
-   élites y jefe, las piernas que ya no patinan, la barra de experiencia y el
-   menú de versiones que instala sin cambiar; además de lo de la v1.0 (ultis
-   con sprites, rayo del Mago con el ratón, salto del F1 y dificultades).
-   **Medir el rendimiento en casa** con `herramientas/medir_rendimiento.gd`:
-   en el instituto, antes y después de animar la horda dan lo mismo dentro del
-   ruido de la máquina virtual, que no vale para medir.
-3. **Decidir si la media se queda así**: con la horda que ya no huye, el bot
-   gana 1 de 10 (4 de 10 con la horda huyendo, como en la v0.9). Si no, se
-   compensa (por ejemplo, menos vida para el jefe en media).
-4. **Explosión del élite Rootkit más vistosa**: Adam pasó el asset al final
-   de la sesión 11 (`explosion_rootkit.zip`, en las Descargas del ordenador
-   del instituto), sin tiempo para aplicarlo. Trae los sprites
-   (`medios/sprites/explosion/`), código de referencia y
-   `PROMPT_CLAUDE_CODE.md` con cómo integrarlo: se descomprime en la raíz del
-   repo y se sigue el prompt. Si la sesión es en otro ordenador, pedirle el
-   zip.
-5. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
-   le pasa el script SQL y los pasos).
-6. **Probar en un ordenador limpio** (sin Godot) una release y su botón
-   ACTUALIZAR.
-7. **Vídeo demostrativo** (2-4 min).
-8. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+1. **Probarlo todo en casa** (Adam, en un chat nuevo; en el instituto no se
+   puede probar jugando). Con el proyecto de `main` abierto en Godot:
+   - **La explosión del rootkit** (hecha el 15/10, aún sin publicar): F1 →
+     ÉLITE AHORA hasta que salga uno EXPLOSIVO, matarlo y mirar el aviso (se
+     agrieta y tiembla, el anillo gira), la explosión y la quemadura del suelo.
+   - **Lo de la v1.1** (publicada el 15/10): la horda animada y el troyano
+     mirando al jugador, el destello de élites y jefe (y que el jefe no
+     destelle mientras avisa en rojo), las piernas con la mejora de velocidad,
+     la barra de experiencia al subir de nivel.
+   - **El menú de versiones** desde la v1.1 descargada: INSTALAR una antigua
+     (no cambia de versión), CAMBIAR a ella y volver.
+   - **El rendimiento** con `herramientas/medir_rendimiento.gd` (con ventana),
+     antes de la horda animada (etiqueta v1.0) y ahora: en el instituto da lo
+     mismo dentro del ruido de la máquina virtual, que no vale para medir.
+   - **La dificultad media**: decidir si se queda así o se compensa. Con la
+     horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la horda
+     huyendo, como en la v0.9); por ejemplo, menos vida para el jefe en media.
+   Si todo va bien, publicar la v1.2 con la explosión del rootkit.
+2. **Vídeo demostrativo** (2-4 min).
+3. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-9. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-10. Opcional: sustituir los sprites de IA por pixel art propio.
+4. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+   ACTUALIZAR.
+5. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+6. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+   le pasa el script SQL y los pasos).
+7. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 

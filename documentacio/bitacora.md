@@ -2373,6 +2373,23 @@ en GitHub ni en la rama de Alan.
   proyecto "Projecte de DAM (módulo 0492)", porque chocaba con lo que dice el
   repo ("Demostra el teu talent"); se lo preguntó a Adam antes.
 
+Después, Adam preguntó si estaba hecha la explosión del rootkit (no lo
+estaba: el 13/10 pasó el asset pero pidió no aplicarlo aún) y si lo demás de
+aquel prompt de animaciones estaba hecho (sí: piernas, destello y barra van en
+la v1.1). Aclaró que **solo cuenta la entrega final**: las de antes eran subir
+el enlace del GitHub para que los profesores vieran cómo iba. Y pidió:
+
+- **La explosión del rootkit, con los sprites de Adam**
+  (`medios/sprites/explosion/`, hechos con Claude en el chat). Durante el
+  aviso de 0,8 s, el rootkit se agrieta y se pone al rojo temblando cada vez
+  más, y un anillo de peligro a trazos, con flechas hacia dentro, gira en el
+  borde de la zona que se llena. Al estallar sale una bola de fuego con su
+  onda, y en el suelo queda 4 s una quemadura con grietas que brillan. Solo
+  cambia el dibujo: el daño, el radio y el aviso son los mismos.
+- **Dejarlo todo apuntado y subido** para probarlo en casa en un chat nuevo,
+  porque en clase no puede probarlo jugando. No se publica versión: la v1.2,
+  con la explosión, cuando Adam lo haya probado.
+
 ### Decisiones técnicas y por qué
 
 **Volver a publicar las versiones antiguas, aunque el fallo era raro.** Los
@@ -2381,15 +2398,45 @@ un cambio, el foco con el mando, el fichero temporal compartido) van en dos
 scripts que llevan dentro todas las releases. Adam quiere que el menú funcione
 igual desde cualquier versión, así que se recompilaron las nueve.
 
+**La explosión, como venía en el prompt de Adam.** El aviso se dibuja en el
+`_draw` del élite (`draw_texture_rect_region` con el fotograma de la
+sobrecarga según lo que queda de aviso, y el del anillo girando). La
+explosión y la quemadura van en un nodo nuevo, `explosiones_elite.gd`, que
+escucha `elite_exploto` y guarda cada explosión como `[posición, segundos]`:
+no hace falta ninguna señal nueva. Ese nodo va el primero en `RaizJuego`, así
+que la quemadura queda encima del suelo y debajo del jugador y de la horda; la
+explosión la dibuja su hijo `Fuego` (con `z_index` 4) desde la señal `draw`,
+encima de los enemigos y debajo de las chispas y los números. El élite usa el
+filtro nearest para el pixel art; el texto de los afijos se sigue leyendo bien
+(captura). Con algún nombre más claro que en la referencia (`fotograma` y
+`giro` en lugar de `n`). El élite se queda en 201 líneas.
+
 ### Problemas encontrados y cómo se resolvieron
 
-Ninguno nuevo: la recompilación y la subida salieron a la primera.
+La recompilación y la subida salieron a la primera.
+
+**El temblor del rootkit cambiaba las partidas del simulador.** El código de
+referencia lo hacía con `randf_range` al dibujar, y eso gasta números del azar
+de la partida: con la misma semilla, la partida del simulador salía distinta
+(671 s, nivel 15) de la del día anterior (655 s, nivel 16). Con un temblor de
+senos, la misma partida vuelve a dar exactamente lo mismo. Así se sabe además
+que la explosión no cambia nada del juego.
+
+**En la prueba, la subida de nivel paraba la explosión.** Al matar al élite
+el jugador sube de nivel y el juego se pausa para elegir mejora: la cuenta
+atrás del aviso se para (como debe) y la prueba esperaba para siempre. La
+prueba elige ahora la mejora pulsando la tarjeta. Elegirla directamente por
+el bus no servía: el panel no se cerraba y tapaba las capturas.
 
 ### Uso de IA
 
 Claude commiteó los arreglos, recompiló y volvió a subir las versiones,
 publicó la v1.1 y cerró la bitácora de las sesiones 12 y 13. Adam decidió las
-horas y si se añadía el bloque de `CLAUDE.md`.
+horas y si se añadía el bloque de `CLAUDE.md`. Los sprites de la explosión
+y su código de referencia los hizo Adam con Claude en el chat; Claude los
+integró, cambió el temblor para no tocar el azar de la partida y lo probó.
+Sin subagentes, según el nuevo apartado de `CLAUDE.md`: todo pasaba por los
+mismos ficheros.
 
 ### Métodos de test empleados
 
@@ -2400,20 +2447,35 @@ horas y si se añadía el bloque de `CLAUDE.md`.
   versión, y arrancan sin errores de script.
 - Cada release, con sus `.zip` del mismo tamaño que los recompilados y su
   nota; la v1.1, con sus ficheros, su `version.json` y la web publicada.
+- Explosión del rootkit, con ventana: un élite explosivo y blindado junto al
+  jugador (el texto de los afijos se lee bien con el filtro nearest), matarlo
+  y capturas del aviso, la explosión y la quemadura (debajo del jugador, del
+  corazón y del cofre). Pausando a mitad de la explosión, se queda en el mismo
+  instante (0,27 s) y sigue al reanudar; la quemadura desaparece a los 4 s.
+- Una partida del simulador: sin errores y, con el temblor de senos, el mismo
+  resultado que la misma partida del día anterior.
 
 ### Estado al cerrar
 
 Todo subido a GitHub. Publicada la v1.1 (también en la web) y las v0.2 a v1.0
 vueltas a publicar con el menú de versiones arreglado; las nueve comprobadas.
+La explosión del rootkit está en `main`, probada con capturas, pero sin
+publicar: Adam la probará en casa jugando antes de la v1.2.
 
 ### Siguiente paso
 
-1. Jugar la v1.1 y decidir si la dificultad media se queda así o se compensa.
-2. En casa, medir el rendimiento con la horda animada
-   (`herramientas/medir_rendimiento.gd`, con la versión de antes y la de
-   ahora): en el instituto no vale.
-3. La explosión del élite Rootkit con el asset de Adam: descomprimir
-   `explosion_rootkit.zip` en la raíz del repo y seguir su
-   `PROMPT_CLAUDE_CODE.md` (si la sesión es en casa, pedirle el zip).
-4. Ranking mundial con Supabase (más adelante), vídeo demostrativo y ensayo
-   de la defensa.
+Todo esto se prueba en casa, en un chat nuevo, con el proyecto de `main`
+abierto en Godot (la lista detallada está en `requisitos_y_estado.md`, el
+primer punto de lo que queda por hacer):
+
+1. La explosión del rootkit: F1 → ÉLITE AHORA hasta que salga uno EXPLOSIVO,
+   matarlo y mirar el aviso, la explosión y la quemadura.
+2. Lo de la v1.1: horda animada, troyano, destellos (el jefe no destella
+   avisando), piernas con la mejora de velocidad y barra de experiencia.
+3. El menú de versiones desde la v1.1 descargada: INSTALAR una antigua sin
+   cambiar de versión, CAMBIAR a ella y volver.
+4. El rendimiento con `herramientas/medir_rendimiento.gd`, antes de la horda
+   animada (etiqueta v1.0) y ahora, con la GPU de verdad.
+5. Decidir si la dificultad media se queda así o se compensa.
+6. Si todo va bien, publicar la v1.2. Después: vídeo, ensayo de la defensa y
+   probar una release en un ordenador sin Godot.

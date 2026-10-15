@@ -139,7 +139,8 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 - [x] **Validación de rendimiento en una máquina con GPU real** (01/10, RTX 5070)
 - [x] Pulido de animaciones (14/10): horda animada con una tira de fotogramas
       por tipo, destello de élites y jefe al recibir golpes, piernas al ritmo
-      de la velocidad y barra de experiencia que se llena y destella
+      de la velocidad y barra de experiencia que se llena y destella; explosión
+      del rootkit con sprites (15/10)
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
