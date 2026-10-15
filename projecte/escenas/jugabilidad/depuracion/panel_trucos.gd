@@ -15,6 +15,9 @@ extends Control
 
 const ProgresoPorMinuto := preload("res://escenas/jugabilidad/depuracion/progreso_por_minuto.gd")
 const COLOR := Color(1.0, 0.75, 0.2)
+## Saltar de minuto recarga la partida. El salto se apunta en la raíz del
+## árbol, que sigue ahí al recargar, y lo aplica el menú de la partida nueva.
+const SALTO := "salto_pendiente"
 
 var _ventana: ColorRect
 var _tiempo: LineEdit
@@ -50,6 +53,11 @@ func _ready() -> void:
 	_ventana = EstiloInterfaz.ventana_centrada(caja, COLOR)
 	_ventana.visible = false
 	add_child(_ventana)
+
+	if get_tree().root.has_meta(SALTO):
+		# Diferido: el director y los niveles tienen que haber hecho su _ready.
+		_aplicar_salto.call_deferred(get_tree().root.get_meta(SALTO))
+		get_tree().root.remove_meta(SALTO)
 
 
 func _columna_partida() -> VBoxContainer:
@@ -141,9 +149,21 @@ func _saltar() -> void:
 	_ir_a(segundos)
 
 
+## Saltar es empezar la partida de nuevo y ponerla en ese minuto. Así da lo
+## mismo venir de antes o de después: volver al 0 quita las mejoras, y cada
+## salto deja lo mismo (también la horda, los élites y las resistencias).
 func _ir_a(segundos: float) -> void:
-	if _director().saltar_a(segundos) and _con_progreso.button_pressed:
-		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), segundos)
+	get_tree().root.set_meta(SALTO, {"segundos": segundos, "con_progreso": _con_progreso.button_pressed})
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
+func _aplicar_salto(salto: Dictionary) -> void:
+	# La partida nueva también se ha hecho con trucos.
+	_raiz.usar_trucos()
+	_director().saltar_a(salto.segundos)
+	if salto.con_progreso:
+		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), salto.segundos)
 
 
 func _subir_nivel() -> void:

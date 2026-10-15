@@ -18,8 +18,8 @@ const MEJORAS: Array[int] = [0, 1, 5, 6, 8, 8, 9, 10, 10, 11, 12]
 const DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
 
 
-## Sube el nivel y da las mejoras que falten. Si ya se tiene más (por ejemplo,
-## al volver atrás en el tiempo), no se quita nada.
+## Sube el nivel y da las mejoras de ese minuto. Se llama con la partida
+## recién empezada: el menú recarga la escena antes de saltar.
 static func ponerse_al_dia(niveles: Node, segundos: float) -> void:
 	var nivel := _en(NIVEL, segundos)
 	if nivel > niveles.nivel():
