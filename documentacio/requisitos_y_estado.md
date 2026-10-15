@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.1 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.2 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.1 publicada el 15/10, también en la web. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.2 publicada el 15/10, también en la web. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -95,7 +95,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 1. **Probarlo todo en casa** (Adam, en un chat nuevo; en el instituto no se
    puede probar jugando). Con el proyecto de `main` abierto en Godot:
-   - **La explosión del rootkit** (hecha el 15/10, aún sin publicar): F1 →
+   - **La explosión del rootkit** (hecha el 15/10, publicada en la v1.2): F1 →
      ÉLITE AHORA hasta que salga uno EXPLOSIVO, matarlo y mirar el aviso (se
      agrieta y tiembla, el anillo gira), la explosión y la quemadura del suelo.
    - **Lo de la v1.1** (publicada el 15/10): la horda animada y el troyano
