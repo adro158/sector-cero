@@ -42,6 +42,8 @@ var _nivel := 1
 var _segundos := 0.0
 ## Multiplica la vida de los que aparecen, según la dificultad elegida.
 var _vida_dificultad := 1.0
+## Segundos de animación que lleva la horda, para el shader.
+var _tiempo_animacion := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
@@ -343,14 +345,30 @@ func _eliminar(indice: int) -> void:
 func _volcar_al_multimesh(delta: float) -> void:
 	var multimesh := _horda.multimesh
 	var jugador := _jugador.global_position
+	# El reloj de la animación avanza con el juego: con la pausa se para.
+	_tiempo_animacion += delta
+	_horda.material.set_shader_parameter("tiempo", _tiempo_animacion)
 
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	# La horizontal es -1 en los que se dan la vuelta para mirar al jugador.
 	for i in _vivos:
-		var escala_x := _volteo.escala_x(i, _posiciones[i], jugador) if _volteo != null else 1.0
+		var escala_x := _volteo.escala_x(i, _posiciones[i], _hacia_donde_mira(i, jugador)) if _volteo != null else 1.0
 		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(escala_x, -1.0), 0.0, _posiciones[i]))
 		_destellos[i] = maxf(_destellos[i] - delta, 0.0)
 		var aviso := _embestida.avisando(i) if _embestida != null else 0.0
-		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, 0.0, 0.0))
+		# El tercer dato es el desfase de su animación. Sale de su id, que
+		# viaja con él al cambiar de hueco: así no da saltos de fotograma.
+		var desfase := fmod(_ids[i] * 0.37, 1.0)
+		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, desfase, 0.0))
 
 	multimesh.visible_instance_count = _vivos
+
+
+## Hacia dónde mira un enemigo que se voltea: al jugador, salvo embistiendo
+## (hacia donde embiste, aunque lo pase de largo) y huyendo (hacia donde huye).
+func _hacia_donde_mira(indice: int, jugador: Vector2) -> Vector2:
+	if _huida > 0.0:
+		return _posiciones[indice] * 2.0 - jugador
+	if _embestida != null and _embestida.avance(indice, 1.0) != Vector2.ZERO:
+		return _posiciones[indice] + _embestida.avance(indice, 1.0)
+	return jugador

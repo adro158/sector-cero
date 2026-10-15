@@ -84,7 +84,10 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 		return 0
 
 	_salud.recibir_dano(cantidad)
-	_sprite.destellar()
+	# Avisando o invocando no destella: con el Ping rebotando contra él, el
+	# blanco taparía el rojo del aviso, que es lo que deja esquivar la embestida.
+	if _estado != Estado.AVISO and _estado != Estado.INVOCAR:
+		_sprite.destellar()
 	# El número sale sobre el cuerpo y un poco desplazado, para que varios
 	# golpes seguidos no se pinten uno encima de otro.
 	enemigo_danado.emit(global_position + Vector2(randf_range(-24.0, 24.0), -40.0), cantidad, resistencia)

@@ -2,9 +2,10 @@
 // llamada de dibujo, una textura y este material. Lo que cambia de uno a otro
 // lo pone el shader:
 //
-// - Animación: la textura es una tira de fotogramas en horizontal. Cada
-//   enemigo elige el suyo con TIME y con su INSTANCE_ID, para que no se muevan
-//   todos a la vez. Con fotogramas = 1 es un sprite quieto, como antes.
+// - Animación: la textura es una tira de fotogramas en horizontal. Todos
+//   cambian de fotograma al ritmo del reloj de la partida (tiempo), pero cada
+//   uno con un desfase propio, que llega en INSTANCE_CUSTOM.b, para que no se
+//   muevan todos a la vez. Con fotogramas = 1 es un sprite quieto, como antes.
 // - Destello: el enemigo se pone blanco un instante al recibir un golpe. La
 //   intensidad, de 0 a 1, llega por enemigo en INSTANCE_CUSTOM.r, que rellena
 //   el gestor de enemigos.
@@ -28,6 +29,10 @@ const vec3 COLOR_AVISO = vec3(1.0, 0.25, 0.3);
 // Los pone el gestor de cada tipo en su copia del material.
 uniform float fotogramas = 1.0;
 uniform float fotogramas_por_segundo = 8.0;
+// El reloj de la partida, que lleva el gestor. No es TIME porque TIME no se
+// para con la pausa: la horda seguiría andando en el sitio mientras se elige
+// una mejora.
+uniform float tiempo = 0.0;
 
 // Un varying es un valor que vertex() calcula y fragment() recibe. Aquí son
 // cosas de cada enemigo entero (su golpe, su glitch, su fotograma), así que
@@ -51,9 +56,12 @@ void vertex() {
 	glitch = step(1.0 - PROBABILIDAD, tirada);
 	VERTEX.x += glitch * (tirada - 0.5) * 2.0 * SALTO;
 	// Todos cambian de fotograma al mismo ritmo, pero cada uno empieza en uno
-	// distinto (el desfase): así no se mueven todos a la vez.
-	float desfase = floor(azar(float(INSTANCE_ID) * 3.17) * fotogramas);
-	fotograma = mod(floor(TIME * fotogramas_por_segundo) + desfase, fotogramas);
+	// distinto (el desfase): así no se mueven todos a la vez. El desfase lo
+	// manda el gestor con cada enemigo y no sale de INSTANCE_ID, que es su
+	// hueco en el MultiMesh: al morir otro, el enemigo cambia de hueco y daría
+	// un salto de fotograma.
+	float desfase = floor(INSTANCE_CUSTOM.b * fotogramas);
+	fotograma = mod(floor(tiempo * fotogramas_por_segundo) + desfase, fotogramas);
 	color_vertice = COLOR;
 }
 
