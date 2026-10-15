@@ -128,6 +128,18 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    en uso como instalada. Si el arreglo toca `panel_versiones.gd` o
    `instalador_juego.gd`, hay que volver a publicar las releases anteriores
    con `recompilar_version.sh` (ver CLAUDE.md).
+
+   **Además, pensar la forma más sencilla de tener todas las versiones**
+   (idea de Adam del 15/10, sin decidir). Quizá hay que cambiar el enfoque:
+   - se tiene descargada solo la última, y una antigua se descarga cuando se
+     quiere cambiar a ella
+   - un **lanzador aparte**, independiente del juego (como los launchers de
+     otros juegos): eliges la versión y la abre, sin cerrar ni reiniciar el
+     juego como ahora
+
+   Hay que valorarlo antes de seguir parcheando el menú VERSIONES de dentro
+   del juego. Si se hace el lanzador, el menú de dentro del juego podría
+   quedarse solo con ACTUALIZAR.
 5. **Icono del juego** (idea de Adam del 15/10; esperando el asset, que lo
    pasará él). Al hacerlo:
    - el del `.exe` va en el preset de exportación de Windows (un `.ico`)
