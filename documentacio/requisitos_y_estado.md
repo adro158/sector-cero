@@ -121,22 +121,29 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    `encargo_fase2.md`: **pendiente de que Adam diga que sí** al plan. Los
    dibujos no están en el repo: hay que descomprimir `jefe_final.zip` en la
    raíz del clon.
-4. **Icono del juego** (idea de Adam del 15/10; esperando el asset, que lo
+4. **Arreglar el menú VERSIONES** (lo vio Adam el 15/10). Con la v1.1
+   instalada, al cambiar a la v1.0, el menú sigue ofreciendo INSTALAR la
+   v1.0, que es justo la que se está usando: tendría que salir como la actual
+   o como instalada. Sin investigar; puede que el panel no cuente la versión
+   en uso como instalada. Si el arreglo toca `panel_versiones.gd` o
+   `instalador_juego.gd`, hay que volver a publicar las releases anteriores
+   con `recompilar_version.sh` (ver CLAUDE.md).
+5. **Icono del juego** (idea de Adam del 15/10; esperando el asset, que lo
    pasará él). Al hacerlo:
    - el del `.exe` va en el preset de exportación de Windows (un `.ico`)
    - el de la ventana, en `config/icon` de `project.godot`, que no llega con
      el `.pck` de actualización: solo con un ejecutable nuevo, salvo que se
      ponga también desde el código al arrancar
    - el de la web, en el favicon de la exportación web
-5. **Vídeo demostrativo** (2-4 min).
-6. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+6. **Vídeo demostrativo** (2-4 min).
+7. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-7. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+8. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
-8. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-9. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+9. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+10. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
-10. Opcional: sustituir los sprites de IA por pixel art propio.
+11. Opcional: sustituir los sprites de IA por pixel art propio.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
