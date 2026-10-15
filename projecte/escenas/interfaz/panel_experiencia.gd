@@ -70,11 +70,13 @@ func _al_cambiar_experiencia(actual: int, necesaria: int, nivel: int) -> void:
 ## panel.
 func _destellar() -> void:
 	_etiqueta_nivel.pivot_offset = Vector2(0.0, _etiqueta_nivel.size.y / 2.0)
-	_etiqueta_nivel.scale = Vector2(SALTO, SALTO)
 	_etiqueta_nivel.add_theme_color_override("font_color", Color.WHITE)
 	_relleno.bg_color = Color.WHITE
 	var destello := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_parallel()
+	# La escala de salida va en from() y no en la etiqueta: la caja que la
+	# contiene le devuelve la escala a 1 si el texto cambia de largo (de
+	# "EXP 24 / 25" a "EXP 1 / 37"), antes de que el Tween empiece.
 	destello.tween_property(_etiqueta_nivel, "scale", Vector2.ONE, DURACION_DESTELLO) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		.from(Vector2(SALTO, SALTO)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	destello.tween_property(_etiqueta_nivel, "theme_override_colors/font_color", EstiloInterfaz.NEON, DURACION_DESTELLO)
 	destello.tween_property(_relleno, "bg_color", EstiloInterfaz.NEON, DURACION_DESTELLO)
