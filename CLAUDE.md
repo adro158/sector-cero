@@ -224,3 +224,55 @@ Además, para que el siguiente chat no pierda nada:
 
 Después, commit y push a `main`, como indica "Ya he acabado" en "Frases clave de
 Adam".
+
+## Proyecto: Sector Cero
+
+Videojuego en Godot con pixel art, hecho junto a un compañero. El repo es
+"sector-cero" en GitHub. Trabajamos desde el insti (VM) y desde casa, así que
+deja todo bien explicado en commits y notas para que cualquiera retome el
+trabajo solo con el repo. Respóndeme en castellano y en tono informal. Si te
+pido algo corto, que sea corto.
+
+## Cuándo usar subagentes (decídelo tú)
+
+Antes de empezar cualquier tarea, valora en una frase si compensa repartirla.
+Los subagentes gastan mucho límite de uso, así que por defecto NO los uses.
+
+NO uses subagentes cuando:
+- La tarea toca un solo archivo, un solo script o un solo asset.
+- Es un cambio pequeño, un bug concreto o una pregunta.
+- Las partes dependen unas de otras (el resultado de una condiciona la
+  siguiente).
+- Hay que tocar el mismo archivo desde varios sitios (escena .tscn,
+  project.godot, etc.).
+
+SÍ usa subagentes cuando se cumplan las dos cosas:
+- La tarea tiene 3 o más partes independientes entre sí.
+- Cada parte es lo bastante grande como para que repartirlas ahorre tiempo
+  real.
+
+Ejemplos que sí compensan:
+- Varios scripts o sistemas sin relación (inventario, enemigos, menú...).
+- Un lote de assets del mismo tipo (por ejemplo, varios personajes o
+  tilesets).
+- Buscar por todo el repo dónde se usa algo, usando un subagente de
+  exploración para no llenar tu contexto.
+- Revisar el código por áreas en paralelo.
+
+Cómo hacerlo bien:
+1. Plan breve primero: qué partes hay y cuáles van en paralelo.
+2. Cada subagente recibe un encargo autocontenido: qué hacer, en qué
+   archivos, qué devolver. No heredan tu contexto.
+3. Nunca dos subagentes editando el mismo archivo.
+4. Al terminar, revisa tú el resultado y unifica estilo y nombres.
+5. Resumen final en pocas líneas: qué se hizo y qué queda pendiente.
+6. Si dudas entre usarlos o no, no los uses y pregúntame.
+
+## Si eres Claude Code (programación)
+
+- Respeta la estructura de carpetas y las convenciones de nombres de GDScript
+  que ya tiene el repo.
+- Commits claros y pequeños.
+- Antes de repartir trabajo entre subagentes, asegúrate de que el proyecto
+  compila/abre en Godot sin errores.
+- Un subagente por sistema o carpeta, nunca varios en la misma escena.
