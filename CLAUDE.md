@@ -33,7 +33,7 @@ Ignorar `projecte/.godot/`: es caché regenerable.
 
 ## Frases clave de Adam
 
-Estas dos frases son órdenes completas: Adam no tiene que explicar nada más.
+Estas frases son órdenes completas: Adam no tiene que explicar nada más.
 
 ### "Es un día nuevo" (o "empezamos", "nueva sesión")
 
@@ -52,6 +52,25 @@ Bajar lo de Adam y lo de Alan y ponerse al día:
 6. No hacer push en este paso: lo fusionado subirá con el cierre de la sesión.
 7. Seguir con la lectura de arriba y dar el informe de arranque, incluyendo qué
    ha aportado Alan.
+
+### "Estoy en casa" (o "mira lo que hay y pruébalo")
+
+Probar el juego en el ordenador de casa, que tiene GPU de verdad:
+
+1. Hacer lo de "Es un día nuevo": bajar `main` y lo de Alan, validar en
+   headless y leer la bitácora, `requisitos_y_estado.md` y, si sigue abierto,
+   `encargo_fase2.md`.
+2. Darle a Adam un resumen corto: qué está hecho, qué falta y qué hay que
+   probar (la lista está en el primer punto de lo que queda por hacer de
+   `requisitos_y_estado.md`).
+3. Probar lo que se pueda sin Adam, con ventana:
+   - arrancar el juego y hacer capturas de lo que haya cambiado
+   - pasar el simulador y `herramientas/medir_rendimiento.gd`
+4. Lo que hay que jugar a mano (sensaciones, el menú F1, el menú de versiones
+   desde una release descargada), dárselo a Adam como una lista corta paso a
+   paso, y apuntar lo que diga en la bitácora.
+5. Si sale algún fallo, arreglarlo antes que nada nuevo, salvo que Adam diga
+   otra cosa.
 
 ### "Ya he acabado" (o "no me queda más tiempo de clase", "cierra la sesión")
 

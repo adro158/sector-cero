@@ -2479,3 +2479,21 @@ primer punto de lo que queda por hacer):
 5. Decidir si la dificultad media se queda así o se compensa.
 6. Si todo va bien, publicar la v1.2. Después: vídeo, ensayo de la defensa y
    probar una release en un ordenador sin Godot.
+
+Al final de la clase, Adam pasó dos encargos más, que quedan sin empezar:
+
+- **El menú F1 no es consistente.** Saltando al minuto 10 se llega a nivel 12,
+  y jugando él va por el 14 en el minuto 5. Además, al volver al minuto 0 se
+  quedan las mejoras. La causa del nivel bajo es que las tablas de
+  `progreso_por_minuto.gd` salen del bot, y el bot no va a por los fragmentos
+  de datos.
+- **Una fase 2 y un jefe final nuevo, NÚCLEO CERO, en el minuto 15.** Al matar
+  al jefe de los 10:00, la pantalla se va a negro y el mapa pasa a una placa
+  destrozada. El jefe nuevo tiene tres formas y los ataques robados a los
+  personajes y a la horda. Los dibujos los hizo Adam con Claude en el chat
+  (`jefe_final.zip`, que no está en el repo).
+
+Lo pedido, el plan propuesto y las preguntas para Adam están en
+`encargo_fase2.md`. Se quedan esperando a que él diga que sí al plan. Para
+retomarlo en casa se añadió a CLAUDE.md la frase clave "Estoy en casa": bajar
+lo último, resumir qué está hecho y qué falta, y ponerse a probar.
