@@ -178,7 +178,9 @@ func _draw() -> void:
 		draw_circle(Vector2.ZERO, RADIO_EXPLOSION * progreso, Color(1.0, 0.4, 0.1, 0.18))
 		var giro := int(progreso * 16.0) % 4
 		draw_texture_rect_region(ZONA, Rect2(-152.0, -152.0, 304.0, 304.0), Rect2(giro * 304.0, 0.0, 304.0, 304.0))
-		var temblor := Vector2(randf_range(-2.0, 2.0), randf_range(-2.0, 2.0)) * progreso
+		# Con senos y no al azar: randf() gastaría números del azar de la partida
+		# y el simulador ya no repetiría las mismas partidas.
+		var temblor := Vector2(sin(_cuenta_atras * 97.0), cos(_cuenta_atras * 71.0)) * 2.0 * progreso
 		var fotograma := mini(int(progreso * 6.0), 5)
 		draw_texture_rect_region(SOBRECARGA, Rect2(Vector2(-32.0, -32.0) + temblor, Vector2(64.0, 64.0)), Rect2(fotograma * 64.0, 0.0, 64.0, 64.0))
 		return
