@@ -91,6 +91,7 @@ func _prueba_filas() -> void:
 		for hijo in fila.get_children():
 			textos.append(hijo.text)
 		print("PRUEBA fila ", textos)
+	print("PRUEBA estado: ", _versiones._estado.text.replace("\n", " "), " | VOLVER activo: ", not _versiones._volver.disabled)
 GD
 fi
 
