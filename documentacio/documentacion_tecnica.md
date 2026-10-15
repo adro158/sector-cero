@@ -90,11 +90,32 @@ divide el mapa en celdas y solo se miran las cercanas: con 500 enemigos, el
 cálculo bajó de 19 ms a 4 ms por fotograma (el límite a 60 FPS son 16,7 ms). Las
 armas la usan también para encontrar a quién golpear.
 
-**Sin animación, con shaders.** Un MultiMesh dibuja el mismo sprite para todos
-los enemigos de un tipo, así que no pueden tener animación dibujada. La vida se
-la da un shader: el destello blanco al recibir un golpe, un *glitch* que los
-hace saltar como una imagen corrupta y el parpadeo rojo del troyano antes de
-embestir. Cada enemigo le pasa al shader sus propios datos (`INSTANCE_CUSTOM`).
+**Animación y efectos, en el shader.** Un MultiMesh dibuja todos los enemigos
+de un tipo con una sola textura y un solo material, así que no puede darle a
+cada uno su propio sprite. La animación se consigue igualmente: la textura es
+una **tira de fotogramas** en horizontal y el shader (`horda.gdshader`) elige
+el fotograma de cada enemigo con el tiempo y su número de instancia, con un
+desfase para que no se muevan todos a la vez. Como `UV` va de 0 a 1 en todo
+el cuadrado del enemigo, se lleva al trozo de la tira que toca: el fotograma
+*f* de *n* va de *f/n* a *(f+1)/n*. El color que llega a `fragment()` ya trae
+la textura leída con `UV` (el primer fotograma), así que se lee la buena y se
+multiplica por el color del vértice, que `vertex()` guarda en un `varying` (un
+valor que pasa de un paso del shader al otro): así la horda se sigue
+desvaneciendo al huir. Sigue siendo una llamada de dibujo por tipo, con una
+copia del material por tipo para sus fotogramas y su velocidad. El mismo
+shader pone el destello blanco al recibir un golpe, un *glitch* que los hace
+saltar como una imagen corrupta y el parpadeo rojo del troyano antes de
+embestir; cada enemigo le pasa sus propios datos (`INSTANCE_CUSTOM`). El
+troyano, dibujado mirando a la izquierda, se da la vuelta para mirar al
+jugador con la escala x de su transformación (`volteo_horda.gd`), y solo
+cambia de lado si el jugador está a más de 8 px, para no parpadear.
+
+**El destello de los élites y del jefe.** Son nodos, y su `Sprite2D` lleva
+`sprite_destello.gd`: un material propio con un shader que mezcla con blanco,
+como la horda. No usa el `modulate`, que ya cambian el aviso rojo y el latido
+morado del jefe. Las piernas del jugador y del jefe avanzan en proporción a la
+velocidad a la que se mueven de verdad (con la mejora de velocidad, en el aura
+lenta o embistiendo), para que los pies no patinen.
 
 **El troyano embiste sin ser un nodo.** Persigue y, cerca del jugador, se para,
 parpadea y embiste en línea recta, igual que el jefe. Pero el jefe guarda su
@@ -211,7 +232,9 @@ pistas, LEDs y ventiladores.
 se vean iguales. La **ficha del enemigo** pasa el click de la pantalla al mundo
 y pregunta a todos los objetivos cuál está debajo; para seguir a un enemigo de
 la horda, que cambia de posición en la lista cuando muere otro, cada uno lleva
-un número único.
+un número único. La barra de experiencia se llena con un `Tween` y destella al
+subir de nivel; como al subir de nivel el juego ya está en pausa, sus `Tween`
+siguen corriendo en pausa (`TWEEN_PAUSE_PROCESS`).
 
 **Guardado y actualizaciones.** `GestorGuardado` guarda en un fichero de texto
 de Godot (`ConfigFile`) los récords, el ranking de las 10 mejores partidas y

@@ -174,14 +174,24 @@ importa el nombre del grupo, no dónde estén colocados.
 
 Los enemigos de horda se dibujan con `MultiMeshInstance2D` para poder tener
 cientos en pantalla con una sola llamada de dibujado por tipo. Eso implica que
-**todas las instancias de un tipo comparten una textura y un material**: un
-solo sprite por tipo de enemigo, sin fotogramas de animación, todos del mismo
-tamaño. El movimiento visual lo pone un shader (`medios/shaders/horda.gdshader`:
-destello al recibir daño, glitch y el parpadeo rojo del troyano antes de
-embestir), no una animación dibujada.
+**todas las instancias de un tipo comparten una textura y un material**.
 
-Los élites y el jefe sí son nodos normales y pueden llevar animación, porque hay
-pocos a la vez.
+Desde el 14/10/2026 la horda sí está animada, pero con esa condición: cada
+tipo tiene **una tira de fotogramas** (`recursos/enemigos/sprites/*_anim.png`,
+cuadrados y en horizontal, del mismo tamaño que su sprite) que comparten todos
+los enemigos de ese tipo. El shader (`medios/shaders/horda.gdshader`) elige el
+fotograma de cada uno con el tiempo y su número de instancia, desfasados para
+que no se muevan todos a la vez. El fotograma 0 tiene que ser el sprite de
+siempre (`textura` en su `.tres`), que es el que sale en la ficha del enemigo
+y en las reglas. La velocidad de la animación va en el `.tres` de cada tipo
+(`fotogramas_por_segundo`). Lo que no se puede es que un enemigo tenga una
+animación distinta de los demás de su tipo (por ejemplo, otra al morir): se
+haría con el shader, como ya se hacen el destello al recibir daño, el glitch y
+el parpadeo rojo del troyano antes de embestir. Un dibujo que mira a un lado
+se puede dar la vuelta para mirar al jugador (`se_voltea`, el troyano).
+
+Los élites y el jefe sí son nodos normales y pueden llevar animación propia,
+porque hay pocos a la vez.
 
 La lista original de assets está en `documentacio/assets.md` y la procedencia de
 los que se usan, en `documentacio/creditos.md`.

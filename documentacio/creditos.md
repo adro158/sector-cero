@@ -15,6 +15,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Sprites del fragmento de datos y del proyectil del Ping | Hechos con IA (Claude) | Ver más abajo |
 | Corazón, cofre y ruleta del premio de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
+| Tiras de animación de la horda (5 tipos) | Hechas con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -82,6 +83,12 @@ scripts no forman parte del repositorio.
   `_impacto`, `_mini` y `_chispa`). Con ellos vino el código de dibujo
   (`escenas/jugabilidad/jugador/dibujo_ultis.gd`) con el que se grabaron los
   GIF de muestra.
+- **Horda animada** (`recursos/enemigos/sprites/*_anim.png`, 14/10/2026, de
+  la misma forma): una tira de 4 fotogramas por tipo, del mismo tamaño que su
+  sprite, cuyo primer fotograma es el sprite de siempre. El bit corrupto
+  estira los pinchos y muerde, el paquete perdido bate las alas, el proceso
+  colgado gira los ojos de "cargando", el troyano trota y el ransomware da
+  tirones al arco y mueve las cadenas.
 
 ### Sprites de los personajes y del jefe
 
