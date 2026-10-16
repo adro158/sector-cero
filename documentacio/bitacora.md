@@ -2518,9 +2518,9 @@ hace falta volver a publicar las versiones anteriores.
 
 ## Sesión 14 — 16/10/2026 (en casa)
 
-**Duración:** sin apuntar (Adam se fue antes de decirla) · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+**Duración:** 2 h (la apuntó Adam al día siguiente) · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
 
-**Horas acumuladas:** 25 h de las 60 sugeridas, sin contar esta sesión
+**Horas acumuladas:** 27 h de las 60 sugeridas (45 %)
 
 ### Qué se ha hecho
 
@@ -2699,8 +2699,9 @@ código. Se arregló:
 - el bot, que se quedaba dentro del torbellino;
 - y comentarios que ya no eran verdad.
 
-Queda pendiente de decidir con Adam: el rootkit explosivo que invoca el jefe
-final es un élite normal y, al matarlo, suelta corazón y cofre.
+El rootkit explosivo que invoca el jefe final es un élite normal y, al
+matarlo, suelta corazón y cofre. Se le preguntó a Adam y decidió, al día
+siguiente, **dejarlo así**.
 
 ### Uso de IA
 
@@ -2763,8 +2764,6 @@ de `requisitos_y_estado.md`):
 3. Una partida normal mirando el nivel con F3 en los minutos 5, 10 y 15, para
    las tablas del F1.
 4. Que el ranking sale vacío en la versión nueva.
-5. Decidir si el rootkit explosivo que invoca el jefe final debe soltar
-   corazón y cofre.
 
 Después: el equilibrio de la fase 2 (al final), la página web con todas las
 versiones, el vídeo y el ensayo de la defensa.

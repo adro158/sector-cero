@@ -117,9 +117,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    empezar la fase 2); difícil, ninguna. Ideas para entonces: unos segundos
    sin horda al volver la imagen, que la vida por minuto deje de subir a las
    10:00 o que la horda de la fase 2 empiece más suave y vuelva a apretar; y
-   decidir cuántas victorias se quieren en cada dificultad. Decidir también
-   si el rootkit explosivo que invoca el jefe final debe soltar corazón y
-   cofre (hoy los suelta, como cualquier élite).
+   decidir cuántas victorias se quieren en cada dificultad.
 3. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
    probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
    y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El
@@ -177,7 +175,8 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   no cura; el primer jefe se llama «JEFE» a secas; el ranking y los récords
   empiezan de cero (secciones nuevas `records_fase2` y `ranking_fase2` en
   `gestor_guardado.gd`: las viejas no se borran porque las versiones
-  anteriores siguen escribiendo en ellas); el equilibrio se
+  anteriores siguen escribiendo en ellas); el rootkit explosivo que invoca el
+  jefe final suelta corazón y cofre, como cualquier élite; el equilibrio se
   hace al final, con el juego terminado; las versiones antiguas, en una página
   web con todas, sin seguir parcheando el menú VERSIONES. Y técnica: el reloj
   se para en las 10:00 mientras está el primer jefe y la fase 2 sigue desde
