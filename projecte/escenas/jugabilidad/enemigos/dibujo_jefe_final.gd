@@ -25,6 +25,8 @@ const PROYECTIL_HIELO := preload("res://medios/sprites/jefe_final/jefe_final_pro
 ## El aviso del rayo se repite cada 32 px; la cadena, cada 16.
 const TRAMO_LINEA := 32.0
 const ESLABON := 16.0
+## Lo que tarda en cerrarse un portal (sus fotogramas 6 y 7).
+const CIERRE_PORTAL := 0.2
 
 
 ## Dibuja el fotograma n de una hoja (fotogramas de ancho `ancho`) centrado en
@@ -35,9 +37,11 @@ static func fotograma(lienzo: CanvasItem, hoja: Texture2D, n: int, ancho: float,
 
 
 ## Aviso del rayo: flechas rojas desde `desde` hacia `direccion`, que avanzan
-## (4 fotogramas de 0,08 s).
-static func aviso_linea(lienzo: CanvasItem, desde: Vector2, direccion: Vector2, largo: float, tiempo: float) -> void:
+## (4 fotogramas de 0,08 s), sobre una franja translúcida de `ancho`: lo que
+## hará daño, que es más ancho que las flechas.
+static func aviso_linea(lienzo: CanvasItem, desde: Vector2, direccion: Vector2, largo: float, ancho: float, tiempo: float) -> void:
 	lienzo.draw_set_transform(desde, direccion.angle(), Vector2.ONE)
+	lienzo.draw_rect(Rect2(0.0, -ancho * 0.5, largo, ancho), Color(1.0, 0.25, 0.3, 0.15))
 	var n := int(tiempo / 0.08) % 4
 	for i in int(largo / TRAMO_LINEA):
 		fotograma(lienzo, AVISO_LINEA, n, TRAMO_LINEA, Vector2(TRAMO_LINEA * 0.5 + i * TRAMO_LINEA, 0.0))
@@ -50,10 +54,10 @@ static func portal(lienzo: CanvasItem, centro: Vector2, tiempo: float, duracion:
 	var n: int
 	if tiempo < 0.3:
 		n = int(tiempo / 0.1)
-	elif tiempo < duracion - 0.2:
+	elif tiempo < duracion - CIERRE_PORTAL:
 		n = 3 + int((tiempo - 0.3) / 0.1) % 3
 	else:
-		n = mini(6 + int((tiempo - duracion + 0.2) / 0.1), 7)
+		n = mini(6 + int((tiempo - duracion + CIERRE_PORTAL) / 0.1), 7)
 	fotograma(lienzo, PORTAL, n, 96.0, centro)
 
 

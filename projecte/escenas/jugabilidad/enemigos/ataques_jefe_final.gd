@@ -40,8 +40,10 @@ const PORTALES: Array[int] = [2, 3, 3]
 const CRISTALES: Array[int] = [0, 2, 4]
 const DIANAS_AVISO := 0.6
 const DIANAS_ALREDEDOR := 170.0
-const MINI_RADIO := 60.0
-## Los mini rayos caen uno detrás de otro.
+## Lo que mide la diana del aviso: el mini rayo pega donde se ve.
+const MINI_RADIO := 32.0
+## Los mini rayos caen uno detrás de otro. Tiene que valer lo mismo que el
+## 0,08 de dibujo_ultis.tormenta(), que los dibuja.
 const MINI_CADA := 0.08
 const PORTAL_DURACION := 2.6
 const PORTAL_DISTANCIA := 150.0
@@ -51,6 +53,10 @@ const PORTAL_SALIDA := 0.3
 const INVOCAR_DURACION := 0.6
 const CRISTAL_VUELO := 0.45
 const CRISTALES_ALREDEDOR := 110.0
+
+## Lo que se suma a cada ataque por el tamaño del jugador: pega si le roza,
+## no solo si le da en el centro.
+const RADIO_JUGADOR := 12.0
 
 ## Daño al jugador, antes de la dificultad (la aplica su salud).
 const DANO_RAYO := 30.0
@@ -87,11 +93,18 @@ func ocupado() -> bool:
 	return _ataque != ""
 
 
-## Al transformarse, al romperle el escudo o al morir. Los portales abiertos
-## siguen hasta cerrarse.
+## Al transformarse o al romperle el escudo. Los portales abiertos siguen
+## hasta cerrarse.
 func cortar() -> void:
 	_ataque = ""
 	queue_redraw()
+
+
+## Al morir el jefe: también se cierran los portales, para que no salga más
+## horda mientras se rompe.
+func quitar() -> void:
+	_portales.clear()
+	cortar()
 
 
 func lanzar(ataque: String, forma: int) -> void:
@@ -117,8 +130,11 @@ func lanzar(ataque: String, forma: int) -> void:
 				_dianas.append(jugador + Vector2.from_angle(randf() * TAU) * randf_range(50.0, DIANAS_ALREDEDOR))
 			_caidos = 0
 		"invocar":
+			# Repartidos por igual alrededor del jefe, con todo el reparto girado
+			# al azar.
+			var giro := randf() * TAU
 			for i in PORTALES[forma]:
-				var angulo := TAU * i / PORTALES[forma] + randf()
+				var angulo := giro + TAU * i / PORTALES[forma]
 				_portales.append([_origen + Vector2.from_angle(angulo) * PORTAL_DISTANCIA, 0.0, PORTAL_SALIDA])
 			if forma >= 1:
 				_invocar_explosivo(_portales.back()[0])
@@ -159,8 +175,7 @@ func _rayo() -> void:
 		for direccion in _direcciones:
 			var desde := _origen + direccion * RAYO_DELANTE
 			var cercano := Geometry2D.get_closest_point_to_segment(_jugador.global_position, desde, desde + direccion * RAYO_LARGO)
-			# 12 px más por el tamaño del jugador.
-			if cercano.distance_to(_jugador.global_position) < RAYO_RADIO + 12.0:
+			if cercano.distance_to(_jugador.global_position) < RAYO_RADIO + RADIO_JUGADOR:
 				_salud_jugador.recibir_dano(DANO_RAYO)
 				_rayo_pego = true
 
@@ -168,7 +183,7 @@ func _rayo() -> void:
 func _torbellino() -> void:
 	if _tiempo >= AVISO + TORBELLINO_DURACION:
 		_ataque = ""
-	elif _tiempo >= AVISO and _origen.distance_to(_jugador.global_position) < TORBELLINO_RADIO:
+	elif _tiempo >= AVISO and _origen.distance_to(_jugador.global_position) < TORBELLINO_RADIO + RADIO_JUGADOR:
 		# Su salud se protege medio segundo tras cada golpe: no pega cada fotograma.
 		_salud_jugador.recibir_dano(DANO_TORBELLINO)
 
@@ -176,7 +191,7 @@ func _torbellino() -> void:
 ## Cada mini rayo hace daño en el momento en que cae en su diana.
 func _tormenta() -> void:
 	while _caidos < _dianas.size() and _tiempo >= DIANAS_AVISO + _caidos * MINI_CADA:
-		if _dianas[_caidos].distance_to(_jugador.global_position) < MINI_RADIO:
+		if _dianas[_caidos].distance_to(_jugador.global_position) < MINI_RADIO + RADIO_JUGADOR:
 			_salud_jugador.recibir_dano(DANO_MINI)
 		_caidos += 1
 	if _tiempo >= DIANAS_AVISO + _dianas.size() * MINI_CADA + 0.25:
@@ -189,8 +204,8 @@ func _avanzar_portales(delta: float) -> void:
 	for portal in _portales:
 		portal[1] += delta
 		portal[2] -= delta
-		# Saca horda mientras está abierto del todo, no al cerrarse.
-		if portal[2] <= 0.0 and portal[1] < PORTAL_DURACION - 0.4:
+		# Saca horda mientras está abierto, no al cerrarse (su último trozo).
+		if portal[2] <= 0.0 and portal[1] < PORTAL_DURACION - Dibujo.CIERRE_PORTAL:
 			portal[2] = PORTAL_SALIDA
 			_gestores.pick_random().aparecer(portal[0])
 	_portales = _portales.filter(func(portal): return portal[1] < PORTAL_DURACION)
@@ -215,7 +230,7 @@ func _draw() -> void:
 			for direccion in _direcciones:
 				var desde := origen + direccion * RAYO_DELANTE
 				if _tiempo < AVISO:
-					Dibujo.aviso_linea(self, desde, direccion, RAYO_LARGO, _tiempo)
+					Dibujo.aviso_linea(self, desde, direccion, RAYO_LARGO, (RAYO_RADIO + RADIO_JUGADOR) * 2.0, _tiempo)
 				else:
 					DibujoUltis.rayo(self, desde, direccion, RAYO_LARGO, _tiempo - AVISO, RAYO_DURACION)
 		"torbellino":
@@ -230,10 +245,11 @@ func _draw() -> void:
 			var puntos: Array[Vector2] = []
 			for diana in _dianas:
 				puntos.append(to_local(diana))
-			if _tiempo < DIANAS_AVISO:
-				for punto in puntos:
-					Dibujo.fotograma(self, Dibujo.AVISO_DIANA, mini(int(_tiempo / 0.15), 3), 64.0, punto)
-			else:
+			# Cada diana se queda hasta que cae su mini rayo: avisa siempre antes.
+			for i in puntos.size():
+				if _tiempo < DIANAS_AVISO + i * MINI_CADA:
+					Dibujo.fotograma(self, Dibujo.AVISO_DIANA, mini(int(_tiempo / 0.15), 3), 64.0, puntos[i])
+			if _tiempo >= DIANAS_AVISO:
 				DibujoUltis.tormenta(self, origen, puntos, _tiempo - DIANAS_AVISO, false)
 		"hielo":
 			for cristal in _cristales:

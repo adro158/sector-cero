@@ -3,6 +3,9 @@ extends CanvasLayer
 ## Fundido a negro entre escenas: la pantalla se oscurece, se cambia de escena y
 ## vuelve a aclararse. Es un autoload porque tiene que sobrevivir al cambio de
 ## escena, que borra todo lo demás.
+##
+## Además, al arrancar pone el icono de la ventana (ver _ready): es la primera
+## pantalla que se ve y su script llega con el .pck de actualización.
 
 const DURACION := 0.25
 

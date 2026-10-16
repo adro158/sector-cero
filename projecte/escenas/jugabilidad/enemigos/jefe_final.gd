@@ -96,7 +96,8 @@ func aparecer(posicion: Vector2) -> void:
 	BusEventos.jefe_final_aparecio.emit()
 
 
-## Si recibe daño y las armas pueden apuntarle.
+## Si está peleando (luchando o aturdido). Con el escudo sigue activo, pero ni
+## recibe daño ni se le apunta: eso lo miran danar_en_area y mas_cercano.
 func activo() -> bool:
 	return _estado == Estado.LUCHANDO or _estado == Estado.ATURDIDO
 
@@ -135,15 +136,17 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 ## Para la ficha que sale al pincharlo, como en los demás enemigos.
 func ficha_en(punto: Vector2, radio_busqueda: float) -> Dictionary:
 	var distancia := global_position.distance_to(punto)
-	if not activo() or distancia > radio_busqueda + radio:
+	if _sin_ficha() or distancia > radio_busqueda + radio:
 		return {}
 	var resultado := ficha(0)
 	resultado.distancia = distancia
 	return resultado
 
 
+## Una ficha vacía cierra la que está abierta, así que solo se da si no está:
+## transformándose sigue ahí y la ficha se queda.
 func ficha(_id: int) -> Dictionary:
-	if not activo():
+	if _sin_ficha():
 		return {}
 	# El primer fotograma de la forma que tiene ahora.
 	var retrato := AtlasTexture.new()
@@ -152,6 +155,10 @@ func ficha(_id: int) -> Dictionary:
 	return {"id": 0, "nombre": "NÚCLEO CERO", "textura": retrato, "color": Color(1.0, 0.8, 0.3),
 		"vida": _salud.vida(), "vida_maxima": _salud.vida_maxima, "dano": dano_contacto,
 		"velocidad": VELOCIDAD[_forma]}
+
+
+func _sin_ficha() -> bool:
+	return _estado == Estado.OCULTO or _estado == Estado.MURIENDO
 
 
 ## Con el escudo, las armas buscan otra cosa: las anclas o la horda.
@@ -202,17 +209,21 @@ func _physics_process(delta: float) -> void:
 func _luchar(delta: float) -> void:
 	if _ataques.ocupado():
 		return
-	var hacia_jugador := _jugador.global_position - global_position
-	if hacia_jugador.length() > distancia_reciclaje:
-		global_position = _jugador.global_position - hacia_jugador.normalized() * DISTANCIA * 2.0
-	elif hacia_jugador.length() > DISTANCIA and not _escudo.activo():
-		global_position += hacia_jugador.normalized() * VELOCIDAD[_forma] * delta
-
-	if _forma == 2:
-		_hasta_escudo -= delta
-		if _hasta_escudo <= 0.0 and not _escudo.activo():
-			_escudo.levantar()
-			_hasta_escudo = ESCUDO_CADA
+	# Con el escudo está anclado: ni se mueve ni se recoloca, y el tiempo hasta
+	# el siguiente escudo no corre.
+	if not _escudo.activo():
+		var hacia_jugador := _jugador.global_position - global_position
+		# Como los élites: si se queda muy atrás, reaparece al otro lado del
+		# jugador, fuera de la pantalla.
+		if hacia_jugador.length() > distancia_reciclaje:
+			global_position = _jugador.global_position + hacia_jugador * 0.6
+		elif hacia_jugador.length() > DISTANCIA:
+			global_position += hacia_jugador.normalized() * VELOCIDAD[_forma] * delta
+		if _forma == 2:
+			_hasta_escudo -= delta
+			if _hasta_escudo <= 0.0:
+				_escudo.levantar()
+				_hasta_escudo = ESCUDO_CADA
 	_hasta_atacar -= delta
 	if _hasta_atacar <= 0.0:
 		_hasta_atacar = PAUSA_ATAQUES[_forma]
@@ -226,9 +237,12 @@ func _elegir_ataque() -> String:
 	return _ultimo_ataque
 
 
-## Se corta lo que estuviera haciendo y es invulnerable mientras dura.
+## Se corta lo que estuviera haciendo y es invulnerable mientras dura. Si
+## tenía el escudo (solo pasa con el menú F1), se quita: al acabar se levanta
+## uno nuevo.
 func _transformar() -> void:
 	_ataques.cortar()
+	_escudo.quitar()
 	_cambiar_estado(Estado.TRANSFORMANDO)
 	_forma_cambiada = false
 	_temblar()
@@ -273,10 +287,16 @@ func _draw() -> void:
 
 
 func _al_morir() -> void:
-	_ataques.cortar()
+	# Se cierran también los portales: que no salga más horda.
+	_ataques.quitar()
 	_escudo.quitar()
 	_cambiar_estado(Estado.MURIENDO)
+	# Ya está ganada: mientras se rompe, un golpe de la horda que queda no
+	# puede cambiar la victoria por una derrota.
+	_salud_jugador.proteger(MUERTE + 0.1)
 	# La muerte ya trae al jefe rompiéndose.
 	_sprite.visible = false
 	_temblar()
+	# Con el mismo tipo que el primer jefe: las ultis no cargan, no suelta
+	# premios y suena la explosión.
 	BusEventos.enemigo_muerto.emit(global_position, "jefe")

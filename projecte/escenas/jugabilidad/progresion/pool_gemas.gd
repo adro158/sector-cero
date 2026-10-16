@@ -46,7 +46,7 @@ func _ready() -> void:
 	_preparar_multimesh()
 
 	# Cada gestor de la horda y cada élite trae sus datos, con la experiencia
-	# que vale su tipo. El jefe no tiene: al derrotarlo se acaba la partida.
+	# que vale su tipo. Los jefes no tienen datos: sueltan un fragmento de 1.
 	for objetivo in get_tree().get_nodes_in_group("objetivos"):
 		if "datos" in objetivo:
 			_experiencia_por_tipo[objetivo.datos.tipo] = objetivo.datos.experiencia

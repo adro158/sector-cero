@@ -59,13 +59,17 @@ func usar_trucos() -> void:
 	_trucos = true
 
 
+## Para el menú de desarrollador, que no se abre durante el negro: al acabar,
+## la transición quita la pausa y dejaría el juego corriendo debajo.
+func en_transicion() -> bool:
+	return _en_transicion
+
+
 ## Al derrotar al jefe ya no se gana: la pantalla se va a negro con el juego
 ## en pausa, detrás se quita la horda y empieza la fase 2, y vuelve la imagen.
+## Nadie más puede haber pausado el juego en ese momento: con la pausa nada
+## procesa, así que nada le habría dado el último golpe al jefe.
 func _pasar_a_fase_2() -> void:
-	# Si justo se está eligiendo mejora o quién sigue, se espera: esa pausa la
-	# quita quien la puso, y lo haría en mitad del negro.
-	while _sistema_niveles.eligiendo() or $Jugador/CambioPersonaje.eligiendo():
-		await get_tree().process_frame
 	if _terminada:
 		return
 
@@ -76,23 +80,24 @@ func _pasar_a_fase_2() -> void:
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
 	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
 		gestor.vaciar()
+	# Emite fase_cambiada: la arena, el audio y el HUD cambian detrás del negro.
 	_director.empezar_fase_2()
-	BusEventos.fase_cambiada.emit(2)
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
 	_en_transicion = false
 	get_tree().paused = false
 
 
 func _terminar_partida(victoria: bool) -> void:
-	# Morir y superar el tiempo en el mismo fotograma no debe dar dos finales.
+	# Que caiga el equipo y muera el jefe final en el mismo fotograma no debe
+	# dar dos finales.
 	if _terminada:
 		return
 
 	_terminada = true
 	get_tree().paused = true
 
-	# Las claves de este diccionario son parte del contrato con la interfaz:
-	# la pantalla de resultados y los récords de Alan las leen por nombre.
+	# Las claves de este diccionario son parte del contrato con la interfaz: la
+	# pantalla final y GestorGuardado las leen por nombre.
 	BusEventos.partida_terminada.emit({
 		"victoria": victoria,
 		"tiempo": _director.tiempo(),

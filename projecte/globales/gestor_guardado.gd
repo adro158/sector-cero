@@ -29,11 +29,14 @@ const OPCIONES_POR_DEFECTO := {
 const RECORDS := ["tiempo", "nivel", "eliminados"]
 ## Partidas que caben en el ranking.
 const MAXIMO_RANKING := 10
-## Si cambia lo que es una partida, los récords y el ranking de antes ya no se
-## pueden comparar con los nuevos y se vacían una vez. La 2 es la de la fase 2:
-## las victorias pasan de unos 11 minutos a más de 15, y las de antes quedarían
-## siempre delante (decisión de Adam, 16/10/2026).
-const VERSION_RECORDS := 2
+## Las secciones del fichero con los récords y el ranking. Con la fase 2 una
+## victoria pasa de unos 11 minutos a más de 15 y las de antes quedarían
+## siempre delante, así que se empiezan de cero (decisión de Adam,
+## 16/10/2026): esta versión usa secciones nuevas y no lee las viejas
+## ("records" y "ranking"). No se borran porque las versiones anteriores, que
+## comparten el fichero, siguen escribiendo en ellas.
+const SECCION_RECORDS := "records_fase2"
+const SECCION_RANKING := "ranking_fase2"
 
 ## Los récords que ha batido la última partida, para que la pantalla final los
 ## anuncie. Vacío en la primera partida: cualquier resultado sería un récord.
@@ -46,22 +49,9 @@ func _ready() -> void:
 	# La primera vez el fichero no existe y load devuelve un error: no pasa
 	# nada, se usan los valores por defecto hasta que se guarde algo.
 	_fichero.load(RUTA)
-	_vaciar_records_viejos()
 	for clave in OPCIONES_POR_DEFECTO:
 		_aplicar(clave, opcion(clave))
 	BusEventos.partida_terminada.connect(_al_terminar_partida)
-
-
-## Las opciones se quedan; los récords y el ranking, si son de antes de
-## VERSION_RECORDS, se borran.
-func _vaciar_records_viejos() -> void:
-	if _fichero.get_value("guardado", "version_records", 1) >= VERSION_RECORDS:
-		return
-	for seccion in ["records", "ranking"]:
-		if _fichero.has_section(seccion):
-			_fichero.erase_section(seccion)
-	_fichero.set_value("guardado", "version_records", VERSION_RECORDS)
-	_fichero.save(RUTA)
 
 
 func opcion(clave: String) -> Variant:
@@ -78,7 +68,7 @@ func cambiar_opcion(clave: String, valor: Variant) -> void:
 ## Récords: tiempo, nivel y eliminados de la mejor partida en cada cosa, y los
 ## contadores partidas y victorias. Cero si todavía no hay ninguno.
 func record(clave: String) -> float:
-	return _fichero.get_value("records", clave, 0)
+	return _fichero.get_value(SECCION_RECORDS, clave, 0)
 
 
 ## Las mejores partidas de este ordenador, ya ordenadas. Cada una es un
@@ -86,7 +76,7 @@ func record(clave: String) -> float:
 ## dificultad y fecha (las guardadas antes de que hubiera dificultades no la
 ## traen: eran de la media). No hay servidor: el ranking es local.
 func ranking() -> Array:
-	return _fichero.get_value("ranking", "partidas", [])
+	return _fichero.get_value(SECCION_RANKING, "partidas", [])
 
 
 ## Si la partida entraría en el ranking: para pedir el nombre solo entonces.
@@ -112,7 +102,7 @@ func anadir_al_ranking(estadisticas: Dictionary, nombre: String) -> int:
 	var lista := ranking()
 	lista.append(entrada)
 	lista.sort_custom(_va_antes)
-	_fichero.set_value("ranking", "partidas", lista.slice(0, MAXIMO_RANKING))
+	_fichero.set_value(SECCION_RANKING, "partidas", lista.slice(0, MAXIMO_RANKING))
 	_fichero.save(RUTA)
 	return lista.find(entrada) + 1
 
@@ -137,13 +127,13 @@ func _al_terminar_partida(estadisticas: Dictionary) -> void:
 
 	for clave in RECORDS:
 		if estadisticas[clave] > record(clave):
-			_fichero.set_value("records", clave, estadisticas[clave])
+			_fichero.set_value(SECCION_RECORDS, clave, estadisticas[clave])
 			if habia_partidas:
 				records_batidos.append(clave)
 
-	_fichero.set_value("records", "partidas", record("partidas") + 1)
+	_fichero.set_value(SECCION_RECORDS, "partidas", record("partidas") + 1)
 	if estadisticas.victoria:
-		_fichero.set_value("records", "victorias", record("victorias") + 1)
+		_fichero.set_value(SECCION_RECORDS, "victorias", record("victorias") + 1)
 	_fichero.save(RUTA)
 
 

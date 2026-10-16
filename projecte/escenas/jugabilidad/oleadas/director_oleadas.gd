@@ -52,10 +52,13 @@ func duracion() -> float:
 ## ahí: así la fase 2 dura siempre lo mismo, tarde lo que tarde el jefe, el
 ## jefe final llega cuando lo dice el reloj y el tiempo de la partida siempre
 ## crece con lo que se avanza (el ranking y los récords lo comparan).
+## Primero fase_cambiada y después el reloj: así el HUD ya sabe que la cuenta
+## atrás es la de NÚCLEO CERO.
 func empezar_fase_2() -> void:
 	_fase = 2
 	_tiempo_restante = 0.0
 	_jefe_en_juego = false
+	BusEventos.fase_cambiada.emit(2)
 	BusEventos.tiempo_partida.emit(_tiempo, duracion())
 
 
@@ -112,8 +115,7 @@ func saltar_a(segundos: float, fase_salto := 1) -> bool:
 		return false
 	if fase_salto == 2:
 		# Sin transición: el menú recarga la partida antes de saltar.
-		_fase = 2
-		BusEventos.fase_cambiada.emit(2)
+		empezar_fase_2()
 	_tiempo = segundos
 	_tiempo_restante = 0.0
 	_siguiente_elite = config.primer_elite

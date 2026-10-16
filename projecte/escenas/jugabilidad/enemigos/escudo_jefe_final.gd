@@ -36,7 +36,7 @@ func activo() -> bool:
 
 func levantar() -> void:
 	_activo = true
-	# En diagonal, para que no queden detrás del jefe ni de su barra.
+	# En diagonal, para que no queden tapadas por el jefe.
 	for i in _anclas.size():
 		var direccion := Vector2.from_angle(TAU * (i + 0.5) / _anclas.size())
 		_anclas[i].activar(global_position + direccion * DISTANCIA_ANCLAS, VIDA_ANCLA * Dificultad.dato("vida"))

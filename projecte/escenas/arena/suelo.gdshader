@@ -28,9 +28,15 @@
 // calculado con la posición en el mundo, en tres escalones de oscuridad para
 // que siga pareciendo pixel art. Con humo = 0 (el suelo normal) no hace nada.
 //
+// Lo usan dos materiales: suelo.tres (fase 1, con las texturas suelo_placa*
+// que se nombran arriba) y suelo_danado.tres (fase 2, con las suelo_danado*,
+// los chispazos y el humo).
+//
 // Ojo: en este proyecto un número escrito como 0.05 llega al shader como 0.5.
-// Por eso aquí no hay ningún número con un cero justo detrás del punto, y los
-// valores ajustables se fijan desde el material (suelo.tres).
+// Por eso aquí no hay ningún número con un cero justo detrás del punto seguido
+// de otra cifra (0.0 o 1.0 sí van bien), y los valores ajustables se fijan
+// desde el material. El 1.0 / 10.0 de los chispazos venía así en el cambio
+// probado: por prudencia, aunque 0.1 también iría bien.
 shader_type canvas_item;
 
 uniform sampler2D baldosas : filter_nearest, repeat_disable;

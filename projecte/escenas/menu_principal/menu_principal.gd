@@ -12,7 +12,7 @@ const SelectorDificultad := preload("res://escenas/menu_principal/selector_dific
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
-	"Aguanta 10 minutos contra el malware y derrota al jefe final.",
+	"Derrota al jefe a los 10 minutos y, tras la fase 2, a NÚCLEO CERO a los 15.",
 	"El malware se adapta a tu herramienta: cambia de personaje con Q y E para sorprenderle.",
 ]
 

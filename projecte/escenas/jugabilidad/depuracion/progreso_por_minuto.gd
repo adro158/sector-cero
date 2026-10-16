@@ -10,23 +10,35 @@ extends RefCounted
 ## (la fase 2), en fácil, porque en media casi ninguna partida llega. Si cambia
 ## el balance, hay que volver a medirlas. Cada nivel ganado da una mejora y
 ## cada cofre de élite otra, por eso las dos tablas van por separado.
+##
+## El minuto 10 es el de la llegada del jefe. Como el reloj se para mientras
+## está, lo que se gana peleando con él no sale en ningún minuto: va aparte, en
+## lo que se tiene al empezar la fase 2 (la línea «FASE 2» del simulador, en
+## media). En la fase 2 nunca se tiene menos que eso.
 
 ## Nivel al llegar a cada minuto, del 0 al 15.
 const NIVEL: Array[int] = [1, 2, 6, 8, 9, 10, 11, 11, 12, 12, 13, 15, 15, 16, 16, 16]
 ## Mejoras aplicadas al llegar a cada minuto, del 0 al 15.
 const MEJORAS: Array[int] = [0, 1, 6, 7, 9, 10, 11, 11, 13, 13, 14, 21, 22, 23, 24, 24]
+## Al empezar la fase 2, tras ganar al jefe.
+const NIVEL_FASE_2 := 15
+const MEJORAS_FASE_2 := 20
 ## Las mejoras se eligen como las elige el bot del simulador, el que da las
 ## cifras: la evolución si sale y, si no, una de ataque.
 const DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
 
 
-## Sube el nivel y da las mejoras de ese minuto. Se llama con la partida
-## recién empezada: el menú recarga la escena antes de saltar.
-static func ponerse_al_dia(niveles: Node, segundos: float) -> void:
+## Sube el nivel y da las mejoras de ese minuto y esa fase. Se llama con la
+## partida recién empezada: el menú recarga la escena antes de saltar.
+static func ponerse_al_dia(niveles: Node, segundos: float, fase := 1) -> void:
 	var nivel := _en(NIVEL, segundos)
+	var mejoras := _en(MEJORAS, segundos)
+	if fase == 2:
+		nivel = maxi(nivel, NIVEL_FASE_2)
+		mejoras = maxi(mejoras, MEJORAS_FASE_2)
 	if nivel > niveles.nivel():
 		niveles.poner_nivel(nivel)
-	while niveles.mejoras_aplicadas() < _en(MEJORAS, segundos):
+	while niveles.mejoras_aplicadas() < mejoras:
 		niveles.regalar(_elegir(niveles.opciones_de_nivel()))
 
 

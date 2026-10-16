@@ -5,7 +5,8 @@ signal experiencia_ganada(cantidad: int)
 ## Para la barra de experiencia: cuánta hay, cuánta hace falta para subir y el
 ## nivel actual. Llega al empezar y cada vez que cambia.
 signal experiencia_cambiada(actual: int, necesaria: int, nivel: int)
-## Una vez por segundo de partida. duracion es cuándo llega el jefe.
+## Una vez por segundo de partida. duracion es cuándo llega el jefe de la fase
+## en curso: el jefe (10:00) o, en la fase 2, el jefe final (15:00).
 signal tiempo_partida(segundos: float, duracion: float)
 ## Al empezar, en cada cambio de personaje y cuando evoluciona la herramienta
 ## del activo. arma: la que lleva ahora. espera: segundos hasta poder volver a
@@ -65,7 +66,8 @@ signal jefe_final_forma_cambiada(forma: int)
 ## El jefe final empieza un ataque: "rayo", "torbellino", "tormenta",
 ## "invocar", "hielo" o "escudo". Para el sonido.
 signal jefe_final_ataco(ataque: String)
-## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
-## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
+## Al caer los tres personajes o al derrotar al jefe final. Claves de
+## estadisticas: victoria (bool), tiempo (float, en segundos), nivel (int),
+## eliminados (int), personaje (String), trucos (bool) y dificultad (String).
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)

@@ -101,7 +101,9 @@ func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
 	_etiqueta_tiempo.text = _formato(segundos)
 	var jefe := "JEFE" if _fase == 1 else "NÚCLEO CERO"
 	if segundos < duracion:
-		_etiqueta_jefe.text = "%s EN %s" % [jefe, _formato(duracion - segundos)]
+		# Hacia arriba: el reloj trunca los segundos, así que la cuenta atrás los
+		# redondea al revés y entre los dos siempre suman la duración.
+		_etiqueta_jefe.text = "%s EN %s" % [jefe, _formato(ceilf(duracion - segundos))]
 	else:
 		_etiqueta_jefe.text = "¡%s!" % jefe
 		_etiqueta_jefe.add_theme_color_override("font_color", EstiloInterfaz.DERROTA)

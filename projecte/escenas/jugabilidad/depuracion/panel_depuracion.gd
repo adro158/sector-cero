@@ -15,7 +15,6 @@ var _nivel := 1
 var _muertos := 0
 var _tiempo := 0.0
 var _ultimo_golpe := 0.0
-var _terminada := false
 
 
 func _ready() -> void:
@@ -43,7 +42,8 @@ func _ready() -> void:
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
-	BusEventos.partida_terminada.connect(_al_terminar)
+	# El reloj de la partida, el mismo que el del HUD: se para con el jefe.
+	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _tiempo = segundos)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
@@ -51,9 +51,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 		visible = not visible
 
 
-func _process(delta: float) -> void:
-	if not _terminada and not get_tree().paused:
-		_tiempo += delta
+func _process(_delta: float) -> void:
 	if not visible:
 		return
 
@@ -117,7 +115,3 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 
 func _al_morir_enemigo(_posicion: Vector2, _tipo: String) -> void:
 	_muertos += 1
-
-
-func _al_terminar(_estadisticas: Dictionary) -> void:
-	_terminada = true

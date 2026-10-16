@@ -135,6 +135,8 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _abrir_o_cerrar() -> void:
+	if _raiz.en_transicion():
+		return
 	_ventana.visible = not _ventana.visible
 	if _ventana.visible:
 		_raiz.usar_trucos()
@@ -169,7 +171,7 @@ func _aplicar_salto(salto: Dictionary) -> void:
 	_raiz.usar_trucos()
 	_director().saltar_a(salto.segundos, salto.fase)
 	if salto.con_progreso:
-		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), salto.segundos)
+		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), salto.segundos, salto.fase)
 
 
 func _subir_nivel() -> void:

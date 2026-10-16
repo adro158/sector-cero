@@ -13,12 +13,12 @@ extends Node2D
 
 const SUELO_DANADO := preload("res://escenas/arena/suelo_danado.tres")
 
-## Velocidad de los pulsos (baldosas por segundo) al empezar, al llegar al
-## final de la partida y con el jefe.
+## Velocidad de los pulsos (baldosas por segundo) al empezar, al llegar el
+## jefe (10:00) y con los jefes en juego.
 @export var velocidad_inicial := 0.3
 @export var velocidad_final := 0.6
 @export var velocidad_jefe := 1.1
-## Brillo de los pulsos al empezar y al llegar al final de la partida.
+## Brillo de los pulsos al empezar y al llegar el jefe (10:00).
 @export var intensidad_inicial := 1.0
 @export var intensidad_final := 1.6
 @export var color_jefe := Color(1.0, 0.25, 0.3)
@@ -74,8 +74,9 @@ func _al_aparecer_jefe() -> void:
 	cambio.tween_property(_material, "shader_parameter/color_brillo", color_jefe, 1.5)
 
 
-## Detrás del negro de la transición: el suelo pasa a la placa destrozada, con
-## una copia del material por lo mismo que el de la fase 1.
+## Detrás del negro de la transición: el suelo pasa a la placa destrozada.
+## También una copia: avance_pulsos se escribe en cada fotograma y el recurso
+## cargado lo comparten todas las partidas.
 func _al_cambiar_fase(fase: int) -> void:
 	_fase = fase
 	_hay_jefe = false

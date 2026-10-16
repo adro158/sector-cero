@@ -101,8 +101,10 @@ func huir() -> void:
 
 ## Al pasar a la fase 2, detrás del negro: la horda desaparece de golpe, sin
 ## experiencia, como al acabar la huida. La huida no sirve aquí porque con el
-## juego en pausa no avanza.
+## juego en pausa no avanza. Los que ya habían muerto con el último golpe y
+## aún no se habían retirado cuentan como siempre.
 func vaciar() -> void:
+	_retirar_muertos()
 	_vivos = 0
 	_huida = 0.0
 	_horda.modulate.a = 1.0
