@@ -141,10 +141,17 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       por tipo, destello de élites y jefe al recibir golpes, piernas al ritmo
       de la velocidad y barra de experiencia que se llena y destella; explosión
       del rootkit con sprites (15/10)
+- [x] Fase 2 y jefe final NÚCLEO CERO (16/10, pedido por Adam): transición a
+      negro, suelo dañado, tres formas, ataques, escudo con anclas, hielo,
+      barra de vida en el HUD, menú F1 y simulador. Rendimiento medido en la
+      RTX 5070 con el jefe en pantalla
+- [ ] Equilibrio de la fase 2 y del jefe final (Adam lo deja para el final:
+      hoy el bot gana 5 de 10 en fácil y ninguna en media ni difícil)
+- [x] Icono del juego en el `.exe`, la ventana y la web (16/10)
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
-      v0.2, 01/10, a la v1.2, 15/10, publicadas; falta probarlas en un
+      v0.2, 01/10, a la v1.3, 16/10, publicadas; falta probarlas en un
       ordenador sin Godot)
 
 ---

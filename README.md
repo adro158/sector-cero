@@ -60,7 +60,9 @@ quieras. Funciona desde todas las versiones.
 
 ## Cómo se juega
 
-Aguanta 10 minutos contra oleadas de malware y derrota al jefe final. Los
+Aguanta 10 minutos contra oleadas de malware y derrota al jefe. Entonces el
+sector queda dañado y empieza la fase 2; a los 15 minutos llega el jefe final,
+NÚCLEO CERO, y derrotarlo es ganar. Los
 enemigos sueltan fragmentos de datos; recógelos para subir de nivel y elegir
 mejoras. Cada 20 segundos el malware se hace más resistente a la herramienta
 que más le ha dañado: cuando veas tus números de daño en rojo, cambia de
@@ -75,6 +77,9 @@ personaje.
 - **Élites** cada minuto con habilidades al azar; si los matas, dejan un
   corazón que cura y un cofre con una ruleta de mejoras.
 - **Evoluciones**: repite tres veces una mejora y tu herramienta evoluciona.
+- **Dos jefes**: el de los 10 minutos, que embiste e invoca horda, y NÚCLEO
+  CERO, con tres formas, los ataques de tus personajes, portales, hielo y un
+  escudo que se rompe por sus anclas.
 - **Ficha del enemigo**: haz click en cualquiera para ver su vida y su daño.
 - **Tres dificultades**, que se eligen en el menú: en fácil el malware tiene
   menos vida, hace menos daño y huye cuando llega el jefe; en difícil, al
@@ -86,7 +91,8 @@ El manual completo está en el [manual de usuario](documentacio/manual_usuario.m
 | | |
 |---|---|
 | ![Menú principal](documentacio/capturas/juego/01_menu.png) | ![Subida de nivel](documentacio/capturas/juego/05_subida_de_nivel.png) |
-| ![Élite con su ficha](documentacio/capturas/juego/07_elite_y_ficha.png) | ![Jefe final](documentacio/capturas/juego/12_jefe.png) |
+| ![Élite con su ficha](documentacio/capturas/juego/07_elite_y_ficha.png) | ![El jefe de los 10 minutos](documentacio/capturas/juego/12_jefe.png) |
+| ![La fase 2: el sector dañado](documentacio/capturas/juego/16_fase_2.png) | ![NÚCLEO CERO en su escudo, con sus cuatro anclas](documentacio/capturas/juego/18_escudo_y_anclas.png) |
 
 ## Cómo lo hicimos
 
@@ -103,6 +109,10 @@ personajes, cinco enemigos, élites, un jefe, música propia y un ranking.
 | 30/09 | Jefe final, sprites, toda la interfaz y el cambio de personaje |
 | 01/10 | Mapa infinito, audio, élites, evoluciones, efectos y actualizaciones desde el juego |
 | 02/10 | Arte nuevo, troyano y ransomware, y todo lo que cambiamos tras jugarlo |
+| 06/10 | Aviso de versión nueva en plena partida, el juego en el móvil, una vida por personaje y el premio de los élites |
+| 08 y 13/10 | Equilibrio tras jugarlo, un jefe más difícil, tres dificultades, las ultis y el menú de desarrollador |
+| 14 y 15/10 | La horda animada, la explosión del rootkit y el menú de versiones |
+| 16/10 | La fase 2 con el mapa destrozado, el jefe final NÚCLEO CERO y el icono del juego |
 
 ![Así empezó: cuadrados rosas persiguiendo a un cuadrado amarillo](documentacio/capturas/historia/02_primera_horda.png)
 *Así era el juego el 22 de septiembre.*

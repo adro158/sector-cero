@@ -58,8 +58,7 @@ Bajar lo de Adam y lo de Alan y ponerse al día:
 Probar el juego en el ordenador de casa, que tiene GPU de verdad:
 
 1. Hacer lo de "Es un día nuevo": bajar `main` y lo de Alan, validar en
-   headless y leer la bitácora, `requisitos_y_estado.md` y, si sigue abierto,
-   `encargo_fase2.md`.
+   headless y leer la bitácora y `requisitos_y_estado.md`.
 2. Darle a Adam un resumen corto: qué está hecho, qué falta y qué hay que
    probar (la lista está en el primer punto de lo que queda por hacer de
    `requisitos_y_estado.md`).

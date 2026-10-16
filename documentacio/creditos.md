@@ -17,6 +17,8 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
 | Tiras de animación de la horda (5 tipos) | Hechas con IA (Claude) | Ver más abajo |
 | Explosión del rootkit (aviso, anillo, explosión y quemadura) | Hechos con IA (Claude) | Ver más abajo |
+| Suelo dañado de la fase 2 | Hecho con IA (Claude) | Ver más abajo |
+| Jefe final NÚCLEO CERO (formas, transformación, muerte, ataques, escudo, hielo y barra de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -98,6 +100,20 @@ scripts no forman parte del repositorio.
   288x288: destello, bola de fuego, onda, trozos, brasas y humo) y
   `rootkit_quemadura.png` (128x128: la marca que queda en el suelo). Con ellos
   vino el código de referencia del aviso y de `explosiones_elite.gd`.
+- **Suelo dañado de la fase 2** (`medios/texturas/suelo_danado*.png` y
+  `escenas/arena/suelo_danado.tres`, 16/10/2026, de la misma forma): las
+  mismas 12 baldosas del suelo de placa base, destrozadas (placa quemada,
+  grietas al rojo, pistas cortadas, chips reventados, condensadores
+  hinchados, cráteres con brasas y chispazos), con su máscara de pulsos y su
+  textura de efectos. Con ellas vino el cambio del shader del suelo
+  (chispazos, humo y velocidad del brillo).
+- **Jefe final NÚCLEO CERO** (`medios/sprites/jefe_final/`, 16/10/2026, de la
+  misma forma): las tres formas (rootkit gigante, núcleo armado y amalgama,
+  6 fotogramas de 192x192 cada una), la transformación y la muerte, los
+  avisos de sus ataques (línea, zona y diana), el portal, el escudo de
+  candado con su rotura, las anclas y la cadena, el cristal y la zona de
+  hielo, y el marco y el relleno de su barra de vida. Con ellos vino una demo
+  de cómo se dibuja cada sprite, que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

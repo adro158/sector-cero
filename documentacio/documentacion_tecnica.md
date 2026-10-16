@@ -14,7 +14,9 @@ Sector Cero es un *survivors-like* en 2D con vista desde arriba. Eres un
 proceso antivirus dentro de un ordenador infectado: solo te mueves y tu
 herramienta ataca sola. El malware llega en oleadas cada vez más densas, suelta
 fragmentos de datos que dan experiencia y, al subir de nivel, eliges una de tres
-mejoras. A los 10 minutos llega el jefe final; derrotarlo es ganar.
+mejoras. A los 10 minutos llega un jefe; al derrotarlo el sector queda dañado y
+empieza la fase 2, y a los 15 minutos llega el jefe final, NÚCLEO CERO:
+derrotarlo es ganar.
 
 **Lo que lo hace distinto es la resistencia adaptativa:** el malware se vuelve
 resistente a la herramienta que más daño le hace, como el malware real con los
@@ -34,7 +36,7 @@ juego.tscn                   La partida, que junta tres piezas:
 │   ├── Un gestor por tipo de enemigo (cinco)
 │   ├── Pools de gemas, proyectiles, partículas y números de daño
 │   ├── ResistenciaMalware   El elemento diferencial
-│   ├── Jefe y tres élites   Ocultos hasta que el director los activa
+│   ├── Jefe, JefeFinal y tres élites   Ocultos hasta que el director los activa
 │   ├── DirectorOleadas      Qué aparece, cuándo y dónde
 │   └── SistemaNiveles       Experiencia, niveles y mejoras
 └── Interfaz/HUD             HUD, mejoras, pausa, ficha del enemigo y final
@@ -59,7 +61,8 @@ código fácil de cambiar: el audio, por ejemplo, no lo llama nadie, escucha.
 puede reorganizar una escena sin romper otra.
 
 **Un mismo contrato para todo lo que recibe daño.** Los gestores de la horda,
-los élites y el jefe están en el grupo `objetivos` y tienen los mismos métodos:
+los élites, los dos jefes y las anclas del escudo del jefe final están en el
+grupo `objetivos` y tienen los mismos métodos:
 `danar_en_area`, `mas_cercano` y, para la ficha del enemigo, `ficha_en` y
 `ficha`. Las armas recorren el grupo sin saber qué es cada uno.
 
@@ -167,15 +170,16 @@ sin ratón, va solo al enemigo más cercano. El click de apuntar se lee en
 
 **El menú de desarrollador (F1).** Para probar cualquier parte del juego sin
 jugar hasta ella: saltar a un minuto, darse mejoras, subir de nivel, ser
-invencible, llenar las ultis, sacar el jefe, un élite o los premios, revivir al
-equipo, limpiar la horda y acelerar el juego. Está en todas las versiones; por
+invencible, llenar las ultis, sacar el jefe, un élite o los premios, ir a la
+fase 2, sacar el jefe final y pasarlo a su forma siguiente, revivir al equipo,
+limpiar la horda y acelerar el juego. Está en todas las versiones; por
 eso la partida en la que se abre no cuenta para los récords ni el ranking. Vive
 en la escena de la partida, como el panel técnico (F3), y usa la jugabilidad
 directamente.
 
 Al saltar a un minuto, el jugador llega con el nivel y las mejoras que tendría
-si hubiera jugado hasta ahí (se puede desmarcar). Las cifras de cada minuto son
-la media de 10 partidas del simulador
+si hubiera jugado hasta ahí (se puede desmarcar). Las cifras de cada minuto,
+hasta el 15, son la media de 10 partidas del simulador
 (`depuracion/progreso_por_minuto.gd`), y las mejoras se eligen como las elige
 su bot: la evolución si sale y, si no, una de ataque. Entre dos minutos se
 toma lo que queda en medio (a las 7:30, la mitad entre el minuto 7 y el 8), y
@@ -216,6 +220,36 @@ desvanece en 1,2 s, sin dar experiencia), y en media y difícil se queda. Ademá
 24 enemigos, más cuanto menos vida le queda; los crean los gestores de la
 horda, como hace el élite replicante.
 
+**La fase 2 y el jefe final.** Al derrotar al jefe, la raíz de la partida
+pausa el juego y emite `transicion_fase`: la interfaz pone un negro de 3 s con
+«SECTOR CERO DAÑADO» escrito letra a letra. Detrás del negro, la horda
+desaparece sin dar experiencia y llega `fase_cambiada(2)`: la arena pone el
+suelo dañado (el mismo shader con otras texturas y dos efectos nuevos,
+chispazos y humo, que con sus valores por defecto no cambian nada: lo
+comprobamos comparando el suelo normal píxel a píxel), el audio baja el tono
+de la música y el HUD avisa. Mientras está el jefe, el reloj se para en las
+10:00 y la fase 2 sigue desde ahí: así dura siempre lo mismo (5 minutos, en el
+`.tres` de las oleadas) y el tiempo de una partida siempre crece con lo que se
+avanza, que es lo que comparan el ranking y los récords. Como las victorias
+pasan de unos 11 minutos a más de 15, el ranking y los récords empiezan de
+cero: van en secciones nuevas del fichero de guardado, y las de antes no se
+borran porque las versiones anteriores, que comparten el fichero, siguen
+escribiendo en ellas. A las 15:00 llega
+**NÚCLEO CERO**. Tiene tres formas en una sola hoja de sprites (una fila por
+forma) y se transforma al 66 % y al 33 % de vida; un golpe que se pasaría de
+largo se queda justo en el umbral, para no saltarse ninguna. En cada forma
+recibe menos daño (100, 75 y 60 %) y ataca más deprisa. Sus ataques van en
+otro script (`ataques_jefe_final.gd`): un rayo, un torbellino y una tormenta
+robados a los personajes (se dibujan con las mismas funciones que sus ultis),
+portales que sacan horda y cristales que dejan hielo, que ralentiza con la
+misma función que el aura de los élites. Todos avisan antes de hacer daño. Al
+cambiar de forma se encierra en un escudo: no recibe daño hasta que se rompen
+sus cuatro anclas, que son objetivos con su vida y están en la escena desde el
+principio, como los élites, porque las armas buscan sus objetivos al empezar.
+Su barra de vida, arriba en el centro, se entera de todo por el bus. Ninguno
+de estos scripts tiene `class_name` ni toca `project.godot`: así llegan con la
+actualización pequeña.
+
 **Las dificultades.** Se eligen en el menú principal y se guardan con las
 opciones. Están en una tabla (`globales/dificultad.gd`) con tres datos cada una:
 cuánto se multiplica la vida de la horda, los élites y el jefe (0,7, 1 y 1,2),
@@ -230,7 +264,10 @@ difícil, ninguna, y en la mitad no llega al jefe. Que la horda se quede es lo
 que endurece la media: con la horda huyendo, como antes, el mismo bot gana 4.
 Para medir esto el bot cambió: antes solo iba a por el jefe si no tenía a nadie
 cerca, y con la horda presente no llegaba nunca; ahora va a por él
-apartándose de lo que tiene encima.
+apartándose de lo que tiene encima. Con la fase 2 y el jefe final, el bot
+(que ahora también recoge los fragmentos, rompe las anclas del escudo y sale
+del torbellino) gana 5 de 10 en fácil y ninguna en media ni en difícil. El equilibrio de la fase 2
+lo dejamos para el final, con el juego terminado.
 
 **El mapa infinito.** El suelo es un rectángulo más grande que la pantalla que
 se coloca bajo la cámara en cada fotograma, y su shader dibuja según la posición
@@ -323,18 +360,22 @@ rendimiento en un PC con una tarjeta de verdad.
   [historia](historia_del_proyecto.md).
 - **Simulador de partidas** (`simular_partidas.gd`): un bot juega partidas
   enteras con la misma "suerte" cada vez, así que un cambio de equilibrio se
-  compara antes y después. El objetivo actual es que gane 2-3 de cada 5; hoy
-  gana 6 de 10.
-- **Medida de rendimiento** (`medir_rendimiento.gd`) en una RTX 5070:
+  compara antes y después. En media, con la fase 2 y el jefe final, hoy no
+  gana ninguna de 10: el equilibrio lo dejamos para el final.
+- **Medida de rendimiento** (`medir_rendimiento.gd`) en una RTX 5070, el
+  16/10/2026; en la fase 2, con el suelo dañado y el jefe final atacando al
+  lado del jugador:
 
-| Enemigos | FPS | Tiempo de física por fotograma |
-|---|---|---|
-| 300 | 1549 | 2,0 ms |
-| 600 | 1301 | 4,5 ms |
-| 1200 | 733 | 9,3 ms |
+| Enemigos | FPS | FPS en la fase 2 | Tiempo de física por paso |
+|---|---|---|---|
+| 300 | 931 | 835 | 2,4 ms |
+| 600 | 595 | 545 | 4,9 ms |
+| 1200 | 218 | 202 | 10 ms |
 
-El objetivo de la propuesta era 300 enemigos a 60 FPS. El coste crece casi en
-línea recta con el número de enemigos gracias a la rejilla.
+El objetivo de la propuesta era 300 enemigos a 60 FPS. El coste de la física
+crece casi en línea recta con el número de enemigos gracias a la rejilla. La
+horda animada no cuesta nada (la v1.0, sin ella, da lo mismo) y la fase 2,
+alrededor de un 10 %.
 
 ## 6. Herramientas, assets e inteligencia artificial
 
@@ -353,6 +394,6 @@ línea recta con el número de enemigos gracias a la rejilla.
 ## 7. Qué mejoraríamos con más tiempo
 
 - Pixel art propio para los personajes y el jefe.
-- Un jefe intermedio y más variedad de élites.
+- Más variedad de élites.
 - Que la resistencia del malware se vea directamente en el HUD.
 - Controles configurables y un ranking compartido en línea.

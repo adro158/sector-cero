@@ -2518,9 +2518,9 @@ hace falta volver a publicar las versiones anteriores.
 
 ## Sesión 14 — 16/10/2026 (en casa)
 
-**Duración:** se apunta al cerrar · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+**Duración:** sin apuntar (Adam se fue antes de decirla) · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
 
-*Entrada abierta: se completa al cerrar la sesión.*
+**Horas acumuladas:** 25 h de las 60 sugeridas, sin contar esta sesión
 
 ### Qué se ha hecho
 
@@ -2530,10 +2530,42 @@ hace falta volver a publicar las versiones anteriores.
   Desktop. Al clonar se vio que se perdió un documento del 02/10 que nunca se
   llegó a subir (`godot_paso_a_paso.md`, el proyecto enseñado en el editor
   con 13 capturas). Se puede rehacer si hace falta.
+- **Consejo sobre las versiones** (ver «Decisiones de Adam»).
 - **Icono del juego** (dibujado por Claude en otra conversación con Adam): el
   encapuchado delante de un cero tachado de neón, en `medios/icono/`. Va en el
-  `.exe` (preset de Windows), en la ventana (`project.godot`) y en la web (el
-  favicon sale de `config/icon`).
+  `.exe` (preset de Windows), en la ventana (`project.godot` y, para el
+  `.pck`, `transicion.gd`) y en la web (el favicon sale de `config/icon`).
+- **Fase 2 y jefe final NÚCLEO CERO**, con los dibujos que Adam hizo con
+  Claude en el chat (`jefe_final.zip`) y el encargo que trajo en clase:
+  - Al derrotar al jefe de las 10:00, negro de 3 s con «SECTOR CERO DAÑADO»
+    escrito letra a letra (`pantalla_fase.gd`). Detrás, la horda desaparece,
+    el suelo pasa a la placa destrozada (chispazos y humo en el shader del
+    suelo), la música baja de tono y el HUD avisa.
+  - La fase 2 dura 5 minutos (`duracion_fase_2`, en `config_principal.tres`)
+    y a las 15:00 llega NÚCLEO CERO: tres formas (rootkit gigante, núcleo
+    armado y amalgama) que cambian al 66 % y al 33 % de vida, con su
+    transformación, su muerte y la victoria al acabar.
+  - Sus ataques: rayo, torbellino y tormenta robados a los personajes (con las
+    funciones de dibujo de sus ultis), portales que sacan horda (y un rootkit
+    explosivo desde la segunda forma) y cristales que dejan hielo que
+    ralentiza. Al cambiar de forma, el escudo de candado: cuatro anclas que
+    hay que romper, y después se queda aturdido 2 s.
+  - Barra de vida arriba en el centro (`barra_jefe_final.gd`), avisos del HUD
+    y sonidos con los efectos que ya había.
+  - Menú F1: IR A LA FASE 2, JEFE FINAL YA (15:00) y SIGUIENTE FORMA.
+  - El ranking y los récords empiezan de cero, como pidió Adam.
+- **El simulador** llega al jefe final: el bot recoge fragmentos cuando no
+  hay peligro, va a por las anclas del escudo, se aparta del hielo y sale del
+  torbellino. Las tablas del F1 se volvieron a medir hasta el minuto 15.
+- **Rendimiento medido en la RTX 5070**, también con la fase 2 y el jefe
+  final en pantalla, y la v1.0 (antes de la horda animada) contra lo de hoy.
+- **Una revisión de todo lo de hoy** con agentes, y sus arreglos (ver «Uso de
+  IA» y «Problemas»).
+- **Documentación**: GEMINI.md (qué es, señales, grupos), README, manual,
+  documentación técnica, créditos, reglas del menú, `requisitos_y_estado.md`,
+  planificación y seis capturas nuevas (`capturas/juego/15` a `20`).
+  `encargo_fase2.md` se borra: está hecho y lo decidido queda aquí.
+- **Publicada la v1.3** a petición de Adam, sin probarla él antes jugando.
 
 ### Decisiones de Adam
 
@@ -2559,15 +2591,16 @@ el botón VERSIONES abrirá esa página. Se descartó un lanzador aparte: más
 código que defender, y tendría que borrar el parche compartido antes de abrir
 cada versión. Se hace después de la fase 2.
 
-**Fase 2** (respuestas a las preguntas de `encargo_fase2.md`):
+**Fase 2** (respuestas a las preguntas del encargo):
 
 - Matar al primer jefe **no cura**.
 - El primer jefe se llama **«JEFE»** a secas (de momento).
-- El ranking y los récords **se vacían una vez** al llegar a la versión con
-  la fase 2: con ella una victoria dura más de 15 minutos, y las de ahora
-  (unos 11) quedarían siempre delante.
+- El ranking y los récords **empiezan de cero** con la fase 2: con ella una
+  victoria dura más de 15 minutos, y las de antes (unos 11) quedarían siempre
+  delante.
 - **El balance se hace al final**, con el juego terminado: hasta entonces el
   jefe final lleva los números del encargo.
+- Al acabar el día, Adam pidió subirlo todo y **publicar la v1.3**.
 
 ### Decisiones técnicas y por qué
 
@@ -2584,15 +2617,150 @@ es del ejecutable. El icono del `.exe` en el explorador solo cambia con un
 ejecutable nuevo. `EJECUTABLE_MINIMO` sigue en 0.2: las dos líneas nuevas de
 `project.godot` solo ponen el icono, y sin ellas el contenido funciona igual.
 
+**El reloj se para en las 10:00 mientras está el jefe.** El encargo decía
+que el reloj sigue desde las 10:00 al empezar la fase 2. Al principio se hizo
+volviendo el reloj a las 10:00 tras el negro, pero entonces una derrota en la
+fase 2 a las 10:30 quedaba en el ranking por debajo de una contra el jefe a
+las 11:30, y el récord de tiempo dejaba de tener sentido. Parándolo, la fase
+2 dura siempre lo mismo, el jefe final llega a las 15:00 y el tiempo siempre
+crece con lo que se avanza.
+
+**La transición, con la pausa del árbol.** La raíz de la partida pausa,
+emite `transicion_fase` y espera con temporizadores del árbol, que siguen
+corriendo en pausa. A mitad, detrás del negro, vacía la horda (`vaciar()`:
+la huida no sirve porque con la pausa no avanza) y el director empieza la
+fase 2, que emite `fase_cambiada` antes que el reloj para que el HUD ya
+cuente hacia NÚCLEO CERO. Mientras dura, ni el menú de pausa ni el F1 se
+abren: al acabar, la transición quita la pausa.
+
+**El jefe final, repartido en scripts.** `jefe_final.gd` lleva las formas,
+la vida, el movimiento, la transformación y la muerte; `ataques_jefe_final.gd`
+cada ataque (tiempo, dibujo y daño); `escudo_jefe_final.gd` y
+`ancla_escudo.gd`, el escudo; `zonas_hielo.gd`, el hielo (debajo del jugador
+y de la horda, como las explosiones); `dibujo_jefe_final.gd`, funciones de
+dibujo como `dibujo_ultis.gd`. Todo con `preload` y sin `class_name`, sin
+tocar `project.godot` salvo el icono: llega con el `.pck`. Las anclas son
+objetivos y están en la escena desde el principio, ocultas, como los élites,
+porque las armas buscan sus objetivos al empezar. Un golpe que se pasaría de
+largo se queda en el umbral de la forma siguiente, para no saltarse ninguna.
+El jefe se queda quieto mientras ataca y con el escudo; los ataques son
+`top_level` y dibujan en coordenadas del mundo. Todos avisan antes de hacer
+daño, y el aviso mide lo mismo que el daño (la franja del rayo, las dianas).
+`jefe_final.gd` (302 líneas con comentarios) y `ataques_jefe_final.gd` (257)
+pasan de las ~200 orientativas; partirlos más obligaría a pasar el estado de
+un script a otro, y se deja así.
+
+**El ranking, en secciones nuevas del guardado.** Primero se vaciaba una vez
+y se apuntaba en el fichero. La revisión vio que las versiones anteriores, que
+comparten el fichero, seguían escribiendo en él después, y que las pruebas lo
+vaciaban al arrancar. Ahora esta versión guarda los récords y el ranking en
+`records_fase2` y `ranking_fase2` y no lee las viejas, que no se borran.
+
+**Las tablas del F1.** Del minuto 0 al 10, en media; del 11 al 15, en fácil,
+porque en media casi ninguna partida llega. En la fase 2 nunca se tiene menos
+que al empezarla (nivel 15 y 20 mejoras): lo ganado contra el jefe no cae en
+ningún minuto, porque el reloj está parado.
+
+### Problemas encontrados y cómo se resolvieron
+
+**Una prueba se quedaba colgada:** la partida se pausaba en una subida de
+nivel y nadie elegía. Las pruebas eligen ahora como el simulador; en las
+capturas, pulsando la tarjeta, porque por el bus el panel no se cierra (lo
+mismo que en la sesión 13).
+
+**Cuatro partidas del simulador salieron idénticas:** un fallo de la prueba
+al pasar los argumentos en PowerShell (la coma se aplica antes que el `+`).
+
+**El bot que va a por los fragmentos con horda alrededor** sube antes de nivel
+pero muere entre el minuto 3 y el 6. Se queda yendo solo sin peligro cerca:
+nivel 13 en el minuto 10 (antes 12), aún por debajo de lo que vio Adam
+jugando (14 en el minuto 5).
+
+**La revisión** (cinco revisores por áreas y tres verificadores por
+hallazgo) encontró 49 cosas. Se acabó el límite de uso a mitad de la
+verificación: solo una pasó la verificación completa (se podía perder
+durante la muerte del jefe final), y las demás se repasaron a mano contra el
+código. Se arregló:
+- el ranking (ver arriba);
+- el HUD que decía «JEFE EN 04:59» al volver la imagen;
+- el jefe que se recolocaba con el escudo puesto y dejaba las anclas atrás, y
+  el escudo que volvía nada más acabar el aturdido;
+- poder perder durante la muerte del jefe (los portales seguían sacando
+  horda): se cierran y el jugador queda protegido mientras se rompe;
+- la ficha que se cerraba al transformarse;
+- avisos más pequeños que el daño (rayo y dianas) y dianas que desaparecían
+  antes de caer su rayo;
+- las anclas y los ataques, que no heredaban el filtro nearest por ser
+  `top_level`;
+- bajas que se perdían al vaciar la horda;
+- la cuenta atrás, que iba un segundo por detrás;
+- el F1 abierto durante el negro;
+- el reloj del panel F3, que ya no coincidía;
+- el bot, que se quedaba dentro del torbellino;
+- y comentarios que ya no eran verdad.
+
+Queda pendiente de decidir con Adam: el rootkit explosivo que invoca el jefe
+final es un élite normal y, al matarlo, suelta corazón y cofre.
+
+### Uso de IA
+
+Claude propuso el plan de la fase 2 (en clase), programó la fase 2, el jefe
+final, el icono y los cambios del simulador, midió el rendimiento, hizo las
+capturas y la documentación. Los dibujos del jefe final, del suelo dañado y
+del icono los hizo Claude en otra conversación con Adam, que trajo también el
+encargo, el cambio del shader y una demo de referencia. Las decisiones son de
+Adam. Para la revisión, como Adam tiene ultracode activado, cinco agentes
+revisaron el código por áreas y otros intentaron desmentir cada hallazgo; se
+cortó por el límite de uso y Claude repasó el resto a mano.
+
 ### Métodos de test empleados
 
-- Importación y arranque en headless, y arranque con ventana del proyecto:
-  sin errores (solo el aviso conocido del audio al cerrar).
-- Exportado el `.exe` de Windows en casa: el icono que enseña el explorador
-  es el nuevo.
-- El código del `.pck`, con una copia del proyecto sin las dos líneas de
-  `project.godot`: leyendo el icono de la ventana con la API de Windows sale
-  el nuevo, y quitando también el código sale el de Godot (así se sabe que la
-  prueba distingue).
-- El favicon de la web no se pudo probar: en casa no están las plantillas de
-  exportación web. Se mira en la web cuando se publique la siguiente versión.
+- Importación y arranque en headless tras cada bloque, y con ventana; las
+  clases globales siguen siendo 16.
+- El suelo normal con el shader nuevo, comparado píxel a píxel con el de
+  antes (con ventana y `--fixed-fps`, para que el tiempo sea el mismo): igual.
+  Que la textura de efectos normal no tiene ningún píxel con el azul de los
+  chispazos.
+- Pruebas en headless: la transición (pausa, negro, horda vaciada, reloj en
+  10:00, cuenta atrás de NÚCLEO CERO, llegada del jefe final a las 15:00); el
+  jefe final (umbral del 66 %, invulnerable transformándose, daño del 75 % y
+  del 60 %, muerte, victoria, portales cerrados y jugador protegido); cada
+  ataque (el rayo no pega durante el aviso y pega una vez, el torbellino,
+  las dianas, los portales y el élite explosivo, el hielo que ralentiza, el
+  escudo que no deja pasar el daño, las anclas, el aturdido con un 50 % más
+  de daño); el salto del F1 a las 15:00 (fase 2, nivel 16, 24 mejoras).
+- Capturas con ventana de la transición, el suelo dañado, las tres formas,
+  cada ataque, el escudo con sus anclas, el hielo, la muerte y la victoria.
+- El icono: el `.exe` exportado en casa lo lleva, y la ventana lo tiene
+  también sin las líneas de `project.godot` (el del `.pck`).
+- Simulador, 10 partidas por dificultad. Fácil, 5 victorias (las otras 5 mueren en la fase 2); media, ninguna (5 contra el jefe, 4 al poco de empezar la fase 2 y una contra el rootkit gigante); difícil, ninguna (5 en la fase 1 y 5 contra el jefe). Antes de los arreglos del bot (el torbellino) eran 4 en fácil.
+- Rendimiento con la RTX 5070 (100 / 300 / 600 / 1200 enemigos): fase 1,
+  1389 / 931 / 595 / 218 FPS; fase 2 con el jefe final atacando, 1234 / 835 /
+  545 / 202; la v1.0, 1407 / 947 / 607 / 227. La física, igual en las tres.
+  La horda animada no cuesta nada y la fase 2, alrededor de un 10 %.
+- El fichero de guardado de Adam se copió antes de las pruebas y se devolvió
+  después, igual que estaba.
+
+### Estado al cerrar
+
+Todo subido a GitHub y publicada la v1.3 (fase 2, jefe final e icono). No
+hay `class_name` nuevos y `EJECUTABLE_MINIMO` sigue en 0.2.
+
+### Siguiente paso
+
+Probarlo jugando (la lista está en el primer punto de lo que queda por hacer
+de `requisitos_y_estado.md`):
+
+1. F1 → JEFE YA: matarlo y mirar el negro, el suelo dañado, la música y que
+   el reloj se queda en 10:00 mientras está el jefe.
+2. F1 → JEFE FINAL YA y SIGUIENTE FORMA: las tres formas, cada ataque (que el
+   aviso se entienda y se pueda esquivar), el escudo y sus anclas, el hielo,
+   la barra de vida, la muerte y la victoria.
+3. Una partida normal mirando el nivel con F3 en los minutos 5, 10 y 15, para
+   las tablas del F1.
+4. Que el ranking sale vacío en la versión nueva.
+5. Decidir si el rootkit explosivo que invoca el jefe final debe soltar
+   corazón y cofre.
+
+Después: el equilibrio de la fase 2 (al final), la página web con todas las
+versiones, el vídeo y el ensayo de la defensa.

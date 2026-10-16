@@ -14,7 +14,10 @@ pulido que uno ambicioso e incompleto.
 de un ordenador infectado. El jugador es un proceso antivirus que defiende el
 sector de arranque de oleadas de malware. Solo se controla el movimiento; las
 armas atacan solas. Los enemigos sueltan fragmentos de datos que dan experiencia,
-se sube de nivel y se eligen mejoras. Partida de 10 minutos más un jefe final.
+se sube de nivel y se eligen mejoras. A los 10 minutos llega un jefe; al
+derrotarlo empieza la fase 2, con el mapa destrozado, y a los 15 minutos llega
+el jefe final, NÚCLEO CERO, que tiene tres formas y los ataques de los
+personajes y de la horda. Se gana al derrotarlo.
 
 Elementos propios: el malware se hace resistente a la herramienta que más daño
 le hace (resistencia adaptativa), tres personajes con una herramienta cada uno
@@ -89,6 +92,12 @@ signal jefe_aparecio
 signal jefe_invoco
 signal elite_aparecio(descripcion: String)
 signal elite_exploto(posicion: Vector2)
+signal transicion_fase(segundos: float)
+signal fase_cambiada(fase: int)
+signal jefe_final_aparecio
+signal jefe_final_vida_cambiada(actual: float, maxima: float)
+signal jefe_final_forma_cambiada(forma: int)
+signal jefe_final_ataco(ataque: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 ```
@@ -135,9 +144,19 @@ Detalles que la interfaz tiene que respetar:
   para el ranking), `trucos` (bool, si se usó el menú de desarrollador) y
   `dificultad` (String: `facil`, `media` o `dificil`). Al cumplirse
   `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
-  minutos) deja de aparecer horda y llega el jefe final, que invoca anillos de
-  horda (`jefe_invoco`); se gana al derrotarlo. En fácil, la horda que queda
-  huye; en media y difícil se queda.
+  minutos) deja de aparecer horda y llega el jefe, que invoca anillos de
+  horda (`jefe_invoco`); mientras está, el reloj se para en las 10:00. En
+  fácil, la horda que queda huye; en media y difícil se queda.
+- **Fase 2.** Al derrotar al jefe, la jugabilidad pausa el juego y emite
+  `transicion_fase(segundos)`: la interfaz pone el negro con «SECTOR CERO
+  DAÑADO» (`pantalla_fase.gd`) y el menú de pausa no se abre. Detrás del
+  negro llega `fase_cambiada(2)`: la arena cambia el suelo, el audio la
+  música y el HUD avisa. La fase dura `duracion_fase_2` (5 minutos, en el
+  mismo `.tres`); en `tiempo_partida`, `duracion` pasa a ser 15:00. Entonces
+  llega el jefe final (`jefe_final_aparecio`); su vida llega con
+  `jefe_final_vida_cambiada` (la barra del HUD), sus cambios de forma con
+  `jefe_final_forma_cambiada` (1 núcleo armado, 2 amalgama) y cada ataque con
+  `jefe_final_ataco` (para el sonido). Se gana al derrotarlo.
 - **Dificultad.** Se elige en el menú principal y se guarda en las opciones
   (`GestorGuardado.opcion("dificultad")`). La partida la lee al empezar con
   `globales/dificultad.gd`: multiplica la vida de los enemigos y el daño que
@@ -152,8 +171,8 @@ mejores partidas con nombre, que se escribe en la pantalla final).
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
-`GestorAudio`, `Transicion` (fundido entre escenas) y `EfectoCRT` (filtro de
-pantalla).
+`GestorAudio`, `Transicion` (fundido entre escenas; al arrancar pone también el
+icono de la ventana) y `EfectoCRT` (filtro de pantalla).
 
 ### 2. Nombres de grupo
 
@@ -161,11 +180,13 @@ pantalla).
   jugador. El mapa es infinito: la arena ya no declara límites.
 - `jugador` — el jugador.
 - `objetivos` — todo lo que recibe daño de las armas: los cinco gestores de la
-  horda, los élites y el jefe. Todos tienen `danar_en_area` y `mas_cercano`, y
-  también `ficha_en` y `ficha`, que usa la ficha del enemigo de la interfaz
-  (click en un enemigo).
+  horda, los élites, el jefe, el jefe final y las cuatro anclas de su escudo.
+  Todos tienen `danar_en_area` y `mas_cercano`, y también `ficha_en` y
+  `ficha`, que usa la ficha del enemigo de la interfaz (click en un enemigo).
 - `gestor_enemigos` — los cinco gestores de la horda.
 - `elites` — los élites, ocultos hasta que el director los activa.
+- `zonas_hielo` — el nodo que lleva las zonas de hielo del jefe final (las
+  crea al caer sus cristales).
 
 El código los busca con `get_tree().get_first_node_in_group(...)`, así que solo
 importa el nombre del grupo, no dónde estén colocados.
@@ -190,8 +211,11 @@ haría con el shader, como ya se hacen el destello al recibir daño, el glitch y
 el parpadeo rojo del troyano antes de embestir. Un dibujo que mira a un lado
 se puede dar la vuelta para mirar al jugador (`se_voltea`, el troyano).
 
-Los élites y el jefe sí son nodos normales y pueden llevar animación propia,
-porque hay pocos a la vez.
+Los élites, el jefe y el jefe final sí son nodos normales y pueden llevar
+animación propia, porque hay pocos a la vez. El jefe final y sus ataques se
+dibujan con hojas de sprites (`medios/sprites/jefe_final/`), y los ataques que
+roba a los personajes, con las mismas funciones que sus ultis
+(`dibujo_ultis.gd`).
 
 La lista original de assets está en `documentacio/assets.md` y la procedencia de
 los que se usan, en `documentacio/creditos.md`.

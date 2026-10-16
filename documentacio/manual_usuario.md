@@ -3,8 +3,9 @@
 ## Objetivo
 
 Eres un antivirus dentro de un ordenador infectado. **Aguanta 10 minutos**
-contra el malware y **derrota al jefe final** para ganar. Si tu integridad (la
-barra sobre tu personaje) llega a cero, pierdes.
+contra el malware, **derrota al jefe**, sobrevive a la **fase 2** y, a los 15
+minutos, **derrota a NÚCLEO CERO**, el jefe final, para ganar. Si tu
+integridad (la barra sobre tu personaje) llega a cero, pierdes.
 
 ## Instalar y abrir
 
@@ -76,10 +77,18 @@ guardada para la próxima vez):
    (blindado, replicante, aura lenta o explosivo). Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
-9. **El jefe final** llega a los 10 minutos y ya no sale más horda (en fácil,
-   la que queda huye). Cuando se pone
-   rojo, va a embestir: apártate. Cuando late en morado, va a sacar un anillo
-   de malware a su alrededor.
+9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil, la
+   que queda huye); el reloj se para mientras está. Cuando se pone rojo, va a
+   embestir: apártate. Cuando late en morado, va a sacar un anillo de malware
+   a su alrededor.
+10. **Fase 2.** Al derrotarlo, el sector queda dañado: vuelve la horda, más
+    dura, hasta los 15 minutos. Entonces llega **NÚCLEO CERO** (su vida, arriba
+    en el centro). Al bajarle al 66 % y al 33 % cambia de forma y es más duro.
+    Te ataca con un rayo (flechas rojas), un torbellino (anillo a su
+    alrededor), una tormenta (dianas en el suelo), portales de malware y
+    cristales que dejan hielo, que te ralentiza: todos avisan antes. Al cambiar
+    de forma se encierra en un escudo: **rompe las cuatro anclas** y se quedará
+    aturdido, recibiendo más daño.
 
 Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
 herramienta.

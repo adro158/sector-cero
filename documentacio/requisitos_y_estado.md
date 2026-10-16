@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 15/10/2026** contra la bitácora (hasta la sesión 13) y
+**Estado verificado el 16/10/2026** contra la bitácora (hasta la sesión 14) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -32,17 +32,17 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 |---|---|---|---|
 | 1 | Pantalla inicial | Hecho | Menú con reglas, controles, récord y opciones (`escenas/menu_principal/`) |
 | 2 | Al menos dos escenas o estados | Hecho | Menú, partida, pausa, opciones, subida de nivel y resultados |
-| 3 | Mecánica principal funcional | Hecho | Esquivar mientras la herramienta ataca sola; cinco tipos de horda (uno embiste), élites, jefe, experiencia, ocho mejoras y evoluciones |
-| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe, mejoras, personaje activo y avisos; panel del equipo (C), ruleta del cofre y ventana para elegir quién sigue al caer un personaje |
+| 3 | Mecánica principal funcional | Hecho | Esquivar mientras la herramienta ataca sola; cinco tipos de horda (uno embiste), élites, jefe, fase 2 con el mapa dañado y jefe final de tres formas (NÚCLEO CERO), experiencia, ocho mejoras y evoluciones |
+| 4 | Interfaz (UI/HUD) | Hecho | HUD con vida, nivel, experiencia, reloj, cuenta atrás del jefe y del jefe final, barra de vida del jefe final, mejoras, personaje activo y avisos; panel del equipo (C), ruleta del cofre y ventana para elegir quién sigue al caer un personaje |
 | 5 | Controles coherentes | Hecho | Teclado, ratón en los menús y mando. Explicados en el menú, el manual y el README |
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
 | 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
 | 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
-| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, explosión del rootkit (aviso, explosión y quemadura), suelo animado (pulsos, LEDs, ventiladores), barra de experiencia que se llena y destella, tweens en menús y avisos |
+| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, explosión del rootkit (aviso, explosión y quemadura), transición a negro de la fase 2, jefe final (tres formas, transformación, muerte, ataques, escudo y hielo), suelo animado (pulsos, LEDs, ventiladores; en la fase 2, chispazos y humo), barra de experiencia que se llena y destella, tweens en menús y avisos |
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
-| 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. El más largo del juego es `gestor_enemigos.gd` (245 líneas; la embestida va aparte, en `embestida_horda.gd`); se ha quitado el código muerto |
+| 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.2 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.3 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.2 publicada el 15/10, también en la web. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.3 publicada el 16/10, también en la web, ya con su icono. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -93,48 +93,46 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-1. **Probarlo todo en casa** (Adam, en un chat nuevo; en el instituto no se
-   puede probar jugando). Con el proyecto de `main` abierto en Godot:
-   - **La explosión del rootkit** (hecha el 15/10, publicada en la v1.2): F1 →
-     ÉLITE AHORA hasta que salga uno EXPLOSIVO, matarlo y mirar el aviso (se
-     agrieta y tiembla, el anillo gira), la explosión y la quemadura del suelo.
-   - **Lo de la v1.1** (publicada el 15/10): la horda animada y el troyano
-     mirando al jugador, el destello de élites y jefe (y que el jefe no
-     destelle mientras avisa en rojo), las piernas con la mejora de velocidad,
-     la barra de experiencia al subir de nivel.
-   - **El menú de versiones** desde la v1.1 descargada: INSTALAR una antigua
-     (no cambia de versión), CAMBIAR a ella y volver.
-   - **El rendimiento** con `herramientas/medir_rendimiento.gd` (con ventana),
-     antes de la horda animada (etiqueta v1.0) y ahora: en el instituto da lo
-     mismo dentro del ruido de la máquina virtual, que no vale para medir.
-   - **La dificultad media**: decidir si se queda así o se compensa. Con la
-     horda que ya no huye, el bot gana 1 de 10 (4 de 10 con la horda
-     huyendo, como en la v0.9); por ejemplo, menos vida para el jefe en media.
-   **La v1.2 ya está publicada** (15/10, a petición de Adam, sin probarla antes en casa): lleva la explosión del rootkit y el arreglo del F1. Si al probar sale algo, se arregla y se saca una v1.3.
-2. **Arreglar el nivel del menú F1** (lo vio Adam el 15/10): al saltar a un
-   minuto da un nivel muy bajo (12 en el minuto 10, y jugando Adam va por el
-   14 en el 5). Falta que el bot recoja fragmentos y volver a medir las tablas
-   (plan en `encargo_fase2.md`). Lo de volver al minuto 0 con las mejoras ya
-   está arreglado (15/10): saltar recarga la partida; falta probarlo jugando.
-3. **Fase 2 y jefe final NÚCLEO CERO en el minuto 15** (encargo de Adam del
-   15/10, con dibujos suyos hechos con Claude). Encargo, plan y preguntas en
-   `encargo_fase2.md`: **pendiente de que Adam diga que sí** al plan. Los
-   dibujos no están en el repo: hay que descomprimir `jefe_final.zip` en la
-   raíz del clon.
-4. **Arreglar el menú VERSIONES** (lo vio Adam el 15/10). Con la v1.1
-   instalada, al cambiar a la v1.0, el menú sigue ofreciendo INSTALAR la
-   v1.0, que es justo la que se está usando: tendría que salir como la actual
-   o como instalada. Sin investigar; puede que el panel no cuente la versión
-   en uso como instalada. Si el arreglo toca `panel_versiones.gd` o
-   `instalador_juego.gd`, hay que volver a publicar las releases anteriores
-   con `recompilar_version.sh` (ver CLAUDE.md).
-
-   **Decidido el 16/10 (bitácora, sesión 14): no se sigue parcheando.** Cada
-   versión se publicará en GitHub Pages en su carpeta (`/v0.3/`, `/v1.2/`...)
-   con una portada que las liste; el juego de escritorio se queda con
-   ACTUALIZAR y el botón VERSIONES abrirá esa página. Se hace después de la
-   fase 2. Las anteriores a la v0.9 no tenían exportación web: hay que
-   añadírsela al compilarlas y probarlas una a una.
+1. **Probar jugando la fase 2 y el jefe final** (hechos el 16/10, sin
+   publicar; la lista paso a paso está en la bitácora, sesión 14). Con el
+   proyecto de `main` abierto en Godot o con la build:
+   - F1 → JEFE YA: matarlo y mirar el negro de la transición, el suelo
+     dañado, la música más grave y que el reloj se queda en 10:00 mientras
+     está el jefe.
+   - F1 → JEFE FINAL YA (15:00) y SIGUIENTE FORMA: las tres formas, cada
+     ataque (que el aviso se entienda y se pueda esquivar), el escudo con sus
+     anclas, el hielo, la barra de vida, la muerte y la victoria.
+   - Una partida normal mirando el nivel con F3 en los minutos 5, 10 y 15:
+     las tablas del F1 (medidas otra vez el 16/10 con el bot que recoge
+     fragmentos: nivel 13 en el minuto 10) siguen por debajo de lo que vio
+     Adam (nivel 14 en el minuto 5).
+   - Al abrir la versión nueva, el ranking y los récords salen vacíos (y la
+     v1.2, si se vuelve a ella, sigue teniendo los suyos).
+   - Lo de antes que aún no se ha probado jugando: la explosión del rootkit
+     (v1.2) y lo de la v1.1 (horda animada, destellos, piernas, barra de
+     experiencia).
+2. **Equilibrar la fase 2 y el jefe final, al final** (decisión de Adam del
+   16/10). Con el simulador, 10 partidas: fácil, 5 victorias (las otras 5
+   mueren en la fase 2); media, ninguna (5 contra el jefe, 4 al poco de
+   empezar la fase 2); difícil, ninguna. Ideas para entonces: unos segundos
+   sin horda al volver la imagen, que la vida por minuto deje de subir a las
+   10:00 o que la horda de la fase 2 empiece más suave y vuelva a apretar; y
+   decidir cuántas victorias se quieren en cada dificultad. Decidir también
+   si el rootkit explosivo que invoca el jefe final debe soltar corazón y
+   cofre (hoy los suelta, como cualquier élite).
+3. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
+   probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
+   y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El
+   icono de la ventana llega con el `.pck` (lo pone `transicion.gd`) y el del
+   `.exe`, con el ejecutable nuevo. Si al probar sale algo, se arregla y se
+   saca una v1.4.
+4. **Versiones: una página web con todas** (decidido el 16/10, bitácora,
+   sesión 14: no se sigue parcheando el menú VERSIONES, que con la v1.1
+   instalada y la v1.0 en uso ofrecía INSTALAR la v1.0). Cada versión se
+   publicará en GitHub Pages en su carpeta (`/v0.3/`, `/v1.2/`...) con una
+   portada que las liste; el juego de escritorio se queda con ACTUALIZAR y el
+   botón VERSIONES abrirá esa página. Las anteriores a la v0.9 no tenían
+   exportación web: hay que añadírsela al compilarlas y probarlas una a una.
 5. **Icono del juego: hecho el 16/10, falta publicarlo** (bitácora, sesión
    14). Lo dibujó Claude a partir de la idea de Adam (`medios/icono/`).
    - el `.exe`: preset de Windows (`application/icon`, el `.ico`); probado
@@ -173,6 +171,19 @@ El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
   simulador; menú de versiones con biblioteca, donde INSTALAR solo descarga y
   CAMBIAR es lo único que cambia de versión, igual en las v0.2 a v1.0
   (republicadas el 14/10).
+
+- **Sesión 14** (decisiones de Adam, 16/10): **fase 2 y jefe final
+  NÚCLEO CERO** a las 15:00 (con lo que pedía el encargo); matar al primer jefe
+  no cura; el primer jefe se llama «JEFE» a secas; el ranking y los récords
+  empiezan de cero (secciones nuevas `records_fase2` y `ranking_fase2` en
+  `gestor_guardado.gd`: las viejas no se borran porque las versiones
+  anteriores siguen escribiendo en ellas); el equilibrio se
+  hace al final, con el juego terminado; las versiones antiguas, en una página
+  web con todas, sin seguir parcheando el menú VERSIONES. Y técnica: el reloj
+  se para en las 10:00 mientras está el primer jefe y la fase 2 sigue desde
+  ahí (así el tiempo siempre crece con lo que se avanza: el ranking y los
+  récords lo comparan); el icono de la ventana se pone también desde
+  `transicion.gd`, para que llegue con el `.pck`.
 
 - **2D, no 3D**, para reducir el alcance (sesión 2).
 - **Renderizador Compatibility** (OpenGL), no Forward+ (sesión 2).
