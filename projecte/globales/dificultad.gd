@@ -12,7 +12,7 @@ extends RefCounted
 ## Medido con el simulador el 13/10/2026, 10 partidas en cada una: fácil, 10
 ## victorias; media, 1 (4 si la horda huyera, como en la v0.9: quedarse la
 ## horda es lo que la endurece); difícil, ninguna, y en la mitad no llega al
-## jefe. Con la fase 2 y el jefe final (16/10/2026): fácil, 4; media y
+## jefe. Con la fase 2 y el jefe final (16/10/2026): fácil, 5; media y
 ## difícil, ninguna. El equilibrio se hace al final, con el juego terminado
 ## (decisión de Adam).
 ##

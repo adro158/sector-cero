@@ -52,6 +52,8 @@ const TIEMPO_MAXIMO_JEFE := 240.0
 const RADIO_FRAGMENTOS := 400.0
 ## Se aparta de las zonas de hielo del jefe final (su radio es 60).
 const RADIO_HIELO := 90.0
+## Durante el torbellino del jefe final (radio 170) se queda más lejos que esto.
+const RADIO_TORBELLINO := 200.0
 ## Las mejoras que prefiere el bot. Hasta el 02/10/2026 elegía al azar, pero
 ## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
 ## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
@@ -259,7 +261,11 @@ func _mover_bot() -> void:
 	# Con un jefe en juego, va a por él de la misma forma. Hasta la sesión 11
 	# solo iba cuando no tenía a nadie cerca, pero con la horda que se queda
 	# (media y difícil) no llegaba nunca y se le acababa el tiempo.
-	elif objetivo != Vector2.INF:
+	# Del torbellino del jefe final sale en cuanto ve el aviso, como una
+	# persona, y no vuelve hasta que acaba.
+	elif _ataque_del_jefe_final(jefe_final) == "torbellino" and posicion.distance_to(jefe_final.global_position) < RADIO_TORBELLINO:
+		direccion = (posicion - jefe_final.global_position).normalized()
+	elif objetivo != Vector2.INF and _ataque_del_jefe_final(jefe_final) != "torbellino":
 		if posicion.distance_to(objetivo) > DISTANCIA_AL_JEFE:
 			direccion = ((objetivo - posicion).normalized() + huida.normalized() * 0.7).normalized()
 	# Los fragmentos, solo sin peligro cerca. Probado el 16/10/2026: si va a
@@ -283,6 +289,11 @@ func _mover_bot() -> void:
 		Input.action_press("mover_abajo", direccion.y)
 	elif direccion.y < -0.05:
 		Input.action_press("mover_arriba", -direccion.y)
+
+
+## El ataque que está haciendo el jefe final ("" si ninguno o si no está).
+func _ataque_del_jefe_final(jefe_final: Node2D) -> String:
+	return jefe_final.get_node("Ataques")._ataque if jefe_final.activo() else ""
 
 
 ## A dónde ir con un jefe en juego: el jefe o, si el jefe final está dentro
@@ -358,10 +369,14 @@ func _al_terminar(estadisticas: Dictionary) -> void:
 	var director: Node = _raiz.get_node("DirectorOleadas")
 	var jefe_final: Node = _raiz.get_node("JefeFinal")
 	var donde := "fase 1"
-	if _raiz.get_node("Jefe")._activo:
+	if estadisticas.victoria:
+		donde = "jefe final derrotado"
+	elif _raiz.get_node("Jefe")._activo:
 		donde = "jefe"
+	elif jefe_final.visible:
+		donde = "jefe final (%s)" % ["rootkit gigante", "núcleo armado", "amalgama"][jefe_final.forma()]
 	elif director.fase() == 2:
-		donde = "jefe final (forma %d)" % (jefe_final.forma() + 1) if jefe_final.visible else "fase 2"
+		donde = "fase 2"
 	print("RESULTADO %s tiempo=%.0fs nivel=%d eliminados=%d donde=%s" % [
 		"VICTORIA" if estadisticas.victoria else "DERROTA", estadisticas.tiempo,
 		estadisticas.nivel, estadisticas.eliminados, donde])
