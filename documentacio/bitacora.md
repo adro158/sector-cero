@@ -2767,3 +2767,29 @@ de `requisitos_y_estado.md`):
 
 Después: el equilibrio de la fase 2 (al final), la página web con todas las
 versiones, el vídeo y el ensayo de la defensa.
+
+## Sesión 15 — 16/10/2026 (en clase, corta)
+
+- Se bajó lo de casa (sesión 14) y se validó en headless: import y partida
+  sin errores. Con un script temporal, el F1 lleva a la fase 2 (10:20, nivel
+  15), al jefe final (15:00, nivel 16) y de vuelta al 0 (nivel 1, sin
+  mejoras); SIGUIENTE FORMA funciona.
+- **Icono.** Adam no lo veía en la barra de tareas, en el `.exe` ni en
+  GitHub. La v1.3 publicada sí lo tiene: se comprobó bajándola y leyendo el
+  icono del `.exe` y de la ventana. Un `.exe` viejo actualizado solo con el
+  `.pck` pone el icono en la ventana (probado con el `.exe` de la v1.2 y el
+  parche de la v1.3), pero el archivo se queda sin icono, porque eso va
+  dentro del ejecutable. Se puso el icono en la portada del README.
+- **Icono en Linux** (Adam: «en Linux no se ve»). Un ejecutable de Linux no
+  lleva icono, y GNOME en Wayland no usa el de la ventana: lo busca en un
+  `.desktop` cuyo `StartupWMClass` sea la clase de la ventana. En el código de
+  Godot 4.7, esa clase (y el `app_id` de Wayland) es `config/name`, «Sector
+  Cero». Nuevo `globales/icono_linux.gd`: el juego exportado escribe al
+  arrancar en Linux su icono y `~/.local/share/applications/sector-cero.desktop`.
+  Va en el contenido, así que llega también con el `.pck`. Probado en headless
+  en Windows, con otro `HOME`; falta probarlo en Linux. Publicado en la v1.4.
+- **Versiones.** Adam preguntó por un lanzador aparte como el de Minecraft.
+  La propuesta y la estimación están en `requisitos_y_estado.md`, punto 4;
+  queda pendiente de que decida.
+
+Horas: sin apuntar (preguntar a Adam).

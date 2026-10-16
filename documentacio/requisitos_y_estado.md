@@ -131,6 +131,27 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    portada que las liste; el juego de escritorio se queda con ACTUALIZAR y el
    botón VERSIONES abrirá esa página. Las anteriores a la v0.9 no tenían
    exportación web: hay que añadírsela al compilarlas y probarlas una a una.
+
+   **Sin decidir del todo (16/10, en clase):** Adam propuso un lanzador
+   aparte, como el de Minecraft. Primero una pantalla con la información del
+   juego y la lista de versiones, y al pulsar JUGAR se abre esa versión, sin
+   cerrar y reiniciar el juego. Lo que propuso Claude:
+   - un ejecutable aparte (`SectorCero_Lanzador`) del mismo proyecto: su
+     preset de exportación lleva una marca y arranca en la pantalla del
+     lanzador en vez de en el juego
+   - la lista de versiones sale de la API de releases de GitHub, así que las
+     nuevas aparecen sin actualizar el lanzador
+   - INSTALAR o JUGAR por versión: baja el zip a la biblioteca reutilizando
+     `instalador_juego.gd` y la abre con `OS.create_process`
+   - el juego se queda solo con ACTUALIZAR, o sin nada, porque las versiones
+     nuevas las trae el lanzador
+
+   Unas 2 sesiones más las pruebas. Cada versión pesa unos 40 MB de descarga
+   y unos 110 MB instalada: se baja solo la que se elige. Las versiones
+   antiguas seguirán teniendo su menú VERSIONES. En la web no puede haber
+   lanzador, así que la página con todas sigue haciendo falta allí.
+   Recomendación de Claude: las dos cosas, pero detrás del vídeo y del ensayo
+   de la defensa. **Falta que Adam decida.**
 5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
    Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
    que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
