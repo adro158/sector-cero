@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://escenas/arena/suelo.gdshader" id="1_suelo"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_danado.png" id="2_baldosas"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_danado_mascara.png" id="3_mascara"]
+[ext_resource type="Texture2D" path="res://medios/texturas/suelo_danado_efectos.png" id="4_efectos"]
+
+[resource]
+shader = ExtResource("1_suelo")
+shader_parameter/baldosas = ExtResource("2_baldosas")
+shader_parameter/mascara = ExtResource("3_mascara")
+shader_parameter/efectos = ExtResource("4_efectos")
+shader_parameter/tamano_baldosa = 256.0
+shader_parameter/columnas = 4.0
+shader_parameter/filas = 3.0
+shader_parameter/color_pulso = Color(1, 0.32, 0.12, 1)
+shader_parameter/intensidad_pulso = 1.5
+shader_parameter/avance_pulsos = 0.0
+shader_parameter/longitud_pulso = 0.3
+shader_parameter/velocidad_leds = 3.0
+shader_parameter/color_brillo = Color(1, 0.42, 0.12, 1)
+shader_parameter/intensidad_brillo = 0.9
+shader_parameter/velocidad_ventilador = 1.2
+shader_parameter/velocidad_brillo = 3.5
+shader_parameter/color_chispa = Color(1, 0.92, 0.6, 1)
+shader_parameter/velocidad_chispas = 0.6
+shader_parameter/duracion_chispa = 0.2
+shader_parameter/humo = 0.5
+shader_parameter/velocidad_humo = 0.12
