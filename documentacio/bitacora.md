@@ -2740,6 +2740,10 @@ cortó por el límite de uso y Claude repasó el resto a mano.
   La horda animada no cuesta nada y la fase 2, alrededor de un 10 %.
 - El fichero de guardado de Adam se copió antes de las pruebas y se devolvió
   después, igual que estaba.
+- La v1.3 publicada: la Action acabó bien; la release lleva los dos `.zip`,
+  los dos `.pck` y `version.json` (1.3, ejecutable mínimo 0.2); el `.exe`
+  descargado, compilado en GitHub, lleva el icono (versión 1.3.0.0), y el
+  favicon de la web es el icono nuevo.
 
 ### Estado al cerrar
 
