@@ -7,7 +7,11 @@ extends Node2D
 ##
 ## Además, el suelo reacciona a la partida: los pulsos de datos van más rápido
 ## y brillan más según pasan los minutos, y cuando aparece el jefe los pulsos y
-## el brillo de los chips se vuelven rojos y los pulsos se aceleran.
+## el brillo de los chips se vuelven rojos y los pulsos se aceleran. En la fase
+## 2 el suelo pasa a ser la placa destrozada (suelo_danado.tres: el mismo
+## shader con otras texturas y colores, chispazos y humo).
+
+const SUELO_DANADO := preload("res://escenas/arena/suelo_danado.tres")
 
 ## Velocidad de los pulsos (baldosas por segundo) al empezar, al llegar al
 ## final de la partida y con el jefe.
@@ -25,6 +29,9 @@ var _material: ShaderMaterial
 var _velocidad := 0.3
 var _avance := 0.0
 var _hay_jefe := false
+## En la fase 2 los colores y el brillo son los de suelo_danado.tres y ya no
+## cambian con el tiempo.
+var _fase := 1
 
 
 func _ready() -> void:
@@ -36,6 +43,8 @@ func _ready() -> void:
 	_material.set_shader_parameter("intensidad_pulso", intensidad_inicial)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
+	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
+	BusEventos.jefe_final_aparecio.connect(func(): _velocidad = velocidad_jefe)
 
 
 func _process(delta: float) -> void:
@@ -49,7 +58,7 @@ func _process(delta: float) -> void:
 
 
 func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
-	if _hay_jefe:
+	if _hay_jefe or _fase == 2:
 		return
 	var progreso := clampf(segundos / duracion, 0.0, 1.0)
 	_velocidad = lerpf(velocidad_inicial, velocidad_final, progreso)
@@ -63,3 +72,13 @@ func _al_aparecer_jefe() -> void:
 	var cambio := create_tween().set_parallel()
 	cambio.tween_property(_material, "shader_parameter/color_pulso", color_jefe, 1.5)
 	cambio.tween_property(_material, "shader_parameter/color_brillo", color_jefe, 1.5)
+
+
+## Detrás del negro de la transición: el suelo pasa a la placa destrozada, con
+## una copia del material por lo mismo que el de la fase 1.
+func _al_cambiar_fase(fase: int) -> void:
+	_fase = fase
+	_hay_jefe = false
+	_velocidad = velocidad_final
+	_material = SUELO_DANADO.duplicate() as ShaderMaterial
+	_suelo.material = _material

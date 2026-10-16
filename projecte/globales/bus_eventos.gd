@@ -51,6 +51,10 @@ signal jefe_invoco
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.
 signal elite_exploto(posicion: Vector2)
+## La partida pasa a otra fase. Llega detrás del negro de la transición: la
+## arena cambia el suelo, el audio la música y el HUD avisa.
+signal fase_cambiada(fase: int)
+signal jefe_final_aparecio
 ## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
 ## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
 signal partida_terminada(estadisticas: Dictionary)

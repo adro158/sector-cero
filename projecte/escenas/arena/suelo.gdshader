@@ -20,8 +20,13 @@
 // durante la partida sin que los pulsos salten de sitio).
 //
 // Efectos: la tercera textura (suelo_placa_efectos.png) dice qué es cada
-// píxel con el azul: LED (1), aspa de ventilador (2/3) o brillo de chip (1/3).
-// Rojo y verde son datos de ese efecto (ver cada caso abajo).
+// píxel con el azul: LED (1), aspa de ventilador (2/3), brillo de chip (1/3)
+// o chispazo (40/255, solo en el suelo dañado de la fase 2). Rojo y verde son
+// datos de ese efecto (ver cada caso abajo).
+//
+// Humo: en la fase 2, unas sombras de humo cruzan el suelo despacio. Es ruido
+// calculado con la posición en el mundo, en tres escalones de oscuridad para
+// que siga pareciendo pixel art. Con humo = 0 (el suelo normal) no hace nada.
 //
 // Ojo: en este proyecto un número escrito como 0.05 llega al shader como 0.5.
 // Por eso aquí no hay ningún número con un cero justo detrás del punto, y los
@@ -49,6 +54,19 @@ uniform vec4 color_brillo : source_color = vec4(0.3, 0.8, 1.0, 1.0);
 uniform float intensidad_brillo = 0.7;
 // Aspas que pasan por un punto cada segundo.
 uniform float velocidad_ventilador = 3.0;
+// Velocidad a la que respira el brillo de los chips (brasas en la fase 2).
+uniform float velocidad_brillo = 2.0;
+
+// Chispazos (solo hay en el suelo dañado).
+uniform vec4 color_chispa : source_color = vec4(1.0, 0.9, 0.55, 1.0);
+// Veces por segundo que puede saltar cada chispazo.
+uniform float velocidad_chispas = 0.5;
+// Parte de cada ciclo en la que el chispazo está saltando.
+uniform float duracion_chispa = 0.15;
+
+// Humo: cuánto oscurece (0 = nada) y lo rápido que se mueve.
+uniform float humo = 0.0;
+uniform float velocidad_humo = 0.2;
 
 varying vec2 posicion;
 
@@ -60,6 +78,19 @@ void vertex() {
 // Número pseudoaleatorio entre 0 y 1, siempre el mismo para la misma casilla.
 float azar(vec2 casilla, float semilla) {
 	return fract(sin(dot(casilla + semilla, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+// Ruido suave entre 0 y 1: interpola los valores al azar de las esquinas de
+// la casilla en la que cae p.
+float ruido(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 u = f * f * (3.0 - 2.0 * f);
+	float a = azar(i, 13.0);
+	float b = azar(i + vec2(1.0, 0.0), 13.0);
+	float c = azar(i + vec2(0.0, 1.0), 13.0);
+	float d = azar(i + vec2(1.0, 1.0), 13.0);
+	return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
 void fragment() {
@@ -91,8 +122,22 @@ void fragment() {
 		color *= aspa < 0.5 ? 1.5 : 0.45;
 	} else if (efecto.b > 0.2) {
 		// Brillo alrededor de los chips: sube y baja despacio, como si respiraran.
-		float respira = 0.5 + 0.5 * sin(TIME * 2.0 + azar(casilla, 7.0) * 6.28);
+		float respira = 0.5 + 0.5 * sin(TIME * velocidad_brillo + azar(casilla, 7.0) * 6.28);
 		color += color_brillo.rgb * efecto.r * respira * intensidad_brillo;
+	} else if (efecto.b > 1.0 / 10.0) {
+		// Chispazo: cada uno salta un rato de cada ciclo y el resto está quieto.
+		// El verde dice cuándo salta y cambia un poco su ritmo.
+		float ciclo = fract(TIME * velocidad_chispas * (0.7 + efecto.g * 0.6) + efecto.g * 5.0 + azar(casilla, 11.0));
+		if (ciclo < duracion_chispa) {
+			// El arco tiene tres fotogramas (rojo = 1/3, 2/3 o 1) y cambia muy
+			// deprisa; con rojo = 0 es el resplandor de alrededor, que parpadea.
+			float paso = floor(fract(TIME * 16.0) * 3.0) + 1.0;
+			if (efecto.r < 1.0 / 10.0) {
+				color += color_chispa.rgb * 0.6 * step(0.5, fract(TIME * 23.0));
+			} else if (abs(efecto.r * 3.0 - paso) < 0.5) {
+				color = mix(color, color_chispa.rgb, 0.9) + vec3(0.2);
+			}
+		}
 	}
 
 	if (marca.r > 0.0) {
@@ -112,6 +157,13 @@ void fragment() {
 		float detras = fract(avance_pulsos + retraso - fase);
 		float pulso = 1.0 - smoothstep(0.0, longitud_pulso, detras);
 		color += color_pulso.rgb * pulso * marca.r * intensidad_pulso;
+	}
+
+	if (humo > 0.0) {
+		vec2 p = posicion / 320.0 + vec2(TIME, TIME * 0.6) * velocidad_humo;
+		float n = ruido(p) * 0.65 + ruido(p * 2.3 + 7.0) * 0.35;
+		float sombra = floor(smoothstep(0.4, 0.8, n) * 3.0) / 3.0;
+		color *= 1.0 - humo * sombra;
 	}
 
 	COLOR = vec4(color, 1.0);
