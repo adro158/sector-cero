@@ -31,7 +31,8 @@ func _ready() -> void:
 
 
 ## Segundos de partida jugados. Es el reloj de la partida: no avanza con el
-## juego en pausa, porque el director tampoco se procesa.
+## juego en pausa, porque el director tampoco se procesa, ni mientras está el
+## jefe de la fase 1 (la fase 2 sigue desde las 10:00).
 func tiempo() -> float:
 	return _tiempo
 
@@ -46,18 +47,22 @@ func duracion() -> float:
 	return config.duracion_partida if _fase == 1 else config.duracion_partida + config.duracion_fase_2
 
 
-## Detrás del negro de la transición, tras derrotar al jefe. El reloj vuelve a
-## duracion_partida (10:00): así la fase 2 dura siempre lo mismo, tarde lo que
-## tarde el jefe, y el jefe final llega cuando lo dice el reloj.
+## Detrás del negro de la transición, tras derrotar al jefe. El reloj se ha
+## quedado en duracion_partida (10:00) mientras estaba el jefe y sigue desde
+## ahí: así la fase 2 dura siempre lo mismo, tarde lo que tarde el jefe, el
+## jefe final llega cuando lo dice el reloj y el tiempo de la partida siempre
+## crece con lo que se avanza (el ranking y los récords lo comparan).
 func empezar_fase_2() -> void:
 	_fase = 2
-	_tiempo = config.duracion_partida
 	_tiempo_restante = 0.0
 	_jefe_en_juego = false
 	BusEventos.tiempo_partida.emit(_tiempo, duracion())
 
 
 func _physics_process(delta: float) -> void:
+	# Con el jefe de la fase 1 en juego, el reloj se para en las 10:00.
+	if _jefe_en_juego and _fase == 1:
+		return
 	var segundo_anterior := int(_tiempo)
 	_tiempo += delta
 	_tiempo_restante -= delta
