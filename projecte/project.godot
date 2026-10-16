@@ -14,6 +14,8 @@ config/name="Sector Cero"
 config/version="desarrollo"
 run/main_scene="res://escenas/menu_principal/menu_principal.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://medios/icono/icono.png"
+config/windows_native_icon="res://medios/icono/icono.ico"
 
 [autoload]
 

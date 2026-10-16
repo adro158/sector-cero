@@ -25,6 +25,15 @@ func _ready() -> void:
 	# El juego también se abre con un fundido desde negro.
 	create_tween().tween_property(_velo, "modulate:a", 0.0, DURACION * 2.0)
 
+	# El icono de la ventana. Godot lo pone al arrancar con el project.godot
+	# del ejecutable, y los anteriores a la v1.3 no lo traen: así llega también
+	# a quien actualiza solo con el .pck. En Windows, el .ico, que tiene los
+	# tamaños pequeños dibujados a mano.
+	if OS.get_name() == "Windows":
+		DisplayServer.set_native_icon("res://medios/icono/icono.ico")
+	elif OS.get_name() == "Linux":
+		DisplayServer.set_icon(load("res://medios/icono/icono.png").get_image())
+
 
 ## Cambia a la escena de la ruta. Con la ruta vacía recarga la actual, que es
 ## lo que hace "reintentar".
