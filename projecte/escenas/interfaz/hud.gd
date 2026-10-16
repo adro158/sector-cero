@@ -16,6 +16,7 @@ const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
 const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
+const BarraJefeFinal := preload("res://escenas/interfaz/barra_jefe_final.gd")
 
 var niveles_mejora := {}
 
@@ -34,6 +35,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(PanelExperiencia.new())
 	_crear_reloj()
+	add_child(BarraJefeFinal.new())
 
 	_columna = VBoxContainer.new()
 	_columna.position = Vector2(16, 104)
@@ -44,7 +46,8 @@ func _ready() -> void:
 	_aviso.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	_aviso.offset_left = -400.0
 	_aviso.offset_right = 400.0
-	_aviso.offset_top = 100.0
+	# Debajo de la barra del jefe final, que va de 62 a 102.
+	_aviso.offset_top = 108.0
 	_aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_aviso.modulate.a = 0.0
 	add_child(_aviso)
