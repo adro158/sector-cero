@@ -2770,6 +2770,10 @@ versiones, el vídeo y el ensayo de la defensa.
 
 ## Sesión 15 — 16/10/2026 (en clase, corta)
 
+**Duración:** 1 h · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 28 h de las 60 sugeridas (47 %)
+
 - Se bajó lo de casa (sesión 14) y se validó en headless: import y partida
   sin errores. Con un script temporal, el F1 lleva a la fase 2 (10:20, nivel
   15), al jefe final (15:00, nivel 16) y de vuelta al 0 (nivel 1, sin
@@ -2788,8 +2792,7 @@ versiones, el vídeo y el ensayo de la defensa.
   arrancar en Linux su icono y `~/.local/share/applications/sector-cero.desktop`.
   Va en el contenido, así que llega también con el `.pck`. Probado en headless
   en Windows, con otro `HOME`; falta probarlo en Linux. Publicado en la v1.4.
-- **Versiones.** Adam preguntó por un lanzador aparte como el de Minecraft.
+- **Versiones.** Adam decidió que desde el `.exe` se tienen que poder jugar todas las versiones, y que la web es solo un extra para la última. La mejor forma es un lanzador aparte, como el de Minecraft.
   La propuesta y la estimación están en `requisitos_y_estado.md`, punto 4;
-  queda pendiente de que decida.
+  falta el plan con los ficheros antes de programar.
 
-Horas: sin apuntar (preguntar a Adam).

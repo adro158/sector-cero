@@ -124,18 +124,16 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    icono de la ventana llega con el `.pck` (lo pone `transicion.gd`) y el del
    `.exe`, con el ejecutable nuevo. Si al probar sale algo, se arregla y se
    saca una v1.4.
-4. **Versiones: una página web con todas** (decidido el 16/10, bitácora,
-   sesión 14: no se sigue parcheando el menú VERSIONES, que con la v1.1
-   instalada y la v1.0 en uso ofrecía INSTALAR la v1.0). Cada versión se
-   publicará en GitHub Pages en su carpeta (`/v0.3/`, `/v1.2/`...) con una
-   portada que las liste; el juego de escritorio se queda con ACTUALIZAR y el
-   botón VERSIONES abrirá esa página. Las anteriores a la v0.9 no tenían
-   exportación web: hay que añadírsela al compilarlas y probarlas una a una.
+4. **Versiones: un lanzador, como el de Minecraft** (decisión de Adam del
+   16/10, sesión 15). Lo que pide: desde el `.exe` se tienen que poder jugar
+   **todas** las versiones. La página web es solo un extra para probar la
+   última; ya no se hace la página con todas que se decidió en la sesión 14.
+   Tampoco se sigue parcheando el menú VERSIONES de dentro del juego (con la
+   v1.1 instalada y la v1.0 en uso, ofrecía INSTALAR la v1.0).
 
-   **Sin decidir del todo (16/10, en clase):** Adam propuso un lanzador
-   aparte, como el de Minecraft. Primero una pantalla con la información del
+   Cómo lo hace el lanzador: primero una pantalla con la información del
    juego y la lista de versiones, y al pulsar JUGAR se abre esa versión, sin
-   cerrar y reiniciar el juego. Lo que propuso Claude:
+   cerrar y reiniciar el juego. Lo que propuso Claude (opción recomendada):
    - un ejecutable aparte (`SectorCero_Lanzador`) del mismo proyecto: su
      preset de exportación lleva una marca y arranca en la pantalla del
      lanzador en vez de en el juego
@@ -148,10 +146,11 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
    Unas 2 sesiones más las pruebas. Cada versión pesa unos 40 MB de descarga
    y unos 110 MB instalada: se baja solo la que se elige. Las versiones
-   antiguas seguirán teniendo su menú VERSIONES. En la web no puede haber
-   lanzador, así que la página con todas sigue haciendo falta allí.
-   Recomendación de Claude: las dos cosas, pero detrás del vídeo y del ensayo
-   de la defensa. **Falta que Adam decida.**
+   antiguas seguirán teniendo su menú VERSIONES. Lo que se reparte pasa a ser
+   el lanzador: un zip con `SectorCero_Lanzador.exe` (y el de Linux), que
+   baja las versiones la primera vez que se juegan.
+   **Siguiente paso:** el plan con los ficheros, para que Adam diga que sí
+   antes de programar.
 5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
    Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
    que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
