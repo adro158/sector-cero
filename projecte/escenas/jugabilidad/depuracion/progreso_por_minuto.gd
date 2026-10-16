@@ -5,14 +5,16 @@ extends RefCounted
 ## al minuto 10, el jefe se prueba como llega de verdad.
 ##
 ## Las cifras salen del simulador de partidas (herramientas/simular_partidas.gd):
-## la media de sus 10 partidas al llegar a cada minuto, medida el 13/10/2026.
-## Si cambia el balance, hay que volver a medirlas. Cada nivel ganado da una
-## mejora y cada cofre de élite otra, por eso las dos tablas van por separado.
+## la media de sus 10 partidas al llegar a cada minuto, medida el 16/10/2026
+## con el bot que ya recoge fragmentos. Del 0 al 10, en media; del 11 al 15
+## (la fase 2), en fácil, porque en media casi ninguna partida llega. Si cambia
+## el balance, hay que volver a medirlas. Cada nivel ganado da una mejora y
+## cada cofre de élite otra, por eso las dos tablas van por separado.
 
-## Nivel al llegar a cada minuto, del 0 al 10.
-const NIVEL: Array[int] = [1, 2, 6, 7, 9, 9, 9, 10, 11, 11, 12]
-## Mejoras aplicadas al llegar a cada minuto, del 0 al 10.
-const MEJORAS: Array[int] = [0, 1, 5, 6, 8, 8, 9, 10, 10, 11, 12]
+## Nivel al llegar a cada minuto, del 0 al 15.
+const NIVEL: Array[int] = [1, 2, 6, 8, 9, 10, 11, 11, 12, 12, 13, 15, 15, 16, 16, 16]
+## Mejoras aplicadas al llegar a cada minuto, del 0 al 15.
+const MEJORAS: Array[int] = [0, 1, 6, 7, 9, 10, 11, 11, 13, 13, 14, 21, 22, 23, 24, 24]
 ## Las mejoras se eligen como las elige el bot del simulador, el que da las
 ## cifras: la evolución si sale y, si no, una de ataque.
 const DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
