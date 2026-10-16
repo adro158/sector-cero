@@ -1,3 +1,7 @@
+<p align="center">
+  <img alt="Icono de Sector Cero" width="128" src="projecte/medios/icono/icono.png">
+</p>
+
 # Sector Cero
 
 **Eres un antivirus. Tu ordenador está infectado. Aguanta diez minutos.**
