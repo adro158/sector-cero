@@ -149,6 +149,31 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    antiguas seguirán teniendo su menú VERSIONES. Lo que se reparte pasa a ser
    el lanzador: un zip con `SectorCero_Lanzador.exe` (y el de Linux), que
    baja las versiones la primera vez que se juegan.
+   **Las versiones antiguas** (decisión de Adam del 16/10). Abiertas desde el
+   lanzador:
+   - no se actualizan solas
+   - al cerrar el juego (no el lanzador) se vuelve al lanzador para elegir
+     otra versión
+
+   Cómo hacerlo, según Claude:
+   - **Volver al lanzador sirve para todas sin tocarlas.** El lanzador no
+     se cierra: se esconde al abrir el juego, guarda su número de proceso
+     (lo devuelve `OS.create_process`) y vuelve a aparecer cuando
+     `OS.is_process_running` dice que el juego se ha cerrado.
+   - **El parche compartido.** Todas las versiones guardan sus datos en la
+     misma carpeta, y una versión vieja cargaría el
+     `user://actualizacion.pck` que hubiera bajado otra más nueva. El
+     lanzador lo borra (y su `.txt`) antes de abrir cualquier versión, como
+     ya hace `instalador_juego.gd` al CAMBIAR.
+   - **Que no busquen actualizaciones.** El lanzador abre el juego con un
+     argumento (`--desde-lanzador`). Con él, el `Actualizador` no busca nada
+     y el menú no enseña ACTUALIZAR ni VERSIONES. Las versiones ya
+     publicadas no lo entienden: hay que volver a publicarlas con
+     `recompilar_version.sh`, cambiando el actualizador y el menú. Como el
+     lanzador baja el zip entero, ese ejecutable nuevo sí les llega. Si alguna
+     no se puede volver a compilar, al menos no se le deja instalar nada: el
+     lanzador borra el parche cada vez que la abre.
+
    **Siguiente paso:** el plan con los ficheros, para que Adam diga que sí
    antes de programar.
 5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
