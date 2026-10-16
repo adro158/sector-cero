@@ -11,6 +11,10 @@ extends SceneTree
 ##
 ##   Godot --path . --script res://herramientas/medir_rendimiento.gd
 ##
+## Con "-- fase2" al final mide en la fase 2: con el suelo dañado (chispazos
+## y humo) y el jefe final al lado del jugador, con vida infinita, en la
+## amalgama (su última forma) y atacando.
+##
 ## Lee y cambia campos internos de los nodos (los que empiezan por _); en el
 ## código del juego eso no se hace.
 
@@ -44,6 +48,8 @@ func _medir() -> void:
 	_gestores = get_nodes_in_group("gestor_enemigos")
 	for gestor in _gestores:
 		gestor.datos.vida = 1.0e9
+	if "fase2" in OS.get_cmdline_user_args():
+		await _poner_fase_2(raiz)
 
 	print("GPU: ", RenderingServer.get_video_adapter_name(), " · ", RenderingServer.get_video_adapter_api_version())
 	for cantidad in CANTIDADES:
@@ -67,6 +73,17 @@ func _medir() -> void:
 		print("%5d enemigos: %6.0f FPS · física %5.2f ms por paso (peor %5.2f ms; presupuesto a 60 FPS: 16,67 ms)" % [
 			_vivos(), fotogramas / segundos, fisica[fisica.size() / 2], fisica[fisica.size() - 1]])
 	quit()
+
+
+## El suelo dañado y el jefe final en su última forma, junto al jugador.
+func _poner_fase_2(raiz: Node) -> void:
+	root.get_node("BusEventos").fase_cambiada.emit(2)
+	var jefe: Node2D = raiz.get_node("JefeFinal")
+	jefe.aparecer(_jugador.global_position + Vector2(260.0, -40.0))
+	jefe.get_node("Salud").reiniciar(1.0e9)
+	for forma in 2:
+		jefe.siguiente_forma()
+		await create_timer(1.0).timeout
 
 
 ## Reparte enemigos entre los tres tipos hasta llegar a la cantidad, en un
