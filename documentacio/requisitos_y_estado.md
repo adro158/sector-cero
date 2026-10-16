@@ -131,8 +131,19 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    portada que las liste; el juego de escritorio se queda con ACTUALIZAR y el
    botón VERSIONES abrirá esa página. Las anteriores a la v0.9 no tenían
    exportación web: hay que añadírsela al compilarlas y probarlas una a una.
-5. **Icono del juego: hecho el 16/10, falta publicarlo** (bitácora, sesión
-   14). Lo dibujó Claude a partir de la idea de Adam (`medios/icono/`).
+5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
+   Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
+   que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
+   Wayland no usa el de la ventana: lo saca de un `.desktop` instalado. Desde
+   entonces, el juego exportado escribe al arrancar en Linux
+   `~/.local/share/applications/sector-cero.desktop` y su icono
+   (`globales/icono_linux.gd`, lo llama `transicion.gd`). Probado en headless
+   en Windows; **falta probarlo en un Linux de verdad** y publicarlo. Si la
+   ventana sigue sin icono en el dock, mirar que `StartupWMClass` ("Sector
+   Cero") coincida con la clase de la ventana (`xprop WM_CLASS` en X11).
+   En Windows, quien actualizó solo con el `.pck` tiene el `.exe` con el icono
+   viejo: llega bajando el zip, o subiendo `EJECUTABLE_MINIMO` en la v1.4 (por
+   decidir con Adam).
    - el `.exe`: preset de Windows (`application/icon`, el `.ico`); probado
      exportando en casa
    - la ventana: `config/icon` y `config/windows_native_icon` de

@@ -7,6 +7,7 @@ extends CanvasLayer
 ## Además, al arrancar pone el icono de la ventana (ver _ready): es la primera
 ## pantalla que se ve y su script llega con el .pck de actualización.
 
+const IconoLinux := preload("res://globales/icono_linux.gd")
 const DURACION := 0.25
 
 var _velo: ColorRect
@@ -36,6 +37,10 @@ func _ready() -> void:
 		DisplayServer.set_native_icon("res://medios/icono/icono.ico")
 	elif OS.get_name() == "Linux":
 		DisplayServer.set_icon(load("res://medios/icono/icono.png").get_image())
+		# Solo en el juego exportado: desde el editor, el .desktop apuntaría
+		# al ejecutable de Godot.
+		if OS.has_feature("template"):
+			IconoLinux.instalar()
 
 
 ## Cambia a la escena de la ruta. Con la ruta vacía recarga la actual, que es
