@@ -271,7 +271,11 @@ volvieron a publicar con esta ventana (`herramientas/recompilar_version.sh`,
 que solo cambia esos dos scripts y el botón del menú). Las teclas nuevas (Q, E y R)
 están en `project.godot`, que no viaja con la actualización pequeña: si a un
 ejecutable antiguo le faltan, `teclas_antiguas.gd` las añade al empezar la
-partida.
+partida. Con el icono pasa lo mismo: Godot lo pone en la ventana al arrancar,
+leyéndolo de `project.godot`, así que `Transicion` lo vuelve a poner al
+empezar (en Windows, el `.ico`, que trae los tamaños pequeños dibujados a
+mano). El icono del `.exe` en el explorador solo cambia con un ejecutable
+nuevo.
 
 **Audio.** Todos los sonidos los genera un script que suma ondas simples, como
 los chips de sonido antiguos: 17 efectos y 3 músicas. `GestorAudio` escucha el

@@ -2513,3 +2513,86 @@ Lleva la explosión del rootkit y el arreglo del F1. No cambian
 `project.godot`, `version.gd`, el actualizador, el instalador ni el panel de
 versiones, ni hay `class_name` nuevos: `EJECUTABLE_MINIMO` sigue en 0.2 y no
 hace falta volver a publicar las versiones anteriores.
+
+---
+
+## Sesión 14 — 16/10/2026 (en casa)
+
+**Duración:** se apunta al cerrar · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+
+*Entrada abierta: se completa al cerrar la sesión.*
+
+### Qué se ha hecho
+
+- **Clon nuevo en casa.** La carpeta del proyecto no estaba en el ordenador
+  de casa, así que se volvió a clonar en
+  `C:\Users\Adam\Desktop\proyecto\sector-cero` con el `git` de GitHub
+  Desktop. Al clonar se vio que se perdió un documento del 02/10 que nunca se
+  llegó a subir (`godot_paso_a_paso.md`, el proyecto enseñado en el editor
+  con 13 capturas). Se puede rehacer si hace falta.
+- **Icono del juego** (dibujado por Claude en otra conversación con Adam): el
+  encapuchado delante de un cero tachado de neón, en `medios/icono/`. Va en el
+  `.exe` (preset de Windows), en la ventana (`project.godot`) y en la web (el
+  favicon sale de `config/icon`).
+
+### Decisiones de Adam
+
+**Versiones: una página web con todas, en lugar del menú VERSIONES.** Adam
+pidió consejo porque, tras muchas pruebas, cambiar de versión desde el juego
+seguía fallando. Las causas que se vieron en el código:
+
+1. Todas las versiones comparten la carpeta de datos (`user://`), también el
+   parche `actualizacion.pck`: un ejecutable viejo carga cualquier parche más
+   nuevo que encuentre, así que tras un ACTUALIZAR las versiones antiguas
+   arrancan con el contenido nuevo.
+2. La versión del ejecutable y la del contenido pueden ser distintas, y el
+   menú no siempre sabe cuál es «la que se está usando» (el fallo del 15/10:
+   en la v1.0 ofrecía INSTALAR la v1.0).
+3. El menú que cambia de versión va dentro de cada versión: cada arreglo
+   obliga a recompilar y volver a publicar todas las releases.
+
+Se decide publicar en GitHub Pages cada versión en su carpeta
+(`/sector-cero/v0.3/`, `/v1.2/`...) con una portada que las liste. Cada una
+vive en su dirección, sin instalar ni reiniciar, y no hay que volver a
+recompilar releases viejas. El juego de escritorio se queda con ACTUALIZAR y
+el botón VERSIONES abrirá esa página. Se descartó un lanzador aparte: más
+código que defender, y tendría que borrar el parche compartido antes de abrir
+cada versión. Se hace después de la fase 2.
+
+**Fase 2** (respuestas a las preguntas de `encargo_fase2.md`):
+
+- Matar al primer jefe **no cura**.
+- El primer jefe se llama **«JEFE»** a secas (de momento).
+- El ranking y los récords **se vacían una vez** al llegar a la versión con
+  la fase 2: con ella una victoria dura más de 15 minutos, y las de ahora
+  (unos 11) quedarían siempre delante.
+- **El balance se hace al final**, con el juego terminado: hasta entonces el
+  jefe final lleva los números del encargo.
+
+### Decisiones técnicas y por qué
+
+**El icono también se pone desde el código.** Godot pone el icono de la
+ventana al arrancar leyendo `project.godot`, que va dentro del ejecutable y no
+viaja con el `.pck` de actualización. Para que quien actualice con el `.pck`
+lo vea en la ventana y la barra de tareas, `Transicion` lo pone en su
+`_ready()`: `DisplayServer.set_native_icon()` con el `.ico` en Windows (así
+usa los tamaños pequeños dibujados a mano en vez de reescalar el PNG) y
+`DisplayServer.set_icon()` con el PNG en Linux; en la web, nada. Va en
+`Transicion` porque es un autoload que tienen todos los ejecutables desde la
+v0.2 y su script llega con el `.pck`; no podía ir en el `Actualizador`, que
+es del ejecutable. El icono del `.exe` en el explorador solo cambia con un
+ejecutable nuevo. `EJECUTABLE_MINIMO` sigue en 0.2: las dos líneas nuevas de
+`project.godot` solo ponen el icono, y sin ellas el contenido funciona igual.
+
+### Métodos de test empleados
+
+- Importación y arranque en headless, y arranque con ventana del proyecto:
+  sin errores (solo el aviso conocido del audio al cerrar).
+- Exportado el `.exe` de Windows en casa: el icono que enseña el explorador
+  es el nuevo.
+- El código del `.pck`, con una copia del proyecto sin las dos líneas de
+  `project.godot`: leyendo el icono de la ventana con la API de Windows sale
+  el nuevo, y quitando también el código sale el de Godot (así se sabe que la
+  prueba distingue).
+- El favicon de la web no se pudo probar: en casa no están las plantillas de
+  exportación web. Se mira en la web cuando se publique la siguiente versión.

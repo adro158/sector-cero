@@ -17,6 +17,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
 | Tiras de animación de la horda (5 tipos) | Hechas con IA (Claude) | Ver más abajo |
 | Explosión del rootkit (aviso, anillo, explosión y quemadura) | Hechos con IA (Claude) | Ver más abajo |
+| Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -97,6 +98,13 @@ scripts no forman parte del repositorio.
   288x288: destello, bola de fuego, onda, trozos, brasas y humo) y
   `rootkit_quemadura.png` (128x128: la marca que queda en el suelo). Con ellos
   vino el código de referencia del aviso y de `explosiones_elite.gd`.
+- **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
+  encapuchado de los personajes, con los ojos brillando, delante de un cero
+  tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores
+  de los tres personajes. `icono.png` (256x256) es el de la ventana en Linux y
+  el de la web; `icono.ico` lleva 16, 32, 48, 64, 128 y 256 píxeles, con los
+  cuatro pequeños dibujados a mano para que se lean en la barra de tareas, y
+  es el del `.exe` y la ventana en Windows.
 
 ### Sprites de los personajes y del jefe
 

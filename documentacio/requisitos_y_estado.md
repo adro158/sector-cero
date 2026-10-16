@@ -129,24 +129,25 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    `instalador_juego.gd`, hay que volver a publicar las releases anteriores
    con `recompilar_version.sh` (ver CLAUDE.md).
 
-   **Además, pensar la forma más sencilla de tener todas las versiones**
-   (idea de Adam del 15/10, sin decidir). Quizá hay que cambiar el enfoque:
-   - se tiene descargada solo la última, y una antigua se descarga cuando se
-     quiere cambiar a ella
-   - un **lanzador aparte**, independiente del juego (como los launchers de
-     otros juegos): eliges la versión y la abre, sin cerrar ni reiniciar el
-     juego como ahora
-
-   Hay que valorarlo antes de seguir parcheando el menú VERSIONES de dentro
-   del juego. Si se hace el lanzador, el menú de dentro del juego podría
-   quedarse solo con ACTUALIZAR.
-5. **Icono del juego** (idea de Adam del 15/10; esperando el asset, que lo
-   pasará él). Al hacerlo:
-   - el del `.exe` va en el preset de exportación de Windows (un `.ico`)
-   - el de la ventana, en `config/icon` de `project.godot`, que no llega con
-     el `.pck` de actualización: solo con un ejecutable nuevo, salvo que se
-     ponga también desde el código al arrancar
-   - el de la web, en el favicon de la exportación web
+   **Decidido el 16/10 (bitácora, sesión 14): no se sigue parcheando.** Cada
+   versión se publicará en GitHub Pages en su carpeta (`/v0.3/`, `/v1.2/`...)
+   con una portada que las liste; el juego de escritorio se queda con
+   ACTUALIZAR y el botón VERSIONES abrirá esa página. Se hace después de la
+   fase 2. Las anteriores a la v0.9 no tenían exportación web: hay que
+   añadírsela al compilarlas y probarlas una a una.
+5. **Icono del juego: hecho el 16/10, falta publicarlo** (bitácora, sesión
+   14). Lo dibujó Claude a partir de la idea de Adam (`medios/icono/`).
+   - el `.exe`: preset de Windows (`application/icon`, el `.ico`); probado
+     exportando en casa
+   - la ventana: `config/icon` y `config/windows_native_icon` de
+     `project.godot`, y además `transicion.gd` lo pone al arrancar, para que
+     llegue también con el `.pck` a los ejecutables viejos; probado con
+     ventana
+   - la web: el favicon sale de `config/icon` (`html/export_icon=true`).
+     Falta mirarlo en la web publicada: en casa no están las plantillas web
+   - para que llegue a los jugadores basta una release normal: el `.pck`
+     trae el icono de la ventana y el ejecutable nuevo, el del `.exe`. No hace
+     falta subir `EJECUTABLE_MINIMO`
 6. **Vídeo demostrativo** (2-4 min).
 7. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.

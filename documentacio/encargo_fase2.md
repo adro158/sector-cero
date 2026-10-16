@@ -10,7 +10,8 @@ documentación.
 ## Los dibujos (no están en el repo)
 
 Vienen en `jefe_final.zip`, que Adam hizo con Claude en el chat (está en el
-chat y en Descargas del ordenador del instituto). En la sesión del 15/10 no se
+chat y en Descargas del ordenador del instituto, y desde el 16/10 también en
+el de casa). En la sesión del 15/10 no se
 copiaron al proyecto porque aún no tocaba empezar.
 
 Antes de programar: **descomprimir el zip en la raíz del clon**, encima de lo
@@ -164,18 +165,15 @@ comprobarlo con ventana y una captura del antes y el después.
 8. El simulador.
 9. La documentación.
 
-### Preguntas para Adam
+### Preguntas para Adam (contestadas el 16/10)
 
-1. **Premio por el jefe 1:** propuesta, curar un 50 % a los personajes que
-   siguen en pie (como el corazón de los élites), sin revivir a los caídos.
-2. **Ranking:** pone primero las victorias más rápidas. Las de ahora son de
-   unos 11 minutos y las nuevas serán de más de 15, así que las viejas
-   quedarían siempre delante. Propuesta: vaciar el ranking y los récords una
-   vez, al llegar a esta versión (es local y solo tiene partidas de prueba).
-3. **Nombre del jefe 1:** pasa a ser «JEFE» a secas en el HUD y en su ficha
-   (ahora pone «JEFE FINAL»). ¿Le ponemos nombre?
-4. **Victorias por dificultad:** se pregunta tras la primera tanda del
-   simulador, como pide el encargo.
+1. **Premio por el jefe 1:** **no cura.**
+2. **Ranking:** pone primero las victorias más rápidas, y las de ahora (unos
+   11 minutos) quedarían siempre delante de las nuevas (más de 15). **Se
+   vacían el ranking y los récords una vez**, al llegar a esta versión.
+3. **Nombre del jefe 1:** **«JEFE» a secas**, de momento.
+4. **Victorias por dificultad:** **el balance se hace al final**, con el
+   juego terminado. Hasta entonces, los números del encargo.
 
 ## El encargo, tal como lo pasó Adam
 
