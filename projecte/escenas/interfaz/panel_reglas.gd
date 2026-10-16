@@ -28,9 +28,10 @@ const MEJORAS := "res://recursos/mejoras/datos/pool_mejoras.tres"
 ## La configuración de las oleadas guarda la lista de afijos que se sortean.
 const OLEADAS := "res://recursos/oleadas/datos/config_principal.tres"
 const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
+const HOJA_JEFE_FINAL := "res://medios/sprites/jefe_final/jefe_final.png"
 
 const COMO_SE_JUEGA := [
-	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe final. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
+	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe: el sector queda dañado y empieza la fase 2. A los 15 minutos llega NÚCLEO CERO, el jefe final; derrótalo para ganar. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
 	["DIFICULTAD", "Se elige en el menú principal, antes de jugar. En FÁCIL el malware tiene menos vida, hace menos daño y huye cuando llega el jefe. En MEDIA, la partida como la hemos equilibrado. En DIFÍCIL tiene más vida y hace más daño. En MEDIA y DIFÍCIL la horda sigue cuando llega el jefe."],
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
 	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes y, desde el minuto 3, con cada minuto que pasa."],
@@ -141,9 +142,11 @@ func _enemigos() -> VBoxContainer:
 		var tipo: DatosTipoEnemigo = load(ruta)
 		lista.add_child(_fila(tipo.textura, tipo.nombre, tipo.color, tipo.descripcion))
 
-	# El jefe no tiene recurso de datos: es único y su texto va aquí.
-	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "Jefe final", EstiloInterfaz.DERROTA,
-		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil, huye). Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Derrótalo para ganar. El Ping y el Escáner le pegan sin acercarse."))
+	# Los jefes no tienen recurso de datos: son únicos y su texto va aquí.
+	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "Jefe", EstiloInterfaz.DERROTA,
+		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil, huye). Mientras está, el reloj se para. Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Al derrotarlo empieza la fase 2. El Ping y el Escáner le pegan sin acercarse."))
+	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE_FINAL), 6, 3), "NÚCLEO CERO (jefe final)", EstiloInterfaz.DERROTA,
+		"Llega a los 15 minutos, al acabar la fase 2. Tiene tres formas: al bajarle al 66 % y al 33 % de vida se transforma y cuesta más matarlo (recibe menos daño y ataca más deprisa). Usa los ataques de tus personajes (el rayo, el torbellino y la tormenta, que avisan antes de caer), abre portales de malware y deja hielo que te ralentiza. Al cambiar de forma se encierra en un escudo que no deja pasar el daño: rompe las cuatro anclas y se quedará aturdido, recibiendo más daño. Derrótalo para ganar."))
 
 	lista.add_child(EstiloInterfaz.etiqueta("AFIJOS DE LOS ÉLITES", 20, Color(1.0, 0.85, 0.3)))
 	var oleadas: DatosConfigOleada = load(OLEADAS)

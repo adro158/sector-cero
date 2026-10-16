@@ -29,6 +29,11 @@ const OPCIONES_POR_DEFECTO := {
 const RECORDS := ["tiempo", "nivel", "eliminados"]
 ## Partidas que caben en el ranking.
 const MAXIMO_RANKING := 10
+## Si cambia lo que es una partida, los récords y el ranking de antes ya no se
+## pueden comparar con los nuevos y se vacían una vez. La 2 es la de la fase 2:
+## las victorias pasan de unos 11 minutos a más de 15, y las de antes quedarían
+## siempre delante (decisión de Adam, 16/10/2026).
+const VERSION_RECORDS := 2
 
 ## Los récords que ha batido la última partida, para que la pantalla final los
 ## anuncie. Vacío en la primera partida: cualquier resultado sería un récord.
@@ -41,9 +46,22 @@ func _ready() -> void:
 	# La primera vez el fichero no existe y load devuelve un error: no pasa
 	# nada, se usan los valores por defecto hasta que se guarde algo.
 	_fichero.load(RUTA)
+	_vaciar_records_viejos()
 	for clave in OPCIONES_POR_DEFECTO:
 		_aplicar(clave, opcion(clave))
 	BusEventos.partida_terminada.connect(_al_terminar_partida)
+
+
+## Las opciones se quedan; los récords y el ranking, si son de antes de
+## VERSION_RECORDS, se borran.
+func _vaciar_records_viejos() -> void:
+	if _fichero.get_value("guardado", "version_records", 1) >= VERSION_RECORDS:
+		return
+	for seccion in ["records", "ranking"]:
+		if _fichero.has_section(seccion):
+			_fichero.erase_section(seccion)
+	_fichero.set_value("guardado", "version_records", VERSION_RECORDS)
+	_fichero.save(RUTA)
 
 
 func opcion(clave: String) -> Variant:

@@ -36,7 +36,7 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	var caja := VBoxContainer.new()
 	var titulo := EstiloInterfaz.etiqueta("SECTOR ASEGURADO" if victoria else "PROCESO ELIMINADO", 44, color)
 	var subtitulo := EstiloInterfaz.etiqueta(
-		"Has derrotado al jefe final. El sistema está limpio." if victoria
+		"Has derrotado a NÚCLEO CERO. El sistema está limpio." if victoria
 		else "El malware se ha apoderado del sector de arranque.", 16, EstiloInterfaz.TEXTO_SUAVE)
 	caja.add_child(titulo)
 	caja.add_child(subtitulo)
