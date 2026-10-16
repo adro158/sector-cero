@@ -65,6 +65,8 @@ func _ready() -> void:
 	BusEventos.transicion_fase.connect(_al_empezar_transicion)
 	# La fase 2 suena con la música de la partida, pero más grave.
 	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_partida", 0.85))
+	BusEventos.jefe_final_aparecio.connect(_al_aparecer_jefe_final)
+	BusEventos.jefe_final_forma_cambiada.connect(_al_cambiar_forma_jefe_final)
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
 	BusEventos.juego_pausado.connect(_al_pausar)
@@ -137,6 +139,17 @@ func _al_lanzar_ulti(_personaje: DatosPersonaje) -> void:
 func _al_aparecer_jefe() -> void:
 	sonar("alarma_jefe")
 	_poner_musica("musica_jefe")
+
+
+## La música del jefe, algo más rápida.
+func _al_aparecer_jefe_final() -> void:
+	sonar("alarma_jefe")
+	_poner_musica("musica_jefe", 1.1)
+
+
+func _al_cambiar_forma_jefe_final(_forma: int) -> void:
+	sonar("alarma_jefe", 0.8)
+	sonar("explosion", 0.7)
 
 
 ## Con el negro, la música se apaga poco a poco y suena una alarma grave. La

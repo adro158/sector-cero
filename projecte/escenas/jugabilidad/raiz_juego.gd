@@ -28,8 +28,11 @@ func _ready() -> void:
 	# Cuando cae un personaje se elige otro; la partida se pierde al caer todos.
 	$Jugador/CambioPersonaje.equipo_derrotado.connect(_terminar_partida.bind(false))
 	# Al cumplirse el tiempo llega el jefe, y al derrotarlo empieza la fase 2.
+	# Al acabar la fase 2 llega el jefe final, y se gana al derrotarlo.
 	_director.llega_el_jefe.connect($Jefe.aparecer)
 	$Jefe.derrotado.connect(_pasar_a_fase_2)
+	_director.llega_el_jefe_final.connect($JefeFinal.aparecer)
+	$JefeFinal.derrotado.connect(_terminar_partida.bind(true))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.juego_pausado.connect(_al_pausar)
 

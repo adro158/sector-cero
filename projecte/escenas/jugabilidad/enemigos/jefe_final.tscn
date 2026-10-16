@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/jefe_final.gd" id="1_jefe"]
+[ext_resource type="Texture2D" path="res://medios/sprites/jefe_final/jefe_final.png" id="2_dibujo"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="3_salud"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/sprite_destello.gd" id="4_destello"]
+
+[node name="JefeFinal" type="Node2D" groups=["objetivos"]]
+texture_filter = 1
+script = ExtResource("1_jefe")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+show_behind_parent = true
+script = ExtResource("4_destello")
+texture = ExtResource("2_dibujo")
+hframes = 6
+vframes = 3
+
+[node name="Salud" type="Node" parent="."]
+script = ExtResource("3_salud")
+vida_maxima = 12000.0
+invulnerabilidad = 0.0

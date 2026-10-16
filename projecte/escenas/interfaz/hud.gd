@@ -66,6 +66,8 @@ func _ready() -> void:
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
 	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE!", EstiloInterfaz.DERROTA))
 	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
+	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA))
+	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)

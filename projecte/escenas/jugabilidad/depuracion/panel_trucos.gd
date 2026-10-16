@@ -3,8 +3,9 @@ extends Control
 ## Menú de desarrollador, con F1: para probar cualquier parte del juego sin
 ## jugar hasta ella. Saltar a un minuto (con el nivel y las mejoras que se
 ## tendrían en él), darse mejoras, subir de nivel, ser
-## invencible, llenar las ultis, sacar el jefe, un élite o los premios, revivir
-## al equipo, limpiar la horda y acelerar el juego.
+## invencible, llenar las ultis, sacar el jefe, un élite o los premios, ir a la
+## fase 2, sacar el jefe final y pasarlo a su forma siguiente, revivir al
+## equipo, limpiar la horda y acelerar el juego.
 ##
 ## Está en todas las versiones (decisión de Adam). Por eso, en cuanto se abre,
 ## la partida deja de contar para los récords y el ranking.
@@ -78,6 +79,8 @@ func _columna_partida() -> VBoxContainer:
 	columna.add_child(_con_progreso)
 	columna.add_child(_boton("JEFE YA (10:00)", _ir_a.bind(600.0)))
 	columna.add_child(_boton("IR A LA FASE 2", _ir_a.bind(600.0, 2)))
+	columna.add_child(_boton("JEFE FINAL YA (15:00)", _ir_a.bind(900.0, 2)))
+	columna.add_child(_boton("SIGUIENTE FORMA", func(): _raiz.get_node("JefeFinal").siguiente_forma()))
 	columna.add_child(_boton("ÉLITE AHORA", func(): _director().aparecer_elite()))
 	columna.add_child(_boton("CORAZÓN Y COFRE AQUÍ", func(): _raiz.get_node("PremiosElite").soltar(_jugador.global_position + Vector2(0, 70))))
 	columna.add_child(_boton("LIMPIAR LA HORDA", _limpiar_horda))

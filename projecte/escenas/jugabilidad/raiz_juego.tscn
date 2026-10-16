@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/progresion/premios_elite.gd" id="25_premios"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_trucos.gd" id="26_trucos"]
 [ext_resource type="Script" uid="uid://dquayuisw5av5" path="res://escenas/jugabilidad/efectos/explosiones_elite.gd" id="27_explosiones"]
+[ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe_final.tscn" id="28_jefe_final"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -78,6 +79,8 @@ textura = ExtResource("23_fragmento")
 script = ExtResource("15_resistencia")
 
 [node name="Jefe" parent="." instance=ExtResource("18_jefe")]
+
+[node name="JefeFinal" parent="." instance=ExtResource("28_jefe_final")]
 
 [node name="Elite1" parent="." instance=ExtResource("20_elite")]
 

@@ -58,6 +58,10 @@ signal transicion_fase(segundos: float)
 ## arena cambia el suelo, el audio la música y el HUD avisa.
 signal fase_cambiada(fase: int)
 signal jefe_final_aparecio
+## Para la barra de vida del jefe final en el HUD.
+signal jefe_final_vida_cambiada(actual: float, maxima: float)
+## El jefe final ha pasado a otra forma: 1 núcleo armado, 2 amalgama.
+signal jefe_final_forma_cambiada(forma: int)
 ## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
 ## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
 signal partida_terminada(estadisticas: Dictionary)
