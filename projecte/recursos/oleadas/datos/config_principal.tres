@@ -14,6 +14,7 @@ intervalo_final = 0.05
 tiempo_hasta_dificultad_maxima = 600.0
 distancia_aparicion = 700.0
 duracion_partida = 600.0
+duracion_fase_2 = 300.0
 primer_elite = 90.0
 intervalo_elites = 60.0
 tiempo_dos_afijos = 300.0

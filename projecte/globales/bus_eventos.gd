@@ -51,6 +51,9 @@ signal jefe_invoco
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.
 signal elite_exploto(posicion: Vector2)
+## Al derrotar al jefe, con el juego ya en pausa: empieza la transición a la
+## fase 2. La pantalla de la transición (en negro) dura esos segundos.
+signal transicion_fase(segundos: float)
 ## La partida pasa a otra fase. Llega detrás del negro de la transición: la
 ## arena cambia el suelo, el audio la música y el HUD avisa.
 signal fase_cambiada(fase: int)

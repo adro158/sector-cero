@@ -62,6 +62,9 @@ func _ready() -> void:
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
+	BusEventos.transicion_fase.connect(_al_empezar_transicion)
+	# La fase 2 suena con la música de la partida, pero más grave.
+	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_partida", 0.85))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
 	BusEventos.juego_pausado.connect(_al_pausar)
@@ -85,11 +88,13 @@ func sonar(nombre: String, tono := 1.0) -> void:
 	_reproductores[nombre].play()
 
 
-func _poner_musica(pista: String) -> void:
-	if pista == _pista_actual:
+## tono cambia la velocidad y la altura a la vez: 0.85 es más lenta y grave.
+func _poner_musica(pista: String, tono := 1.0) -> void:
+	if pista == _pista_actual and is_equal_approx(_musica.pitch_scale, tono):
 		return
 	_pista_actual = pista
 	_musica.stream = load(RUTA + pista + ".wav")
+	_musica.pitch_scale = tono
 	# Entra con un fundido en lugar de golpe.
 	_musica.volume_db = -30.0
 	_musica.play()
@@ -132,6 +137,13 @@ func _al_lanzar_ulti(_personaje: DatosPersonaje) -> void:
 func _al_aparecer_jefe() -> void:
 	sonar("alarma_jefe")
 	_poner_musica("musica_jefe")
+
+
+## Con el negro, la música se apaga poco a poco y suena una alarma grave. La
+## nueva entra con fase_cambiada.
+func _al_empezar_transicion(segundos: float) -> void:
+	sonar("alarma_jefe", 0.6)
+	create_tween().tween_property(_musica, "volume_db", -40.0, segundos * 0.4)
 
 
 func _al_pausar(en_pausa: bool) -> void:

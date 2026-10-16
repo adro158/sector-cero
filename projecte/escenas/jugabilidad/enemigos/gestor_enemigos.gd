@@ -99,6 +99,18 @@ func huir() -> void:
 	_huida = DURACION_HUIDA
 
 
+## Al pasar a la fase 2, detrás del negro: la horda desaparece de golpe, sin
+## experiencia, como al acabar la huida. La huida no sirve aquí porque con el
+## juego en pausa no avanza.
+func vaciar() -> void:
+	_vivos = 0
+	_huida = 0.0
+	_horda.modulate.a = 1.0
+	_horda.multimesh.visible_instance_count = 0
+	# Las barras de vida (las del ransomware) también.
+	queue_redraw()
+
+
 func aparecer(posicion: Vector2) -> void:
 	if _vivos >= MAXIMO_ENEMIGOS:
 		return

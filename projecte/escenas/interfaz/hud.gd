@@ -1,10 +1,11 @@
 extends Control
 
 ## HUD de la partida: nivel y experiencia arriba a la izquierda
-## (panel_experiencia.gd), reloj y cuenta atrás hasta el jefe arriba en el
-## centro, y la columna de mejoras elegidas a la izquierda. La vida va en una
-## barra sobre el propio personaje; el equipo (abajo y con C) lo lleva
-## panel_equipo.gd.
+## (panel_experiencia.gd), reloj y cuenta atrás hasta el jefe (o el jefe
+## final, en la fase 2) arriba en el centro, y la columna de mejoras elegidas a
+## la izquierda. La vida va en una barra sobre el propio personaje; el equipo
+## (abajo y con C) lo lleva panel_equipo.gd, y el negro entre fases,
+## pantalla_fase.gd.
 ##
 ## Solo escucha señales del BusEventos. Los niveles de cada mejora los anotan
 ## el panel de mejoras y la ruleta al elegir, en un diccionario que comparten.
@@ -14,11 +15,14 @@ const PanelRuleta := preload("res://escenas/interfaz/panel_ruleta.gd")
 const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
 const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
+const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
 
 var niveles_mejora := {}
 
 var _etiqueta_tiempo: Label
 var _etiqueta_jefe: Label
+## De quién es la cuenta atrás: del jefe (1) o del jefe final (2).
+var _fase := 1
 var _columna: VBoxContainer
 var _iconos := {}
 var _aviso: Label
@@ -60,12 +64,15 @@ func _ready() -> void:
 	add_child(caida)
 	move_child(caida, ruleta.get_index() + 1)
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
-	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE FINAL!", EstiloInterfaz.DERROTA))
+	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE!", EstiloInterfaz.DERROTA))
+	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 	BusEventos.mejora_regalada.connect(_al_regalar_mejora)
+	# El último: el negro de la transición tapa todo lo demás.
+	add_child(PantallaFase.new())
 
 
 func _crear_reloj() -> void:
@@ -87,11 +94,19 @@ func _crear_reloj() -> void:
 
 func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
 	_etiqueta_tiempo.text = _formato(segundos)
+	var jefe := "JEFE" if _fase == 1 else "NÚCLEO CERO"
 	if segundos < duracion:
-		_etiqueta_jefe.text = "JEFE EN %s" % _formato(duracion - segundos)
+		_etiqueta_jefe.text = "%s EN %s" % [jefe, _formato(duracion - segundos)]
 	else:
-		_etiqueta_jefe.text = "¡JEFE FINAL!"
+		_etiqueta_jefe.text = "¡%s!" % jefe
 		_etiqueta_jefe.add_theme_color_override("font_color", EstiloInterfaz.DERROTA)
+
+
+## Llega detrás del negro: cuando vuelve la imagen ya está el aviso.
+func _al_cambiar_fase(fase: int) -> void:
+	_fase = fase
+	_etiqueta_jefe.remove_theme_color_override("font_color")
+	_avisar("¡FASE 2! EL SECTOR ESTÁ DAÑADO", EstiloInterfaz.DERROTA)
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:

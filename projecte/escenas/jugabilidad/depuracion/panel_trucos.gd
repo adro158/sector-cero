@@ -77,6 +77,7 @@ func _columna_partida() -> VBoxContainer:
 	_con_progreso.add_theme_font_size_override("font_size", 13)
 	columna.add_child(_con_progreso)
 	columna.add_child(_boton("JEFE YA (10:00)", _ir_a.bind(600.0)))
+	columna.add_child(_boton("IR A LA FASE 2", _ir_a.bind(600.0, 2)))
 	columna.add_child(_boton("ÉLITE AHORA", func(): _director().aparecer_elite()))
 	columna.add_child(_boton("CORAZÓN Y COFRE AQUÍ", func(): _raiz.get_node("PremiosElite").soltar(_jugador.global_position + Vector2(0, 70))))
 	columna.add_child(_boton("LIMPIAR LA HORDA", _limpiar_horda))
@@ -143,17 +144,19 @@ func _abrir_o_cerrar() -> void:
 
 
 func _saltar() -> void:
-	# "7:30" o solo segundos: "450".
+	# "7:30" o solo segundos: "450". Pasadas las 10:00 es la fase 2 (ya sin el
+	# jefe); a las 10:00 justas, el jefe.
 	var partes := _tiempo.text.strip_edges().split(":")
 	var segundos := float(partes[0]) if partes.size() == 1 else float(partes[0]) * 60.0 + float(partes[1])
-	_ir_a(segundos)
+	_ir_a(segundos, 2 if segundos > _director().config.duracion_partida else 1)
 
 
-## Saltar es empezar la partida de nuevo y ponerla en ese minuto. Así da lo
-## mismo venir de antes o de después: volver al 0 quita las mejoras, y cada
-## salto deja lo mismo (también la horda, los élites y las resistencias).
-func _ir_a(segundos: float) -> void:
-	get_tree().root.set_meta(SALTO, {"segundos": segundos, "con_progreso": _con_progreso.button_pressed})
+## Saltar es empezar la partida de nuevo y ponerla en ese minuto y esa fase.
+## Así da lo mismo venir de antes o de después: volver al 0 quita las mejoras,
+## y cada salto deja lo mismo (también la horda, los élites y las
+## resistencias).
+func _ir_a(segundos: float, fase := 1) -> void:
+	get_tree().root.set_meta(SALTO, {"segundos": segundos, "fase": fase, "con_progreso": _con_progreso.button_pressed})
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
@@ -161,7 +164,7 @@ func _ir_a(segundos: float) -> void:
 func _aplicar_salto(salto: Dictionary) -> void:
 	# La partida nueva también se ha hecho con trucos.
 	_raiz.usar_trucos()
-	_director().saltar_a(salto.segundos)
+	_director().saltar_a(salto.segundos, salto.fase)
 	if salto.con_progreso:
 		ProgresoPorMinuto.ponerse_al_dia(_raiz.get_node("SistemaNiveles"), salto.segundos)
 

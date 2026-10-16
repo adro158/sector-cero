@@ -10,8 +10,11 @@ extends Resource
 ## A qué distancia del jugador aparecen, para que lo hagan fuera de cámara.
 @export var distancia_aparicion: float = 700.0
 
-## Segundos que hay que sobrevivir para que llegue el jefe final.
+## Segundos que hay que sobrevivir para que llegue el jefe.
 @export var duracion_partida: float = 600.0
+## Segundos de la fase 2: empieza al derrotar al jefe, con el reloj otra vez
+## en duracion_partida, y al acabar llega el jefe final.
+@export var duracion_fase_2: float = 300.0
 
 @export_group("Élites")
 ## Segundo en que llega el primer élite y cada cuánto llega otro.

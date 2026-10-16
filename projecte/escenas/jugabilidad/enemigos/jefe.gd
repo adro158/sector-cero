@@ -1,8 +1,9 @@
 extends Node2D
 
-## Jefe final. Está en la escena desde el principio, oculto e inactivo, y el
-## director lo hace aparecer al cumplirse el tiempo de la partida. Derrotarlo
-## es la victoria.
+## Jefe de la fase 1. Está en la escena desde el principio, oculto e inactivo,
+## y el director lo hace aparecer al cumplirse el tiempo de la partida.
+## Derrotarlo abre la fase 2 (raiz_juego.gd); el jefe final es otro,
+## jefe_final.gd.
 ##
 ## Persigue al jugador despacio y hace daño por contacto. Cada cierto tiempo se
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
@@ -111,7 +112,7 @@ func ficha(_id: int) -> Dictionary:
 	var retrato := AtlasTexture.new()
 	retrato.atlas = _sprite.texture
 	retrato.region = Rect2(Vector2.ZERO, _sprite.texture.get_size() / Vector2(_sprite.hframes, _sprite.vframes))
-	return {"id": 0, "nombre": "Jefe final", "textura": retrato, "color": Color(0.75, 0.3, 1.0),
+	return {"id": 0, "nombre": "Jefe", "textura": retrato, "color": Color(0.75, 0.3, 1.0),
 		"vida": _salud.vida(), "vida_maxima": _salud.vida_maxima, "dano": dano_contacto,
 		"velocidad": velocidad}
 
