@@ -62,6 +62,9 @@ signal jefe_final_aparecio
 signal jefe_final_vida_cambiada(actual: float, maxima: float)
 ## El jefe final ha pasado a otra forma: 1 núcleo armado, 2 amalgama.
 signal jefe_final_forma_cambiada(forma: int)
+## El jefe final empieza un ataque: "rayo", "torbellino", "tormenta",
+## "invocar", "hielo" o "escudo". Para el sonido.
+signal jefe_final_ataco(ataque: String)
 ## Al morir o al sobrevivir el tiempo de la partida. Claves de estadisticas:
 ## victoria (bool), tiempo (float, en segundos), nivel (int), eliminados (int).
 signal partida_terminada(estadisticas: Dictionary)

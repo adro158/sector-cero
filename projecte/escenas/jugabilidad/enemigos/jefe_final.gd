@@ -6,7 +6,10 @@ extends Node2D
 ## transforma, y en cada forma cuesta más matarlo: recibe menos daño y ataca
 ## más deprisa.
 ##
-## Aquí van las formas, la vida, el movimiento, la transformación y la muerte.
+## Aquí van las formas, la vida, el movimiento, la transformación, la muerte y
+## qué ataque toca. Cómo es cada ataque lo lleva ataques_jefe_final.gd, y el
+## escudo de candado, escudo_jefe_final.gd: mientras está, no recibe daño ni se
+## mueve, y al romperlo se queda aturdido 2 s recibiendo un 50 % más.
 ##
 ## Como el primer jefe, está en la escena desde el principio, oculto, y para
 ## las armas es un objetivo más (grupo objetivos). Sin class_name: lo carga su
@@ -23,8 +26,14 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 
 ## Una entrada por forma: 0 rootkit gigante, 1 núcleo armado y 2 amalgama.
 const DANO_RECIBIDO: Array[float] = [1.0, 0.75, 0.6]
+const PAUSA_ATAQUES: Array[float] = [2.5, 1.8, 1.2]
 const VELOCIDAD: Array[float] = [60.0, 75.0, 90.0]
 const FOTOGRAMAS_POR_SEGUNDO: Array[float] = [8.0, 10.0, 12.0]
+const ATAQUES := [
+	["rayo", "tormenta", "invocar"],
+	["rayo", "torbellino", "tormenta", "invocar", "hielo"],
+	["rayo", "torbellino", "tormenta", "invocar", "hielo"],
+]
 ## La fracción de vida a la que pasa a la forma siguiente.
 const UMBRALES: Array[float] = [0.66, 0.33]
 ## Cada forma es una fila de 6 fotogramas en la hoja.
@@ -34,6 +43,11 @@ const FOTOGRAMAS_FORMA := 6
 ## forma nueva) y de la muerte (12 de 0,08 s).
 const TRANSFORMACION := 0.8
 const MUERTE := 0.96
+## Tras romperle el escudo: segundos y daño que recibe de más.
+const ATURDIDO := 2.0
+const DANO_ATURDIDO := 1.5
+## En la amalgama vuelve a levantar el escudo cada tanto.
+const ESCUDO_CADA := 35.0
 ## Se acerca hasta esta distancia del jugador y ahí se queda.
 const DISTANCIA := 220.0
 
@@ -49,11 +63,16 @@ var _tiempo_estado := 0.0
 var _forma_cambiada := false
 ## Reloj de la animación de reposo y de la flotación.
 var _segundos := 0.0
+var _hasta_atacar := 0.0
+var _hasta_escudo := 0.0
+var _ultimo_ataque := ""
 var _jugador: Node2D
 var _salud_jugador: Salud
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
+@onready var _ataques: Node2D = $Ataques
+@onready var _escudo: Node2D = $Escudo
 
 
 func _ready() -> void:
@@ -62,6 +81,7 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_salud.murio.connect(_al_morir)
 	_salud.vida_cambiada.connect(BusEventos.jefe_final_vida_cambiada.emit)
+	_escudo.roto.connect(_al_romper_escudo)
 
 
 func aparecer(posicion: Vector2) -> void:
@@ -70,6 +90,7 @@ func aparecer(posicion: Vector2) -> void:
 	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida"))
 	_forma = 0
 	_cambiar_estado(Estado.LUCHANDO)
+	_hasta_atacar = PAUSA_ATAQUES[0]
 	visible = true
 	_sprite.visible = true
 	BusEventos.jefe_final_aparecio.emit()
@@ -94,10 +115,12 @@ func siguiente_forma() -> void:
 
 ## Misma forma que el resto de objetivos: devuelve a cuántos alcanza.
 func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0) -> int:
-	if not activo() or global_position.distance_to(centro) > radio_golpe + radio:
+	if not activo() or _escudo.activo() or global_position.distance_to(centro) > radio_golpe + radio:
 		return 0
 
 	var dano := cantidad * DANO_RECIBIDO[_forma]
+	if _estado == Estado.ATURDIDO:
+		dano *= DANO_ATURDIDO
 	# Un golpe no se salta una forma: se queda en la vida a la que cambia.
 	var limite := _salud.vida_maxima * UMBRALES[_forma] if _forma < UMBRALES.size() else 0.0
 	dano = minf(dano, _salud.vida() - limite)
@@ -131,8 +154,9 @@ func ficha(_id: int) -> Dictionary:
 		"velocidad": VELOCIDAD[_forma]}
 
 
+## Con el escudo, las armas buscan otra cosa: las anclas o la horda.
 func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
-	if activo() and global_position.distance_to(desde) < radio_busqueda:
+	if activo() and not _escudo.activo() and global_position.distance_to(desde) < radio_busqueda:
 		return global_position
 	return Vector2.INF
 
@@ -152,6 +176,13 @@ func _physics_process(delta: float) -> void:
 				_forma += 1
 				BusEventos.jefe_final_forma_cambiada.emit(_forma)
 			if _tiempo_estado >= TRANSFORMACION:
+				# Cada forma nueva empieza encerrada en el escudo.
+				_cambiar_estado(Estado.LUCHANDO)
+				_hasta_atacar = PAUSA_ATAQUES[_forma]
+				_escudo.levantar()
+				_hasta_escudo = ESCUDO_CADA
+		Estado.ATURDIDO:
+			if _tiempo_estado >= ATURDIDO:
 				_cambiar_estado(Estado.LUCHANDO)
 		Estado.MURIENDO:
 			if _tiempo_estado >= MUERTE:
@@ -166,24 +197,53 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 
+## Se mueve entre ataque y ataque (atacando y con el escudo, quieto) y, cuando
+## toca, lanza el siguiente.
 func _luchar(delta: float) -> void:
+	if _ataques.ocupado():
+		return
 	var hacia_jugador := _jugador.global_position - global_position
 	if hacia_jugador.length() > distancia_reciclaje:
 		global_position = _jugador.global_position - hacia_jugador.normalized() * DISTANCIA * 2.0
-	elif hacia_jugador.length() > DISTANCIA:
+	elif hacia_jugador.length() > DISTANCIA and not _escudo.activo():
 		global_position += hacia_jugador.normalized() * VELOCIDAD[_forma] * delta
+
+	if _forma == 2:
+		_hasta_escudo -= delta
+		if _hasta_escudo <= 0.0 and not _escudo.activo():
+			_escudo.levantar()
+			_hasta_escudo = ESCUDO_CADA
+	_hasta_atacar -= delta
+	if _hasta_atacar <= 0.0:
+		_hasta_atacar = PAUSA_ATAQUES[_forma]
+		_ataques.lanzar(_elegir_ataque(), _forma)
+
+
+## Uno al azar de los de su forma, sin repetir el anterior.
+func _elegir_ataque() -> String:
+	var posibles: Array = ATAQUES[_forma].filter(func(ataque): return ataque != _ultimo_ataque)
+	_ultimo_ataque = posibles.pick_random()
+	return _ultimo_ataque
 
 
 ## Se corta lo que estuviera haciendo y es invulnerable mientras dura.
 func _transformar() -> void:
+	_ataques.cortar()
 	_cambiar_estado(Estado.TRANSFORMANDO)
 	_forma_cambiada = false
 	_temblar()
 
 
+func _al_romper_escudo() -> void:
+	_ataques.cortar()
+	_cambiar_estado(Estado.ATURDIDO)
+
+
 func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
+	# Aturdido se queda azulado, para que se vea que es el momento de pegarle.
+	_sprite.modulate = Color(0.6, 0.7, 1.0) if nuevo == Estado.ATURDIDO else Color.WHITE
 
 
 ## Flota: sube y baja un poco, y repite los 6 fotogramas de reposo de su fila.
@@ -213,6 +273,8 @@ func _draw() -> void:
 
 
 func _al_morir() -> void:
+	_ataques.cortar()
+	_escudo.quitar()
 	_cambiar_estado(Estado.MURIENDO)
 	# La muerte ya trae al jefe rompiéndose.
 	_sprite.visible = false

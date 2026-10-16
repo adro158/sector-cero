@@ -19,6 +19,18 @@ const EFECTOS := [
 	"escaner", "alarma_jefe", "alarma_elite",
 ]
 
+## Cada ataque del jefe final suena con uno de los efectos que ya hay, y con
+## qué tono: el rayo, el torbellino y la tormenta, como las armas o las ultis
+## de las que salen.
+const SONIDO_ATAQUE := {
+	"rayo": ["escaner", 0.6],
+	"torbellino": ["firewall", 0.7],
+	"tormenta": ["explosion", 1.2],
+	"invocar": ["alarma_elite", 0.7],
+	"hielo": ["ping", 0.6],
+	"escudo": ["evolucion", 0.6],
+}
+
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de
 ## enemigos muriendo a la vez, sonar en cada muerte sería solo ruido.
 const ESPERA_MINIMA := 0.05
@@ -67,6 +79,7 @@ func _ready() -> void:
 	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_partida", 0.85))
 	BusEventos.jefe_final_aparecio.connect(_al_aparecer_jefe_final)
 	BusEventos.jefe_final_forma_cambiada.connect(_al_cambiar_forma_jefe_final)
+	BusEventos.jefe_final_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
 	BusEventos.juego_pausado.connect(_al_pausar)

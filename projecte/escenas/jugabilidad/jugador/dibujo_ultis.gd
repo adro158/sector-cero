@@ -63,18 +63,23 @@ static func torbellino(lienzo: CanvasItem, tiempo: float, duracion: float, vuelt
 
 
 ## Tormenta (Segador). `centro` y `mini` en coordenadas del lienzo; el mini
-## rayo i cae en el segundo 0,3 + i * 0,08, como en ultis.gd.
-static func tormenta(lienzo: CanvasItem, centro: Vector2, mini: Array[Vector2], tiempo: float) -> void:
-	# Onda en el suelo: 6 fotogramas de 0,08 s.
-	var onda := int(tiempo / 0.08)
-	if onda < 6:
-		_fotograma(lienzo, TORMENTA_IMPACTO, onda, 416.0, centro - Vector2(208.0, 208.0))
-	# Rayo grande: el punto de impacto es el centro del borde de abajo.
-	if tiempo < 0.35:
-		var opacidad := clampf((0.35 - tiempo) / 0.1, 0.0, 1.0)
-		_fotograma(lienzo, TORMENTA_RAYO, int(tiempo / 0.05) % 4, 96.0, centro - Vector2(48.0, TORMENTA_RAYO.get_height()), Color(1.0, 1.0, 1.0, opacidad))
+## rayo i cae en el segundo 0,3 + i * 0,08, como en ultis.gd. Sin el rayo
+## grande (la del jefe final) no hay rayo ni onda en el centro, y los mini
+## rayos caen desde el principio: el i, en el segundo i * 0,08.
+static func tormenta(lienzo: CanvasItem, centro: Vector2, mini: Array[Vector2], tiempo: float, rayo_grande := true) -> void:
+	var inicio := 0.0
+	if rayo_grande:
+		inicio = 0.3
+		# Onda en el suelo: 6 fotogramas de 0,08 s.
+		var onda := int(tiempo / 0.08)
+		if onda < 6:
+			_fotograma(lienzo, TORMENTA_IMPACTO, onda, 416.0, centro - Vector2(208.0, 208.0))
+		# Rayo grande: el punto de impacto es el centro del borde de abajo.
+		if tiempo < 0.35:
+			var opacidad := clampf((0.35 - tiempo) / 0.1, 0.0, 1.0)
+			_fotograma(lienzo, TORMENTA_RAYO, int(tiempo / 0.05) % 4, 96.0, centro - Vector2(48.0, TORMENTA_RAYO.get_height()), Color(1.0, 1.0, 1.0, opacidad))
 	for i in mini.size():
-		var t := tiempo - (0.3 + i * 0.08)
+		var t := tiempo - (inicio + i * 0.08)
 		if t < 0.0 or t >= 0.25:
 			continue
 		_fotograma(lienzo, TORMENTA_CHISPA, int(t / 0.05), 128.0, mini[i] - Vector2(64.0, 64.0))

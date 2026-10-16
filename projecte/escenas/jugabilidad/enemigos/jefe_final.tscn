@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/jefe_final.gd" id="1_jefe"]
 [ext_resource type="Texture2D" path="res://medios/sprites/jefe_final/jefe_final.png" id="2_dibujo"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="3_salud"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/sprite_destello.gd" id="4_destello"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/ataques_jefe_final.gd" id="5_ataques"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/escudo_jefe_final.gd" id="6_escudo"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/ancla_escudo.gd" id="7_ancla"]
 
 [node name="JefeFinal" type="Node2D" groups=["objetivos"]]
 texture_filter = 1
@@ -20,3 +23,27 @@ vframes = 3
 script = ExtResource("3_salud")
 vida_maxima = 12000.0
 invulnerabilidad = 0.0
+
+[node name="Escudo" type="Node2D" parent="."]
+script = ExtResource("6_escudo")
+
+[node name="Ancla1" type="Node2D" parent="Escudo" groups=["objetivos"]]
+top_level = true
+script = ExtResource("7_ancla")
+
+[node name="Ancla2" type="Node2D" parent="Escudo" groups=["objetivos"]]
+top_level = true
+script = ExtResource("7_ancla")
+
+[node name="Ancla3" type="Node2D" parent="Escudo" groups=["objetivos"]]
+top_level = true
+script = ExtResource("7_ancla")
+
+[node name="Ancla4" type="Node2D" parent="Escudo" groups=["objetivos"]]
+top_level = true
+script = ExtResource("7_ancla")
+
+[node name="Ataques" type="Node2D" parent="."]
+top_level = true
+z_index = 3
+script = ExtResource("5_ataques")
