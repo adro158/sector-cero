@@ -111,13 +111,31 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    - Lo de antes que aún no se ha probado jugando: la explosión del rootkit
      (v1.2) y lo de la v1.1 (horda animada, destellos, piernas, barra de
      experiencia).
-2. **Equilibrar la fase 2 y el jefe final, al final** (decisión de Adam del
-   16/10). Con el simulador, 10 partidas: fácil, 5 victorias (las otras 5
-   mueren en la fase 2); media, ninguna (5 contra el jefe, 4 al poco de
-   empezar la fase 2); difícil, ninguna. Ideas para entonces: unos segundos
-   sin horda al volver la imagen, que la vida por minuto deje de subir a las
-   10:00 o que la horda de la fase 2 empiece más suave y vuelva a apretar; y
-   decidir cuántas victorias se quieren en cada dificultad.
+2. **Jefes más duros y después el equilibrio** (decisiones de Adam del 20/10,
+   sesión 16). En este orden:
+   1. **Antes de equilibrar, cambiar los jefes.** Jugando, a Adam los dos
+      jefes le parecen fáciles.
+      - **El del minuto 10:** tiene que ser más difícil, con más movimientos.
+        Ahora solo persigue, embiste (cada 6 s) e invoca anillos de horda
+        (cada 15 s).
+      - **NÚCLEO CERO (minuto 15):** «casi imposible», con mucha más presión
+        cuando llega.
+      - Antes de programar, Claude propone los ataques nuevos y Adam dice que
+        sí.
+   2. **Después, el equilibrio con el simulador** (10 partidas por
+      dificultad). Objetivo de Adam:
+      - fácil: **7-8 victorias de 10**
+      - media: **4-5 de 10**
+      - difícil: **1 de 10**
+
+      Ahora (16/10): fácil 5 (las otras 5 mueren en la fase 2); media 0 (5
+      contra el jefe, 4 al poco de empezar la fase 2); difícil 0. Con los
+      jefes más duros, el resto tendrá que dar más margen. Ideas:
+      - unos segundos sin horda al volver la imagen
+      - que la vida por minuto deje de subir a las 10:00
+      - que la horda de la fase 2 empiece más suave
+      - curar un poco al matar al primer jefe
+      - tocar los multiplicadores de `globales/dificultad.gd`
 3. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
    probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
    y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El

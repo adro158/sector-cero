@@ -2896,4 +2896,13 @@ versiones, el vídeo y el ensayo de la defensa.
        abra el lanzador
      - que la ventana del juego tenga el icono en el dock
 
+- **Dificultad** (Adam: en difícil, pasado el minuto 10, es casi imposible).
+  El simulador lo confirma (0 de 10 en media y en difícil). Adam decidió:
+  - primero, jefes más duros: el del minuto 10 con más movimientos y NÚCLEO
+    CERO «casi imposible», con mucha más presión al llegar
+  - después, equilibrar para que el bot gane 7-8 de 10 en fácil, 4-5 en
+    media y 1 en difícil
+
+  Apuntado en `requisitos_y_estado.md`, punto 2.
+
 Horas: sin apuntar (preguntar a Adam).
