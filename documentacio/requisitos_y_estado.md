@@ -145,7 +145,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      no se puede escribir) y se queda como la elegida, también para la
      próxima vez.
    - **JUGAR** abre el juego instalado con el contenido elegido
-     (`OS.create_process` con `--main-pack <pck>`). El lanzador se esconde y,
+     (copia su `.pck` junto al juego y lo abre). El lanzador se esconde y,
      al cerrar el juego, vuelve a aparecer.
    - **El lanzador se actualiza solo**, para no tener que volver a GitHub.
    - **El juego nuevo ya no tiene ACTUALIZAR ni VERSIONES:** de eso se
@@ -157,8 +157,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    37 MB del zip son casi todo el motor). Todas las releases se hicieron con
    Godot 4.7.2 (la Action no ha cambiado de motor desde el 01/10), así que el
    contenido de cualquier versión se abre con el motor instalado. **Las
-   versiones antiguas no hay que recompilarlas.** Comprobarlo al empezar con
-   unas cuantas (`--main-pack`) antes de dar nada por bueno.
+   versiones antiguas no hay que recompilarlas.**
 
    Lo que queda con las antiguas:
    - Seguirán enseñando dentro sus botones ACTUALIZAR y VERSIONES.
@@ -169,9 +168,43 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      su PC» (Más información → Ejecutar de todas formas). Avisarlo en el
      README.
 
-   Trabajo: unas tres sesiones con las pruebas (el lanzador, el instalador y
-   la Action). **Siguiente paso:** el plan con los ficheros, para que Adam
-   diga que sí antes de programar.
+   **Hecho el 20/10 (sesión 16), probado en Windows en el instituto:**
+   - el lanzador (`lanzador/`, un proyecto de Godot aparte): el desplegable con
+     las 13 versiones (v0.2 a v1.4), la descarga del `.pck` al elegir, JUGAR,
+     el lanzador minimizado mientras se juega y de vuelta al cerrar el juego,
+     y la versión elegida recordada
+   - los presets de exportación del juego sin contenido (`Windows
+     (lanzador)` y `Linux (lanzador)` en `projecte/export_presets.cfg`)
+   - **`--main-pack` no sirve:** los ejecutables exportados no lo admiten. Lo
+     que sí funciona: Godot abre solo el `SectorCero.pck` que está junto a
+     `SectorCero.exe`. El lanzador copia ahí el de la versión elegida.
+     Probado con la v0.2, la v0.5, la v0.9, la v1.2 y la v1.4: cada una abre
+     tal como era.
+
+   **Falta:**
+   1. **El instalador** (Inno Setup): instala en Archivos de programa
+      `SectorCero_Lanzador.exe` y `juego/SectorCero.exe`. La carpeta `juego/`
+      tiene que poder escribirla cualquier usuario (`[Dirs] ...
+      Permissions: users-modify`), porque el lanzador copia ahí el `.pck`.
+      Accesos directos al lanzador y desinstalador.
+   2. **La GitHub Action:** exportar el lanzador y el juego sin contenido, y
+      generar el instalador en un runner de Windows. Subirlo a la release.
+      En Linux, un zip con el lanzador y `juego/`.
+   3. **Que el lanzador se actualice solo:** su propio `.pck` en cada
+      release, como el actualizador del juego.
+   4. **El juego nuevo, abierto desde el lanzador** (`--desde-lanzador` en
+      `OS.get_cmdline_user_args()`): sin ACTUALIZAR ni VERSIONES.
+   5. **Las novedades:** el lanzador enseña el texto de cada release, que
+      ahora solo dice «Full Changelog» y en las antiguas tiene los acentos
+      rotos (se estropearon al volver a publicarlas desde Windows). Hay que
+      reescribirlas en GitHub (`gh release edit`), con permiso de Adam.
+   6. **Probarlo en Linux.**
+
+   Ojo al probar: si se cierra el juego a la fuerza (matando el proceso), la
+   caché de shaders puede quedar a medias, y la siguiente vez sale la
+   pantalla en blanco (pasó en el instituto). Se arregla borrando
+   `shader_cache` en la carpeta de datos del juego. Con versiones distintas
+   no pasa: se probó la v0.5 con la caché de la v1.4 y abre bien.
 5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
    Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
    que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en

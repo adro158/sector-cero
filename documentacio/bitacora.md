@@ -2805,13 +2805,50 @@ versiones, el vídeo y el ensayo de la defensa.
   - un instalador de verdad (Inno Setup), para todo el ordenador
   - el lanzador y el juego van separados: el juego se instala una vez y en
     el lanzador se elige la versión en un desplegable; se baja su `.pck` y
-    JUGAR abre el juego con ese contenido (`--main-pack`)
+    JUGAR abre el juego con ese contenido
   - no hay botón en el juego viejo para pasar al lanzador: quien lo baje,
     bajará el instalador
 - Comprobado al planearlo: el `.pck` de cada release pesa 1-2 MB, y todas las
   releases se hicieron con Godot 4.7.2 (la Action no ha cambiado de motor
   desde el 01/10). Por eso las versiones antiguas no hay que recompilarlas.
-  Falta probarlo con `--main-pack` antes de programar.
-- Siguiente paso: el plan con los ficheros del lanzador, para el sí de Adam.
+- **Hecho el lanzador** (Adam: «empieza ya»), en `lanzador/`, un proyecto de
+  Godot aparte. Así no carga nada del juego: ni el actualizador, ni el audio,
+  ni el CRT.
+  - `biblioteca.gd`:
+    - la lista de releases de GitHub, o las descargadas si no hay conexión
+    - la descarga del `.pck`, primero a un fichero aparte para que un corte
+      no deje uno roto
+    - JUGAR: copia el `.pck` junto al juego y lo abre con `OS.create_process`
+  - `lanzador.gd`: la pantalla (icono, novedades, desplegable, JUGAR). Se
+    minimiza mientras se juega y vuelve al cerrar el juego, comprobándolo
+    cada medio segundo con `OS.is_process_running`.
+  - `estilo.gd`: una copia reducida de `EstiloInterfaz`, porque desde otro
+    proyecto no se pueden cargar ficheros del juego.
+  - En el juego, dos presets de exportación nuevos con el `.pck` aparte (el
+    motor sin contenido). Los de siempre no cambian.
+- **Problemas y cómo se resolvieron:**
+  - `--main-pack` da error en los ejecutables exportados («compiled without
+    support for path overrides»). Solución: Godot abre solo el `.pck` que
+    está junto al ejecutable y se llama como él, así que el lanzador copia
+    ahí el de la versión elegida.
+  - La pantalla salió en blanco en algunas pruebas, con errores de
+    `shader_gles3.cpp`. Primero se pensó que era la caché de shaders de otra
+    versión, y se añadió borrarla al cambiar de versión. Pero se probó la v0.5
+    con la caché de la v1.4 y abre bien: lo que la estropeaba era cerrar el
+    juego a la fuerza en las pruebas (`Stop-Process -Force`). Se quitó ese
+    borrado, que no hacía falta.
+- **Pruebas** (en la máquina virtual, con clics simulados y capturas de
+  ventana; una carpeta de datos aparte para no tocar los récords):
+  - el lanzador lista de la v0.2 a la v1.4
+  - se baja la v1.4 al abrir y la v0.5 al elegirla
+  - JUGAR abre cada una con su menú de entonces
+  - el lanzador se minimiza y vuelve al cerrar el juego
+- **Falta** (lista en `requisitos_y_estado.md`, punto 4):
+  1. el instalador
+  2. la Action
+  3. que el lanzador se actualice solo
+  4. quitar ACTUALIZAR y VERSIONES en el juego abierto desde el lanzador
+  5. las notas de las releases (las antiguas tienen los acentos rotos)
+  6. probarlo en Linux
 
 Horas: sin apuntar (preguntar a Adam).
