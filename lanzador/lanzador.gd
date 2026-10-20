@@ -93,6 +93,8 @@ func _construir() -> void:
 	_estado = Estilo.etiqueta("", 15, Estilo.TEXTO_SUAVE)
 	_estado.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_estado.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	# Los textos largos bajan de línea en vez de echar JUGAR de la ventana.
+	_estado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	pie.add_child(_estado)
 	_jugar = Button.new()
 	_jugar.text = "JUGAR"
@@ -107,6 +109,9 @@ func _cargar_versiones() -> void:
 	_jugar.disabled = true
 	_estado.text = "Buscando las versiones..."
 	_releases = await _biblioteca.pedir_releases()
+	# Si hay un lanzador más nuevo, se baja y se vuelve a abrir solo.
+	if not _releases.is_empty() and await ActualizadorLanzador.actualizar_si_hay(_releases[0], _biblioteca):
+		return
 	if _releases.is_empty():
 		# Sin conexión: las que ya están descargadas.
 		for version in _biblioteca.descargadas():
@@ -162,6 +167,8 @@ func _al_elegir(indice: int) -> void:
 func _listo() -> void:
 	_jugar.disabled = false
 	_estado.text = "Lista para jugar"
+	if _biblioteca.lista_guardada:
+		_estado.text += "\n(GitHub no contesta: lista guardada)"
 
 
 func _pulsar_jugar() -> void:

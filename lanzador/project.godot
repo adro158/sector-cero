@@ -17,6 +17,10 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icono.png"
 config/windows_native_icon="res://icono.ico"
 
+[autoload]
+
+ActualizadorLanzador="*res://actualizador_lanzador.gd"
+
 [display]
 
 window/size/viewport_width=960

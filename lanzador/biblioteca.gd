@@ -20,12 +20,23 @@ const CABECERAS := ["User-Agent: SectorCero-Lanzador"]
 ## Las versiones descargadas: un .pck por versión, como "v1.2.pck".
 const CARPETA := "user://versiones/"
 
+## La última lista de releases que contestó GitHub (ver pedir_releases).
+const LISTA := "user://releases.json"
+
+## Si la lista que ha dado pedir_releases es la guardada y no la de ahora.
+var lista_guardada := false
 var _descarga: HTTPRequest
 var _tamano := 0
 
 
-## Las releases que se pueden jugar, de la más nueva a la más antigua, o una
-## lista vacía si no hay conexión. Las pruebas (prerelease) no se ofrecen.
+## Las releases que se pueden jugar, de la más nueva a la más antigua. Las
+## pruebas (prerelease) no se ofrecen.
+##
+## Si GitHub no contesta, la última lista que se consiguió (lista_guardada
+## pasa a true). Pasa sin conexión, pero también con conexión: GitHub solo
+## deja 60 consultas por hora a cada red, y en el instituto todos salen por
+## la misma (le pasó al probarlo, 20/10). Bajar los .pck no cuenta para ese
+## límite, así que con la lista guardada se puede seguir eligiendo versión.
 func pedir_releases() -> Array:
 	var peticion := HTTPRequest.new()
 	peticion.timeout = 8.0
@@ -33,9 +44,17 @@ func pedir_releases() -> Array:
 	peticion.request(RELEASES, CABECERAS)
 	var resultado: Array = await peticion.request_completed
 	peticion.queue_free()
-	if resultado[0] != HTTPRequest.RESULT_SUCCESS or resultado[1] != 200:
+	var texto := ""
+	lista_guardada = resultado[0] != HTTPRequest.RESULT_SUCCESS or resultado[1] != 200
+	if lista_guardada:
+		if FileAccess.file_exists(LISTA):
+			texto = FileAccess.get_file_as_string(LISTA)
+	else:
+		texto = resultado[3].get_string_from_utf8()
+		FileAccess.open(LISTA, FileAccess.WRITE).store_string(texto)
+	if texto.is_empty():
 		return []
-	var releases = JSON.parse_string(resultado[3].get_string_from_utf8())
+	var releases = JSON.parse_string(texto)
 	if not releases is Array:
 		return []
 	return releases.filter(func(release): return not release.prerelease and not release.draft and not _pck_de(release).is_empty())
@@ -45,6 +64,8 @@ func pedir_releases() -> Array:
 ## Es lo que se ofrece sin conexión.
 func descargadas() -> Array:
 	var versiones := []
+	if not DirAccess.dir_exists_absolute(CARPETA):
+		return versiones
 	for fichero in DirAccess.get_files_at(CARPETA):
 		if fichero.ends_with(".pck"):
 			versiones.append(fichero.get_basename())
@@ -59,23 +80,29 @@ func descargada(version: String) -> bool:
 ## Baja el .pck de la release a la biblioteca. Devuelve si ha ido bien.
 func descargar(release: Dictionary) -> bool:
 	var pck := _pck_de(release)
-	_tamano = pck.size
 	DirAccess.make_dir_recursive_absolute(CARPETA)
-	# A un fichero aparte: si se corta a medias, no queda un .pck roto que
-	# parezca descargado.
-	var temporal := _ruta(release.tag_name) + ".descarga"
+	return await descargar_a(pck.browser_download_url, pck.size, _ruta(release.tag_name))
+
+
+## Baja un fichero de ese tamaño a destino. Primero a un fichero aparte: si se
+## corta a medias, no queda uno roto que parezca descargado. También la usa el
+## actualizador del lanzador.
+func descargar_a(url: String, tamano: int, destino: String) -> bool:
+	_tamano = tamano
+	var temporal := destino + ".descarga"
 	_descarga = HTTPRequest.new()
 	_descarga.download_file = temporal
 	_descarga.timeout = 600.0
 	add_child(_descarga)
-	_descarga.request(pck.browser_download_url, CABECERAS)
+	_descarga.request(url, CABECERAS)
 	var resultado: Array = await _descarga.request_completed
 	_descarga.queue_free()
 	_descarga = null
 	var bien: bool = resultado[0] == HTTPRequest.RESULT_SUCCESS and resultado[1] == 200 \
-		and FileAccess.file_exists(temporal) and FileAccess.open(temporal, FileAccess.READ).get_length() == _tamano
+		and FileAccess.file_exists(temporal) and FileAccess.open(temporal, FileAccess.READ).get_length() == tamano
 	if bien:
-		DirAccess.rename_absolute(temporal, _ruta(release.tag_name))
+		DirAccess.remove_absolute(destino)
+		DirAccess.rename_absolute(temporal, destino)
 	else:
 		DirAccess.remove_absolute(temporal)
 	return bien
