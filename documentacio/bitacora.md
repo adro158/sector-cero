@@ -2796,3 +2796,22 @@ versiones, el vídeo y el ensayo de la defensa.
   La propuesta y la estimación están en `requisitos_y_estado.md`, punto 4;
   falta el plan con los ficheros antes de programar.
 
+
+## Sesión 16 — 20/10/2026 (en clase)
+
+- No había nada nuevo en GitHub desde la sesión 15, ni de Adam ni de Alan.
+- **El lanzador, concretado con Adam** (detalle en `requisitos_y_estado.md`,
+  punto 4):
+  - un instalador de verdad (Inno Setup), para todo el ordenador
+  - el lanzador y el juego van separados: el juego se instala una vez y en
+    el lanzador se elige la versión en un desplegable; se baja su `.pck` y
+    JUGAR abre el juego con ese contenido (`--main-pack`)
+  - no hay botón en el juego viejo para pasar al lanzador: quien lo baje,
+    bajará el instalador
+- Comprobado al planearlo: el `.pck` de cada release pesa 1-2 MB, y todas las
+  releases se hicieron con Godot 4.7.2 (la Action no ha cambiado de motor
+  desde el 01/10). Por eso las versiones antiguas no hay que recompilarlas.
+  Falta probarlo con `--main-pack` antes de programar.
+- Siguiente paso: el plan con los ficheros del lanzador, para el sí de Adam.
+
+Horas: sin apuntar (preguntar a Adam).

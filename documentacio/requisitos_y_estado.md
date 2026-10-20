@@ -124,58 +124,54 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    icono de la ventana llega con el `.pck` (lo pone `transicion.gd`) y el del
    `.exe`, con el ejecutable nuevo. Si al probar sale algo, se arregla y se
    saca una v1.4.
-4. **Versiones: un lanzador, como el de Minecraft** (decisión de Adam del
-   16/10, sesión 15). Lo que pide: desde el `.exe` se tienen que poder jugar
-   **todas** las versiones. La página web es solo un extra para probar la
-   última; ya no se hace la página con todas que se decidió en la sesión 14.
-   Tampoco se sigue parcheando el menú VERSIONES de dentro del juego (con la
-   v1.1 instalada y la v1.0 en uso, ofrecía INSTALAR la v1.0).
+4. **Versiones: un lanzador, como el de Minecraft** (decisiones de Adam del
+   16 y el 20/10, sesiones 15 y 16). Desde el ordenador se tienen que poder
+   jugar **todas** las versiones. La web es solo un extra para probar la
+   última. Ya no se hace la página web con todas (sesión 14), ni se sigue
+   parcheando el menú VERSIONES de dentro del juego.
 
-   Cómo lo hace el lanzador: primero una pantalla con la información del
-   juego y la lista de versiones, y al pulsar JUGAR se abre esa versión, sin
-   cerrar y reiniciar el juego. Lo que propuso Claude (opción recomendada):
-   - un ejecutable aparte (`SectorCero_Lanzador`) del mismo proyecto: su
-     preset de exportación lleva una marca y arranca en la pantalla del
-     lanzador en vez de en el juego
-   - la lista de versiones sale de la API de releases de GitHub, así que las
-     nuevas aparecen sin actualizar el lanzador
-   - INSTALAR o JUGAR por versión: baja el zip a la biblioteca reutilizando
-     `instalador_juego.gd` y la abre con `OS.create_process`
-   - el juego se queda solo con ACTUALIZAR, o sin nada, porque las versiones
-     nuevas las trae el lanzador
+   Cómo va:
+   - **Un instalador de verdad**, para todo el ordenador (en Archivos de
+     programa; pide permisos de administrador): Siguiente → carpeta → accesos
+     directos → Finalizar, con su desinstalador. Se hace con Inno Setup y lo
+     genera la GitHub Action. Instala dos cosas, una sola vez: el lanzador y
+     el juego (el motor). En Linux, un zip con lo mismo.
+   - **El lanzador y el juego van separados.** El juego instalado es siempre
+     el mismo ejecutable y no se vuelve a instalar. Lo que cambia entre
+     versiones es su contenido, el `.pck` de cada release.
+   - **En el lanzador:** un desplegable con todas las versiones, sacadas de
+     la API de releases de GitHub. Al elegir una, se baja su `.pck` si no
+     está (en la carpeta de datos del usuario, porque Archivos de programa
+     no se puede escribir) y se queda como la elegida, también para la
+     próxima vez.
+   - **JUGAR** abre el juego instalado con el contenido elegido
+     (`OS.create_process` con `--main-pack <pck>`). El lanzador se esconde y,
+     al cerrar el juego, vuelve a aparecer.
+   - **El lanzador se actualiza solo**, para no tener que volver a GitHub.
+   - **El juego nuevo ya no tiene ACTUALIZAR ni VERSIONES:** de eso se
+     encarga el lanzador.
+   - **No hay botón para pasar del juego viejo al lanzador:** quien lo baje,
+     bajará directamente el instalador (decisión de Adam).
 
-   Unas 2 sesiones más las pruebas. Cada versión pesa unos 40 MB de descarga
-   y unos 110 MB instalada: se baja solo la que se elige. Las versiones
-   antiguas seguirán teniendo su menú VERSIONES. Lo que se reparte pasa a ser
-   el lanzador: un zip con `SectorCero_Lanzador.exe` (y el de Linux), que
-   baja las versiones la primera vez que se juegan.
-   **Las versiones antiguas** (decisión de Adam del 16/10). Abiertas desde el
-   lanzador:
-   - no se actualizan solas
-   - al cerrar el juego (no el lanzador) se vuelve al lanzador para elegir
-     otra versión
+   Por qué funciona: el `.pck` de cada release pesa entre 1 y 2 MB (los
+   37 MB del zip son casi todo el motor). Todas las releases se hicieron con
+   Godot 4.7.2 (la Action no ha cambiado de motor desde el 01/10), así que el
+   contenido de cualquier versión se abre con el motor instalado. **Las
+   versiones antiguas no hay que recompilarlas.** Comprobarlo al empezar con
+   unas cuantas (`--main-pack`) antes de dar nada por bueno.
 
-   Cómo hacerlo, según Claude:
-   - **Volver al lanzador sirve para todas sin tocarlas.** El lanzador no
-     se cierra: se esconde al abrir el juego, guarda su número de proceso
-     (lo devuelve `OS.create_process`) y vuelve a aparecer cuando
-     `OS.is_process_running` dice que el juego se ha cerrado.
-   - **El parche compartido.** Todas las versiones guardan sus datos en la
-     misma carpeta, y una versión vieja cargaría el
-     `user://actualizacion.pck` que hubiera bajado otra más nueva. El
-     lanzador lo borra (y su `.txt`) antes de abrir cualquier versión, como
-     ya hace `instalador_juego.gd` al CAMBIAR.
-   - **Que no busquen actualizaciones.** El lanzador abre el juego con un
-     argumento (`--desde-lanzador`). Con él, el `Actualizador` no busca nada
-     y el menú no enseña ACTUALIZAR ni VERSIONES. Las versiones ya
-     publicadas no lo entienden: hay que volver a publicarlas con
-     `recompilar_version.sh`, cambiando el actualizador y el menú. Como el
-     lanzador baja el zip entero, ese ejecutable nuevo sí les llega. Si alguna
-     no se puede volver a compilar, al menos no se le deja instalar nada: el
-     lanzador borra el parche cada vez que la abre.
+   Lo que queda con las antiguas:
+   - Seguirán enseñando dentro sus botones ACTUALIZAR y VERSIONES.
+   - Todas guardan sus datos en la misma carpeta: el lanzador borra
+     `user://actualizacion.pck` (y su `.txt`) antes de abrir cualquier
+     versión, para que no cargue un parche de otra.
+   - El instalador no está firmado: Windows avisará con «Windows protegió
+     su PC» (Más información → Ejecutar de todas formas). Avisarlo en el
+     README.
 
-   **Siguiente paso:** el plan con los ficheros, para que Adam diga que sí
-   antes de programar.
+   Trabajo: unas tres sesiones con las pruebas (el lanzador, el instalador y
+   la Action). **Siguiente paso:** el plan con los ficheros, para que Adam
+   diga que sí antes de programar.
 5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
    Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
    que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
