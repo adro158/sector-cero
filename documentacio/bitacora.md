@@ -2870,4 +2870,30 @@ versiones, el vídeo y el ensayo de la defensa.
   juego tiene el mismo límite (en clase, el aviso de versión nueva puede no
   salir).
 
+- **Publicadas la v1.5 y la v1.6** (Adam: «súbelo todo y cambia todo lo que
+  me has dicho»):
+  - las novedades de cada versión, en `documentacio/novedades/`, copiadas a
+    las releases con `gh release edit --notes-file` (con un fichero UTF-8 no
+    se rompen los acentos)
+  - el README, con el lanzador
+  - la Action (la de publicar y la de Windows del instalador) funcionó a la
+    primera
+  - en la v1.6, el acceso del menú de Linux lo pone el lanzador (antes lo
+    ponía el juego apuntando a sí mismo, y desde el menú se saltaba el
+    lanzador)
+- **Cómo probarlo en Linux** (lo preguntó Adam):
+  1. En un Linux con escritorio: un ordenador del instituto, una máquina
+     virtual con Ubuntu, o WSL en Windows 11 (abre ventanas).
+  2. Bajar `SectorCero_Lanzador_linux_vX.zip` de la última release,
+     descomprimirlo y, en la terminal, dentro de la carpeta:
+     `chmod +x SectorCero_Lanzador.x86_64 juego/SectorCero.x86_64` y
+     `./SectorCero_Lanzador.x86_64`.
+  3. Mirar:
+     - que salga la lista de versiones
+     - que al elegir una se baje y JUGAR la abra
+     - que al cerrar el juego vuelva el lanzador
+     - que en el menú de aplicaciones salga «Sector Cero» con su icono, y que
+       abra el lanzador
+     - que la ventana del juego tenga el icono en el dock
+
 Horas: sin apuntar (preguntar a Adam).

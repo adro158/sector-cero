@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.3 publicadas por la GitHub Action, también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.6 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.3 publicada el 16/10, también en la web, ya con su icono. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.6 publicada el 20/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -193,21 +193,30 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      la misma (se agotaron al probar). Sin respuesta, se usa la última lista,
      y las descargas siguen funcionando porque no cuentan para ese límite.
      Probado.
-   - el instalador (`lanzador/instalador.iss`) y la Action, escritos pero
-     **sin probar**: el instituto no tiene Inno Setup, y la Action solo corre
-     al publicar una versión.
+   - el instalador (`lanzador/instalador.iss`) y la Action (los probó la
+     publicación de la v1.5: el instituto no tiene Inno Setup, y la Action
+     solo corre al publicar una versión)
+
+   **Publicado el 20/10, con permiso de Adam: v1.5 (el lanzador) y v1.6 (el
+   acceso del menú de Linux).** La Action generó a la primera el instalador
+   de Windows (`SectorCero_Instalador_vX.exe`, 51 MB), el zip del lanzador
+   de Linux y sus `.pck`.
+   - Las novedades de cada versión están en `documentacio/novedades/`. Se
+     copiaron a las 13 releases ya publicadas (con permiso de Adam) y la
+     Action las usa al publicar. Es lo que enseña el lanzador.
+   - El README explica el lanzador y el aviso de Windows («Windows protegió
+     su PC», porque el instalador no está firmado).
+   - En Linux, el acceso del menú lo pone el lanzador
+     (`lanzador/icono_linux.gd`): uno visible que lo abre a él y otro
+     escondido para el icono de la ventana del juego. El juego abierto desde
+     el lanzador ya no pone el suyo, que se saltaba el lanzador.
 
    **Falta:**
-   1. **Probar el instalador y la Action:** publicando la v1.5 o, antes,
-      instalando Inno Setup en casa y compilando `instalador.iss` a mano
-      (antes hay que exportar el lanzador y el juego sin contenido a
-      `build/lanzador/windows/`).
-   2. **Las novedades:** el lanzador enseña el texto de cada release, que
-      ahora solo dice «Full Changelog» y en las antiguas tiene los acentos
-      rotos (se estropearon al volver a publicarlas desde Windows). Hay que
-      reescribirlas en GitHub (`gh release edit`), con permiso de Adam.
-   3. **El README:** que diga que se baja el instalador.
-   4. **Probarlo en Linux.**
+   1. **Que Adam pruebe el instalador** en Windows: instalar, jugar a varias
+      versiones, desinstalar.
+   2. **Probarlo en Linux** (los pasos están en la bitácora, sesión 16).
+   3. **Ver que el lanzador se actualiza solo** cuando salga la próxima
+      versión: uno instalado desde la v1.5 tiene que pasar solo a la nueva.
 
    Ojo al probar: si se cierra el juego a la fuerza (matando el proceso), la
    caché de shaders puede quedar a medias, y la siguiente vez sale la
