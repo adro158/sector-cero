@@ -2851,4 +2851,23 @@ versiones, el vídeo y el ensayo de la defensa.
   5. las notas de las releases (las antiguas tienen los acentos rotos)
   6. probarlo en Linux
 
+- **Después, sin parar:**
+  - el juego abierto por el lanzador ya no enseña ACTUALIZAR ni VERSIONES
+  - el instalador (Inno Setup) y la Action, escritos pero sin probar
+  - el lanzador se actualiza solo
+  - la lista de versiones se guarda por si GitHub no contesta
+
+  El detalle está en `requisitos_y_estado.md`, punto 4. Dos decisiones:
+  - **El zip del lanzador de Linux no acaba en `_linux.zip`**
+    (`SectorCero_Lanzador_linux_vX.zip`): los juegos antiguos buscan en la
+    release el archivo que acaba así para su ACTUALIZAR, y cogerían este.
+  - **El menú mira `--desde-lanzador` él mismo** y no se lo pregunta al
+    `Actualizador`: el de un ejecutable viejo, actualizado con el `.pck`, no
+    tendría una función nueva.
+- **Problema: GitHub dejó de contestar** a mitad de las pruebas. Solo deja 60
+  consultas por hora a cada red, y en el instituto todos comparten la misma.
+  Por eso el lanzador guarda la última lista. Ojo: el `Actualizador` del
+  juego tiene el mismo límite (en clase, el aviso de versión nueva puede no
+  salir).
+
 Horas: sin apuntar (preguntar a Adam).

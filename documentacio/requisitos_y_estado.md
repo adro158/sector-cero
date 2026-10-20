@@ -181,24 +181,33 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      Probado con la v0.2, la v0.5, la v0.9, la v1.2 y la v1.4: cada una abre
      tal como era.
 
+   **Hecho también el 20/10:**
+   - el juego abierto por el lanzador (`--desde-lanzador`) no busca
+     actualizaciones ni enseña ACTUALIZAR ni VERSIONES (probado con capturas)
+   - el lanzador se actualiza solo: cada release publica
+     `lanzador_windows.pck` y `lanzador_linux.pck`, y su autoload
+     (`actualizador_lanzador.gd`) carga el parche al arrancar. Probado con un
+     parche hecho a mano; un parche más viejo que el lanzador se borra.
+   - **la lista de versiones guardada** (`user://releases.json`): GitHub solo
+     deja 60 consultas por hora a cada red, y en el instituto todos comparten
+     la misma (se agotaron al probar). Sin respuesta, se usa la última lista,
+     y las descargas siguen funcionando porque no cuentan para ese límite.
+     Probado.
+   - el instalador (`lanzador/instalador.iss`) y la Action, escritos pero
+     **sin probar**: el instituto no tiene Inno Setup, y la Action solo corre
+     al publicar una versión.
+
    **Falta:**
-   1. **El instalador** (Inno Setup): instala en Archivos de programa
-      `SectorCero_Lanzador.exe` y `juego/SectorCero.exe`. La carpeta `juego/`
-      tiene que poder escribirla cualquier usuario (`[Dirs] ...
-      Permissions: users-modify`), porque el lanzador copia ahí el `.pck`.
-      Accesos directos al lanzador y desinstalador.
-   2. **La GitHub Action:** exportar el lanzador y el juego sin contenido, y
-      generar el instalador en un runner de Windows. Subirlo a la release.
-      En Linux, un zip con el lanzador y `juego/`.
-   3. **Que el lanzador se actualice solo:** su propio `.pck` en cada
-      release, como el actualizador del juego.
-   4. **El juego nuevo, abierto desde el lanzador** (`--desde-lanzador` en
-      `OS.get_cmdline_user_args()`): sin ACTUALIZAR ni VERSIONES.
-   5. **Las novedades:** el lanzador enseña el texto de cada release, que
+   1. **Probar el instalador y la Action:** publicando la v1.5 o, antes,
+      instalando Inno Setup en casa y compilando `instalador.iss` a mano
+      (antes hay que exportar el lanzador y el juego sin contenido a
+      `build/lanzador/windows/`).
+   2. **Las novedades:** el lanzador enseña el texto de cada release, que
       ahora solo dice «Full Changelog» y en las antiguas tiene los acentos
       rotos (se estropearon al volver a publicarlas desde Windows). Hay que
       reescribirlas en GitHub (`gh release edit`), con permiso de Adam.
-   6. **Probarlo en Linux.**
+   3. **El README:** que diga que se baja el instalador.
+   4. **Probarlo en Linux.**
 
    Ojo al probar: si se cierra el juego a la fuerza (matando el proceso), la
    caché de shaders puede quedar a medias, y la siguiente vez sale la
