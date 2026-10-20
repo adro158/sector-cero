@@ -46,6 +46,7 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           sed -i "s/const ACTUAL := \"desarrollo\"/const ACTUAL := \"$VERSION\"/" projecte/globales/version.gd
           sed -i "s/config\/version=\"desarrollo\"/config\/version=\"$VERSION\"/" projecte/project.godot
+          sed -i "s/config\/version=\"desarrollo\"/config\/version=\"$VERSION\"/" lanzador/project.godot
           MINIMO=$(sed -n 's/^const EJECUTABLE_MINIMO := "\(.*\)"$/\1/p' projecte/globales/version.gd)
           echo "{\"version\": \"$VERSION\", \"ejecutable_minimo\": \"$MINIMO\"}" > version.json
           cat version.json
@@ -65,6 +66,31 @@ jobs:
           zip -j "SectorCero_${GITHUB_REF_NAME}_linux.zip" linux/SectorCero.x86_64
           ls -l
 
+      # El lanzador (lanzador/) y el juego sin contenido que abre: el .pck de
+      # cada versión lo baja el lanzador. En Windows van al instalador (el
+      # trabajo de abajo, que necesita Windows); en Linux, a un zip.
+      - name: Exportar el lanzador
+        run: |
+          mkdir -p build/lanzador/windows/juego build/lanzador/linux/juego
+          ./$GODOT --headless --path lanzador --import
+          ./$GODOT --headless --path lanzador --export-release "Windows Desktop" ../build/lanzador/windows/SectorCero_Lanzador.exe
+          ./$GODOT --headless --path lanzador --export-release "Linux" ../build/lanzador/linux/SectorCero_Lanzador.x86_64
+          ./$GODOT --headless --path projecte --export-release "Windows (lanzador)" ../build/lanzador/windows/juego/SectorCero.exe
+          ./$GODOT --headless --path projecte --export-release "Linux (lanzador)" ../build/lanzador/linux/juego/SectorCero.x86_64
+          cd build/lanzador/linux
+          # No puede acabar en "_linux.zip": los juegos antiguos buscan el
+          # archivo que acaba así para su botón ACTUALIZAR y cogerían este.
+          zip "../../SectorCero_Lanzador_linux_${GITHUB_REF_NAME}.zip" SectorCero_Lanzador.x86_64 juego/SectorCero.x86_64
+          ls -l ../..
+
+      - name: Guardar el lanzador de Windows para el instalador
+        uses: actions/upload-artifact@v4
+        with:
+          name: lanzador-windows
+          path: |
+            build/lanzador/windows/SectorCero_Lanzador.exe
+            build/lanzador/windows/juego/SectorCero.exe
+
       - name: Publicar la release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -72,8 +98,9 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             --title "Sector Cero $GITHUB_REF_NAME" \
             --generate-notes \
-            build/SectorCero_*_windows.zip \
-            build/SectorCero_*_linux.zip \
+            "build/SectorCero_${GITHUB_REF_NAME}_windows.zip" \
+            "build/SectorCero_${GITHUB_REF_NAME}_linux.zip" \
+            "build/SectorCero_Lanzador_linux_${GITHUB_REF_NAME}.zip" \
             build/sector_cero_windows.pck \
             build/sector_cero_linux.pck \
             version.json
@@ -85,3 +112,31 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
+
+  # El instalador de Windows (lanzador/instalador.iss) se hace con Inno Setup,
+  # que solo funciona en Windows: va en una máquina aparte, cuando la de arriba
+  # ya ha exportado el lanzador y ha creado la release.
+  instalador:
+    needs: publicar
+    runs-on: windows-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Traer el lanzador exportado
+        uses: actions/download-artifact@v4
+        with:
+          name: lanzador-windows
+          path: build/lanzador/windows
+
+      - name: Hacer el instalador y subirlo a la release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+          $version = $env:GITHUB_REF_NAME.TrimStart("v")
+          & $iscc "/DVersion=$version" "/FSectorCero_Instalador_$env:GITHUB_REF_NAME" lanzador\instalador.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          gh release upload $env:GITHUB_REF_NAME "build\instalador\SectorCero_Instalador_$env:GITHUB_REF_NAME.exe"
