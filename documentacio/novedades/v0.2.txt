@@ -1,0 +1,8 @@
+La primera versión completa del juego.
+- Eres un antivirus: te mueves y tu herramienta ataca sola a la horda de malware.
+- Tres personajes que se cambian en plena partida (E o Tab), cada uno con su herramienta.
+- El malware se hace resistente a la herramienta que más daño le hace.
+- Élites con afijos al azar, evoluciones de las herramientas y mapa infinito.
+- Jefe final a los 10 minutos.
+- Menú, reglas, pausa, opciones, récords, música y efectos de sonido.
+- Botón ACTUALIZAR para bajar las versiones nuevas desde el juego.

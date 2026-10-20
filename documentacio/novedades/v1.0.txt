@@ -1,0 +1,2 @@
+- Tres dificultades para elegir en el menú: fácil, media y difícil.
+- Tarjetas de mejora más grandes, para que quepa el texto de las evoluciones.

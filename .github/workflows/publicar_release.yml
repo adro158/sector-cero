@@ -98,10 +98,14 @@ jobs:
       - name: Publicar la release
         env:
           GH_TOKEN: ${{ github.token }}
+        # Las novedades salen de documentacio/novedades/<versión>.txt, que es lo
+        # que enseña el lanzador. Si no hay fichero, las de GitHub.
         run: |
+          NOTAS="documentacio/novedades/${GITHUB_REF_NAME}.txt"
+          if [ -f "$NOTAS" ]; then OPCION_NOTAS=(--notes-file "$NOTAS"); else OPCION_NOTAS=(--generate-notes); fi
           gh release create "$GITHUB_REF_NAME" \
             --title "Sector Cero $GITHUB_REF_NAME" \
-            --generate-notes \
+            "${OPCION_NOTAS[@]}" \
             "build/SectorCero_${GITHUB_REF_NAME}_windows.zip" \
             "build/SectorCero_${GITHUB_REF_NAME}_linux.zip" \
             "build/SectorCero_Lanzador_linux_${GITHUB_REF_NAME}.zip" \

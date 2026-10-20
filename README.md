@@ -34,21 +34,29 @@ para sorprenderle.
 escanea el QR de arriba). En el móvil sale un joystick a la izquierda y los
 botones de cambiar de personaje y de pausa a la derecha.
 
-**En el ordenador, la versión completa:**
+**En el ordenador, con el lanzador** (desde la v1.5):
 
-1. Descarga la última versión de
-   [Releases](https://github.com/adro158/sector-cero/releases) (el `.zip` de
-   Windows o de Linux).
-2. Descomprímelo.
-3. Abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`).
+1. Descarga de la última versión de
+   [Releases](https://github.com/adro158/sector-cero/releases):
+   - en Windows, `SectorCero_Instalador_vX.exe`, y ábrelo: Siguiente, elige
+     la carpeta y Finalizar
+   - en Linux, `SectorCero_Lanzador_linux_vX.zip`: descomprímelo y abre
+     `SectorCero_Lanzador.x86_64`
+2. En el lanzador, elige la versión en el desplegable (se descarga en un
+   momento) y pulsa **JUGAR**. Al cerrar el juego vuelves al lanzador.
 
-No hay que instalar nada. Cuando publicamos una versión nueva, el propio juego
-la encuentra en unos minutos, aunque esté abierto, y avisa con un mensaje: con
-**ACTUALIZAR** se descarga y se reinicia; con **AHORA NO** se sigue jugando y
-el botón queda en el menú para más tarde. Con **VERSIONES**, en el menú, se
-puede instalar cualquier versión publicada, también una anterior, sin dejar la
-que tienes: la instalada queda lista y con **CAMBIAR** pasas a ella cuando
-quieras. Funciona desde todas las versiones.
+Desde el lanzador se juega a **todas** las versiones publicadas, de la
+primera a la última. Las versiones nuevas aparecen solas, y el lanzador
+también se actualiza solo: no hace falta volver a esta página.
+
+Windows avisará de que el instalador no es de un editor conocido («Windows
+protegió su PC»), porque no está firmado: pulsa **Más información** y
+**Ejecutar de todas formas**.
+
+Sigue estando el juego suelto, sin lanzador: el `.zip` de Windows o de Linux
+de cada versión. Se descomprime y se abre `SectorCero.exe` (en Linux,
+`SectorCero.x86_64`), y él mismo avisa de las versiones nuevas con
+**ACTUALIZAR**.
 
 | Acción | Teclado | Mando |
 |---|---|---|

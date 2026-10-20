@@ -1,0 +1,5 @@
+- Ranking con las 10 mejores partidas y tu nombre.
+- Más presión de la horda, barras de vida y ficha del enemigo al pinchar en él.
+- Los élites dan mejor recompensa.
+- La experiencia que no recoges desaparece a los 30 segundos.
+- Personajes, mejoras y evoluciones equilibrados de nuevo.

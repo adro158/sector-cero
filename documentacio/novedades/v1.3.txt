@@ -1,0 +1,4 @@
+- Fase 2: al derrotar al jefe, el sector queda dañado y la partida sigue hasta los 15 minutos.
+- Jefe final nuevo, NÚCLEO CERO: tres formas, los ataques de los personajes y de la horda, un escudo con anclas y zonas de hielo.
+- El juego tiene icono propio.
+- El ranking y los récords empiezan de cero, porque ahora la partida es más larga.

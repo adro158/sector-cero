@@ -1,0 +1,5 @@
+- La horda está animada, y el troyano se gira para mirarte.
+- Los élites y el jefe destellan en blanco al recibir un golpe.
+- Las piernas de los personajes van al ritmo de su velocidad.
+- La barra de experiencia se llena poco a poco y destella al subir de nivel.
+- Menú VERSIONES: INSTALAR descarga sin cambiar de versión y CAMBIAR pasa a ella.

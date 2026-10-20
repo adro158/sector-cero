@@ -1,0 +1,5 @@
+- Una ulti por personaje, que se carga matando y se lanza con R.
+- El jefe invoca anillos de horda y pega más fuerte.
+- La horda huye al llegar el jefe y se endurece a mitad de partida.
+- Menú VERSIONES para instalar también las versiones anteriores.
+- Fragmentos de experiencia de colores según lo que valen.

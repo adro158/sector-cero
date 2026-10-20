@@ -1,0 +1,2 @@
+- Las ultis tienen sprites propios, y el rayo del Mago se apunta con el ratón.
+- Las versiones instaladas se guardan y se cambia entre ellas sin volver a descargarlas.

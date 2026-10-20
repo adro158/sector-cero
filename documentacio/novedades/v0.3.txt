@@ -1,0 +1,3 @@
+- Suelo de placa base animado, con pulsos de datos, LEDs y ventiladores.
+- Enemigos redibujados y dos nuevos: el troyano, que embiste, y el ransomware, un tanque que llega a las 6:00.
+- Tres mejoras nuevas: Actualizar firmas, Cambio en caliente y Caché ampliada.

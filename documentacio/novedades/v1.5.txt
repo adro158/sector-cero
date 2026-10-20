@@ -1,0 +1,3 @@
+- Nuevo lanzador, con su instalador para Windows: eliges la versión y la juegas. Desde él se juega a todas las versiones, de la primera a la última.
+- El lanzador se actualiza solo, y las versiones nuevas aparecen en él sin hacer nada.
+- Abierto desde el lanzador, el juego ya no tiene los botones ACTUALIZAR ni VERSIONES.

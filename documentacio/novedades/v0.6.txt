@@ -1,0 +1,2 @@
+- Versión web: se juega en el navegador y en el móvil, con controles táctiles.
+- Aviso de versión nueva con el juego abierto.

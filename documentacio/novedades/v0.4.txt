@@ -1,0 +1,1 @@
+- Sprites nuevos para los fragmentos de experiencia y los proyectiles del Ping.
