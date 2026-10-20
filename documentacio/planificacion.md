@@ -151,7 +151,8 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
-      v0.2, 01/10, a la v1.3, 16/10, publicadas; falta probarlas en un
+      v0.2, 01/10, a la v1.6, 20/10, publicadas; desde la v1.5, con el
+      lanzador y su instalador de Windows; falta probarlas en un
       ordenador sin Godot)
 
 ---

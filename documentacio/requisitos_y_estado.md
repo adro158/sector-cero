@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 16/10/2026** contra la bitácora (hasta la sesión 14) y
+**Estado verificado el 20/10/2026** contra la bitácora (hasta la sesión 16) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -93,8 +93,25 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-1. **Probar jugando la fase 2 y el jefe final** (hechos el 16/10, sin
-   publicar; la lista paso a paso está en la bitácora, sesión 14). Con el
+1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
+   siguiente que se hace). Adam está dibujando los assets para que, cuando
+   los tres personajes cogen las mejoras, se note también en el personaje. Los
+   traerá con su prompt en la próxima sesión, como el zip del jefe final.
+   Entonces:
+   1. Mirar lo que trae (`git status` si lo descomprime en el repo) y sus
+      vistas previas.
+   2. Proponer un plan corto (ficheros nuevos y tocados, cómo se dibuja sobre
+      la hoja de 8 direcciones de 64x72) y esperar el sí de Adam.
+   3. Integrarlo con `preload` y sin `class_name` si se puede, para no subir
+      `EJECUTABLE_MINIMO`.
+   4. Validar en headless y con capturas, y apuntarlo en `creditos.md`, la
+      bitácora y aquí.
+
+   Si hay dudas sobre qué mejoras o evoluciones tienen dibujo, preguntárselo
+   a Adam.
+2. **Probar jugando la fase 2 y el jefe final** (hechos el 16/10 y
+   publicados en la v1.3; la lista paso a paso está en la bitácora, sesión
+   14). Con el
    proyecto de `main` abierto en Godot o con la build:
    - F1 → JEFE YA: matarlo y mirar el negro de la transición, el suelo
      dañado, la música más grave y que el reloj se queda en 10:00 mientras
@@ -111,7 +128,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    - Lo de antes que aún no se ha probado jugando: la explosión del rootkit
      (v1.2) y lo de la v1.1 (horda animada, destellos, piernas, barra de
      experiencia).
-2. **Jefes más duros y después el equilibrio** (decisiones de Adam del 20/10,
+3. **Jefes más duros y después el equilibrio** (decisiones de Adam del 20/10,
    sesión 16). Adam aprobó todas las propuestas de Claude y añadió lo del
    pisotón y el robo de vida. Por separado, de lo más fácil a lo más difícil:
    1. **Hecho:** menos horda al final de la fase 1, que en el minuto 10 salía
@@ -163,13 +180,13 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       - tocar los multiplicadores de `globales/dificultad.gd`
 
       Después, volver a medir las tablas del F1 (`progreso_por_minuto.gd`).
-3. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
+4. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
    probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
    y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El
    icono de la ventana llega con el `.pck` (lo pone `transicion.gd`) y el del
    `.exe`, con el ejecutable nuevo. Si al probar sale algo, se arregla y se
    saca una v1.4.
-4. **Versiones: un lanzador, como el de Minecraft** (decisiones de Adam del
+5. **Versiones: un lanzador, como el de Minecraft** (decisiones de Adam del
    16 y el 20/10, sesiones 15 y 16). Desde el ordenador se tienen que poder
    jugar **todas** las versiones. La web es solo un extra para probar la
    última. Ya no se hace la página web con todas (sesión 14), ni se sigue
@@ -268,7 +285,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    pantalla en blanco (pasó en el instituto). Se arregla borrando
    `shader_cache` en la carpeta de datos del juego. Con versiones distintas
    no pasa: se probó la v0.5 con la caché de la v1.4 y abre bien.
-5. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
+6. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
    Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
    que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
    Wayland no usa el de la ventana: lo saca de un `.desktop` instalado. Desde
@@ -292,19 +309,17 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    - para que llegue a los jugadores basta una release normal: el `.pck`
      trae el icono de la ventana y el ejecutable nuevo, el del `.exe`. No hace
      falta subir `EJECUTABLE_MINIMO`
-6. **Vídeo demostrativo** (2-4 min).
-7. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
+7. **Vídeo demostrativo** (2-4 min).
+8. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
    sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-8. **Probar en un ordenador limpio** (sin Godot) una release y su botón
+9. **Probar en un ordenador limpio** (sin Godot) una release y su botón
    ACTUALIZAR.
-9. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-10. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
+10. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
+11. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
-11. Opcional: sustituir los sprites de IA por pixel art propio.
-12. **Assets nuevos** (20/10, sesión 16):
-    - **Las evoluciones, visibles en los personajes:** Adam está haciendo
-      los assets para que, al coger una evolución, se note en el personaje.
-      Los pasará con un prompt para Claude Code, cuando tenga tiempo.
+12. Opcional: sustituir los sprites de IA por pixel art propio.
+13. **Assets nuevos** (20/10, sesión 16). Lo de las mejoras visibles en los
+    personajes es el punto 1.
     - **Más assets con Claude (chat):** el prompt está en
       `prompt_assets.md`, en seis lotes por prioridad:
       1. los ataques nuevos del jefe del minuto 10

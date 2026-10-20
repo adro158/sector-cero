@@ -60,7 +60,7 @@ Probar el juego en el ordenador de casa, que tiene GPU de verdad:
 1. Hacer lo de "Es un día nuevo": bajar `main` y lo de Alan, validar en
    headless y leer la bitácora y `requisitos_y_estado.md`.
 2. Darle a Adam un resumen corto: qué está hecho, qué falta y qué hay que
-   probar (la lista está en el primer punto de lo que queda por hacer de
+   probar (la lista está en «Probar jugando...», entre lo que queda por hacer de
    `requisitos_y_estado.md`).
 3. Probar lo que se pueda sin Adam, con ventana:
    - arrancar el juego y hacer capturas de lo que haya cambiado
@@ -210,6 +210,25 @@ de lanzar Godot.
   --clobber` borra el viejo antes de subir el nuevo) y, en la última, también
   los `.pck`. Se prueba con su modo `prueba` y un servidor local que imita la
   API de GitHub (bitácora, sesión 12).
+- **Desde la v1.5, el lanzador** (decisión de Adam, sesiones 15 y 16;
+  bitácora, sesión 16). Es otro proyecto de Godot, en `lanzador/`.
+  - **Cómo abre las versiones:** el instalador de Windows
+    (`lanzador/instalador.iss`, lo hace la Action) pone el lanzador y el
+    juego sin contenido (`juego/`). Al elegir una versión, el lanzador baja
+    su `.pck` y lo copia como `juego/SectorCero.pck`: Godot abre solo el
+    `.pck` que se llama como el ejecutable. `--main-pack` no sirve en los
+    ejecutables exportados.
+  - **Las versiones antiguas no se recompilan:** todas son de Godot 4.7.2. Si
+    algún día se cambia de versión de Godot, el contenido antiguo dejaría de
+    abrirse con el motor nuevo.
+  - **Abierto desde el lanzador** (`--desde-lanzador`), el juego no busca
+    actualizaciones ni enseña ACTUALIZAR ni VERSIONES.
+  - **El lanzador se actualiza solo** con `lanzador_<plataforma>.pck`, que
+    publica la Action.
+  - **Las novedades** que enseña salen de `documentacio/novedades/<versión>.txt`:
+    escribir el de cada versión antes de subir su etiqueta.
+  - **El zip del lanzador de Linux** no puede acabar en `_linux.zip`: los
+    juegos antiguos lo cogerían para su ACTUALIZAR.
 
 ## Git
 

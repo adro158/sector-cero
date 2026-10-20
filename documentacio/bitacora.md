@@ -2799,131 +2799,183 @@ versiones, el vídeo y el ensayo de la defensa.
 
 ## Sesión 16 — 20/10/2026 (en clase)
 
-- No había nada nuevo en GitHub desde la sesión 15, ni de Adam ni de Alan.
-- **El lanzador, concretado con Adam** (detalle en `requisitos_y_estado.md`,
-  punto 4):
-  - un instalador de verdad (Inno Setup), para todo el ordenador
-  - el lanzador y el juego van separados: el juego se instala una vez y en
-    el lanzador se elige la versión en un desplegable; se baja su `.pck` y
-    JUGAR abre el juego con ese contenido
-  - no hay botón en el juego viejo para pasar al lanzador: quien lo baje,
-    bajará el instalador
-- Comprobado al planearlo: el `.pck` de cada release pesa 1-2 MB, y todas las
-  releases se hicieron con Godot 4.7.2 (la Action no ha cambiado de motor
-  desde el 01/10). Por eso las versiones antiguas no hay que recompilarlas.
-- **Hecho el lanzador** (Adam: «empieza ya»), en `lanzador/`, un proyecto de
-  Godot aparte. Así no carga nada del juego: ni el actualizador, ni el audio,
-  ni el CRT.
-  - `biblioteca.gd`:
-    - la lista de releases de GitHub, o las descargadas si no hay conexión
-    - la descarga del `.pck`, primero a un fichero aparte para que un corte
-      no deje uno roto
-    - JUGAR: copia el `.pck` junto al juego y lo abre con `OS.create_process`
-  - `lanzador.gd`: la pantalla (icono, novedades, desplegable, JUGAR). Se
-    minimiza mientras se juega y vuelve al cerrar el juego, comprobándolo
-    cada medio segundo con `OS.is_process_running`.
+**Duración:** 2 h · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude)
+
+**Horas acumuladas:** 30 h de las 60 sugeridas (50 %)
+
+### Qué se ha hecho
+
+No había nada nuevo en GitHub desde la sesión 15, ni de Adam ni de Alan.
+
+- **Lanzador, como el de Minecraft** (`lanzador/`, un proyecto de Godot
+  aparte). Muestra la información del juego, las novedades de la versión
+  elegida y un desplegable con todas las versiones (de la v0.2 a la última).
+  Al elegir una, baja su `.pck` (1-2 MB) a la biblioteca. JUGAR abre el juego
+  instalado con ese contenido; mientras se juega el lanzador se minimiza, y
+  vuelve al cerrar el juego.
+  - `biblioteca.gd`: la lista de releases (o la guardada si GitHub no
+    contesta), las descargas y abrir el juego
+  - `lanzador.gd`: la pantalla
   - `estilo.gd`: una copia reducida de `EstiloInterfaz`, porque desde otro
-    proyecto no se pueden cargar ficheros del juego.
-  - En el juego, dos presets de exportación nuevos con el `.pck` aparte (el
-    motor sin contenido). Los de siempre no cambian.
-- **Problemas y cómo se resolvieron:**
-  - `--main-pack` da error en los ejecutables exportados («compiled without
-    support for path overrides»). Solución: Godot abre solo el `.pck` que
-    está junto al ejecutable y se llama como él, así que el lanzador copia
-    ahí el de la versión elegida.
-  - La pantalla salió en blanco en algunas pruebas, con errores de
-    `shader_gles3.cpp`. Primero se pensó que era la caché de shaders de otra
-    versión, y se añadió borrarla al cambiar de versión. Pero se probó la v0.5
-    con la caché de la v1.4 y abre bien: lo que la estropeaba era cerrar el
-    juego a la fuerza en las pruebas (`Stop-Process -Force`). Se quitó ese
-    borrado, que no hacía falta.
-- **Pruebas** (en la máquina virtual, con clics simulados y capturas de
-  ventana; una carpeta de datos aparte para no tocar los récords):
-  - el lanzador lista de la v0.2 a la v1.4
+    proyecto no se pueden cargar ficheros del juego
+  - `actualizador_lanzador.gd` y `version.gd`: el lanzador se actualiza solo
+    con su `.pck`
+  - `icono_linux.gd`: el acceso del menú de Linux, que abre el lanzador
+- **El instalador de Windows** (`lanzador/instalador.iss`, Inno Setup), para
+  todo el ordenador, con accesos directos y desinstalador. Lo genera la
+  GitHub Action en una máquina Windows aparte. En Linux, un zip.
+- **El juego abierto desde el lanzador** (`--desde-lanzador`) no busca
+  actualizaciones ni enseña ACTUALIZAR ni VERSIONES.
+- **Las novedades de cada versión**, en `documentacio/novedades/`. Se
+  copiaron a las 13 releases publicadas, que solo decían «Full Changelog» y
+  las antiguas con los acentos rotos, y la Action las usa al publicar.
+- **El README** explica el lanzador.
+- **Publicadas la v1.5 (el lanzador) y la v1.6** (el acceso del menú de
+  Linux abre el lanzador; antes lo ponía el juego apuntándose a sí mismo).
+- **Jefes y equilibrio:** Adam aprobó la propuesta de Claude (detalle en
+  `requisitos_y_estado.md`, punto 3). Hecho por ahora, lo más fácil:
+  - menos horda al final de la fase 1: como mucho una cada 0,07 s en vez de
+    0,05, y los anillos del jefe de 8 a 14 enemigos en vez de 12 a 24
+  - robo de vida del Espadachín: el Firewall cura un 10 % del daño hecho,
+    como mucho 3 de vida por golpe
+- **Assets:** el prompt para que Claude (chat) haga más assets, en seis lotes
+  (`prompt_assets.md`).
+
+### Decisiones de Adam
+
+- **El lanzador:** instalador de verdad, para todo el ordenador, con el
+  lanzador y el juego separados. El juego se instala una vez y en el lanzador
+  se elige la versión. La web queda solo para la última versión. No hay botón
+  en el juego viejo para pasar al lanzador: quien lo baje, bajará el
+  instalador. Las versiones antiguas no se actualizan solas, y al cerrarlas se
+  vuelve al lanzador.
+- **Publicar** la v1.5 y la v1.6, y reescribir las novedades de las releases
+  publicadas.
+- **Dificultad** (en difícil, pasado el minuto 10, es casi imposible). Primero
+  los jefes más duros:
+  - el del minuto 10, con más movimientos; el pisotón lo encierra a uno unos
+    segundos dentro del círculo
+  - NÚCLEO CERO casi imposible: más presión, y candados más difíciles de
+    romper
+
+  Después, equilibrar con el simulador: 7-8 victorias de 10 en fácil, 4-5
+  en media y 1 en difícil. Menos horda en el minuto 10, porque salían
+  demasiados enemigos.
+- **El Espadachín roba vida**, porque llega poco y pega poco.
+- **Las mejoras, visibles en los personajes:** Adam está haciendo los
+  assets para que, al coger las mejoras, se note en los tres personajes. Los
+  pasará con su prompt en la próxima sesión.
+
+### Decisiones técnicas y por qué
+
+- **Cada versión es su `.pck`, no su ejecutable.** Todas las releases se
+  hicieron con Godot 4.7.2 (la Action no ha cambiado de motor desde el
+  01/10), así que un solo motor abre el contenido de cualquiera. Por eso las
+  versiones antiguas no hay que recompilarlas, y elegir una es bajar 1-2 MB
+  en vez de 40.
+- **El `.pck`, junto al ejecutable y no con `--main-pack`.** Los ejecutables
+  exportados no admiten `--main-pack`. Godot abre solo el `SectorCero.pck`
+  que está junto a `SectorCero.exe`, y el lanzador copia ahí el elegido. Por
+  eso la carpeta `juego/` del instalador la puede escribir cualquier usuario.
+- **El lanzador, un proyecto aparte:** así no carga los autoloads del juego
+  (el actualizador, el audio, el CRT) y su propio `project.godot` se puede
+  cambiar sin miedo. El juego sin contenido sale de dos presets nuevos del
+  juego (`Windows (lanzador)` y `Linux (lanzador)`).
+- **El lanzador borra la actualización descargada del juego** antes de
+  abrir cualquier versión. Todas las versiones comparten la carpeta de datos,
+  y una antigua cargaría la de una nueva.
+- **El menú mira `--desde-lanzador` él mismo** y no se lo pregunta al
+  `Actualizador`: el de un ejecutable viejo, actualizado con el `.pck`, no
+  tendría una función nueva.
+- **El zip del lanzador de Linux no acaba en `_linux.zip`**
+  (`SectorCero_Lanzador_linux_vX.zip`): los juegos antiguos buscan el
+  archivo que acaba así para su ACTUALIZAR, y cogerían este.
+- **El robo de vida va en `DatosArma`** (`robo_vida`), con un tope por golpe
+  (`ROBO_MAXIMO` en `gestor_armas.gd`). Sin tope, metido en la horda, el
+  Espadachín se curaría del todo en cada golpe.
+
+### Problemas encontrados y cómo se resolvieron
+
+- **`--main-pack` no funciona en el juego exportado** («compiled without
+  support for path overrides»): se usó el `.pck` junto al ejecutable.
+- **Pantalla en blanco** en algunas pruebas, con errores de
+  `shader_gles3.cpp`. Primero se pensó en la caché de shaders de otra versión,
+  y se añadió borrarla al cambiar de versión. Pero se probó la v0.5 con la
+  caché de la v1.4 y abría bien: la estropeaba cerrar el juego a la fuerza en
+  las pruebas (`Stop-Process -Force`). Se quitó ese borrado.
+- **GitHub dejó de contestar** a mitad de las pruebas: solo deja 60 consultas
+  por hora a cada red, y en el instituto todos comparten la misma. El
+  lanzador guarda la última lista (`user://releases.json`), y las descargas
+  no cuentan para ese límite. El `Actualizador` del juego tiene el mismo
+  límite: en clase, el aviso de versión nueva puede no salir.
+- **Acentos rotos** en las novedades de las releases antiguas: se habían
+  estropeado al volver a publicarlas desde Windows. Se reescribieron con `gh
+  release edit --notes-file` y un fichero UTF-8.
+
+### Uso de IA
+
+Claude propuso el diseño del lanzador y de los jefes más duros. Programó el
+lanzador, el instalador, la Action, el robo de vida y el cambio de la horda,
+lo probó, escribió las novedades de las versiones y el prompt de los assets.
+Las decisiones son de Adam. Todo se hizo en la conversación principal, sin
+subagentes.
+
+### Métodos de test empleados
+
+- Headless: import y `--quit-after` del juego y del lanzador tras cada
+  cambio.
+- **El lanzador, exportado y con ventana** (clics simulados y capturas; una
+  carpeta de datos aparte para no tocar los récords):
+  - lista de la v0.2 a la v1.4
   - se baja la v1.4 al abrir y la v0.5 al elegirla
-  - JUGAR abre cada una con su menú de entonces
+  - JUGAR abre cada una con su menú de entonces (v0.2, v0.5, v0.9, v1.2 y
+    v1.4)
   - el lanzador se minimiza y vuelve al cerrar el juego
-- **Falta** (lista en `requisitos_y_estado.md`, punto 4):
-  1. el instalador
-  2. la Action
-  3. que el lanzador se actualice solo
-  4. quitar ACTUALIZAR y VERSIONES en el juego abierto desde el lanzador
-  5. las notas de las releases (las antiguas tienen los acentos rotos)
-  6. probarlo en Linux
+- **El parche del lanzador:** uno hecho a mano (v9.9) se carga; uno más viejo
+  que el ejecutable se borra.
+- **La lista guardada:** con GitHub sin contestar, el lanzador baja la
+  versión.
+- **El menú del juego**, normal y con `--desde-lanzador`: capturas.
+- **El instalador y la Action:** la publicación de la v1.5 y de la v1.6 (los
+  dos trabajos, bien a la primera).
+- **El robo de vida**, con un script temporal: con 6 enemigos alrededor cura
+  9,6 de vida en 2 s, frente a 0,7 sin ellos (la regeneración).
 
-- **Después, sin parar:**
-  - el juego abierto por el lanzador ya no enseña ACTUALIZAR ni VERSIONES
-  - el instalador (Inno Setup) y la Action, escritos pero sin probar
-  - el lanzador se actualiza solo
-  - la lista de versiones se guarda por si GitHub no contesta
+### Cómo probar el lanzador en Linux
 
-  El detalle está en `requisitos_y_estado.md`, punto 4. Dos decisiones:
-  - **El zip del lanzador de Linux no acaba en `_linux.zip`**
-    (`SectorCero_Lanzador_linux_vX.zip`): los juegos antiguos buscan en la
-    release el archivo que acaba así para su ACTUALIZAR, y cogerían este.
-  - **El menú mira `--desde-lanzador` él mismo** y no se lo pregunta al
-    `Actualizador`: el de un ejecutable viejo, actualizado con el `.pck`, no
-    tendría una función nueva.
-- **Problema: GitHub dejó de contestar** a mitad de las pruebas. Solo deja 60
-  consultas por hora a cada red, y en el instituto todos comparten la misma.
-  Por eso el lanzador guarda la última lista. Ojo: el `Actualizador` del
-  juego tiene el mismo límite (en clase, el aviso de versión nueva puede no
-  salir).
+Lo preguntó Adam:
 
-- **Publicadas la v1.5 y la v1.6** (Adam: «súbelo todo y cambia todo lo que
-  me has dicho»):
-  - las novedades de cada versión, en `documentacio/novedades/`, copiadas a
-    las releases con `gh release edit --notes-file` (con un fichero UTF-8 no
-    se rompen los acentos)
-  - el README, con el lanzador
-  - la Action (la de publicar y la de Windows del instalador) funcionó a la
-    primera
-  - en la v1.6, el acceso del menú de Linux lo pone el lanzador (antes lo
-    ponía el juego apuntando a sí mismo, y desde el menú se saltaba el
-    lanzador)
-- **Cómo probarlo en Linux** (lo preguntó Adam):
-  1. En un Linux con escritorio: un ordenador del instituto, una máquina
-     virtual con Ubuntu, o WSL en Windows 11 (abre ventanas).
-  2. Bajar `SectorCero_Lanzador_linux_vX.zip` de la última release,
-     descomprimirlo y, en la terminal, dentro de la carpeta:
-     `chmod +x SectorCero_Lanzador.x86_64 juego/SectorCero.x86_64` y
-     `./SectorCero_Lanzador.x86_64`.
-  3. Mirar:
-     - que salga la lista de versiones
-     - que al elegir una se baje y JUGAR la abra
-     - que al cerrar el juego vuelva el lanzador
-     - que en el menú de aplicaciones salga «Sector Cero» con su icono, y que
-       abra el lanzador
-     - que la ventana del juego tenga el icono en el dock
+1. En un Linux con escritorio: un ordenador del instituto, una máquina
+   virtual con Ubuntu, o WSL en Windows 11 (abre ventanas).
+2. Bajar `SectorCero_Lanzador_linux_vX.zip` de la última release y
+   descomprimirlo. En la terminal, dentro de la carpeta:
+   `chmod +x SectorCero_Lanzador.x86_64 juego/SectorCero.x86_64` y
+   `./SectorCero_Lanzador.x86_64`.
+3. Mirar:
+   - que salga la lista de versiones
+   - que al elegir una se baje y JUGAR la abra
+   - que al cerrar el juego vuelva el lanzador
+   - que en el menú de aplicaciones salga «Sector Cero» con su icono, y que
+     abra el lanzador
+   - que la ventana del juego tenga el icono en el dock
 
-- **Dificultad** (Adam: en difícil, pasado el minuto 10, es casi imposible).
-  El simulador lo confirma (0 de 10 en media y en difícil). Adam decidió:
-  - primero, jefes más duros: el del minuto 10 con más movimientos y NÚCLEO
-    CERO «casi imposible», con mucha más presión al llegar
-  - después, equilibrar para que el bot gane 7-8 de 10 en fácil, 4-5 en
-    media y 1 en difícil
+### Estado al cerrar
 
-  Apuntado en `requisitos_y_estado.md`, punto 2.
+Todo subido a GitHub. Publicada la v1.6, con el lanzador y su instalador. La
+horda más suave y el robo de vida están en `main`, sin publicar y sin medir
+con el simulador: se mide todo junto en el equilibrio final. Sin probar
+todavía: el instalador en un Windows de verdad, el lanzador en Linux y que el
+lanzador se actualice solo con la siguiente versión.
 
-- **Propuesta de jefes aprobada** (detalle en `requisitos_y_estado.md`, punto
-  2). Adam añadió dos cosas:
-  - el pisotón del jefe del minuto 10 encierra al jugador unos segundos
-    dentro del círculo
-  - el Espadachín roba vida, porque llega poco y pega poco
-- Adam pidió hacerlo por partes, empezando por lo más fácil. Hechas:
-  - menos horda en el minuto 10 (la aparición más rápida, cada 0,07 s; los
-    anillos del jefe, de 8 a 14)
-  - el robo de vida (10 % del daño, como mucho 3 por golpe). Probado en
-    headless: con 6 enemigos alrededor cura 9,6 en 2 s, sin ellos 0,7 (la
-    regeneración).
-- Sin publicar. Hasta que se haga el equilibrio final, el simulador no se ha
-  vuelto a pasar.
+### Siguiente paso
 
-- **Assets:**
-  - Adam está dibujando él mismo los assets para que las evoluciones se vean
-    en los personajes, y los pasará más adelante.
-  - Pidió un prompt para que Claude (chat) haga más assets. Está en
-    `prompt_assets.md`: seis lotes por prioridad, cada uno en un zip con
-    vistas previas y su `PROMPT_CLAUDE_CODE.md`, como el del jefe final.
-
-Horas: sin apuntar (preguntar a Adam).
+1. **Si Adam trae los assets de las mejoras de los personajes:** integrarlos
+   con su prompt (`requisitos_y_estado.md`, punto 1): primero un plan corto
+   y esperar su sí.
+2. Seguir con los jefes, en el orden del punto 3 de `requisitos_y_estado.md`:
+   - en media, que huya la mitad de la horda al llegar el jefe
+   - los movimientos del jefe del minuto 10
+   - NÚCLEO CERO más duro
+   - el equilibrio con el simulador
+3. **Probar con Adam:** el instalador en Windows y el lanzador en Linux (los
+   pasos, arriba).
