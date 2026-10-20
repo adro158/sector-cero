@@ -2905,4 +2905,18 @@ versiones, el vídeo y el ensayo de la defensa.
 
   Apuntado en `requisitos_y_estado.md`, punto 2.
 
+- **Propuesta de jefes aprobada** (detalle en `requisitos_y_estado.md`, punto
+  2). Adam añadió dos cosas:
+  - el pisotón del jefe del minuto 10 encierra al jugador unos segundos
+    dentro del círculo
+  - el Espadachín roba vida, porque llega poco y pega poco
+- Adam pidió hacerlo por partes, empezando por lo más fácil. Hechas:
+  - menos horda en el minuto 10 (la aparición más rápida, cada 0,07 s; los
+    anillos del jefe, de 8 a 14)
+  - el robo de vida (10 % del daño, como mucho 3 por golpe). Probado en
+    headless: con 6 enemigos alrededor cura 9,6 en 2 s, sin ellos 0,7 (la
+    regeneración).
+- Sin publicar. Hasta que se haga el equilibrio final, el simulador no se ha
+  vuelto a pasar.
+
 Horas: sin apuntar (preguntar a Adam).

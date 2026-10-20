@@ -112,30 +112,57 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      (v1.2) y lo de la v1.1 (horda animada, destellos, piernas, barra de
      experiencia).
 2. **Jefes más duros y después el equilibrio** (decisiones de Adam del 20/10,
-   sesión 16). En este orden:
-   1. **Antes de equilibrar, cambiar los jefes.** Jugando, a Adam los dos
-      jefes le parecen fáciles.
-      - **El del minuto 10:** tiene que ser más difícil, con más movimientos.
-        Ahora solo persigue, embiste (cada 6 s) e invoca anillos de horda
-        (cada 15 s).
-      - **NÚCLEO CERO (minuto 15):** «casi imposible», con mucha más presión
-        cuando llega.
-      - Antes de programar, Claude propone los ataques nuevos y Adam dice que
-        sí.
-   2. **Después, el equilibrio con el simulador** (10 partidas por
+   sesión 16). Adam aprobó todas las propuestas de Claude y añadió lo del
+   pisotón y el robo de vida. Por separado, de lo más fácil a lo más difícil:
+   1. **Hecho:** menos horda al final de la fase 1, que en el minuto 10 salía
+      demasiada. Como mucho una cada 0,07 s (unas 14 por segundo) en vez de
+      cada 0,05 (20), y los anillos del jefe de 8 a 14 enemigos en vez de 12
+      a 24.
+   2. **Hecho:** robo de vida del Espadachín. El Firewall y su evolución
+      curan un 10 % del daño hecho, como mucho 3 de vida por golpe
+      (`robo_vida` en `DatosArma`, `ROBO_MAXIMO` en `gestor_armas.gd`).
+      Probado.
+   3. **Falta:** en media, que la mitad de la horda huya cuando llega el
+      jefe (en difícil se queda toda).
+   4. **Falta, jefe del minuto 10, movimientos nuevos:**
+      - **Pisotón que encierra:** se para, marca un círculo rojo alrededor
+        (el anillo del rootkit) y a los 0,8 s el círculo se cierra. Durante
+        unos segundos no puedes salir de él y te quedas encerrado con el
+        jefe (petición de Adam).
+      - **Ráfaga de datos:** 12 proyectiles en círculo que se esquivan por
+        los huecos; en la segunda mitad de su vida, dos ráfagas giradas.
+      - **Embestida triple** (por debajo del 50 %): tres seguidas, cada una
+        con su aviso rojo corto.
+      - **Guardaespaldas:** una vez, al bajar del 50 %, llama a un rootkit
+        élite explosivo.
+      - **Rabia** (por debajo del 25 %): un 30 % más rápido y ataca más
+        seguido.
+   5. **Falta, NÚCLEO CERO, más duro sin más movimientos:**
+      - **Candados:** las anclas con mucha más vida (de 300 a unos 800, por
+        la dificultad). Si no se rompen las 4 en 12 s, las rotas se vuelven
+        a cerrar. Cada ancla solo recibe daño de una herramienta, marcada
+        con su color (morado el Mago, verde el Espadachín, rojo el Segador):
+        hay que ir cambiando de personaje.
+      - El escudo también cada 45 s en la forma 2, y cada 25 s en la 3 (ahora
+        35).
+      - Un 50 % más de vida; pausa entre ataques de 2, 1,4 y 0,9 s (ahora
+        2,5, 1,8 y 1,2).
+      - Presión al llegar: portales y tormenta enseguida, y en la forma 3
+        dos ataques a la vez.
+   6. **Al final, el equilibrio con el simulador** (10 partidas por
       dificultad). Objetivo de Adam:
       - fácil: **7-8 victorias de 10**
       - media: **4-5 de 10**
       - difícil: **1 de 10**
 
-      Ahora (16/10): fácil 5 (las otras 5 mueren en la fase 2); media 0 (5
-      contra el jefe, 4 al poco de empezar la fase 2); difícil 0. Con los
-      jefes más duros, el resto tendrá que dar más margen. Ideas:
+      Ahora (16/10, antes de estos cambios): fácil 5, media 0, difícil 0.
+      Ideas para dar margen si los jefes quedan muy duros:
       - unos segundos sin horda al volver la imagen
       - que la vida por minuto deje de subir a las 10:00
-      - que la horda de la fase 2 empiece más suave
       - curar un poco al matar al primer jefe
       - tocar los multiplicadores de `globales/dificultad.gd`
+
+      Después, volver a medir las tablas del F1 (`progreso_por_minuto.gd`).
 3. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
    probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
    y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El
