@@ -2919,4 +2919,11 @@ versiones, el vídeo y el ensayo de la defensa.
 - Sin publicar. Hasta que se haga el equilibrio final, el simulador no se ha
   vuelto a pasar.
 
+- **Assets:**
+  - Adam está dibujando él mismo los assets para que las evoluciones se vean
+    en los personajes, y los pasará más adelante.
+  - Pidió un prompt para que Claude (chat) haga más assets. Está en
+    `prompt_assets.md`: seis lotes por prioridad, cada uno en un zip con
+    vistas previas y su `PROMPT_CLAUDE_CODE.md`, como el del jefe final.
+
 Horas: sin apuntar (preguntar a Adam).

@@ -301,6 +301,22 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 10. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
    le pasa el script SQL y los pasos).
 11. Opcional: sustituir los sprites de IA por pixel art propio.
+12. **Assets nuevos** (20/10, sesión 16):
+    - **Las evoluciones, visibles en los personajes:** Adam está haciendo
+      los assets para que, al coger una evolución, se note en el personaje.
+      Los pasará con un prompt para Claude Code, cuando tenga tiempo.
+    - **Más assets con Claude (chat):** el prompt está en
+      `prompt_assets.md`, en seis lotes por prioridad:
+      1. los ataques nuevos del jefe del minuto 10
+      2. las anclas de NÚCLEO CERO por herramienta
+      3. los efectos de las herramientas y del robo de vida
+      4. la respuesta en la partida (subir de nivel, cambio de personaje,
+         curarse, muerte de la horda)
+      5. los élites
+      6. la interfaz y el lanzador
+
+      Cada lote llega en un zip con su `PROMPT_CLAUDE_CODE.md`, como el del
+      jefe final.
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
