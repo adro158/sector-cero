@@ -9,6 +9,7 @@ extends Control
 
 const Estilo := preload("res://estilo.gd")
 const Biblioteca := preload("res://biblioteca.gd")
+const IconoLinux := preload("res://icono_linux.gd")
 const ICONO := preload("res://icono.png")
 const AJUSTES := "user://lanzador.cfg"
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 	_vigilar.timeout.connect(_comprobar_partida)
 	add_child(_vigilar)
 	_construir()
+	IconoLinux.instalar()
 	_cargar_versiones()
 
 
@@ -188,6 +190,8 @@ func _comprobar_partida() -> void:
 	if OS.is_process_running(_partida):
 		return
 	_vigilar.stop()
+	# Por si el juego (una v1.4) ha cambiado el acceso del menú por el suyo.
+	IconoLinux.instalar()
 	get_window().mode = Window.MODE_WINDOWED
 	get_window().grab_focus()
 	_listo()

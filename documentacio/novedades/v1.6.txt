@@ -1,0 +1,1 @@
+- En Linux, el lanzador sale en el menú de aplicaciones con su icono, y la ventana del juego también lo tiene.

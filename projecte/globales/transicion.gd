@@ -38,8 +38,9 @@ func _ready() -> void:
 	elif OS.get_name() == "Linux":
 		DisplayServer.set_icon(load("res://medios/icono/icono.png").get_image())
 		# Solo en el juego exportado: desde el editor, el .desktop apuntaría
-		# al ejecutable de Godot.
-		if OS.has_feature("template"):
+		# al ejecutable de Godot. Tampoco si lo ha abierto el lanzador: el
+		# acceso del menú lo pone él, apuntando a sí mismo.
+		if OS.has_feature("template") and not "--desde-lanzador" in OS.get_cmdline_user_args():
 			IconoLinux.instalar()
 
 
