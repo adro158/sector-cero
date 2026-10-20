@@ -2,6 +2,10 @@ extends Node
 
 signal arma_disparada(indice: int)
 
+## Lo que más puede curar un golpe con robo de vida: sin tope, metido en la
+## horda, se curaría del todo en cada golpe.
+const ROBO_MAXIMO := 3.0
+
 @export var armas: Array[DatosArma] = []
 
 # Las mejoras se aplican como multiplicadores aquí y nunca modificando el .tres
@@ -16,10 +20,12 @@ var _jugador: Node2D
 var _objetivos: Array = []
 var _pool_proyectiles: Node2D
 var _resistencia_malware: Node
+var _salud: Salud
 
 
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
+	_salud = _jugador.get_node("Salud")
 	_pool_proyectiles = get_tree().get_first_node_in_group("pool_proyectiles")
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 	_tiempos.resize(armas.size())
@@ -64,6 +70,9 @@ func _atacar(arma: DatosArma) -> void:
 				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia)
 
 			_resistencia_malware.registrar_dano(arma, alcanzados * dano_final)
+			if arma.robo_vida > 0.0 and alcanzados > 0:
+				var robado := minf(alcanzados * dano_final * arma.robo_vida, ROBO_MAXIMO)
+				_salud.curar(robado / _salud.vida_maxima)
 		DatosArma.Tipo.PROYECTIL:
 			# El proyectil aplica la resistencia al impactar, no al salir: puede
 			# pasar un análisis mientras vuela.

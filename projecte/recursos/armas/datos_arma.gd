@@ -15,6 +15,12 @@ enum Tipo {
 ## con el que impactan.
 @export var radio: float = 90.0
 
+## Robo de vida: la parte del daño hecho que cura al personaje (0.1 es un
+## 10 %), con un tope por golpe (ROBO_MAXIMO en gestor_armas.gd). Solo en las
+## armas de área: lo tiene el Firewall del Espadachín, que llega poco y pega
+## poco, para que compense pegarse a la horda.
+@export var robo_vida: float = 0.0
+
 ## Nombre del efecto de medios/audio/ que suena cada vez que ataca.
 @export var sonido: String = "firewall"
 

@@ -10,3 +10,4 @@ dano = 7.5
 cadencia = 0.6
 radio = 110.0
 sonido = "firewall"
+robo_vida = 0.1

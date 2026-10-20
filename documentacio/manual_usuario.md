@@ -60,7 +60,7 @@ guardada para la próxima vez):
    entre cambios). Cada uno tiene su propia vida y los que esperan se curan
    poco a poco. Si cae el que llevas, el juego se pausa y eliges quién sigue;
    pierdes cuando caen los tres:
-   - **Espadachín · Firewall (120 de vida):** golpea todo lo que tienes alrededor.
+   - **Espadachín · Firewall (120 de vida):** golpea todo lo que tienes alrededor, y cada golpe le cura un poco (robo de vida).
    - **Mago · Ping (90 de vida):** un paquete que salta de un enemigo a otro, a
      distancia.
    - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.
