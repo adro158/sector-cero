@@ -107,6 +107,10 @@ func _crear_version(caja: VBoxContainer) -> void:
 	var versiones := EstiloInterfaz.boton("VERSIONES", func(): _versiones.abrir(), 180)
 	fila.add_child(_actualizar)
 	fila.add_child(versiones)
+	# Abierto desde el lanzador, las versiones las lleva él. Se mira el
+	# argumento aquí y no se le pregunta al Actualizador: el de un ejecutable
+	# viejo no tendría esa función.
+	fila.visible = not "--desde-lanzador" in OS.get_cmdline_user_args()
 	caja.add_child(fila)
 	_versiones = PanelVersiones.new()
 	_versiones.cerrado.connect(versiones.grab_focus)

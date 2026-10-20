@@ -252,9 +252,11 @@ func _pedir(url: String) -> Dictionary:
 	}
 
 
-## Solo en el juego exportado de escritorio (ver la cabecera).
+## Solo en el juego exportado de escritorio (ver la cabecera), y no si lo ha
+## abierto el lanzador (lanzador/): ahí las versiones las lleva él.
 func _activo() -> bool:
-	return OS.has_feature("template") and not OS.has_feature("web")
+	return OS.has_feature("template") and not OS.has_feature("web") \
+		and not "--desde-lanzador" in OS.get_cmdline_user_args()
 
 
 ## Si falla una consulta periódica se deja lo que ya se sabía: un corte de red
