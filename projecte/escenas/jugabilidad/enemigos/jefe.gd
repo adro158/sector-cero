@@ -43,8 +43,8 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 @export var duracion_invocacion: float = 1.0
 ## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
 ## sin ella.
-@export var invocados_minimo: int = 12
-@export var invocados_maximo: int = 24
+@export var invocados_minimo: int = 8
+@export var invocados_maximo: int = 14
 @export var radio_invocacion: float = 140.0
 @export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
