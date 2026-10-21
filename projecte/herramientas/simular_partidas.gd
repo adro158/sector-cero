@@ -61,6 +61,8 @@ const RADIO_RAFAGA := 80.0
 ## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
 ## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
 const MEJORAS_DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
+## Para saber de qué personaje es cada ancla del escudo del jefe final.
+const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
 
 var _partidas := 3
 var _partida := 0
@@ -199,7 +201,13 @@ func _paso() -> void:
 		_raiz._terminar_partida(false)
 		return
 
-	_cambiar_si_resiste()
+	# Con el escudo del jefe final, el personaje lo decide el ancla; si no, la
+	# resistencia.
+	var ancla := _ancla_a_romper(jefe_final)
+	if ancla != null:
+		_cambiar_a(Ancla.PERSONAJES[ancla.herramienta])
+	else:
+		_cambiar_si_resiste()
 	# La ulti, en cuanto está llena.
 	var ultis: Node = _jugador.get_node("Ultis")
 	if ultis.lista():
@@ -213,6 +221,19 @@ func _cambiar_si_resiste() -> void:
 	if _raiz.get_node("ResistenciaMalware").resistencia(arma) >= RESISTENCIA_PARA_CAMBIAR:
 		if _jugador.get_node("CambioPersonaje").cambiar():
 			_cambios += 1
+
+
+## Cambia hacia ese personaje por el camino más corto (con Q o con E). Si aún
+## hay que esperar para cambiar, lo vuelve a intentar en el siguiente paso.
+func _cambiar_a(personaje: DatosPersonaje) -> void:
+	var cambio: Node = _jugador.get_node("CambioPersonaje")
+	var actual: int = cambio.indice_actual()
+	var destino: int = cambio.personajes.find(personaje)
+	if destino == -1 or destino == actual or cambio._caidos[destino]:
+		return
+	var paso := 1 if posmod(destino - actual, cambio.personajes.size()) == 1 else -1
+	if cambio.cambiar(paso):
+		_cambios += 1
 
 
 func _mover_bot() -> void:
@@ -310,19 +331,36 @@ func _ataque_del_jefe_final(jefe_final: Node2D) -> String:
 
 
 ## A dónde ir con un jefe en juego: el jefe o, si el jefe final está dentro
-## de su escudo, el ancla sin romper más cercana. Vector2.INF si no hay jefe.
+## de su escudo, el ancla que toca romper. Vector2.INF si no hay jefe.
 func _jefe_al_que_ir(jefe: Node2D, jefe_final: Node2D) -> Vector2:
 	if jefe._activo:
 		return jefe.global_position
 	if not jefe_final.activo():
 		return Vector2.INF
-	if not jefe_final.get_node("Escudo").activo():
-		return jefe_final.global_position
-	var mejor := Vector2.INF
+	var ancla := _ancla_a_romper(jefe_final)
+	return ancla.global_position if ancla != null else jefe_final.global_position
+
+
+## Con el escudo del jefe final puesto, el ancla sin romper que toca: la más
+## cercana de las del personaje que lleva y, si no le queda ninguna, la más
+## cercana de las demás (y cambia a su personaje). null si no hay escudo. Hasta
+## el 22/10/2026 iba a la más cercana sin cambiar de personaje: cada ancla solo
+## la rompe su herramienta (desde la sesión 17), así que perdía siempre ahí.
+func _ancla_a_romper(jefe_final: Node) -> Node2D:
+	if not jefe_final.activo() or not jefe_final.get_node("Escudo").activo():
+		return null
+	var actual: DatosPersonaje = _jugador.get_node("CambioPersonaje").personaje_actual()
 	var posicion := _jugador.global_position
+	var mejor: Node2D = null
+	var mejor_es_suya := false
 	for ancla in jefe_final.get_node("Escudo").get_children():
-		if ancla._activa and (mejor == Vector2.INF or posicion.distance_to(ancla.global_position) < posicion.distance_to(mejor)):
-			mejor = ancla.global_position
+		if not ancla._activa:
+			continue
+		var es_suya: bool = Ancla.PERSONAJES[ancla.herramienta] == actual
+		var mas_cerca: bool = mejor == null or posicion.distance_to(ancla.global_position) < posicion.distance_to(mejor.global_position)
+		if mejor == null or (es_suya and not mejor_es_suya) or (es_suya == mejor_es_suya and mas_cerca):
+			mejor = ancla
+			mejor_es_suya = es_suya
 	return mejor
 
 
