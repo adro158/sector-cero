@@ -3266,10 +3266,63 @@ Claude Code en el ordenador de casa)
   sesión 16 (robo de vida y menos horda) y los seis lotes de la 17. La
   cabecera nueva llega al lanzador con su `lanzador_*.pck`.
 
+Después de publicar (todo esto va en `main`, no en la v1.7):
+
+- **Búsqueda de fallos** (pedida por Adam, que vio «97 / 96» en la ficha de un
+  enemigo). Revisado el código nuevo de la nube (jefe, jaula, ráfaga, escudo,
+  anclas, efectos, élites, audio, menú y lanzador). Dos fallos, los dos en la
+  ficha del enemigo:
+  - **La vida mayor que la máxima:** la actual se redondeaba hacia arriba y
+    la máxima al más cercano (96,4 salía «97 / 96»). Ahora las dos hacia
+    arriba, y en el panel del equipo y en la ventana de caída la máxima
+    también (antes se truncaba).
+  - **La resistencia de otra herramienta:** al evolucionar la de un
+    personaje que no se llevaba, la ficha pasaba a enseñar la resistencia a
+    esa evolución. Ahora solo escucha `personaje_cambiado`.
+- **El bot del simulador cambia de personaje para las anclas:** va a las del
+  personaje que lleva y, si no le queda ninguna, a la más cercana de otro y
+  cambia a él (con Q o E, por el camino más corto). Con el escudo no cambia
+  por la resistencia.
+- **El simulador puede empezar en un minuto** (`minuto=15` o `minuto=10`),
+  con el nivel y las mejoras del F1, para medir solo un jefe. Y apunta cada
+  vez que el escudo se levanta, se vuelve a cerrar o se rompe.
+- **El escudo de NÚCLEO CERO no se podía romper.** Con el bot ya cambiando,
+  en 9 partidas desde el minuto 15 se levantó de 7 a 13 veces por partida y
+  lo rompió una sola vez. Con un diagnóstico temporal se vio por qué: a
+  nivel 16 le quita a un ancla unos 40-60 de vida por segundo (cada una de
+  800 tardaba 15-19 s), más unos 2 s de camino entre anclas, y había que
+  romper tres en 12 s con dos cambios de personaje separados por los 10 s de
+  espera. Arreglado con lo que decidió Adam (abajo): ahora lo rompe a la
+  primera las dos veces que sale, y desde el minuto 15 gana 7 de 9 (3 de 3
+  en fácil, 2 de 3 en media y en difícil).
+- **Las victorias, medidas por primera vez desde el 16/10** (10 partidas por
+  dificultad, enteras, con todo lo anterior):
+
+  | | Fácil | Media | Difícil |
+  |---|---|---|---|
+  | Victorias | 4 | 0 | 0 |
+  | Llegan al jefe final | 10 | 9 | 4 |
+  | Objetivo de Adam | 7-8 | 4-5 | 1 |
+
+  - En fácil, las seis derrotas son en la última forma de NÚCLEO CERO.
+  - En media, al bot le caen 2 de los 3 personajes en cada partida; el que
+    queda tiene su herramienta con un 50 % de resistencia y se le acaba el
+    tiempo (240 s) contra el jefe final, con la vida casi llena.
+  - En difícil, 6 de 10 mueren contra el jefe del minuto 10.
+  - Antes de arreglar el escudo, las 30 se quedaban en el núcleo armado.
+
 ### Decisiones de Adam
 
 - Que Claude lo pruebe con capturas en vez de jugarlo él, y que publique la
   versión cuando se vea bien.
+- **Espadachín:** no se toca. Ya tiene robo de vida desde la v1.7 (Adam aún
+  no lo había jugado); si sigue flojo, se mira al equilibrar.
+- **Escudo de NÚCLEO CERO:** mientras está puesto, cambiar de personaje no
+  tiene espera (`sin_espera` en `cambio_personaje.gd`, que pone y quita el
+  escudo), y las anclas pasan a 300 de vida (la de antes de la sesión 17) con
+  30 s para romperlas (eran 800 y 12 s). Cada ancla sigue rompiéndola solo
+  su herramienta.
+- Empezar por enseñar al bot a cambiar de personaje y medir las victorias.
 
 ### Problemas encontrados y cómo se resolvieron
 
@@ -3288,12 +3341,22 @@ Claude Code en el ordenador de casa)
   cabecera nueva hasta la próxima release; los que se instalen con el zip de
   la v1.7 ya la traen. Arreglo, si se quiere: subir a la release una copia
   de su `lanzador_windows.pck` con el nombre `lanzador_linux.pck`.
+- **Precargar el script del ancla desde el simulador lo rompía:** con
+  `preload` en un script de `--script`, `ancla_escudo.gd` se compila antes que
+  los autoloads, no encuentra `BusEventos` y falla; entonces las armas daban
+  error al pegarle a un ancla y dejaban de hacer daño a mitad de cada ataque.
+  Las 30 partidas de ese commit (todas perdidas) no valen y se tiraron. El
+  personaje de cada ancla se lee ahora de su script ya cargado en la partida.
+  Lo mismo vale para cualquier herramienta: no precargar scripts que usen
+  autoloads.
 
 ### Uso de IA
 
 Claude Code integró la rama, escribió la instrumentación temporal (borrada),
 hizo y revisó las capturas, arregló la ventana de caída, midió el rendimiento
-y publicó la versión. Sin subagentes.
+y publicó la versión. Después buscó y arregló los fallos de la ficha, enseñó
+al bot a cambiar de personaje, midió con el simulador y propuso los cambios
+del escudo, que decidió Adam. Sin subagentes.
 
 ### Métodos de test empleados
 
@@ -3302,12 +3365,20 @@ y publicó la versión. Sin subagentes.
 - Con ventana: 26 capturas con un script temporal y otra de la ventana de
   caída tras el arreglo.
 - `medir_rendimiento.gd`, fase 1 y fase 2.
+- Simulador, siempre en una copia aparte (`git worktree`) fijada en el commit
+  medido: 30 partidas enteras antes y después del arreglo del escudo, y 9
+  desde el minuto 15 con cada versión del escudo (800 y 12 s; sin espera;
+  300 y 30 s).
 
 ### Siguiente paso
 
-1. **Adam, jugando:** sobre todo el sonido (pisotón, ráfaga, rabia), si la
-   jaula y el escudo se entienden, y si la ráfaga hay que dibujarla a x2.
-2. **Enseñar al bot a cambiar de personaje** para las anclas y después las
-   simulaciones (sesión 17, punto 4).
+1. **Adam, jugando** (con lo de `main`, o con la próxima versión): el sonido
+   (pisotón, ráfaga, rabia), si la jaula y el escudo se entienden, el
+   escudo con el cambio sin espera, el Espadachín con el robo de vida y si la
+   ráfaga hay que dibujarla a x2.
+2. **Equilibrio**, hacia el objetivo (fácil 7-8, media 4-5, difícil 1 de 10).
+   Lo que dicen las partidas: en media, los dos personajes que caen antes del
+   jefe final (hay que ver dónde); en difícil, el jefe del minuto 10; en
+   fácil, la última forma de NÚCLEO CERO. Para decidir con Adam qué se toca primero.
 3. Lo de decidir con Adam (sesión 17, punto 5) y `armas_evolucionadas.zip`
    (punto 6).

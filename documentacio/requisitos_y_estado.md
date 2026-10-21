@@ -100,8 +100,6 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    - **que Adam lo pruebe jugando** (la lista, en la bitácora, sesión 17,
      «Siguiente paso», punto 2): sobre todo cómo suena y si la ráfaga del
      jefe, que se ve pequeña, hay que dibujarla a x2
-   - **enseñar al bot a cambiar de personaje** para las anclas antes de
-     simular (punto 3.6)
    - lo que hay que decidir con Adam (bitácora, sesión 17, punto 5)
 1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
    siguiente que se hace). Adam está dibujando los assets para que, cuando
@@ -171,7 +169,9 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
         seguido.
    5. **NÚCLEO CERO, más duro sin más movimientos.** **Hechos** el 21/10
       en la nube (lote 2, sesión 17) los candados: una herramienta por
-      ancla, 800 de vida y el cierre a los 12 s. **Faltan** el escudo más
+      ancla y el cierre. El 22/10 (sesión 18), como el bot no los rompía,
+      Adam los dejó en 300 de vida, 30 s para romperlos y cambio de personaje
+      sin espera mientras está el escudo. **Faltan** el escudo más
       seguido, más vida y menos pausa, y la presión al llegar. Lo que se
       pidió:
       - **Candados:** las anclas con mucha más vida (de 300 a unos 800, por
@@ -191,7 +191,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       - media: **4-5 de 10**
       - difícil: **1 de 10**
 
-      Ahora (16/10, antes de estos cambios): fácil 5, media 0, difícil 0.
+      El 16/10: fácil 5, media 0, difícil 0. **El 22/10** (sesión 18, con el
+      bot cambiando de personaje para las anclas): **fácil 4, media 0,
+      difícil 0**. Llegan al jefe final 10, 9 y 4 de 10. En media al bot le
+      caen dos personajes antes del jefe final y al que queda, con un
+      50 % de resistencia, no le da tiempo contra NÚCLEO CERO; en difícil, 6
+      de 10 mueren contra el jefe del minuto 10.
       Ideas para dar margen si los jefes quedan muy duros:
       - unos segundos sin horda al volver la imagen
       - que la vida por minuto deje de subir a las 10:00
