@@ -120,6 +120,21 @@ morado del jefe. Las piernas del jugador y del jefe avanzan en proporción a la
 velocidad a la que se mueven de verdad (con la mejora de velocidad, en el aura
 lenta o embistiendo), para que los pies no patinen.
 
+**Los efectos de las herramientas.** Desde el 21/10 el alcance de las armas
+de área es un anillo dibujado en grises que `aura_arma.gd` tiñe de cian a
+rojo según la resistencia (antes era un círculo hecho por código), y en cada
+ataque sale encima su efecto en su color: el golpe del Firewall y el pulso
+de radar del Escáner, y los de sus evoluciones. Cada arma lleva sus dibujos
+en su `DatosArma` (efecto, fotogramas, tiempo, anillo y el radio al que están
+dibujados), así que no hay que elegirlos por el nombre; con la mejora de
+alcance se escalan (radio de verdad / radio del dibujo). El aura va detrás
+del jugador (`show_behind_parent`), debajo de él y de la horda. El Ping saca
+un destello donde impacta o rebota (`pool_proyectiles.gd`). Con el robo de
+vida salen chispas verdes de los enemigos alcanzados al Espadachín: como
+`danar_en_area` solo dice a cuántos alcanza, la posición la da
+`mas_cercano` de cada objetivo alcanzado (como mucho 5 por golpe). Van en un
+hijo del aura con `z_index` 4, encima de la horda.
+
 **La explosión del rootkit.** Un élite explosivo avisa 0,8 s antes de
 estallar: en su `_draw` se agrieta y se pone al rojo (6 fotogramas según lo
 que queda de aviso), tiembla cada vez más y un anillo de peligro gira en el

@@ -21,6 +21,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Jefe final NÚCLEO CERO (formas, transformación, muerte, ataques, escudo, hielo y barra de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
 | Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
+| Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -127,6 +128,12 @@ scripts no forman parte del repositorio.
   escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el
   candado (un cristal el Mago, una espada el Espadachín y una guadaña el
   Segador). Con ellas vino el cambio del dibujo, que sirvió de referencia.
+- **Efectos de las herramientas** (`medios/sprites/herramientas/`,
+  21/10/2026, de la misma forma; lote 3): el golpe del Firewall y del
+  Firewall perimetral (rejilla de hexágonos y llamas), el pulso de radar del
+  Escáner y del Análisis heurístico, el anillo de alcance de cada uno en
+  grises, el destello del impacto del Ping y la chispa del robo de vida. Con
+  ellos vino el cambio probado del dibujo, que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores
