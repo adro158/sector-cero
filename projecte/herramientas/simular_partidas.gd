@@ -2,20 +2,20 @@ extends SceneTree
 
 ## Herramienta de testeo, no forma parte del juego: juega partidas enteras sin
 ## nadie delante para medir el balance. Un bot huye de los enemigos cercanos,
-## de los élites, de los jefes y del hielo, va a por el corazón y el cofre que
-## sueltan los élites (y acepta lo que toque en la ruleta), recoge los
-## fragmentos de datos cuando no hay peligro (desde el 16/10/2026: antes se le
-## caducaban y subía menos de nivel que una persona), da vueltas si no hay
-## nada que hacer, elige mejoras como un jugador (la evolución si sale y, si
-## no, una de ataque si la hay) y cambia de personaje cuando el malware se ha
-## hecho resistente a su herramienta. Con un jefe en juego va a por él, y si
-## el jefe final está encerrado en su escudo, a por las anclas. Cada minuto de
-## partida (y al pasar a la fase 2) anota vida, nivel, mejoras, enemigos (en
-## total y por tipo), herramienta y resistencias, y al final resume
-## victorias, hasta dónde llega, duración media, cambios de personaje, cofres
-## recogidos, personajes caídos, ultis lanzadas y eliminados por tipo. Cuando
-## cae el personaje activo, sigue con el que tenga más vida, y lanza la ulti en
-## cuanto la tiene llena.
+## de los élites, de los jefes, del hielo y de la ráfaga del jefe, va a por el
+## corazón y el cofre que sueltan los élites (y acepta lo que toque en la
+## ruleta), recoge los fragmentos de datos cuando no hay peligro (desde el
+## 16/10/2026: antes se le caducaban y subía menos de nivel que una persona),
+## da vueltas si no hay nada que hacer, elige mejoras como un jugador (la
+## evolución si sale y, si no, una de ataque si la hay) y cambia de personaje
+## cuando el malware se ha hecho resistente a su herramienta. Con un jefe en
+## juego va a por él, y si el jefe final está encerrado en su escudo, a por las
+## anclas. Cada minuto de partida (y al pasar a la fase 2) anota vida, nivel,
+## mejoras, enemigos (en total y por tipo), herramienta y resistencias, y al
+## final resume victorias, hasta dónde llega, duración media, cambios de
+## personaje, cofres recogidos, personajes caídos, ultis lanzadas y eliminados
+## por tipo. Cuando cae el personaje activo, sigue con el que tenga más vida, y
+## lanza la ulti en cuanto la tiene llena.
 ##
 ## Uso, desde la carpeta projecte/ (--fixed-fps 60 hace que cada fotograma
 ## avance 1/60 s sin esperar al reloj real, así que va mucho más rápido):
@@ -54,6 +54,9 @@ const RADIO_FRAGMENTOS := 400.0
 const RADIO_HIELO := 90.0
 ## Durante el torbellino del jefe final (radio 170) se queda más lejos que esto.
 const RADIO_TORBELLINO := 200.0
+## Se aparta de los proyectiles de la ráfaga del jefe que le vienen encima y
+## están más cerca que esto.
+const RADIO_RAFAGA := 80.0
 ## Las mejoras que prefiere el bot. Hasta el 02/10/2026 elegía al azar, pero
 ## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
 ## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
@@ -246,6 +249,16 @@ func _mover_bot() -> void:
 		var diferencia: Vector2 = posicion - zona
 		if diferencia.length() > 0.0 and diferencia.length() < RADIO_HIELO:
 			huida += diferencia / diferencia.length_squared() * 6.0
+
+	# De la ráfaga del jefe se aparta de lado, como una persona que busca el
+	# hueco: hacia el lado de la trayectoria del proyectil en el que ya está.
+	for proyectil in _raiz.get_node("Jefe/Rafaga")._proyectiles:
+		var diferencia: Vector2 = posicion - proyectil[0]
+		if diferencia.length() > 0.0 and diferencia.length() < RADIO_RAFAGA and diferencia.dot(proyectil[1]) > 0.0:
+			var lado: Vector2 = proyectil[1].orthogonal()
+			if diferencia.dot(lado) < 0.0:
+				lado = -lado
+			huida += lado / diferencia.length() * 6.0
 
 	# El mapa no tiene bordes: sin peligro cerca, da vueltas alrededor del
 	# origen para no alejarse sin fin.
