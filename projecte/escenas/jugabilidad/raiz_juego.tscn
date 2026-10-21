@@ -110,6 +110,7 @@ pool_mejoras = ExtResource("7_pool_mejoras")
 script = ExtResource("25_premios")
 
 [node name="PoolProyectiles" type="Node2D" parent="." groups=["pool_proyectiles"]]
+texture_filter = 1
 script = ExtResource("14_proyectiles")
 textura = ExtResource("24_proyectil")
 

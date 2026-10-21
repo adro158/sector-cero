@@ -7,6 +7,12 @@ const MAXIMO_PROYECTILES := 200
 ## lugar de saltar al siguiente.
 const ESPERA_TRAS_IMPACTO := 0.08
 
+## Destello morado donde impacta o rebota: 4 fotogramas de 24x24.
+const IMPACTO := preload("res://medios/sprites/herramientas/ping_impacto.png")
+const LADO_IMPACTO := 24.0
+const FOTOGRAMAS_IMPACTO := 4
+const SEGUNDOS_POR_FOTOGRAMA_IMPACTO := 0.05
+
 ## Sprite del proyectil, apuntando a la derecha: se gira hacia donde va.
 @export var textura: Texture2D
 @export var tamano: Vector2 = Vector2(24, 12)
@@ -25,6 +31,8 @@ var _armas: Array[DatosArma] = []
 var _activos := 0
 var _objetivos: Array = []
 var _resistencia_malware: Node
+## Cada destello: [posición, segundos desde el impacto].
+var _impactos: Array = []
 
 @onready var _malla: MultiMeshInstance2D = $Proyectiles
 
@@ -116,6 +124,7 @@ func _impactar(indice: int) -> bool:
 	if alcanzados == 0:
 		return false
 
+	_impactos.append([_posiciones[indice], 0.0])
 	_resistencia_malware.registrar_dano(arma, alcanzados * dano)
 
 	if _rebotes[indice] <= 0:
@@ -170,3 +179,21 @@ func _volcar_al_multimesh() -> void:
 		multimesh.set_instance_transform_2d(i, Transform2D(_direcciones[i].angle(), Vector2(1.0, -1.0), 0.0, _posiciones[i]))
 
 	multimesh.visible_instance_count = _activos
+
+
+## Con el juego en pausa no se llama: los destellos se quedan quietos.
+func _process(delta: float) -> void:
+	if _impactos.is_empty():
+		return
+	for impacto in _impactos:
+		impacto[1] += delta
+	var dura := FOTOGRAMAS_IMPACTO * SEGUNDOS_POR_FOTOGRAMA_IMPACTO
+	_impactos = _impactos.filter(func(impacto): return impacto[1] < dura)
+	queue_redraw()
+
+
+func _draw() -> void:
+	var lado := Vector2(LADO_IMPACTO, LADO_IMPACTO)
+	for impacto in _impactos:
+		var fotograma := int(impacto[1] / SEGUNDOS_POR_FOTOGRAMA_IMPACTO)
+		draw_texture_rect_region(IMPACTO, Rect2(impacto[0] - lado / 2.0, lado), Rect2(Vector2(fotograma * LADO_IMPACTO, 0.0), lado))
