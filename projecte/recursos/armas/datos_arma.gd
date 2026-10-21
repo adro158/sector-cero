@@ -24,6 +24,18 @@ enum Tipo {
 ## Nombre del efecto de medios/audio/ que suena cada vez que ataca.
 @export var sonido: String = "firewall"
 
+@export_group("Solo armas de área")
+## El golpe o el pulso que se dibuja en cada ataque, en su color: una tira
+## horizontal de fotogramas cuadrados (aura_arma.gd).
+@export var efecto: Texture2D
+@export var fotogramas_efecto: int = 6
+@export var segundos_por_fotograma: float = 0.05
+## El alcance, en grises: el juego lo tiñe según la resistencia del malware.
+@export var anillo: Texture2D
+## El radio al que están dibujados el efecto y el anillo. Con la mejora de
+## alcance se escalan: radio de verdad / radio del dibujo.
+@export var radio_dibujo: float = 110.0
+
 @export_group("Solo proyectiles")
 @export var velocidad_proyectil: float = 420.0
 

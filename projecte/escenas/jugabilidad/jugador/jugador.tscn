@@ -44,6 +44,8 @@ script = ExtResource("3_armas")
 armas = Array[ExtResource("5_datos_arma")]([ExtResource("4_firewall")])
 
 [node name="AuraArma" type="Node2D" parent="."]
+show_behind_parent = true
+texture_filter = 1
 script = ExtResource("6_aura")
 
 [node name="BarraVida" type="Node2D" parent="."]
