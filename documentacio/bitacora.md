@@ -3020,8 +3020,17 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   lleva); las demás sacan un 0 rojo. Reparto a-b-c-b, sin personajes caídos
   (si cae uno con el escudo puesto, sus anclas pasan a otro). Vida de 300 a
   800. Si en 12 s desde la primera rota no caen las cuatro, se cierran.
+- **Lote 3, efectos de las herramientas:** el alcance de las armas de área
+  es un anillo en grises teñido por la resistencia (antes, un círculo por
+  código), y en cada ataque sale su efecto (golpe del Firewall, radar del
+  Escáner y los de sus evoluciones), escalado con la mejora de alcance. El
+  Ping saca un destello al impactar y el robo de vida, chispas verdes de los
+  enemigos alcanzados al Espadachín.
+- **Arreglo del lote 2:** un ancla ajena contaba como alcanzada (curaba con
+  el robo de vida y la resistencia lo tomaba por daño). Ahora no, y el 0 sale
+  como mucho cada 0,3 s.
 - Panel de reglas, manual, README, documentación técnica y créditos al día
-  con los dos lotes.
+  con los tres lotes.
 
 ### Decisiones de Adam
 
@@ -3048,6 +3057,13 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   del personaje también valen, sin tocar las armas.
 - **El 0 rojo** es el número de daño de siempre con resistencia 1: el rojo
   que ya significa "el malware resiste". Sin código nuevo en los números.
+- **Los dibujos de cada arma van en su `DatosArma`** (exports nuevos, sin
+  clases nuevas), no en un diccionario por nombre: más robusto, y la
+  evolución trae los suyos sin código.
+- **Las chispas del robo de vida salen de `mas_cercano`** de cada objetivo
+  alcanzado: da la posición de un enemigo de verdad sin cambiar
+  `danar_en_area` en los cinco tipos de objetivo. Van en un hijo del aura
+  con `z_index` 4 para quedar encima de la horda, porque el aura va debajo.
 
 ### Problemas encontrados y cómo se resolvieron
 
@@ -3091,7 +3107,12 @@ son de Adam. Sin subagentes.
   (todo se congela); el jefe muere con jaula y ráfaga (desaparecen); las
   cuatro anclas con su color, el Firewall contra un ancla ajena (0, sin
   perder vida) y contra la suya (pierde vida), tres rotas, cerradas a los
-  12 s justos y el reparto sin el Mago caído.
+  12 s justos y el reparto sin el Mago caído; el golpe del Firewall y el
+  Firewall perimetral, el Escáner y el Análisis heurístico, el anillo rojo
+  con la resistencia al 50 % y a x1,3 con Ampliar subred tres veces, la pausa
+  a mitad del pulso (se congela), las chispas (3, de enemigos de verdad) y
+  el destello del Ping.
+- Una partida entera del simulador, solo para ver que no hay errores.
 - Sin simulaciones: Adam las deja para más adelante.
 
 ### Lo que queda (para el Claude Code del ordenador)
@@ -3103,11 +3124,13 @@ son de Adam. Sin subagentes.
 3. **Simulaciones** (10 partidas por dificultad) con el jefe nuevo y las
    anclas, comparadas con el objetivo (7-8, 4-5 y 1 de 10). Sin medir
    todavía tampoco lo de la sesión 16 (horda más suave y robo de vida).
-4. **Probar jugando** el jefe del minuto 10 y el escudo.
+4. **Probar jugando** el jefe del minuto 10, el escudo y los efectos de
+   las herramientas. **Medir el rendimiento en casa** con
+   `herramientas/medir_rendimiento.gd`: el Firewall ataca cada 0,5-0,6 s y
+   puede haber muchos impactos del Ping.
 5. **Para decidir con Adam:**
    - el proyectil de la ráfaga se ve pequeño (16x16)
    - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script
-6. Los lotes que faltan: 3 (herramientas), 4 (efectos), 5 (élites), 6
-   (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
+6. Los lotes que faltan: 4 (efectos), 5 (élites), 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
    el primero; por decidir cuándo).
 7. Al cerrar: las horas de esta sesión.
