@@ -78,8 +78,9 @@ func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 		"jefe":
 			estallido(posicion, Color(0.75, 0.3, 1.0), 160, 520.0)
 		_:
-			# El élite tiene datos, como la horda, pero estalla más grande.
-			var cantidad := 50 if tipo == "elite" else 7
+			# El élite tiene datos, como la horda, pero estalla más grande. La
+			# horda suelta pocas: su muerte ya se dibuja (muertes_horda.gd).
+			var cantidad := 50 if tipo == "elite" else 3
 			estallido(posicion, _color_por_tipo.get(tipo, Color.WHITE), cantidad, 200.0 + cantidad * 3.0)
 
 

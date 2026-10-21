@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe_final.tscn" id="28_jefe_final"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/zonas_hielo.gd" id="29_hielo"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/jaula_jefe.gd" id="30_jaula"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/efectos/muertes_horda.gd" id="31_muertes"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -115,6 +116,11 @@ script = ExtResource("14_proyectiles")
 textura = ExtResource("24_proyectil")
 
 [node name="Proyectiles" type="MultiMeshInstance2D" parent="PoolProyectiles"]
+
+[node name="MuertesHorda" type="Node2D" parent="."]
+z_index = 4
+texture_filter = 1
+script = ExtResource("31_muertes")
 
 [node name="PoolParticulas" type="Node2D" parent="."]
 z_index = 5
