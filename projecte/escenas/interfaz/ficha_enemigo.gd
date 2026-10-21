@@ -66,8 +66,9 @@ func _ready() -> void:
 	textos.add_child(EstiloInterfaz.etiqueta("Click derecho: cerrar", 11, EstiloInterfaz.TEXTO_SUAVE))
 
 	visible = false
+	# Solo la del personaje activo: si evoluciona la suya, también llega por
+	# aquí. arma_evolucionada no vale, porque llega aunque sea de otro.
 	BusEventos.personaje_cambiado.connect(func(_actual, arma, _siguiente, _espera): _arma = arma)
-	BusEventos.arma_evolucionada.connect(func(arma): _arma = arma)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
