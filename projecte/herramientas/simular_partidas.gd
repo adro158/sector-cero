@@ -174,8 +174,9 @@ func _elegir(mejora: DatosMejora) -> void:
 
 
 ## Cuando cae el personaje activo, sigue el que tenga más vida.
-func _al_caer_personaje(personajes: Array, _caido: int) -> void:
+func _al_caer_personaje(personajes: Array, caido: int) -> void:
 	_caidas += 1
+	print("  cae %s (t=%.0fs, %s)" % [personajes[caido].personaje.nombre, _raiz.get_node("DirectorOleadas").tiempo(), _donde()])
 	var mejor := -1
 	for i in personajes.size():
 		if not personajes[i].caido and (mejor == -1 or personajes[i].vida > personajes[mejor].vida):
@@ -450,22 +451,22 @@ func _al_terminar(estadisticas: Dictionary) -> void:
 	if estadisticas.victoria:
 		_victorias += 1
 	_duraciones.append(estadisticas.tiempo)
-	# Hasta dónde ha llegado: fase 1, jefe, fase 2 o jefe final (y en qué forma).
-	var director: Node = _raiz.get_node("DirectorOleadas")
-	var jefe_final: Node = _raiz.get_node("JefeFinal")
-	var donde := "fase 1"
-	if estadisticas.victoria:
-		donde = "jefe final derrotado"
-	elif _raiz.get_node("Jefe")._activo:
-		donde = "jefe"
-	elif jefe_final.visible:
-		donde = "jefe final (%s)" % ["rootkit gigante", "núcleo armado", "amalgama"][jefe_final.forma()]
-	elif director.fase() == 2:
-		donde = "fase 2"
 	print("RESULTADO %s tiempo=%.0fs nivel=%d eliminados=%d donde=%s" % [
 		"VICTORIA" if estadisticas.victoria else "DERROTA", estadisticas.tiempo,
-		estadisticas.nivel, estadisticas.eliminados, donde])
+		estadisticas.nivel, estadisticas.eliminados, "jefe final derrotado" if estadisticas.victoria else _donde()])
 	_siguiente.call_deferred()
+
+
+## Por dónde va la partida: fase 1, jefe, fase 2 o jefe final (y en qué forma).
+func _donde() -> String:
+	var jefe_final: Node = _raiz.get_node("JefeFinal")
+	if _raiz.get_node("Jefe")._activo:
+		return "jefe"
+	if jefe_final.visible:
+		return "jefe final (%s)" % ["rootkit gigante", "núcleo armado", "amalgama"][jefe_final.forma()]
+	if _raiz.get_node("DirectorOleadas").fase() == 2:
+		return "fase 2"
+	return "fase 1"
 
 
 func _siguiente() -> void:
