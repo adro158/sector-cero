@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 21/10/2026** contra la bitácora (hasta la sesión 17) y
+**Estado verificado el 22/10/2026** contra la bitácora (hasta la sesión 18) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.6 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.7 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.6 publicada el 20/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.7 publicada el 22/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -93,17 +93,16 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **Integrar en `main` lo hecho en la nube** (21/10, sesión 17). Los pasos
-   exactos, las pruebas y todo lo que queda, en la bitácora, sesión 17,
-   «Siguiente paso».
-   Está en la rama `claude/beautiful-maxwell-uijhtj`: los lotes de assets 1
-   (ataques del jefe del minuto 10), 2 (anclas por personaje), 3 (efectos
-   de las herramientas), 4 (efectos de subir de nivel, cambio, curarse y
-   muerte de la horda), 5 (élites) y 6 (interfaz y lanzador). La cabecera
-   del lanzador llega a los jugadores con el `lanzador_*.pck` de la próxima
-   versión que se publique. Falta probarlo todo jugando, medir el
-   rendimiento en casa y enseñar al bot a cambiar de personaje para las
-   anclas antes de simular.
+0. **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18,
+   21-22/10). Los seis lotes de la sesión 17 se integraron sin conflictos,
+   se validaron cargando la partida, se miraron con capturas con ventana y
+   se midió el rendimiento en casa (bitácora, sesión 18). Falta:
+   - **que Adam lo pruebe jugando** (la lista, en la bitácora, sesión 17,
+     «Siguiente paso», punto 2): sobre todo cómo suena y si la ráfaga del
+     jefe, que se ve pequeña, hay que dibujarla a x2
+   - **enseñar al bot a cambiar de personaje** para las anclas antes de
+     simular (punto 3.6)
+   - lo que hay que decidir con Adam (bitácora, sesión 17, punto 5)
 1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
    siguiente que se hace). Adam está dibujando los assets para que, cuando
    los tres personajes cogen las mejoras, se note también en el personaje. Los

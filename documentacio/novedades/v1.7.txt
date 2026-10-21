@@ -1,0 +1,6 @@
+- El jefe del minuto 10 tiene ataques nuevos: un pisotón que te encierra con él en una jaula, una ráfaga de datos que se esquiva por los huecos y, con poca vida, la rabia.
+- El escudo de NÚCLEO CERO es un candado: cada ancla solo la rompe la herramienta de su color, así que hay que ir cambiando de personaje. Si no caen las cuatro en 12 s, se vuelven a cerrar.
+- El Firewall del Espadachín roba vida, y al final de la fase 1 sale algo menos de horda.
+- Efectos nuevos: el alcance y el golpe de cada herramienta, subir de nivel, cambiar de personaje, curarse y la muerte de cada enemigo.
+- Los élites están animados y cada afijo se ve encima del élite.
+- Logo nuevo en el menú, retratos de los personajes en el equipo y al caer, iconos de mejora rehechos y cabecera nueva en el lanzador.

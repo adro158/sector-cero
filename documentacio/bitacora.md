@@ -3223,3 +3223,84 @@ Por orden. Lo que dice «con Adam» se le pregunta antes.
 7. **La cabecera del lanzador** llega a los jugadores con el
    `lanzador_*.pck` de la próxima versión que se publique (solo cuando Adam
    lo pida).
+
+---
+
+## Sesión 18 — 21-22/10/2026 (en casa)
+
+**Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
+Claude Code en el ordenador de casa)
+
+### Qué se ha hecho
+
+- **Integrada en `main` la rama de la nube** (`claude/beautiful-maxwell-uijhtj`,
+  sesión 17): avance rápido, sin conflictos y sin ficheros de Alan. Siguen
+  siendo 16 clases globales y `project.godot` no cambia:
+  `EJECUTABLE_MINIMO` sigue en 0.2.
+- **Validada como pide la sesión 17:** import y `--quit-after` del juego y del
+  lanzador sin errores, y una partida cargada en headless con un script
+  temporal que salta al jefe del minuto 10 (pisotón 3 veces, ráfaga 8 y
+  rabia), lo mata, pasa a la fase 2, salta a NÚCLEO CERO, recorre sus tres
+  formas con el escudo y lo mata: victoria y ningún error. Al salir, solo el
+  aviso conocido de los sonidos que siguen sonando.
+- **Mirado con capturas con ventana** en la RTX 5070 (a petición de Adam,
+  «pruébalo tú a ver si se ve bien»): las tres herramientas con su alcance y
+  su golpe, el efecto del cambio de personaje, el panel del equipo con los
+  retratos, subir de nivel, el corazón, los élites con sus afijos, la horda
+  del minuto 9, el jefe del minuto 10 (aviso del pisotón, jaula, ráfaga y
+  rabia), la fase 2, NÚCLEO CERO con el escudo y las anclas de colores (y el
+  0 rojo en la ajena), la ventana de caída, el menú con el logo, las reglas
+  y el lanzador con la cabecera. Todo se ve bien salvo lo de abajo.
+- **Arreglo:** en la ventana de caída, con el retrato nuevo, el nombre de
+  una evolución larga («Análisis heurístico») llegaba al borde del botón.
+  Botones más anchos (640) y alineados a la izquierda, con los retratos en
+  columna.
+- **Rendimiento medido** (`medir_rendimiento.gd`, con ventana, RTX 5070),
+  con 100, 300, 600 y 1200 enemigos:
+  - fase 1: 1436, 946, 600 y 214 FPS (igual que el 16/10)
+  - fase 2 con NÚCLEO CERO: 1246, 777, 524 y 160 FPS (el 16/10, 1234,
+    835, 545 y 202). Con 1200 baja algo y el peor paso de física llega a
+    18,9 ms, pero la partida nunca tiene tantos a la vez.
+- **Publicada la v1.7** (a petición de Adam, «cuando esté, sube el juego»),
+  con las novedades en `documentacio/novedades/v1.7.txt`. Lleva lo de la
+  sesión 16 (robo de vida y menos horda) y los seis lotes de la 17. La
+  cabecera nueva llega al lanzador con su `lanzador_*.pck`.
+
+### Decisiones de Adam
+
+- Que Claude lo pruebe con capturas en vez de jugarlo él, y que publique la
+  versión cuando se vea bien.
+
+### Problemas encontrados y cómo se resolvieron
+
+- **El jefe del minuto 10 sale casi blanco** en algunas capturas: es el
+  destello de recibir golpes (v1.1), que con el Firewall pegándole sin parar
+  se ve casi siempre. No es nuevo; anotado para mirarlo jugando.
+- **La ráfaga del jefe se ve pequeña** (16x16): se distingue, pero cuesta.
+  Queda para decidir con Adam si se dibuja a x2 (sesión 17, punto 5).
+- **El fichero de opciones del jugador cambió** durante la sesión (volumen de
+  efectos y avisar de versiones): son opciones que solo se tocan a mano desde
+  el panel de opciones, no las pruebas. Los récords y el ranking, intactos.
+
+### Uso de IA
+
+Claude Code integró la rama, escribió la instrumentación temporal (borrada),
+hizo y revisó las capturas, arregló la ventana de caída, midió el rendimiento
+y publicó la versión. Sin subagentes.
+
+### Métodos de test empleados
+
+- Headless: import y `--quit-after` del juego y del lanzador, y la partida
+  cargada con un script temporal (de 10:00 a la victoria).
+- Con ventana: 26 capturas con un script temporal y otra de la ventana de
+  caída tras el arreglo.
+- `medir_rendimiento.gd`, fase 1 y fase 2.
+
+### Siguiente paso
+
+1. **Adam, jugando:** sobre todo el sonido (pisotón, ráfaga, rabia), si la
+   jaula y el escudo se entienden, y si la ráfaga hay que dibujarla a x2.
+2. **Enseñar al bot a cambiar de personaje** para las anclas y después las
+   simulaciones (sesión 17, punto 4).
+3. Lo de decidir con Adam (sesión 17, punto 5) y `armas_evolucionadas.zip`
+   (punto 6).
