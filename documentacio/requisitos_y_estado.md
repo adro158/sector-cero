@@ -95,8 +95,9 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 0. **Integrar en `main` lo hecho en la nube** (21/10, sesión 17, en curso).
    Está en la rama `claude/beautiful-maxwell-uijhtj`: los lotes de assets 1
-   (ataques del jefe del minuto 10), 2 (anclas por personaje) y 3 (efectos
-   de las herramientas). Lo pendiente
+   (ataques del jefe del minuto 10), 2 (anclas por personaje), 3 (efectos
+   de las herramientas) y 4 (efectos de subir de nivel, cambio, curarse y
+   muerte de la horda). Lo pendiente
    que deja, en la bitácora, sesión 17, «Lo que queda».
 1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
    siguiente que se hace). Adam está dibujando los assets para que, cuando

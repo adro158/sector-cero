@@ -135,6 +135,18 @@ vida salen chispas verdes de los enemigos alcanzados al Espadachín: como
 `mas_cercano` de cada objetivo alcanzado (como mucho 5 por golpe). Van en un
 hijo del aura con `z_index` 4, encima de la horda.
 
+**La respuesta de la partida.** También desde el 21/10, sobre el personaje
+salen efectos al subir de nivel, al cambiar de personaje (teñido del color
+del que entra) y al coger el corazón de los élites (`efectos_jugador.gd`, un
+hijo del jugador en el centro de su sprite, así que le sigue). Como subir de
+nivel pausa el juego, el efecto sale en el primer fotograma después de la
+pausa, ya con la mejora elegida. El de cambio sale solo si entra otro
+personaje: `personaje_cambiado` también llega al empezar y al evolucionar la
+herramienta. Y cada enemigo de la horda que muere se deshace en trocitos del
+color de su tipo, escalados a su tamaño (`muertes_horda.gd`): un solo nodo
+las dibuja todas con la misma textura, así que el motor las junta en pocas
+llamadas de dibujado; las partículas de la horda bajaron de 7 a 3 por muerte.
+
 **La explosión del rootkit.** Un élite explosivo avisa 0,8 s antes de
 estallar: en su `_draw` se agrieta y se pone al rojo (6 fotogramas según lo
 que queda de aviso), tiembla cada vez más y un anillo de peligro gira en el

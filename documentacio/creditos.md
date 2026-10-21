@@ -22,6 +22,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
 | Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
 | Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
+| Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -134,6 +135,11 @@ scripts no forman parte del repositorio.
   Escáner y del Análisis heurístico, el anillo de alcance de cada uno en
   grises, el destello del impacto del Ping y la chispa del robo de vida. Con
   ellos vino el cambio probado del dibujo, que sirvió de referencia.
+- **Respuesta de la partida** (`medios/sprites/efectos/`, 21/10/2026, de la
+  misma forma; lote 4): la columna de luz de subir de nivel, el rayo con
+  glitch del cambio de personaje y la muerte de la horda (los dos en grises,
+  para teñirlos en el juego) y el brillo verde de curarse. Con ellos vino un
+  nodo de prueba que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

@@ -3026,11 +3026,16 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   Escáner y los de sus evoluciones), escalado con la mejora de alcance. El
   Ping saca un destello al impactar y el robo de vida, chispas verdes de los
   enemigos alcanzados al Espadachín.
+- **Lote 4, la respuesta de la partida:** efectos sobre el personaje al
+  subir de nivel (al volver de la pausa), al cambiar de personaje (del color
+  del que entra; no al empezar ni al evolucionar) y al coger el corazón, y
+  la muerte de cada enemigo de la horda en el color de su tipo y a su
+  tamaño. Las partículas de la horda, de 7 a 3 por muerte.
 - **Arreglo del lote 2:** un ancla ajena contaba como alcanzada (curaba con
   el robo de vida y la resistencia lo tomaba por daño). Ahora no, y el 0 sale
   como mucho cada 0,3 s.
 - Panel de reglas, manual, README, documentación técnica y créditos al día
-  con los tres lotes.
+  con los cuatro lotes.
 
 ### Decisiones de Adam
 
@@ -3072,6 +3077,10 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   `--quit-after` no lo cazaron porque solo cargan el menú. Desde entonces la
   validación también **carga la escena de la partida** con un script
   temporal.
+  Volvió a pasar en el lote 4 (`var lado := Vector2(...) * muerte[2]`, con
+  `muerte` sacado de un `Array` sin tipo): se cazó al cargar la partida.
+  Con valores de un `Array` o de un `Node2D` sin tipo, escribir el tipo
+  (`var lado: Vector2 = ...`).
 - **El simulador vuelve a cargar `juego.tscn` en cada partida**, así que si
   se cambia el código mientras corre, las partidas siguientes cogen el
   cambio. Para medir el antes y el después hay que correrlo en una copia
@@ -3111,7 +3120,9 @@ son de Adam. Sin subagentes.
   Firewall perimetral, el Escáner y el Análisis heurístico, el anillo rojo
   con la resistencia al 50 % y a x1,3 con Ampliar subred tres veces, la pausa
   a mitad del pulso (se congela), las chispas (3, de enemigos de verdad) y
-  el destello del Ping.
+  el destello del Ping; subir de nivel al cerrar el panel, el cambio con
+  cada personaje, el corazón, la pausa (se congela) y la muerte de los cinco
+  tipos de la horda con su color y su tamaño.
 - Una partida entera del simulador, solo para ver que no hay errores.
 - Sin simulaciones: Adam las deja para más adelante.
 
@@ -3126,11 +3137,12 @@ son de Adam. Sin subagentes.
    todavía tampoco lo de la sesión 16 (horda más suave y robo de vida).
 4. **Probar jugando** el jefe del minuto 10, el escudo y los efectos de
    las herramientas. **Medir el rendimiento en casa** con
-   `herramientas/medir_rendimiento.gd`: el Firewall ataca cada 0,5-0,6 s y
-   puede haber muchos impactos del Ping.
+   `herramientas/medir_rendimiento.gd`: el Firewall ataca cada 0,5-0,6 s,
+   puede haber muchos impactos del Ping y, en el minuto 9-10, muchas
+   muertes de la horda a la vez (`muertes_horda.gd`).
 5. **Para decidir con Adam:**
    - el proyectil de la ráfaga se ve pequeño (16x16)
    - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script
-6. Los lotes que faltan: 4 (efectos), 5 (élites), 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
+6. Los lotes que faltan: 5 (élites), 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
    el primero; por decidir cuándo).
 7. Al cerrar: las horas de esta sesión.
