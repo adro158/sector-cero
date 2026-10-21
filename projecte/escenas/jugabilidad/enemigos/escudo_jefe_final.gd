@@ -7,8 +7,11 @@ extends Node2D
 ## objetivos con su vida (ancla_escudo.gd): cada una que se rompe pierde su
 ## cadena, y al romper las 4 la burbuja estalla y el jefe se queda aturdido.
 ## Cada ancla es de un personaje y solo la rompe su herramienta, así que hay
-## que ir cambiando. Si desde que se rompe la primera pasan 12 s sin romper
-## las 4, las rotas se vuelven a cerrar.
+## que ir cambiando: mientras está el escudo, cambiar no tiene espera. Si desde
+## que se rompe la primera pasan 30 s sin romper las 4, las rotas se vuelven a
+## cerrar. Hasta el 22/10 (sesión 18) eran 800 de vida, 12 s y con la espera
+## de siempre, y el bot del simulador no las rompía nunca: le quita a un ancla
+## unos 50 de vida por segundo.
 ##
 ## Las anclas son sus hijos y están en la escena desde el principio, ocultas,
 ## como los élites: las armas buscan sus objetivos al empezar. Sin class_name.
@@ -19,9 +22,9 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
 ## Vida de cada ancla en media: se multiplica por la dificultad.
-const VIDA_ANCLA := 800.0
+const VIDA_ANCLA := 300.0
 ## Lo que hay para romper las 4 desde que se rompe la primera.
-const TIEMPO_PARA_ROMPER := 12.0
+const TIEMPO_PARA_ROMPER := 30.0
 ## De quién es cada ancla, por su posición en la lista de personajes vivos:
 ## con tres, a-b-c-b, y ninguna queda junto a otra de su color (están en
 ## círculo, así que la última toca a la primera). Con dos sale a-b-a-b y con
@@ -43,9 +46,13 @@ var _desde_primera_rota := 0.0
 var _vivos: Array = Ancla.PERSONAJES.keys()
 
 @onready var _anclas: Array[Node] = get_children()
+## El equipo del jugador: con el escudo puesto se cambia de personaje sin
+## espera, para poder ir a por cada ancla con el suyo.
+var _cambio_personaje: Node
 
 
 func _ready() -> void:
+	_cambio_personaje = get_tree().get_first_node_in_group("jugador").get_node("CambioPersonaje")
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
 
 
@@ -55,6 +62,7 @@ func activo() -> bool:
 
 func levantar() -> void:
 	_activo = true
+	_cambio_personaje.sin_espera = true
 	_desde_primera_rota = 0.0
 	# Barajados, para que no salgan siempre en el mismo sitio.
 	var orden := _vivos.duplicate()
@@ -70,6 +78,7 @@ func levantar() -> void:
 ## Sin animación: al morir el jefe.
 func quitar() -> void:
 	_activo = false
+	_cambio_personaje.sin_espera = false
 	_rotura = 0.0
 	for ancla in _anclas:
 		ancla.ocultar()

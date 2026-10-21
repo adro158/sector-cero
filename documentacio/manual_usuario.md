@@ -94,7 +94,8 @@ guardada para la próxima vez):
     de forma se encierra en un escudo: **rompe las cuatro anclas** y se quedará
     aturdido, recibiendo más daño. Cada ancla es del color de un personaje y
     solo la rompe su herramienta (un 0 rojo es que no le haces nada): cambia
-    de personaje. Si en 12 s no rompes las cuatro, las rotas se cierran.
+    de personaje, que con el escudo puesto se hace sin espera. Si en 30 s no
+    rompes las cuatro, las rotas se cierran.
 
 Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
 herramienta.

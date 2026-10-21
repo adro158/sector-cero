@@ -27,6 +27,16 @@ const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antigu
 ## horda que acaba de matar al primero mataría al segundo al momento.
 @export var proteccion_al_entrar: float = 2.0
 
+## Con el escudo de NÚCLEO CERO puesto se cambia sin espera: cada ancla solo
+## la rompe la herramienta de su personaje (escudo_jefe_final.gd lo pone y lo
+## quita). Al ponerlo, la espera que quedaba se acaba.
+var sin_espera := false:
+	set(valor):
+		sin_espera = valor
+		if valor and _restante > 0.0:
+			_restante = 0.0
+			_avisar_cambio()
+
 var _indice := 0
 var _restante := 0.0
 ## La herramienta actual de cada personaje. Empieza siendo la de sus datos y
@@ -84,11 +94,11 @@ func _unhandled_input(evento: InputEvent) -> void:
 ## terminado la espera. Devuelve si cambió.
 func cambiar(paso: int = 1) -> bool:
 	var otro := _vivo_desde(_indice, paso)
-	if _restante > 0.0 or otro == _indice:
+	if (_restante > 0.0 and not sin_espera) or otro == _indice:
 		return false
 
 	_entrar(otro)
-	_restante = espera
+	_restante = 0.0 if sin_espera else espera
 	_aplicar()
 
 	# Destello al cambiar, para que se note que es otro personaje.
@@ -203,10 +213,14 @@ func _aplicar() -> void:
 	var personaje := personajes[_indice]
 	get_parent().get_node("Sprite").texture = personaje.hoja
 	get_parent().get_node("GestorArmas").cambiar_arma(_armas[_indice])
+	_avisar_cambio()
+	_avisar_equipo.call_deferred()
+
+
+func _avisar_cambio() -> void:
 	var siguiente := personajes[_vivo_desde(_indice, 1)]
 	# Diferido: al empezar la partida, el HUD aún no está conectado.
-	BusEventos.personaje_cambiado.emit.call_deferred(personaje, _armas[_indice], siguiente, _restante)
-	_avisar_equipo.call_deferred()
+	BusEventos.personaje_cambiado.emit.call_deferred(personajes[_indice], _armas[_indice], siguiente, _restante)
 
 
 func _avisar_equipo() -> void:

@@ -312,7 +312,12 @@ herramienta. Las armas no dicen quién pega, así que el ancla escucha
 rojo. El reparto es a-b-c-b, para que no queden dos del mismo color juntas,
 y solo con los personajes que no han caído; si alguien cae con el escudo
 puesto, sus anclas pasan a otro, porque si no el escudo no se podría romper.
-Si en 12 s desde la primera rota no caen las cuatro, las rotas se cierran.
+Si en 30 s desde la primera rota no caen las cuatro, las rotas se cierran.
+Mientras está el escudo, cambiar de personaje no tiene espera (`sin_espera`,
+en `cambio_personaje.gd`). Hasta la sesión 18 eran 800 de vida, 12 s y la
+espera de siempre (10 s), y el bot del simulador lo rompió una vez en nueve
+partidas: le quita a un ancla unos 50 de vida por segundo y hacían falta dos
+cambios. Ahora, 300 de vida (la de antes de la sesión 17) y 30 s.
 Su barra de vida, arriba en el centro, se entera de todo por el bus. Ninguno
 de estos scripts tiene `class_name` ni toca `project.godot`: así llegan con la
 actualización pequeña.
