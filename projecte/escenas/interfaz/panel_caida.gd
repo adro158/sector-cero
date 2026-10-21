@@ -24,7 +24,10 @@ func _ready() -> void:
 		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caja.add_child(etiqueta)
 	for i in 3:
-		var boton := EstiloInterfaz.boton("", _elegir.bind(i), 420)
+		# Ancho para el retrato y el nombre más largo (las evoluciones); a la
+		# izquierda, para que los retratos queden en columna.
+		var boton := EstiloInterfaz.boton("", _elegir.bind(i), 640)
+		boton.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		caja.add_child(boton)
 		_botones.append(boton)
 
