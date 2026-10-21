@@ -13,7 +13,9 @@ extends Node2D
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
 ## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
 ## de ráfaga se para, late en morado y dispara 12 proyectiles en círculo; en la
-## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd).
+## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd). Por
+## debajo del 25 % de vida entra en rabia: le salen llamas por detrás, va más
+## rápido y ataca más seguido.
 ##
 ## Para las armas es un objetivo más, igual que los gestores de la horda: está
 ## en el grupo objetivos y tiene danar_en_area y mas_cercano.
@@ -65,6 +67,16 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 ## Con menos de la mitad de vida dispara otra, este tiempo después.
 @export var entre_rafagas: float = 0.4
 
+@export_group("Rabia")
+## La parte de la vida por debajo de la cual entra en rabia.
+@export var vida_rabia: float = 0.25
+## En rabia se mueve así de más rápido y sus ataques llegan así de más seguidos.
+## Los avisos duran lo mismo: se siguen pudiendo esquivar.
+@export var ritmo_rabia: float = 1.3
+
+const FOTOGRAMAS_RABIA := 4
+const SEGUNDOS_POR_FOTOGRAMA_RABIA := 0.1
+
 var _activo := false
 var _estado := Estado.PERSEGUIR
 var _tiempo_estado := 0.0
@@ -76,6 +88,8 @@ var _hasta_rafaga := 0.0
 ## Las ráfagas que lleva disparadas la de ahora y las que le tocan (1 o 2).
 var _rafagas_hechas := 0
 var _rafagas_toca := 1
+var _rabia := false
+var _tiempo_rabia := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _jaula: Node2D
@@ -83,6 +97,8 @@ var _jaula: Node2D
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
 @onready var _rafaga: Node2D = $Rafaga
+## Las llamas de la rabia, detrás del jefe: es el primer hijo, antes del Sprite.
+@onready var _aura: Sprite2D = $Rabia
 
 
 func _ready() -> void:
@@ -91,7 +107,7 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_salud.murio.connect(_al_morir)
-	_salud.vida_cambiada.connect(func(_actual, _maxima): queue_redraw())
+	_salud.vida_cambiada.connect(_al_cambiar_vida)
 
 
 func aparecer(posicion: Vector2) -> void:
@@ -103,6 +119,8 @@ func aparecer(posicion: Vector2) -> void:
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton
 	_hasta_rafaga = primera_rafaga
+	_rabia = false
+	_aura.visible = false
 	BusEventos.jefe_aparecio.emit()
 
 
@@ -156,15 +174,15 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_tiempo_estado += delta
-	_hasta_invocar -= delta
-	_hasta_pisoton -= delta
-	_hasta_rafaga -= delta
+	_hasta_invocar -= delta * _ritmo()
+	_hasta_pisoton -= delta * _ritmo()
+	_hasta_rafaga -= delta * _ritmo()
 	var hacia_jugador := (_jugador.global_position - global_position).normalized()
 
 	match _estado:
 		Estado.PERSEGUIR:
 			_direccion = hacia_jugador
-			global_position += _direccion * velocidad * delta
+			global_position += _direccion * velocidad * _ritmo() * delta
 			# Con la jaula puesta no invoca (lo deja para cuando se rompa) ni
 			# vuelve a pisar.
 			var sin_jaula: bool = not _jaula.activa()
@@ -177,7 +195,7 @@ func _physics_process(delta: float) -> void:
 				_rafagas_hechas = 0
 				_rafagas_toca = 2 if _salud.vida() < _salud.vida_maxima / 2.0 else 1
 				_cambiar_estado(Estado.RAFAGA)
-			elif _tiempo_estado >= intervalo_embestida:
+			elif _tiempo_estado >= intervalo_embestida / _ritmo():
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
 			# Quieto y mirando al jugador: la embestida irá hacia donde esté
@@ -237,6 +255,19 @@ func _invocar() -> void:
 	BusEventos.jefe_invoco.emit()
 
 
+## 1 normalmente y ritmo_rabia en rabia.
+func _ritmo() -> float:
+	return ritmo_rabia if _rabia else 1.0
+
+
+func _al_cambiar_vida(actual: float, maxima: float) -> void:
+	queue_redraw()
+	if _activo and not _rabia and actual < maxima * vida_rabia:
+		_rabia = true
+		_aura.visible = true
+		BusEventos.jefe_ataco.emit("rabia")
+
+
 func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
@@ -249,11 +280,14 @@ func _animar(delta: float) -> void:
 	# Las piernas van al ritmo al que se mueve: embistiendo, tantas veces más
 	# deprisa como lo es la embestida, y quieto (avisando o invocando), nada.
 	if _estado == Estado.PERSEGUIR:
-		_tiempo_andando += delta
+		_tiempo_andando += delta * _ritmo()
 	elif _estado == Estado.EMBESTIDA:
 		_tiempo_andando += delta * velocidad_embestida / velocidad
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	_sprite.frame = Direcciones8.fila(_direccion) * FOTOGRAMAS_ANDAR + columna
+	if _rabia:
+		_tiempo_rabia += delta
+		_aura.frame = int(_tiempo_rabia / SEGUNDOS_POR_FOTOGRAMA_RABIA) % FOTOGRAMAS_RABIA
 
 
 func _draw() -> void:

@@ -21,8 +21,8 @@ const EFECTOS := [
 
 ## Cada ataque de los jefes suena con uno de los efectos que ya hay, y con
 ## qué tono. Los del jefe final (el rayo, el torbellino y la tormenta), como
-## las armas o las ultis de las que salen; el pisotón y la
-## ráfaga son del jefe del minuto 10.
+## las armas o las ultis de las que salen; el pisotón, la
+## ráfaga y la rabia son del jefe del minuto 10.
 const SONIDO_ATAQUE := {
 	"rayo": ["escaner", 0.6],
 	"torbellino": ["firewall", 0.7],
@@ -32,6 +32,7 @@ const SONIDO_ATAQUE := {
 	"escudo": ["evolucion", 0.6],
 	"pisoton": ["explosion", 0.6],
 	"rafaga": ["ping", 0.8],
+	"rabia": ["alarma_jefe", 0.8],
 }
 
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de

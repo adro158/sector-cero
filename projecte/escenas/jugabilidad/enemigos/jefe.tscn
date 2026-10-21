@@ -1,13 +1,21 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" uid="uid://d24vr1phd7bg8" path="res://escenas/jugabilidad/enemigos/jefe.gd" id="1_jefe"]
 [ext_resource type="Texture2D" uid="uid://bb1nmvgcelald" path="res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png" id="2_dibujo"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="3_salud"]
 [ext_resource type="Script" uid="uid://c3f4v88yw22qk" path="res://escenas/jugabilidad/enemigos/sprite_destello.gd" id="4_destello"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/rafaga_jefe.gd" id="5_rafaga"]
+[ext_resource type="Texture2D" uid="uid://ckn0d0lp76b51" path="res://medios/sprites/jefe/jefe_rabia.png" id="6_rabia"]
 
 [node name="Jefe" type="Node2D" groups=["objetivos"]]
 script = ExtResource("1_jefe")
+
+[node name="Rabia" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+position = Vector2(0, -42)
+texture = ExtResource("6_rabia")
+hframes = 4
 
 [node name="Sprite" type="Sprite2D" parent="."]
 script = ExtResource("4_destello")
