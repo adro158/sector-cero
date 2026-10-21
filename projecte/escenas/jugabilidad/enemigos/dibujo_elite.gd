@@ -1,7 +1,7 @@
 extends RefCounted
 
-## Cómo se dibuja el élite (enemigo_elite.gd): el rootkit en reposo y el aviso
-## de la explosión del Explosivo. Va aparte para que enemigo_elite.gd se quede
+## Cómo se dibuja el élite (enemigo_elite.gd): el rootkit en reposo, el efecto
+## de cada afijo y el aviso de la explosión del Explosivo. Va aparte para que enemigo_elite.gd se quede
 ## con lo que hace el élite y no con cómo se ve.
 ##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
@@ -16,6 +16,15 @@ const QUIETO := 1.2
 const BRILLO_CADA := 0.1
 const VUELTA := QUIETO + BRILLO_CADA * 3.0
 
+## El efecto de cada afijo, en grises para teñirlo con su color:
+## [hoja, fotogramas, segundos por fotograma]. Todos van centrados en el
+## élite y en bucle. El Explosivo no está: su efecto es el aviso al morir.
+const AFIJOS := {
+	DatosAfijoElite.Efecto.BLINDADO: [preload("res://recursos/enemigos/sprites/afijo_blindado.png"), 4, 0.15],
+	DatosAfijoElite.Efecto.REPLICANTE: [preload("res://recursos/enemigos/sprites/afijo_replicante.png"), 4, 0.1],
+	DatosAfijoElite.Efecto.AURA_LENTA: [preload("res://recursos/enemigos/sprites/afijo_aura_lenta.png"), 4, 0.15],
+}
+
 const SOBRECARGA := preload("res://medios/sprites/explosion/rootkit_sobrecarga.png")
 const ZONA := preload("res://medios/sprites/explosion/rootkit_zona.png")
 
@@ -26,6 +35,35 @@ static func fotograma_reposo(segundos: float) -> int:
 	if en_vuelta < QUIETO:
 		return 0
 	return 1 + mini(int((en_vuelta - QUIETO) / BRILLO_CADA), 2)
+
+
+## Lo que va detrás del rootkit: el anillo helado del Aura lenta (del radio de
+## RADIO_AURA), las copias del Replicante y, para los afijos sin efecto (el
+## Explosivo), un anillo fino de su color alrededor del cuerpo.
+static func afijos_detras(lienzo: CanvasItem, afijos: Array[DatosAfijoElite], segundos: float, radio: float) -> void:
+	var anillos := 0
+	for afijo in afijos:
+		if afijo.efecto == DatosAfijoElite.Efecto.AURA_LENTA or afijo.efecto == DatosAfijoElite.Efecto.REPLICANTE:
+			_afijo(lienzo, afijo, segundos)
+		elif not afijo.efecto in AFIJOS:
+			lienzo.draw_arc(Vector2.ZERO, radio + 6.0 + anillos * 5.0, 0.0, TAU, 32, afijo.color, 2.0)
+			anillos += 1
+
+
+## Lo que va encima del rootkit: las placas del Blindado.
+static func afijos_encima(lienzo: CanvasItem, afijos: Array[DatosAfijoElite], segundos: float) -> void:
+	for afijo in afijos:
+		if afijo.efecto == DatosAfijoElite.Efecto.BLINDADO:
+			_afijo(lienzo, afijo, segundos)
+
+
+## El efecto de un afijo, teñido de su color, a los segundos que lleva el élite.
+static func _afijo(lienzo: CanvasItem, afijo: DatosAfijoElite, segundos: float) -> void:
+	var hoja: Texture2D = AFIJOS[afijo.efecto][0]
+	var fotogramas: int = AFIJOS[afijo.efecto][1]
+	var fotograma := int(segundos / AFIJOS[afijo.efecto][2]) % fotogramas
+	var lado := Vector2(hoja.get_width() / float(fotogramas), hoja.get_height())
+	lienzo.draw_texture_rect_region(hoja, Rect2(-lado / 2.0, lado), Rect2(Vector2(fotograma * lado.x, 0.0), lado), afijo.color)
 
 
 ## El aviso del Explosivo: la zona se va llenando, su anillo gira (sus 4

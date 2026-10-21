@@ -2,7 +2,10 @@ extends Node2D
 
 ## Enemigo élite: más grande y resistente que la horda, con uno o dos afijos
 ## sorteados al aparecer (blindado, replicante, aura lenta o explosivo). Cada
-## afijo se ve como un anillo de su color y su nombre va escrito encima.
+## afijo se ve con su efecto, de su color (dibujo_elite.gd): las placas del
+## Blindado encima del rootkit, y las copias del Replicante y el anillo helado
+## del Aura lenta detrás. El Explosivo, que no tiene efecto hasta que muere,
+## se ve como un anillo. Los nombres de los afijos van escritos encima.
 ##
 ## Como el jefe, es un nodo y no una posición en un MultiMesh: hay muy pocos a
 ## la vez y cada uno se comporta distinto. Hay unos cuantos en la escena desde
@@ -34,6 +37,9 @@ var _segundos := 0.0
 var _tiempo := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
+## Lo que va encima del rootkit (las placas del Blindado): un hijo creado al
+## empezar, que se dibuja desde aquí con su señal draw.
+var _encima: Node2D
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -45,6 +51,10 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 	_sprite.texture = Dibujo.REPOSO
 	_sprite.hframes = Dibujo.FOTOGRAMAS_REPOSO
+	# Después del Sprite en la lista de hijos: se dibuja encima de él.
+	_encima = Node2D.new()
+	add_child(_encima)
+	_encima.draw.connect(_dibujar_encima)
 	_salud.murio.connect(_al_morir)
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _segundos = segundos)
@@ -120,6 +130,9 @@ func _process(delta: float) -> void:
 		return
 	_tiempo += delta
 	_sprite.frame = Dibujo.fotograma_reposo(_tiempo)
+	# Los efectos de los afijos están animados.
+	queue_redraw()
+	_encima.queue_redraw()
 
 
 func _physics_process(delta: float) -> void:
@@ -191,15 +204,16 @@ func _draw() -> void:
 	if not _activo:
 		return
 
-	if _valor(DatosAfijoElite.Efecto.AURA_LENTA) > 0.0:
-		draw_circle(Vector2.ZERO, RADIO_AURA, Color(0.75, 0.45, 1.0, 0.08))
-		draw_arc(Vector2.ZERO, RADIO_AURA, 0.0, TAU, 48, Color(0.75, 0.45, 1.0, 0.4), 1.5)
-
+	# Detrás del rootkit: este _draw va antes que el Sprite, que es su hijo.
 	var radio := datos.tamano * 0.5
-	for i in _afijos.size():
-		draw_arc(Vector2.ZERO, radio + 6.0 + i * 5.0, 0.0, TAU, 32, _afijos[i].color, 2.0)
+	Dibujo.afijos_detras(self, _afijos, _tiempo, radio)
 
 	var arriba := Vector2(0.0, -radio - 20.0)
 	BarraVida.dibujar(self, arriba, 70.0, 7.0, _salud.vida() / _salud.vida_maxima, datos.color)
 	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
 	draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
+
+
+func _dibujar_encima() -> void:
+	if _activo:
+		Dibujo.afijos_encima(_encima, _afijos, _tiempo)
