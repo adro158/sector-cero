@@ -93,6 +93,10 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
+0. **Integrar en `main` lo hecho en la nube** (21/10, sesión 17, en curso).
+   Está en la rama `claude/beautiful-maxwell-uijhtj`: los lotes de assets 1
+   (ataques del jefe del minuto 10) y 2 (anclas por personaje). Lo pendiente
+   que deja, en la bitácora, sesión 17, «Lo que queda».
 1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
    siguiente que se hace). Adam está dibujando los assets para que, cuando
    los tres personajes cogen las mejoras, se note también en el personaje. Los
@@ -141,7 +145,10 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       Probado.
    3. **Falta:** en media, que la mitad de la horda huya cuando llega el
       jefe (en difícil se queda toda).
-   4. **Falta, jefe del minuto 10, movimientos nuevos:**
+   4. **Jefe del minuto 10, movimientos nuevos.** Hechos el 21/10 en la
+      nube (lote 1, sesión 17): el pisotón que encierra (jaula de 4 s, cada
+      20 s), la ráfaga (cada 9 s) y la rabia. **Faltan** la embestida triple
+      y el guardaespaldas (Adam los deja para otro día). Lo que se pidió:
       - **Pisotón que encierra:** se para, marca un círculo rojo alrededor
         (el anillo del rootkit) y a los 0,8 s el círculo se cierra. Durante
         unos segundos no puedes salir de él y te quedas encerrado con el
@@ -154,7 +161,11 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
         élite explosivo.
       - **Rabia** (por debajo del 25 %): un 30 % más rápido y ataca más
         seguido.
-   5. **Falta, NÚCLEO CERO, más duro sin más movimientos:**
+   5. **NÚCLEO CERO, más duro sin más movimientos.** **Hechos** el 21/10
+      en la nube (lote 2, sesión 17) los candados: una herramienta por
+      ancla, 800 de vida y el cierre a los 12 s. **Faltan** el escudo más
+      seguido, más vida y menos pausa, y la presión al llegar. Lo que se
+      pidió:
       - **Candados:** las anclas con mucha más vida (de 300 a unos 800, por
         la dificultad). Si no se rompen las 4 en 12 s, las rotas se vuelven
         a cerrar. Cada ancla solo recibe daño de una herramienta, marcada

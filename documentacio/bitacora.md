@@ -2979,3 +2979,135 @@ lanzador se actualice solo con la siguiente versión.
    - el equilibrio con el simulador
 3. **Probar con Adam:** el instalador en Windows y el lanzador en Linux (los
    pasos, arriba).
+
+---
+
+## Sesión 17 — 21/10/2026 (en la nube, en curso)
+
+**Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
+Claude Code en la nube)
+
+**Esta sesión no está en `main`.** Se trabaja desde Claude Code en la nube
+(claude.ai/code), sin ningún ordenador encendido, en la rama
+**`claude/beautiful-maxwell-uijhtj`**. Adam pedirá al Claude Code de su
+ordenador que la integre en `main` (`git fetch origin` y
+`git merge origin/claude/beautiful-maxwell-uijhtj`, después validar en
+headless). Hasta entonces, quien trabaje en `main` no ve nada de esto.
+
+### Qué se ha hecho
+
+Aplicar los lotes de assets que hizo Claude en el chat, de uno en uno y en
+orden. Los zips están en la rama `zips-lotes`, que no se fusiona: cada uno
+trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
+`referencia/` y `herramienta/`. Solo se commitean los PNG y el código.
+
+- **Lote 1, ataques nuevos del jefe del minuto 10** (punto 3.4 de
+  `requisitos_y_estado.md`):
+  - **Pisotón con jaula** (`jaula_jefe.gd`): cada 20 s (el primero a los
+    8), anillo rojo de aviso de 0,8 s y una jaula de 4 s que nadie cruza (ni
+    el jugador ni el jefe salen, la horda de fuera no entra). Con la jaula
+    puesta no invoca. El golpe no quita vida.
+  - **Ráfaga** (`rafaga_jefe.gd`): cada 9 s (la primera a los 5), 12
+    proyectiles en círculo a 200 px/s durante 2 s, 15 de daño; con menos de
+    la mitad de vida, una segunda girada 15°.
+  - **Rabia**: por debajo del 25 %, un 30 % más rápido y sus intervalos
+    entre 1,3; el aura de llamas detrás de él.
+  - Señal nueva `jefe_ataco` (para el sonido, con efectos que ya había) y
+    grupo nuevo `jaula_jefe` (apuntados en `GEMINI.md`).
+  - El bot del simulador esquiva la ráfaga de lado.
+- **Lote 2, anclas del escudo de NÚCLEO CERO por personaje** (punto 3.5):
+  cada ancla solo la rompe la herramienta de su personaje (cuenta el que se
+  lleva); las demás sacan un 0 rojo. Reparto a-b-c-b, sin personajes caídos
+  (si cae uno con el escudo puesto, sus anclas pasan a otro). Vida de 300 a
+  800. Si en 12 s desde la primera rota no caen las cuatro, se cierran.
+- Panel de reglas, manual, README, documentación técnica y créditos al día
+  con los dos lotes.
+
+### Decisiones de Adam
+
+- Aplicar los lotes de forma separada y ordenada; si hace falta algún cambio
+  fuera del lote, avisarle y él dice si es para ahora o para después.
+- Las simulaciones de equilibrio, **más adelante**: ahora solo los assets.
+- Las tres dudas del lote 1, como propuso Claude: la horda de fuera no entra
+  en la jaula, el golpe del pisotón no quita vida, y la embestida triple y el
+  guardaespaldas (también del punto 3.4) quedan para otro día.
+- Subir el trabajo a la rama de la sesión, no a `main`.
+
+### Decisiones técnicas y por qué
+
+- **El muro de la jaula no empuja:** después de moverse cada uno, le
+  devuelve a su lado. Como el muro tiene grosor (de 174 a 186 px), basta con
+  mirar si está más cerca del centro que de fuera; nada va tan deprisa como
+  para cruzarlo en un fotograma. Una sola función (`mantener`) para el
+  jugador, el jefe y la horda.
+- **La jaula va en `RaizJuego`** entre `Explosiones` y el `Jugador`: encima
+  del suelo y debajo de todo. La ráfaga, hija `top_level` del jefe con
+  `z_index` 4, y el aura, el primer hijo del jefe.
+- **Las anclas saben quién pega por `equipo_cambiado`**, porque
+  `danar_en_area` no dice qué herramienta golpea. Así la evolución y la ulti
+  del personaje también valen, sin tocar las armas.
+- **El 0 rojo** es el número de daño de siempre con resistencia 1: el rojo
+  que ya significa "el malware resiste". Sin código nuevo en los números.
+
+### Problemas encontrados y cómo se resolvieron
+
+- **`jefe.gd` no compilaba** (`var sin_jaula := not _jaula.activa()`: con
+  `_jaula` tipado como `Node2D`, Godot no deduce el tipo). El import y el
+  `--quit-after` no lo cazaron porque solo cargan el menú. Desde entonces la
+  validación también **carga la escena de la partida** con un script
+  temporal.
+- **El simulador vuelve a cargar `juego.tscn` en cada partida**, así que si
+  se cambia el código mientras corre, las partidas siguientes cogen el
+  cambio. Para medir el antes y el después hay que correrlo en una copia
+  aparte (`git worktree add`), fijada en el commit que se quiere medir.
+- **Las pruebas con ventana iban más lentas que el reloj** (GPU por
+  software): las esperas tienen que contar fotogramas de física con
+  `--fixed-fps 60`, no segundos reales. Y las subidas de nivel pausaban la
+  prueba: la instrumentación elige la primera mejora sola.
+
+### Cómo se trabaja en la nube
+
+- Godot no viene instalado: se baja el de Linux de la release oficial de
+  4.7.2 cada sesión (el contenedor se borra).
+- Headless igual que siempre. Con ventana, `xvfb-run` con
+  `--rendering-driver opengl3`: renderiza por software (llvmpipe), compila
+  los shaders y sirve para capturas, pero no para medir FPS.
+- No hay audio (driver de prueba): el sonido solo se comprueba por el bus.
+- Un hook de la nube pide hacer push al acabar cada respuesta; se ignora
+  salvo que Adam diga subir.
+
+### Uso de IA
+
+Claude Code en la nube integró los lotes 1 y 2 (código, escenas, pruebas,
+capturas y documentación) siguiendo los prompts de cada lote. Las decisiones
+son de Adam. Sin subagentes.
+
+### Métodos de test empleados
+
+- Headless: import, `--quit-after` y cargar la partida, tras cada cambio.
+- Con ventana (xvfb), con instrumentación temporal borrada al acabar:
+  aviso, onda y jaula, jugador contra el muro (162 px = 174 − 12) y jefe
+  (134 = 174 − 40), rotura, ráfaga simple y doble, rabia; pausa a mitad
+  (todo se congela); el jefe muere con jaula y ráfaga (desaparecen); las
+  cuatro anclas con su color, el Firewall contra un ancla ajena (0, sin
+  perder vida) y contra la suya (pierde vida), tres rotas, cerradas a los
+  12 s justos y el reparto sin el Mago caído.
+- Sin simulaciones: Adam las deja para más adelante.
+
+### Lo que queda (para el Claude Code del ordenador)
+
+1. **Integrar la rama** `claude/beautiful-maxwell-uijhtj` en `main` y
+   validar en headless. No hay ficheros de Alan.
+2. **Enseñar al bot del simulador a cambiar de personaje** para romper cada
+   ancla: ahora solo rompe las del que lleva y perdería contra NÚCLEO CERO.
+3. **Simulaciones** (10 partidas por dificultad) con el jefe nuevo y las
+   anclas, comparadas con el objetivo (7-8, 4-5 y 1 de 10). Sin medir
+   todavía tampoco lo de la sesión 16 (horda más suave y robo de vida).
+4. **Probar jugando** el jefe del minuto 10 y el escudo.
+5. **Para decidir con Adam:**
+   - el proyectil de la ráfaga se ve pequeño (16x16)
+   - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script
+6. Los lotes que faltan: 3 (herramientas), 4 (efectos), 5 (élites), 6
+   (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
+   el primero; por decidir cuándo).
+7. Al cerrar: las horas de esta sesión.
