@@ -1,8 +1,9 @@
 extends RefCounted
 
 ## Cómo se dibuja el élite (enemigo_elite.gd): el rootkit en reposo, el efecto
-## de cada afijo y el aviso de la explosión del Explosivo. Va aparte para que enemigo_elite.gd se quede
-## con lo que hace el élite y no con cómo se ve.
+## de cada afijo, sus iconos y el aviso de la explosión del Explosivo. Va
+## aparte para que enemigo_elite.gd se quede con lo que hace el élite y no con
+## cómo se ve.
 ##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
 

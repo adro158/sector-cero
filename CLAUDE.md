@@ -129,6 +129,15 @@ de lanzar Godot.
   el de GitHub Desktop,
   `C:\Users\Adam\AppData\Local\GitHubDesktop\app-3.6.6\resources\app\git\cmd\git.exe`
   (la carpeta `app-3.6.6` cambia al actualizarse GitHub Desktop).
+- **Nube** (Claude Code en claude.ai/code, sesión 17): un contenedor Linux sin
+  ordenador encendido, que trabaja en su propia rama (`claude/...`), no en
+  `main`. Godot no viene instalado: se baja el de Linux de la release oficial
+  de 4.7.2 a la carpeta temporal de la sesión. Headless igual que en casa;
+  con ventana, `xvfb-run` y `--rendering-driver opengl3` (GPU por software:
+  vale para capturas y compila los shaders, no para medir FPS). Sin audio. En
+  las pruebas con ventana, esperar fotogramas de física con `--fixed-fps 60`,
+  no segundos reales, porque va más lento que el reloj. Lo hecho allí se
+  integra en `main` desde el ordenador (bitácora, sesión 17).
 - Godot, en las dos: `C:\Users\Adam\Desktop\Godot_v4.7.2-stable_win64.exe` (no
   está en el PATH).
 - En PowerShell, los argumentos con comas van entre comillas
@@ -136,7 +145,10 @@ de lanzar Godot.
 - Comprobar la API de Godot 4.7.2 antes de usarla.
 - Nada se da por bueno sin ejecutarlo en headless:
   1. `--headless --path projecte --import` → errores de análisis
-  2. `--headless --path projecte --quit-after N` → errores en ejecución
+  2. `--headless --path projecte --quit-after N` → errores en ejecución. Solo
+     carga el menú: para los scripts de la partida, cargar también
+     `escenas/juego.tscn` con un script temporal (paso 3). Así salieron dos
+     errores de tipos que el import no ve (bitácora, sesión 17)
   3. Instrumentación temporal (autoload que escucha el bus, o script
      `extends SceneTree` con `_initialize()`), borrada antes del commit
 - Si falla por una clase global nueva o por rutas antiguas: reimportar; si no
@@ -196,7 +208,9 @@ de lanzar Godot.
 - Tras cualquier cambio de balance, medirlo con el simulador de partidas
   (`projecte/herramientas/simular_partidas.gd`, instrucciones en su cabecera).
   Las semillas son fijas: el mismo comando da las mismas partidas, así que se
-  puede comparar el antes y el después.
+  puede comparar el antes y el después. Vuelve a cargar `juego.tscn` en cada
+  partida: si se sigue cambiando código mientras corre, medir en una copia
+  aparte (`git worktree add <carpeta> <commit>`).
 - Build: `--headless --path projecte --export-release "Windows Desktop"
   ../build/windows/SectorCero.exe` (igual con "Linux"). La exportación funciona
   en headless aunque el driver gráfico de la VM esté caído.

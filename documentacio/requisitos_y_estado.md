@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 20/10/2026** contra la bitácora (hasta la sesión 16) y
+**Estado verificado el 21/10/2026** contra la bitácora (hasta la sesión 17) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -93,18 +93,23 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **Integrar en `main` lo hecho en la nube** (21/10, sesión 17, en curso).
+0. **Integrar en `main` lo hecho en la nube** (21/10, sesión 17). Los pasos
+   exactos, las pruebas y todo lo que queda, en la bitácora, sesión 17,
+   «Siguiente paso».
    Está en la rama `claude/beautiful-maxwell-uijhtj`: los lotes de assets 1
    (ataques del jefe del minuto 10), 2 (anclas por personaje), 3 (efectos
    de las herramientas), 4 (efectos de subir de nivel, cambio, curarse y
    muerte de la horda), 5 (élites) y 6 (interfaz y lanzador). La cabecera
    del lanzador llega a los jugadores con el `lanzador_*.pck` de la próxima
-   versión que se publique. Lo pendiente
-   que deja, en la bitácora, sesión 17, «Lo que queda».
+   versión que se publique. Falta probarlo todo jugando, medir el
+   rendimiento en casa y enseñar al bot a cambiar de personaje para las
+   anclas antes de simular.
 1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
    siguiente que se hace). Adam está dibujando los assets para que, cuando
    los tres personajes cogen las mejoras, se note también en el personaje. Los
    traerá con su prompt en la próxima sesión, como el zip del jefe final.
+   El 21/10 subió a la rama `zips-lotes` un `armas_evolucionadas.zip` que es
+   seguramente esto: es el único zip que queda por aplicar.
    Entonces:
    1. Mirar lo que trae (`git status` si lo descomprime en el repo) y sus
       vistas previas.

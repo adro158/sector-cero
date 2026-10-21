@@ -2988,10 +2988,12 @@ lanzador se actualice solo con la siguiente versión.
 
 ---
 
-## Sesión 17 — 21/10/2026 (en la nube, en curso)
+## Sesión 17 — 21/10/2026 (en la nube)
 
-**Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
-Claude Code en la nube)
+**Duración:** 2 h · **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude
+Code en la nube)
+
+**Horas acumuladas:** 32 h de las 60 sugeridas (53 %)
 
 **Esta sesión no está en `main`.** Se trabaja desde Claude Code en la nube
 (claude.ai/code), sin ningún ordenador encendido, en la rama
@@ -3121,9 +3123,11 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
 
 ### Uso de IA
 
-Claude Code en la nube integró los lotes 1 y 2 (código, escenas, pruebas,
-capturas y documentación) siguiendo los prompts de cada lote. Las decisiones
-son de Adam. Sin subagentes.
+Claude Code en la nube integró los seis lotes (código, escenas, pruebas,
+capturas y documentación) siguiendo el prompt de cada uno, que Adam preparó
+con Claude en el chat junto con los sprites. Las decisiones son de Adam; lo
+que el prompt dejaba a elección de Claude está en «Decisiones técnicas». Sin
+subagentes.
 
 ### Métodos de test empleados
 
@@ -3150,24 +3154,72 @@ son de Adam. Sin subagentes.
 - Una partida entera del simulador, solo para ver que no hay errores.
 - Sin simulaciones: Adam las deja para más adelante.
 
-### Lo que queda (para el Claude Code del ordenador)
+### Estado al cerrar
 
-1. **Integrar la rama** `claude/beautiful-maxwell-uijhtj` en `main` y
-   validar en headless. No hay ficheros de Alan.
-2. **Enseñar al bot del simulador a cambiar de personaje** para romper cada
-   ancla: ahora solo rompe las del que lleva y perdería contra NÚCLEO CERO.
-3. **Simulaciones** (10 partidas por dificultad) con el jefe nuevo y las
-   anclas, comparadas con el objetivo (7-8, 4-5 y 1 de 10). Sin medir
-   todavía tampoco lo de la sesión 16 (horda más suave y robo de vida).
-4. **Probar jugando** el jefe del minuto 10, el escudo y los efectos de
-   las herramientas. **Medir el rendimiento en casa** con
-   `herramientas/medir_rendimiento.gd`: el Firewall ataca cada 0,5-0,6 s,
-   puede haber muchos impactos del Ping y, en el minuto 9-10, muchas
-   muertes de la horda a la vez (`muertes_horda.gd`).
+Los seis lotes de assets están integrados, probados y documentados, y
+**subidos a la rama `claude/beautiful-maxwell-uijhtj`, no a `main`**. `main`
+sigue en la sesión 16 (`8bd3506`). No se ha publicado ninguna versión. Las
+vistas previas, `LEEME.txt` y los prompts de cada lote no se commitean:
+siguen en los zips de la rama `zips-lotes`.
+
+### Siguiente paso (para el Claude Code del ordenador)
+
+Por orden. Lo que dice «con Adam» se le pregunta antes.
+
+1. **Integrar la rama en `main`** (lo pide Adam). Desde `main` y con
+   `git status` limpio:
+   ```
+   git fetch origin
+   git merge origin/claude/beautiful-maxwell-uijhtj
+   ```
+   No hay ficheros de Alan ni conflictos esperables: `main` no ha cambiado
+   desde que salió la rama. Después validar como siempre y, además,
+   **cargar la escena de la partida** (un script temporal `extends
+   SceneTree` que instancie `escenas/juego.tscn` y la deje correr unos
+   segundos): el import y el `--quit-after` solo cargan el menú y no ven los
+   errores de los scripts de la partida (dos veces en esta sesión). Validar
+   también `lanzador/` (import y `--quit-after`). La subida a `main` va con
+   «ya he acabado», como siempre.
+2. **Probar jugando en casa**, con ventana y la GPU de verdad (en la nube no
+   hay ni audio ni GPU):
+   - el jefe del minuto 10: el pisotón y la jaula (que no se pueda salir y
+     que la horda de fuera se amontone), la ráfaga (si el proyectil de 16x16
+     se ve; si no, decidir con Adam si se dibuja a x2) y la rabia
+   - el escudo de NÚCLEO CERO: cambiar de personaje para cada ancla, el 0
+     rojo y el cierre a los 12 s
+   - los efectos de las herramientas, de subir de nivel, del cambio, del
+     corazón y de la muerte de la horda
+   - los élites con sus afijos y sus iconos
+   - el menú con el logo, el panel del equipo (C), la ventana de caída y el
+     lanzador (este solo se ve exportado, o con su proyecto abierto)
+   - cómo suenan el pisotón, la ráfaga y la rabia (`jefe_ataco`)
+3. **Medir el rendimiento** con `herramientas/medir_rendimiento.gd`, con
+   ventana: el Firewall ataca cada 0,5-0,6 s, el Ping saca un destello en
+   cada impacto y en los minutos 9-10 mueren muchos enemigos a la vez
+   (`muertes_horda.gd`, un nodo que las dibuja todas).
+4. **El simulador** (Adam lo dejó para más adelante):
+   - antes, enseñar al bot a cambiar de personaje para romper cada ancla
+     (el de la herramienta del ancla más cercana sin romper). Ahora solo
+     rompe las del que lleva y pierde siempre en el núcleo armado.
+   - medir con una copia aparte (`git worktree add`), fijada en el commit
+     que se mide: el simulador vuelve a cargar `juego.tscn` en cada partida
+     y, si el código cambia mientras corre, las siguientes cogen el cambio.
+   - 10 partidas por dificultad, comparadas con el objetivo (fácil 7-8,
+     media 4-5, difícil 1 de 10). Sin medir todavía lo de la sesión 16
+     (horda más suave y robo de vida) ni lo de esta.
 5. **Para decidir con Adam:**
-   - el proyectil de la ráfaga se ve pequeño (16x16)
-   - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script.
-     `enemigo_elite.gd`, 219 (el dibujo ya está en `dibujo_elite.gd`)
-6. Los seis lotes están hechos. Falta `armas_evolucionadas.zip` (en el
-   README de `zips-lotes` va el primero; por decidir cuándo).
-7. Al cerrar: las horas de esta sesión.
+   - lo que Claude eligió en el lote 6 (en «Decisiones técnicas»): los
+     personajes de las reglas sin retrato, el aviso del HUD del élite sin
+     iconos y el lema del lanzador quitado
+   - `jefe.gd` tiene 311 líneas y `enemigo_elite.gd` 219 (la guía es ~200):
+     se podría sacar la rabia del jefe a su script
+   - lo que queda del punto 3 de `requisitos_y_estado.md`: que en media
+     huya la mitad de la horda, la embestida triple y el guardaespaldas del
+     jefe, y el resto de NÚCLEO CERO más duro
+6. **`armas_evolucionadas.zip`**, en la rama `zips-lotes`: el único que
+   falta. En su README va el primero; Adam dirá cuándo. Seguramente son las
+   «mejoras visibles en los personajes» del punto 1 de
+   `requisitos_y_estado.md`: mirarlo con Adam.
+7. **La cabecera del lanzador** llega a los jugadores con el
+   `lanzador_*.pck` de la próxima versión que se publique (solo cuando Adam
+   lo pida).
