@@ -9,7 +9,9 @@ extends Node2D
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
 ## jugador: se puede esquivar si se reacciona al aviso. Y cada intervalo de
 ## invocación se para, late en morado y saca un anillo de horda a su alrededor:
-## cuanta menos vida le queda, más enemigos.
+## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
+## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
+## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd).
 ##
 ## Para las armas es un objetivo más, igual que los gestores de la horda: está
 ## en el grupo objetivos y tiene danar_en_area y mas_cercano.
@@ -17,7 +19,7 @@ extends Node2D
 signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 signal derrotado
 
-enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR }
+enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR, PISOTON }
 
 const FOTOGRAMAS_ANDAR := 12
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
@@ -48,14 +50,21 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 @export var radio_invocacion: float = 140.0
 @export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
+@export_group("Pisotón")
+## El primero llega antes, para que se vea pronto.
+@export var primer_pisoton: float = 8.0
+@export var intervalo_pisoton: float = 20.0
+
 var _activo := false
 var _estado := Estado.PERSEGUIR
 var _tiempo_estado := 0.0
 var _direccion := Vector2.DOWN
 var _tiempo_andando := 0.0
 var _hasta_invocar := 0.0
+var _hasta_pisoton := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
+var _jaula: Node2D
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -65,6 +74,7 @@ func _ready() -> void:
 	visible = false
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_salud_jugador = _jugador.get_node("Salud")
+	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_salud.murio.connect(_al_morir)
 	_salud.vida_cambiada.connect(func(_actual, _maxima): queue_redraw())
 
@@ -76,6 +86,7 @@ func aparecer(posicion: Vector2) -> void:
 	visible = true
 	_activo = true
 	_hasta_invocar = intervalo_invocacion
+	_hasta_pisoton = primer_pisoton
 	BusEventos.jefe_aparecio.emit()
 
 
@@ -129,14 +140,21 @@ func _physics_process(delta: float) -> void:
 
 	_tiempo_estado += delta
 	_hasta_invocar -= delta
+	_hasta_pisoton -= delta
 	var hacia_jugador := (_jugador.global_position - global_position).normalized()
 
 	match _estado:
 		Estado.PERSEGUIR:
 			_direccion = hacia_jugador
 			global_position += _direccion * velocidad * delta
-			if _hasta_invocar <= 0.0:
+			# Con la jaula puesta no invoca (lo deja para cuando se rompa) ni
+			# vuelve a pisar.
+			var sin_jaula: bool = not _jaula.activa()
+			if _hasta_invocar <= 0.0 and sin_jaula:
 				_cambiar_estado(Estado.INVOCAR)
+			elif _hasta_pisoton <= 0.0 and sin_jaula:
+				_jaula.empezar(global_position)
+				_cambiar_estado(Estado.PISOTON)
 			elif _tiempo_estado >= intervalo_embestida:
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
@@ -158,6 +176,14 @@ func _physics_process(delta: float) -> void:
 				_invocar()
 				_hasta_invocar = intervalo_invocacion
 				_cambiar_estado(Estado.PERSEGUIR)
+		Estado.PISOTON:
+			# Quieto mientras la jaula avisa; al pisar, sigue con la jaula puesta.
+			if not _jaula.avisando():
+				_hasta_pisoton = intervalo_pisoton
+				_cambiar_estado(Estado.PERSEGUIR)
+
+	# Si está dentro de su jaula, tampoco sale él, ni embistiendo.
+	global_position = _jaula.mantener(global_position, radio)
 
 	if global_position.distance_to(_jugador.global_position) < radio + 16.0:
 		_salud_jugador.recibir_dano(dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto)
@@ -212,5 +238,6 @@ func _draw() -> void:
 func _al_morir() -> void:
 	_activo = false
 	visible = false
+	_jaula.terminar()
 	BusEventos.enemigo_muerto.emit(global_position, "jefe")
 	derrotado.emit()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -27,6 +27,7 @@
 [ext_resource type="Script" uid="uid://dquayuisw5av5" path="res://escenas/jugabilidad/efectos/explosiones_elite.gd" id="27_explosiones"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/jefe_final.tscn" id="28_jefe_final"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/efectos/zonas_hielo.gd" id="29_hielo"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/jaula_jefe.gd" id="30_jaula"]
 
 [node name="RaizJuego" type="Node2D"]
 script = ExtResource("1_raiz")
@@ -41,6 +42,10 @@ z_index = 4
 [node name="ZonasHielo" type="Node2D" parent="." groups=["zonas_hielo"]]
 texture_filter = 1
 script = ExtResource("29_hielo")
+
+[node name="JaulaJefe" type="Node2D" parent="." groups=["jaula_jefe"]]
+texture_filter = 1
+script = ExtResource("30_jaula")
 
 [node name="Jugador" parent="." instance=ExtResource("2_jugador")]
 

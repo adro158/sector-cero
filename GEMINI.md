@@ -90,6 +90,7 @@ signal enemigo_muerto(posicion: Vector2, tipo_enemigo: String)
 signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
 signal jefe_invoco
+signal jefe_ataco(ataque: String)
 signal elite_aparecio(descripcion: String)
 signal elite_exploto(posicion: Vector2)
 signal transicion_fase(segundos: float)
@@ -187,6 +188,8 @@ icono de la ventana) y `EfectoCRT` (filtro de pantalla).
 - `elites` — los élites, ocultos hasta que el director los activa.
 - `zonas_hielo` — el nodo que lleva las zonas de hielo del jefe final (las
   crea al caer sus cristales).
+- `jaula_jefe` — la jaula del pisotón del jefe del minuto 10. La usan el jefe
+  y los gestores de la horda, que no cruzan su muro mientras está cerrada.
 
 El código los busca con `get_tree().get_first_node_in_group(...)`, así que solo
 importa el nombre del grupo, no dónde estén colocados.

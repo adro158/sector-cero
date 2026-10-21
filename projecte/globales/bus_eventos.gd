@@ -48,6 +48,9 @@ signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
 ## El jefe acaba de sacar un anillo de horda a su alrededor.
 signal jefe_invoco
+## El jefe del minuto 10 empieza un ataque: "pisoton", al dar el golpe.
+## Para el sonido.
+signal jefe_ataco(ataque: String)
 ## descripcion: los nombres de sus afijos, como "BLINDADO + EXPLOSIVO".
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.

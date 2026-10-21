@@ -53,6 +53,9 @@ var _embestida: EmbestidaHorda
 var _volteo: VolteoHorda
 ## Segundos que le quedan a la huida (0 si no está huyendo).
 var _huida := 0.0
+## La jaula del pisotón del jefe (jaula_jefe.gd): mientras está cerrada, la
+## horda no cruza su muro.
+var _jaula: Node2D
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -60,6 +63,7 @@ var _huida := 0.0
 func _ready() -> void:
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_salud_jugador = _jugador.get_node("Salud")
+	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_vida_dificultad = Dificultad.dato("vida")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
@@ -235,6 +239,7 @@ func _physics_process(delta: float) -> void:
 	_retirar_muertos()
 	_reconstruir_rejilla()
 	_mover(delta)
+	_respetar_jaula()
 	if _huida > 0.0:
 		_avanzar_huida(delta)
 	else:
@@ -289,6 +294,14 @@ func _mover(delta: float) -> void:
 		if _huida > 0.0:
 			hacia_jugador *= -2.0
 		_posiciones[i] += (hacia_jugador + empuje) * datos.velocidad * delta
+
+
+## La de dentro se queda dentro y la de fuera se amontona contra el muro.
+func _respetar_jaula() -> void:
+	if _jaula == null or not _jaula.cerrada():
+		return
+	for i in _vivos:
+		_posiciones[i] = _jaula.mantener(_posiciones[i], datos.tamano * 0.5)
 
 
 func _avanzar_huida(delta: float) -> void:

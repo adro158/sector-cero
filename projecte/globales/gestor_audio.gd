@@ -19,9 +19,9 @@ const EFECTOS := [
 	"escaner", "alarma_jefe", "alarma_elite",
 ]
 
-## Cada ataque del jefe final suena con uno de los efectos que ya hay, y con
-## qué tono: el rayo, el torbellino y la tormenta, como las armas o las ultis
-## de las que salen.
+## Cada ataque de los jefes suena con uno de los efectos que ya hay, y con
+## qué tono. Los del jefe final (el rayo, el torbellino y la tormenta), como
+## las armas o las ultis de las que salen; el pisotón es del jefe del minuto 10.
 const SONIDO_ATAQUE := {
 	"rayo": ["escaner", 0.6],
 	"torbellino": ["firewall", 0.7],
@@ -29,6 +29,7 @@ const SONIDO_ATAQUE := {
 	"invocar": ["alarma_elite", 0.7],
 	"hielo": ["ping", 0.6],
 	"escudo": ["evolucion", 0.6],
+	"pisoton": ["explosion", 0.6],
 }
 
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de
@@ -73,6 +74,7 @@ func _ready() -> void:
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
+	BusEventos.jefe_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.transicion_fase.connect(_al_empezar_transicion)
 	# La fase 2 suena con la música de la partida, pero más grave.
