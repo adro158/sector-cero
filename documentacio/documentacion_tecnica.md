@@ -147,6 +147,17 @@ color de su tipo, escalados a su tamaño (`muertes_horda.gd`): un solo nodo
 las dibuja todas con la misma textura, así que el motor las junta en pocas
 llamadas de dibujado; las partículas de la horda bajaron de 7 a 3 por muerte.
 
+**La interfaz con arte propio.** Desde el 21/10, el título del menú es el logo
+(`medios/interfaz/`, la carpeta del arte de la interfaz) con un glitch cada 2
+a 5 s (`logo_glitch.gd`): un `AtlasTexture` al que un `Tween` le cambia la
+región, con su propio `RandomNumberGenerator` para no gastar el azar de la
+partida. Dos campos nuevos en los recursos: `retrato` en `DatosPersonaje`
+(64x64, en el panel del equipo y la ventana de caída, siempre a tamaño real
+porque escalado se deforma) e `icono` en `DatosAfijoElite` (16x16, en las
+reglas y encima de cada élite). El lanzador tiene su cabecera
+(`lanzador/cabecera.png`), que está en su propia carpeta porque el lanzador es
+otro proyecto de Godot y no ve los ficheros de `projecte/`.
+
 **La explosión del rootkit.** Un élite explosivo avisa 0,8 s antes de
 estallar: en su `_draw` se agrieta y se pone al rojo (6 fotogramas según lo
 que queda de aviso), tiembla cada vez más y un anillo de peligro gira en el

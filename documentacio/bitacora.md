@@ -28,6 +28,12 @@ Se actualiza al terminar cada sesión de trabajo, antes de hacer el commit.
 
 ### Decisiones técnicas y por qué
 
+- **Lote 6, lo que eligió Claude:** en las reglas se quedan los personajes
+  con el primer fotograma de su hoja (el retrato a 48 px se deforma); el
+  aviso del HUD al aparecer un élite sigue siendo solo texto (llega como una
+  cadena por el bus); el lema del lanzador se quita con su fila, porque la
+  cabecera ya dice qué es el juego.
+
 **Crear el repositorio antes que el proyecto de Godot.** Godot genera la carpeta
 de caché `.godot/` en cuanto abre el proyecto por primera vez. Teniendo el
 `.gitignore` ya en el primer commit, esa carpeta queda ignorada desde el minuto
@@ -3037,11 +3043,17 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   Aura lenta pasa a azul hielo («aura helada»). Los anillos finos se quitan
   salvo el del Explosivo, que no tiene efecto hasta que muere. El dibujo del
   élite pasa a `dibujo_elite.gd`.
+- **Lote 6, interfaz y lanzador:** el logo con glitch en el menú
+  (`logo_glitch.gd`), los retratos en el panel del equipo (en gris si ha
+  caído) y en la ventana de caída, los once iconos de mejora rehechos, un
+  icono por afijo en las reglas y encima de cada élite, y la cabecera del
+  lanzador. Se quitó `generar_sprites.gd`, que habría machacado los iconos
+  nuevos con los antiguos.
 - **Arreglo del lote 2:** un ancla ajena contaba como alcanzada (curaba con
   el robo de vida y la resistencia lo tomaba por daño). Ahora no, y el 0 sale
   como mucho cada 0,3 s.
 - Panel de reglas, manual, README, documentación técnica y créditos al día
-  con los cinco lotes.
+  con los seis lotes.
 
 ### Decisiones de Adam
 
@@ -3131,7 +3143,10 @@ son de Adam. Sin subagentes.
   tipos de la horda con su color y su tamaño; los élites con cada afijo,
   con dos a la vez, el jugador dentro del aura helada (ralentizado), el
   aviso del Explosivo como antes, los cuatro fotogramas del reposo y la
-  pausa.
+  pausa; el menú con el logo y un fotograma del glitch, el panel del equipo
+  con un personaje caído, la ventana de caída, los élites con los iconos de
+  sus afijos, la subida de nivel con los iconos nuevos, las reglas (mejoras y
+  afijos) y el lanzador con la cabecera.
 - Una partida entera del simulador, solo para ver que no hay errores.
 - Sin simulaciones: Adam las deja para más adelante.
 
@@ -3153,6 +3168,6 @@ son de Adam. Sin subagentes.
    - el proyectil de la ráfaga se ve pequeño (16x16)
    - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script.
      `enemigo_elite.gd`, 219 (el dibujo ya está en `dibujo_elite.gd`)
-6. Los lotes que faltan: 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
-   el primero; por decidir cuándo).
+6. Los seis lotes están hechos. Falta `armas_evolucionadas.zip` (en el
+   README de `zips-lotes` va el primero; por decidir cuándo).
 7. Al cerrar: las horas de esta sesión.

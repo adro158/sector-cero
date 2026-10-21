@@ -11,7 +11,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Shaders (suelo, horda, CRT) | Propios, escritos con ayuda de Claude | Del proyecto |
 | Sprites de la horda (5 tipos) y del élite | Hechos con IA (Claude) | Ver más abajo |
 | Texturas del suelo de placa base | Hechas con IA (Claude) | Ver más abajo |
-| Iconos de las mejoras | 8 propios, generados por código; 3 hechos con IA (Claude) | Del proyecto / ver más abajo |
+| Iconos de las mejoras (los 11) | Hechos con IA (Claude) | Ver más abajo |
 | Sprites del fragmento de datos y del proyectil del Ping | Hechos con IA (Claude) | Ver más abajo |
 | Corazón, cofre y ruleta del premio de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Sprites de las ultis (rayo, torbellino y tormenta) | Hechos con IA (Claude) | Ver más abajo |
@@ -24,6 +24,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
+| Logo, retratos de los personajes, iconos de los afijos y cabecera del lanzador | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -40,14 +41,12 @@ la documentación técnica y, sesión a sesión, en la bitácora.
 
 ### Gráficos generados por código
 
-`projecte/herramientas/generar_sprites.gd` dibuja píxel a píxel, con formas
-simples (círculos, rectángulos y líneas) y un contorno de neón calculado a
-partir de la silueta, los iconos de las cinco primeras mejoras y de las tres
-herramientas (`recursos/mejoras/iconos/`).
-
-Hasta el 02/10/2026 también dibujaba los sprites de la horda y del élite; se
-sustituyeron por los redibujados con IA (siguiente apartado) y ese código se
-quitó del script para que no los machaque.
+Hasta el 21/10/2026, `projecte/herramientas/generar_sprites.gd` dibujaba píxel
+a píxel, con formas simples y un contorno de neón, los iconos de las cinco
+primeras mejoras y de las tres herramientas; hasta el 02/10/2026, también los
+sprites de la horda y del élite. Todos se sustituyeron por los redibujados con
+IA (siguiente apartado) y el script se quitó para que no los machaque. Sigue
+en el historial de Git.
 
 El glitch de la horda, el parpadeo del troyano y el filtro CRT no son imágenes:
 son shaders (`medios/shaders/`). El suelo combina un shader
@@ -68,6 +67,7 @@ scripts no forman parte del repositorio.
   troyano (caballo de ajedrez verde con trampilla, 32x32).
 - **Iconos de tres mejoras** (`recursos/mejoras/iconos/`): Actualizar firmas
   (escudo con check), Cambio en caliente (flechas) y Caché ampliada (imán).
+  El 21/10/2026 se rehicieron los once con el mismo estilo (lote 6).
 - **Suelo de placa base** (`medios/texturas/`): `suelo_placa.png`, un atlas de
   12 baldosas de 256x256 que encajan sin costuras (pistas, vías, chips, CPU,
   GPU, memorias, ranuras, disipadores y ventiladores);
@@ -146,6 +146,15 @@ scripts no forman parte del repositorio.
   `rootkit.png`) y, en grises para teñirlos, las placas del Blindado, las
   copias fantasma del Replicante y el anillo helado del Aura lenta. Con ellos
   vino el cambio probado del élite, que sirvió de referencia.
+- **Interfaz y lanzador** (21/10/2026, de la misma forma; lote 6): el logo
+  de SECTOR CERO con la O tachada como el icono, y su tira de glitch
+  (`medios/interfaz/`); los retratos de los tres personajes, su busto a x2
+  con un marco de su color (`medios/interfaz/`); los once iconos de mejora
+  rehechos con el mismo estilo (`recursos/mejoras/iconos/`); un icono por
+  afijo de los élites (`recursos/enemigos/afijos/iconos/`), y la cabecera del
+  lanzador (`lanzador/cabecera.png`): la placa base, NÚCLEO CERO al fondo,
+  los tres personajes y el logo. Con ellos vino el cambio probado, que sirvió
+  de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores
