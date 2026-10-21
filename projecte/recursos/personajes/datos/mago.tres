@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://drnre5tlbfi1u" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png" id="2_hoja"]
 [ext_resource type="Resource" path="res://recursos/armas/datos/ping.tres" id="3_arma"]
+[ext_resource type="Texture2D" uid="uid://b7ey38xq0qlhv" path="res://medios/interfaz/retrato_mago.png" id="4_retrato"]
 
 [resource]
 script = ExtResource("1_personaje")
@@ -15,3 +16,4 @@ ulti = "rayo"
 nombre_ulti = "Rayo de datos"
 descripcion_ulti = "Un rayo morado enorme que atraviesa todo lo que encuentra. Con el teclado, R para apuntar con el ratón y click para lanzarlo (click derecho o R cancelan); con el mando, va solo al enemigo más cercano."
 color = Color(0.75, 0.45, 1, 1)
+retrato = ExtResource("4_retrato")

@@ -12,6 +12,9 @@ extends Resource
 ## Hoja de sprites de 6 columnas (pasos) por 8 filas (direcciones), como la del
 ## personaje original.
 @export var hoja: Texture2D
+## Retrato de 64x64 para el panel del equipo y la ventana de caída. Se enseña a
+## tamaño real: escalado se deforma.
+@export var retrato: Texture2D
 @export var arma: DatosArma
 ## Cada personaje tiene su propia vida: el que pega de cerca aguanta más.
 @export var vida_maxima: float = 100.0

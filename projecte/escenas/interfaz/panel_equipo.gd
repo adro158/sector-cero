@@ -52,8 +52,17 @@ func _ready() -> void:
 	_panel.add_child(caja)
 	caja.add_child(EstiloInterfaz.etiqueta("EQUIPO  [C]", 12, EstiloInterfaz.TEXTO_SUAVE))
 	for i in 3:
+		# Cada ficha va con el retrato del personaje a su izquierda.
+		var fila := HBoxContainer.new()
+		fila.add_theme_constant_override("separation", 8)
+		var retrato := TextureRect.new()
+		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		retrato.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+		fila.add_child(retrato)
 		var ficha := _crear_ficha()
-		caja.add_child(ficha)
+		ficha.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		fila.add_child(ficha)
+		caja.add_child(fila)
 		_fichas.append(ficha)
 
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
@@ -123,6 +132,10 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	var datos: Dictionary = _estado[i]
 	var personaje: DatosPersonaje = datos.personaje
 	var estado := "CAÍDO" if datos.caido else ("ACTIVO" if i == _activo else "LISTO")
+	var retrato: TextureRect = ficha.get_parent().get_child(0)
+	retrato.texture = personaje.retrato
+	# Caído, en gris y apagado.
+	retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE
 	var titulo: Label = ficha.get_child(0)
 	var ulti := "ULTI LISTA" if _ulti(i) >= 1.0 else "ulti %d %%" % roundi(_ulti(i) * 100.0)
 	titulo.text = "%s  %s  ·  %s" % [personaje.nombre.to_upper(), estado, ulti]
