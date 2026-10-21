@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" uid="uid://d24vr1phd7bg8" path="res://escenas/jugabilidad/enemigos/jefe.gd" id="1_jefe"]
 [ext_resource type="Texture2D" uid="uid://bb1nmvgcelald" path="res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png" id="2_dibujo"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/jugador/salud.gd" id="3_salud"]
 [ext_resource type="Script" uid="uid://c3f4v88yw22qk" path="res://escenas/jugabilidad/enemigos/sprite_destello.gd" id="4_destello"]
+[ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/rafaga_jefe.gd" id="5_rafaga"]
 
 [node name="Jefe" type="Node2D" groups=["objetivos"]]
 script = ExtResource("1_jefe")
@@ -20,3 +21,9 @@ vframes = 8
 script = ExtResource("3_salud")
 vida_maxima = 4000.0
 invulnerabilidad = 0.0
+
+[node name="Rafaga" type="Node2D" parent="."]
+top_level = true
+z_index = 4
+texture_filter = 1
+script = ExtResource("5_rafaga")

@@ -11,7 +11,9 @@ extends Node2D
 ## invocación se para, late en morado y saca un anillo de horda a su alrededor:
 ## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
-## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd).
+## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
+## de ráfaga se para, late en morado y dispara 12 proyectiles en círculo; en la
+## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd).
 ##
 ## Para las armas es un objetivo más, igual que los gestores de la horda: está
 ## en el grupo objetivos y tiene danar_en_area y mas_cercano.
@@ -19,7 +21,7 @@ extends Node2D
 signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 signal derrotado
 
-enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR, PISOTON }
+enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR, PISOTON, RAFAGA }
 
 const FOTOGRAMAS_ANDAR := 12
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
@@ -55,6 +57,14 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 @export var primer_pisoton: float = 8.0
 @export var intervalo_pisoton: float = 20.0
 
+@export_group("Ráfaga")
+@export var primera_rafaga: float = 5.0
+@export var intervalo_rafaga: float = 9.0
+## Lo que late en morado antes de disparar.
+@export var aviso_rafaga: float = 0.5
+## Con menos de la mitad de vida dispara otra, este tiempo después.
+@export var entre_rafagas: float = 0.4
+
 var _activo := false
 var _estado := Estado.PERSEGUIR
 var _tiempo_estado := 0.0
@@ -62,12 +72,17 @@ var _direccion := Vector2.DOWN
 var _tiempo_andando := 0.0
 var _hasta_invocar := 0.0
 var _hasta_pisoton := 0.0
+var _hasta_rafaga := 0.0
+## Las ráfagas que lleva disparadas la de ahora y las que le tocan (1 o 2).
+var _rafagas_hechas := 0
+var _rafagas_toca := 1
 var _jugador: Node2D
 var _salud_jugador: Salud
 var _jaula: Node2D
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
+@onready var _rafaga: Node2D = $Rafaga
 
 
 func _ready() -> void:
@@ -87,6 +102,7 @@ func aparecer(posicion: Vector2) -> void:
 	_activo = true
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton
+	_hasta_rafaga = primera_rafaga
 	BusEventos.jefe_aparecio.emit()
 
 
@@ -96,9 +112,10 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 		return 0
 
 	_salud.recibir_dano(cantidad)
-	# Avisando o invocando no destella: con el Ping rebotando contra él, el
-	# blanco taparía el rojo del aviso, que es lo que deja esquivar la embestida.
-	if _estado != Estado.AVISO and _estado != Estado.INVOCAR:
+	# Avisando, invocando o antes de la ráfaga no destella: con el Ping
+	# rebotando contra él, el blanco taparía el color del aviso, que es lo que
+	# deja esquivar el ataque.
+	if _estado != Estado.AVISO and _estado != Estado.INVOCAR and _estado != Estado.RAFAGA:
 		_sprite.destellar()
 	# El número sale sobre el cuerpo y un poco desplazado, para que varios
 	# golpes seguidos no se pinten uno encima de otro.
@@ -141,6 +158,7 @@ func _physics_process(delta: float) -> void:
 	_tiempo_estado += delta
 	_hasta_invocar -= delta
 	_hasta_pisoton -= delta
+	_hasta_rafaga -= delta
 	var hacia_jugador := (_jugador.global_position - global_position).normalized()
 
 	match _estado:
@@ -155,6 +173,10 @@ func _physics_process(delta: float) -> void:
 			elif _hasta_pisoton <= 0.0 and sin_jaula:
 				_jaula.empezar(global_position)
 				_cambiar_estado(Estado.PISOTON)
+			elif _hasta_rafaga <= 0.0:
+				_rafagas_hechas = 0
+				_rafagas_toca = 2 if _salud.vida() < _salud.vida_maxima / 2.0 else 1
+				_cambiar_estado(Estado.RAFAGA)
 			elif _tiempo_estado >= intervalo_embestida:
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
@@ -181,6 +203,17 @@ func _physics_process(delta: float) -> void:
 			if not _jaula.avisando():
 				_hasta_pisoton = intervalo_pisoton
 				_cambiar_estado(Estado.PERSEGUIR)
+		Estado.RAFAGA:
+			# Quieto, latiendo en morado: el aviso de que va a disparar.
+			var latido := 0.5 + 0.5 * sin(_tiempo_estado * 20.0)
+			_sprite.modulate = Color.WHITE.lerp(color_invocacion, latido)
+			if _tiempo_estado >= aviso_rafaga + _rafagas_hechas * entre_rafagas:
+				# La segunda, girada: tapa los huecos de la primera.
+				_rafaga.disparar(global_position, _rafagas_hechas == 1)
+				_rafagas_hechas += 1
+				if _rafagas_hechas == _rafagas_toca:
+					_hasta_rafaga = intervalo_rafaga
+					_cambiar_estado(Estado.PERSEGUIR)
 
 	# Si está dentro de su jaula, tampoco sale él, ni embistiendo.
 	global_position = _jaula.mantener(global_position, radio)
@@ -239,5 +272,6 @@ func _al_morir() -> void:
 	_activo = false
 	visible = false
 	_jaula.terminar()
+	_rafaga.vaciar()
 	BusEventos.enemigo_muerto.emit(global_position, "jefe")
 	derrotado.emit()
