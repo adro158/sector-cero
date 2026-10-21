@@ -3281,6 +3281,13 @@ Claude Code en el ordenador de casa)
 - **El fichero de opciones del jugador cambió** durante la sesión (volumen de
   efectos y avisar de versiones): son opciones que solo se tocan a mano desde
   el panel de opciones, no las pruebas. Los récords y el ranking, intactos.
+- **A la release v1.7 le falta `lanzador_linux.pck`**, aunque la Action
+  acabó bien y lo tiene en la lista de `gh release create` (la v1.6 sí lo
+  tiene). Exportado en local sale bien e igual byte a byte que el de
+  Windows. Consecuencia: los lanzadores de Linux ya instalados no cogen la
+  cabecera nueva hasta la próxima release; los que se instalen con el zip de
+  la v1.7 ya la traen. Arreglo, si se quiere: subir a la release una copia
+  de su `lanzador_windows.pck` con el nombre `lanzador_linux.pck`.
 
 ### Uso de IA
 
