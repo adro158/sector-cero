@@ -19,6 +19,18 @@ const ESCUDO := preload("res://medios/sprites/jefe_final/jefe_final_escudo.png")
 const ESCUDO_ROTURA := preload("res://medios/sprites/jefe_final/jefe_final_escudo_rotura.png")
 const ANCLA := preload("res://medios/sprites/jefe_final/jefe_final_ancla.png")
 const CADENA := preload("res://medios/sprites/jefe_final/jefe_final_cadena.png")
+## Un ancla y una cadena por personaje: cada ancla solo se rompe con la
+## herramienta del suyo (ancla_escudo.gd).
+const ANCLAS := {
+	"mago": preload("res://medios/sprites/jefe_final/jefe_final_ancla_mago.png"),
+	"espadachin": preload("res://medios/sprites/jefe_final/jefe_final_ancla_espadachin.png"),
+	"segador": preload("res://medios/sprites/jefe_final/jefe_final_ancla_segador.png"),
+}
+const CADENAS := {
+	"mago": preload("res://medios/sprites/jefe_final/jefe_final_cadena_mago.png"),
+	"espadachin": preload("res://medios/sprites/jefe_final/jefe_final_cadena_espadachin.png"),
+	"segador": preload("res://medios/sprites/jefe_final/jefe_final_cadena_segador.png"),
+}
 const HIELO := preload("res://medios/sprites/jefe_final/jefe_final_hielo.png")
 const PROYECTIL_HIELO := preload("res://medios/sprites/jefe_final/jefe_final_proyectil_hielo.png")
 
@@ -63,12 +75,12 @@ static func portal(lienzo: CanvasItem, centro: Vector2, tiempo: float, duracion:
 
 ## Cadena de eslabones de `desde` a `hasta` (2 fotogramas que brillan por
 ## turnos).
-static func cadena(lienzo: CanvasItem, desde: Vector2, hasta: Vector2, tiempo: float) -> void:
+static func cadena(lienzo: CanvasItem, desde: Vector2, hasta: Vector2, tiempo: float, hoja: Texture2D = CADENA) -> void:
 	var direccion := (hasta - desde).normalized()
 	lienzo.draw_set_transform(desde, direccion.angle(), Vector2.ONE)
 	var n := int(tiempo * 8.0) % 2
 	for i in int(desde.distance_to(hasta) / ESLABON):
-		fotograma(lienzo, CADENA, n, ESLABON, Vector2(ESLABON * 0.5 + i * ESLABON, 0.0))
+		fotograma(lienzo, hoja, n, ESLABON, Vector2(ESLABON * 0.5 + i * ESLABON, 0.0))
 	lienzo.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
