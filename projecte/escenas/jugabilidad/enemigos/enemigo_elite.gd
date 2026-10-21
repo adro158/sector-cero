@@ -18,8 +18,7 @@ const AVISO_EXPLOSION := 0.8
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
-const SOBRECARGA := preload("res://medios/sprites/explosion/rootkit_sobrecarga.png")
-const ZONA := preload("res://medios/sprites/explosion/rootkit_zona.png")
+const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_elite.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -31,6 +30,8 @@ var _cuenta_atras := 0.0
 ## Nivel del jugador: como la horda, aparece con más vida cuanto más alto.
 var _nivel := 1
 var _segundos := 0.0
+## Segundos de su animación en reposo.
+var _tiempo := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
 
@@ -42,7 +43,8 @@ func _ready() -> void:
 	visible = false
 	_jugador = get_tree().get_first_node_in_group("jugador")
 	_salud_jugador = _jugador.get_node("Salud")
-	_sprite.texture = datos.textura
+	_sprite.texture = Dibujo.REPOSO
+	_sprite.hframes = Dibujo.FOTOGRAMAS_REPOSO
 	_salud.murio.connect(_al_morir)
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _segundos = segundos)
@@ -55,6 +57,10 @@ func activo() -> bool:
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
 	global_position = posicion
 	_afijos = afijos
+	# Cada uno empieza su animación en un punto distinto, para que no brillen
+	# todos a la vez. Sale de dónde aparece y no de randf(), que gastaría
+	# números del azar de la partida.
+	_tiempo = fmod(absf(posicion.x + posicion.y), Dibujo.VUELTA)
 	_salud.reiniciar(datos.vida_para(_nivel, _segundos) * Dificultad.dato("vida"))
 	_activo = true
 	visible = true
@@ -106,6 +112,14 @@ func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
 	if _activo and global_position.distance_to(desde) < radio_busqueda:
 		return global_position
 	return Vector2.INF
+
+
+## Con el juego en pausa no se llama: la animación se queda quieta.
+func _process(delta: float) -> void:
+	if not _activo:
+		return
+	_tiempo += delta
+	_sprite.frame = Dibujo.fotograma_reposo(_tiempo)
 
 
 func _physics_process(delta: float) -> void:
@@ -172,17 +186,7 @@ func _explotar() -> void:
 
 func _draw() -> void:
 	if _cuenta_atras > 0.0:
-		# La zona se va llenando, su anillo gira (sus 4 fotogramas pasan cuatro
-		# veces) y el rootkit se agrieta y tiembla cada vez más hasta que estalla.
-		var progreso := 1.0 - _cuenta_atras / AVISO_EXPLOSION
-		draw_circle(Vector2.ZERO, RADIO_EXPLOSION * progreso, Color(1.0, 0.4, 0.1, 0.18))
-		var giro := int(progreso * 16.0) % 4
-		draw_texture_rect_region(ZONA, Rect2(-152.0, -152.0, 304.0, 304.0), Rect2(giro * 304.0, 0.0, 304.0, 304.0))
-		# Con senos y no al azar: randf() gastaría números del azar de la partida
-		# y el simulador ya no repetiría las mismas partidas.
-		var temblor := Vector2(sin(_cuenta_atras * 97.0), cos(_cuenta_atras * 71.0)) * 2.0 * progreso
-		var fotograma := mini(int(progreso * 6.0), 5)
-		draw_texture_rect_region(SOBRECARGA, Rect2(Vector2(-32.0, -32.0) + temblor, Vector2(64.0, 64.0)), Rect2(fotograma * 64.0, 0.0, 64.0, 64.0))
+		Dibujo.aviso_explosion(self, _cuenta_atras, AVISO_EXPLOSION, RADIO_EXPLOSION)
 		return
 	if not _activo:
 		return
