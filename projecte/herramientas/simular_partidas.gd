@@ -10,7 +10,8 @@ extends SceneTree
 ## evolución si sale y, si no, una de ataque si la hay) y cambia de personaje
 ## cuando el malware se ha hecho resistente a su herramienta. Con un jefe en
 ## juego va a por él, y si el jefe final está encerrado en su escudo, a por las
-## anclas. Cada minuto de partida (y al pasar a la fase 2) anota vida, nivel,
+## anclas: primero las del personaje que lleva y después cambia al de la más
+## cercana, porque cada una solo la rompe su herramienta. Cada minuto de partida (y al pasar a la fase 2) anota vida, nivel,
 ## mejoras, enemigos (en total y por tipo), herramienta y resistencias, y al
 ## final resume victorias, hasta dónde llega, duración media, cambios de
 ## personaje, cofres recogidos, personajes caídos, ultis lanzadas y eliminados
@@ -27,6 +28,9 @@ extends SceneTree
 ## se empieza por la partida 6, con su semilla: así se pueden repartir las
 ## partidas entre varias copias del proyecto a la vez (partidas=5 en una y
 ## partidas=10 desde=6 en otra dan las mismas 10 partidas que en serie).
+## Con minuto=15 (o 10) cada partida empieza en ese minuto, con el nivel y las
+## mejoras de las tablas del F1, como su botón JEFE FINAL YA (o JEFE YA): para
+## medir solo un jefe. Esas partidas no valen para el porcentaje de victorias.
 ##
 ## Lee campos internos de los nodos (los que empiezan por _) porque necesita
 ## ver lo mismo que vería un jugador; en el código del juego eso no se hace.
@@ -61,12 +65,12 @@ const RADIO_RAFAGA := 80.0
 ## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
 ## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
 const MEJORAS_DE_ATAQUE := [DatosMejora.Efecto.DANO_ARMAS, DatosMejora.Efecto.CADENCIA_ARMAS, DatosMejora.Efecto.ALCANCE_ARMAS]
-## Para saber de qué personaje es cada ancla del escudo del jefe final.
-const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
 
 var _partidas := 3
 var _partida := 0
 var _dificultad := "media"
+## Segundo de la partida en el que empieza cada una (0, desde el principio).
+var _empezar_en := 0.0
 var _victorias := 0
 var _duraciones: Array[float] = []
 var _cambios := 0
@@ -98,6 +102,8 @@ func _initialize() -> void:
 			_dificultad = argumento.split("=")[1]
 		elif argumento.begins_with("desde="):
 			_partida = int(argumento.split("=")[1]) - 1
+		elif argumento.begins_with("minuto="):
+			_empezar_en = float(argumento.split("=")[1]) * 60.0
 
 	_bus = root.get_node("BusEventos")
 	# Las partidas simuladas no son del jugador: no deben entrar en sus récords.
@@ -114,6 +120,7 @@ func _initialize() -> void:
 	_bus.enemigo_muerto.connect(func(_posicion, tipo): _eliminados_por_tipo[tipo] = _eliminados_por_tipo.get(tipo, 0) + 1)
 	_bus.fase_cambiada.connect(_al_cambiar_fase)
 	_bus.jefe_final_aparecio.connect(_al_aparecer_jefe_final)
+	_bus.jefe_final_ataco.connect(_al_atacar_jefe_final)
 	_bus.partida_terminada.connect(_al_terminar)
 	physics_frame.connect(_paso)
 	# Diferido: GestorGuardado lee su fichero en su _ready y borraría la
@@ -130,14 +137,26 @@ func _empezar_partida() -> void:
 	seed(1000 + _partida)
 	paused = false
 	_terminada = false
-	_siguiente_informe = 60.0
+	_siguiente_informe = _empezar_en + 60.0
 	_con_jefe = 0.0
 	_gestores = []
 	_juego = load("res://escenas/juego.tscn").instantiate()
 	root.add_child(_juego)
 	_raiz = _juego.get_node("RaizJuego")
 	_jugador = _raiz.get_node("Jugador")
+	if _empezar_en > 0.0:
+		_saltar.call_deferred()
+	_raiz.get_node("JefeFinal/Escudo").roto.connect(func(): print("  escudo roto (t=%.0fs)" % _raiz.get_node("DirectorOleadas").tiempo()))
 	print("\n=== PARTIDA %d ===" % _partida)
+
+
+## Lo mismo que los botones JEFE YA y JEFE FINAL YA del F1. Diferido: al crear
+## la partida, sus nodos aún no han hecho su _ready.
+func _saltar() -> void:
+	var director: Node = _raiz.get_node("DirectorOleadas")
+	var fase := 2 if _empezar_en > director.config.duracion_partida else 1
+	director.saltar_a(_empezar_en, fase)
+	load("res://escenas/jugabilidad/depuracion/progreso_por_minuto.gd").ponerse_al_dia(_raiz.get_node("SistemaNiveles"), _empezar_en, fase)
 
 
 func _al_subir_nivel(opciones: Array) -> void:
@@ -175,6 +194,13 @@ func _al_aparecer_jefe_final() -> void:
 	_con_jefe = 0.0
 
 
+## Lo único que se apunta de sus ataques es el escudo, que avisa igual al
+## levantarse que al volver a cerrarse las anclas rotas.
+func _al_atacar_jefe_final(ataque: String) -> void:
+	if ataque == "escudo":
+		print("  escudo levantado o cerrado otra vez (t=%.0fs)" % _raiz.get_node("DirectorOleadas").tiempo())
+
+
 func _paso() -> void:
 	# La primera partida empieza diferida: puede pasar un fotograma sin ella.
 	if _raiz == null:
@@ -205,7 +231,7 @@ func _paso() -> void:
 	# resistencia.
 	var ancla := _ancla_a_romper(jefe_final)
 	if ancla != null:
-		_cambiar_a(Ancla.PERSONAJES[ancla.herramienta])
+		_cambiar_a(_personaje_de(ancla))
 	else:
 		_cambiar_si_resiste()
 	# La ulti, en cuanto está llena.
@@ -356,12 +382,20 @@ func _ancla_a_romper(jefe_final: Node) -> Node2D:
 	for ancla in jefe_final.get_node("Escudo").get_children():
 		if not ancla._activa:
 			continue
-		var es_suya: bool = Ancla.PERSONAJES[ancla.herramienta] == actual
+		var es_suya := _personaje_de(ancla) == actual
 		var mas_cerca: bool = mejor == null or posicion.distance_to(ancla.global_position) < posicion.distance_to(mejor.global_position)
 		if mejor == null or (es_suya and not mejor_es_suya) or (es_suya == mejor_es_suya and mas_cerca):
 			mejor = ancla
 			mejor_es_suya = es_suya
 	return mejor
+
+
+## El personaje cuya herramienta rompe esa ancla, de la tabla PERSONAJES de su
+## script. Se lee de la que ya está en la partida: con un preload aquí, el
+## script del ancla se compilaría antes que los autoloads y fallaría (y con
+## él, las armas al pegarle).
+func _personaje_de(ancla: Node) -> DatosPersonaje:
+	return ancla.get_script().get_script_constant_map()["PERSONAJES"][ancla.herramienta]
 
 
 ## El fragmento de datos más cercano dentro de RADIO_FRAGMENTOS, o Vector2.INF.
