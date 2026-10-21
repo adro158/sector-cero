@@ -10,7 +10,9 @@ extends Control
 const Estilo := preload("res://estilo.gd")
 const Biblioteca := preload("res://biblioteca.gd")
 const IconoLinux := preload("res://icono_linux.gd")
-const ICONO := preload("res://icono.png")
+## Arriba, de lado a lado: el logo, los tres personajes y NÚCLEO CERO al fondo.
+const CABECERA := preload("res://cabecera.png")
+const ALTO_CABECERA := 260
 const AJUSTES := "user://lanzador.cfg"
 
 ## Las versiones del desplegable, en el mismo orden: diccionarios de release
@@ -51,26 +53,21 @@ func _construir() -> void:
 	margen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	for lado in ["left", "right", "top", "bottom"]:
 		margen.add_theme_constant_override("margin_" + lado, 32)
+	# Lo demás va debajo de la cabecera.
+	margen.add_theme_constant_override("margin_top", ALTO_CABECERA + 20)
 	add_child(margen)
 	var columna := VBoxContainer.new()
 	columna.add_theme_constant_override("separation", 20)
 	margen.add_child(columna)
 
-	# Arriba: el icono y el nombre del juego.
-	var cabecera := HBoxContainer.new()
-	cabecera.add_theme_constant_override("separation", 24)
-	var icono := TextureRect.new()
-	icono.texture = ICONO
-	icono.custom_minimum_size = Vector2(112, 112)
-	icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	cabecera.add_child(icono)
-	var titulos := VBoxContainer.new()
-	titulos.alignment = BoxContainer.ALIGNMENT_CENTER
-	titulos.add_child(Estilo.etiqueta("SECTOR CERO", 44, Estilo.NEON))
-	titulos.add_child(Estilo.etiqueta("Eres un antivirus. Tu ordenador está infectado.", 16, Estilo.TEXTO_SUAVE))
-	cabecera.add_child(titulos)
-	columna.add_child(cabecera)
+	# La cabecera, a tamaño real: la ventana mide 960 de ancho, como ella.
+	var cabecera := TextureRect.new()
+	cabecera.texture = CABECERA
+	cabecera.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	cabecera.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	cabecera.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	cabecera.offset_bottom = ALTO_CABECERA
+	add_child(cabecera)
 
 	# En medio: las novedades de la versión elegida (el texto de su release).
 	var panel := PanelContainer.new()
