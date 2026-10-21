@@ -216,9 +216,23 @@ girar; el disco frena con un `Tween` hasta -45·k grados más unas vueltas, que
 deja el sector k bajo la flecha. A los 10 minutos deja de salir horda y llega
 el **jefe**; en fácil, la horda que queda huye (se aleja del jugador y se
 desvanece en 1,2 s, sin dar experiencia), y en media y difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
-15 s se para, late en morado mientras crece un anillo y saca un círculo de 12 a
-24 enemigos, más cuanto menos vida le queda; los crean los gestores de la
-horda, como hace el élite replicante.
+15 s se para, late en morado mientras crece un anillo y saca un círculo de 8 a
+14 enemigos, más cuanto menos vida le queda; los crean los gestores de la
+horda, como hace el élite replicante. Desde el 21/10 tiene tres más. La
+**ráfaga** (`rafaga_jefe.gd`): cada 9 s dispara 12 proyectiles en círculo,
+que se esquivan por los huecos, y con menos de la mitad de vida dos ráfagas,
+la segunda girada 15°. El **pisotón** (`jaula_jefe.gd`): cada 20 s avisa con
+un anillo rojo en el suelo y, al pisar, deja durante 4 s una jaula que nadie
+cruza. La jaula no empuja a nadie: después de que cada uno se mueve, le
+devuelve a su lado del muro. Como el muro tiene grosor (de 174 a 186 px),
+basta con mirar si está más cerca del centro que de fuera, y nada va tan
+deprisa como para cruzarlo en un solo fotograma. Lo usan el jugador, el jefe
+y los cinco gestores de la horda, que encuentran la jaula por su grupo. Y la
+**rabia**: por debajo del 25 % de vida va un 30 % más rápido y sus
+intervalos se dividen entre 1,3, pero sus avisos duran lo mismo, así que se
+siguen pudiendo esquivar. Los dibujos de la jaula van en un nodo de la raíz
+de la partida entre las explosiones y el jugador, para quedar encima del
+suelo y debajo de todo lo demás.
 
 **La fase 2 y el jefe final.** Al derrotar al jefe, la raíz de la partida
 pausa el juego y emite `transicion_fase`: la interfaz pone un negro de 3 s con

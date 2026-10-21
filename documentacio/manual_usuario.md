@@ -80,7 +80,9 @@ guardada para la próxima vez):
 9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil, la
    que queda huye); el reloj se para mientras está. Cuando se pone rojo, va a
    embestir: apártate. Cuando late en morado, va a sacar un anillo de malware
-   a su alrededor.
+   o a disparar una ráfaga en círculo (pasa por los huecos). Si marca un
+   anillo rojo en el suelo, va a pisar y dejar una jaula: sal antes o te
+   quedarás encerrado con él. Con poca vida arde y ataca más deprisa.
 10. **Fase 2.** Al derrotarlo, el sector queda dañado: vuelve la horda, más
     dura, hasta los 15 minutos. Entonces llega **NÚCLEO CERO** (su vida, arriba
     en el centro). Al bajarle al 66 % y al 33 % cambia de forma y es más duro.

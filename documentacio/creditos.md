@@ -19,6 +19,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Explosión del rootkit (aviso, anillo, explosión y quemadura) | Hechos con IA (Claude) | Ver más abajo |
 | Suelo dañado de la fase 2 | Hecho con IA (Claude) | Ver más abajo |
 | Jefe final NÚCLEO CERO (formas, transformación, muerte, ataques, escudo, hielo y barra de vida) | Hechos con IA (Claude) | Ver más abajo |
+| Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -114,6 +115,12 @@ scripts no forman parte del repositorio.
   candado con su rotura, las anclas y la cadena, el cristal y la zona de
   hielo, y el marco y el relleno de su barra de vida. Con ellos vino una demo
   de cómo se dibuja cada sprite, que sirvió de referencia.
+- **Ataques nuevos del jefe del minuto 10** (`medios/sprites/jefe/`,
+  21/10/2026, de la misma forma; lote 1 de los assets nuevos): el aviso del
+  pisotón (un anillo rojo que se cierra), la onda del golpe, la jaula de datos
+  y su rotura (tiras de 384x384), el aura de llamas de la rabia (192x192) y
+  el proyectil de la ráfaga (16x16). Con ellos vino una demo de cómo se
+  dibuja cada uno, que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

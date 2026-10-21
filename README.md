@@ -89,9 +89,10 @@ personaje.
 - **Élites** cada minuto con habilidades al azar; si los matas, dejan un
   corazón que cura y un cofre con una ruleta de mejoras.
 - **Evoluciones**: repite tres veces una mejora y tu herramienta evoluciona.
-- **Dos jefes**: el de los 10 minutos, que embiste e invoca horda, y NÚCLEO
-  CERO, con tres formas, los ataques de tus personajes, portales, hielo y un
-  escudo que se rompe por sus anclas.
+- **Dos jefes**: el de los 10 minutos, que embiste, invoca horda, dispara
+  ráfagas y te encierra en una jaula, y NÚCLEO CERO, con tres formas, los
+  ataques de tus personajes, portales, hielo y un escudo que se rompe por sus
+  anclas.
 - **Ficha del enemigo**: haz click en cualquiera para ver su vida y su daño.
 - **Tres dificultades**, que se eligen en el menú: en fácil el malware tiene
   menos vida, hace menos daño y huye cuando llega el jefe; en difícil, al
