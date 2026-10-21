@@ -57,6 +57,16 @@ static func afijos_encima(lienzo: CanvasItem, afijos: Array[DatosAfijoElite], se
 			_afijo(lienzo, afijo, segundos)
 
 
+## Los iconos de sus afijos en fila y centrados, a tamaño real, a la altura y
+## (encima de su nombre).
+static func iconos(lienzo: CanvasItem, afijos: Array[DatosAfijoElite], y: float) -> void:
+	const PASO := 20.0
+	var ancho := afijos.size() * PASO - 4.0
+	for i in afijos.size():
+		if afijos[i].icono != null:
+			lienzo.draw_texture(afijos[i].icono, Vector2(-ancho / 2.0 + i * PASO, y))
+
+
 ## El efecto de un afijo, teñido de su color, a los segundos que lleva el élite.
 static func _afijo(lienzo: CanvasItem, afijo: DatosAfijoElite, segundos: float) -> void:
 	var hoja: Texture2D = AFIJOS[afijo.efecto][0]

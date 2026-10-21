@@ -212,6 +212,7 @@ func _draw() -> void:
 	BarraVida.dibujar(self, arriba, 70.0, 7.0, _salud.vida() / _salud.vida_maxima, datos.color)
 	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
 	draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
+	Dibujo.iconos(self, _afijos, arriba.y - 38.0)
 
 
 func _dibujar_encima() -> void:

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="1_afijo"]
+[ext_resource type="Texture2D" uid="uid://cyar1wsyq13fo" path="res://recursos/enemigos/afijos/iconos/blindado.png" id="2_icono"]
 
 [resource]
 script = ExtResource("1_afijo")
@@ -9,3 +10,4 @@ descripcion = "Recibe la mitad de daño. Tarda el doble en caer: aléjate y sigu
 efecto = 0
 color = Color(0.55, 0.75, 1, 1)
 valor = 0.5
+icono = ExtResource("2_icono")

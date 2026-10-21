@@ -151,7 +151,7 @@ func _enemigos() -> VBoxContainer:
 	lista.add_child(EstiloInterfaz.etiqueta("AFIJOS DE LOS ÉLITES", 20, Color(1.0, 0.85, 0.3)))
 	var oleadas: DatosConfigOleada = load(OLEADAS)
 	for afijo in oleadas.afijos_elite:
-		lista.add_child(_fila(null, afijo.nombre, afijo.color, afijo.descripcion))
+		lista.add_child(_fila(afijo.icono, afijo.nombre, afijo.color, afijo.descripcion))
 	return lista
 
 

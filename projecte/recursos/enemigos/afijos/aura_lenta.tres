@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosAfijoElite" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://recursos/enemigos/datos_afijo_elite.gd" id="1_afijo"]
+[ext_resource type="Texture2D" uid="uid://bbjibvc7kf18i" path="res://recursos/enemigos/afijos/iconos/aura_lenta.png" id="2_icono"]
 
 [resource]
 script = ExtResource("1_afijo")
@@ -9,3 +10,4 @@ descripcion = "Si estás dentro de su aura helada, te mueves un 25 % más lento.
 efecto = 2
 color = Color(0.6, 0.85, 1, 1)
 valor = 0.25
+icono = ExtResource("2_icono")

@@ -16,8 +16,10 @@ enum Efecto {
 ## Para la ventana de reglas.
 @export_multiline var descripcion: String = ""
 @export var efecto: Efecto = Efecto.BLINDADO
-## Color con el que se dibuja su anillo alrededor del élite.
+## Color con el que se tiñe su efecto alrededor del élite.
 @export var color: Color = Color.WHITE
+## Icono de 16x16 para la ventana de reglas y encima del élite.
+@export var icono: Texture2D
 
 ## Depende del efecto: la fracción del daño que ignora el blindado, cuántos
 ## bits corruptos suelta el replicante al morir, la fracción de velocidad que
