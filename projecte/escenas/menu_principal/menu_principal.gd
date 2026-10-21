@@ -9,6 +9,7 @@ const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
 const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 const PanelVersiones := preload("res://escenas/interfaz/panel_versiones.gd")
 const SelectorDificultad := preload("res://escenas/menu_principal/selector_dificultad.gd")
+const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -36,16 +37,11 @@ func _ready() -> void:
 	caja.add_theme_constant_override("separation", 18)
 	centro.add_child(caja)
 
-	var titulo := EstiloInterfaz.etiqueta("SECTOR CERO", 64, EstiloInterfaz.NEON)
+	# El logo, con su glitch de vez en cuando (logo_glitch.gd).
+	caja.add_child(LogoGlitch.new())
 	var lema := EstiloInterfaz.etiqueta("Defiende el sector de arranque del malware", 18, EstiloInterfaz.TEXTO_SUAVE)
-	for etiqueta in [titulo, lema]:
-		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		caja.add_child(etiqueta)
-	# El título late despacio: una animación mínima para que la pantalla no
-	# parezca congelada.
-	var latido := create_tween().set_loops()
-	latido.tween_property(titulo, "modulate:a", 0.6, 1.2)
-	latido.tween_property(titulo, "modulate:a", 1.0, 1.2)
+	lema.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(lema)
 
 	caja.add_child(_panel_resumen())
 
