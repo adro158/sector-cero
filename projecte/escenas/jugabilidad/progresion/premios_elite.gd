@@ -75,6 +75,7 @@ func _recoger(premio: Sprite2D) -> void:
 		var antes := _salud.vida()
 		_salud.curar(CURACION)
 		_animar_corazon(premio, _salud.vida() - antes)
+		_jugador.get_node("EfectosJugador").curar()
 	else:
 		_animar_cofre(premio)
 
