@@ -13,6 +13,9 @@ signal enemigo_danado(posicion: Vector2, cantidad: float, resistencia: float)
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const RADIO := 24.0
+## Como mucho un 0 cada tanto: el Ping que la atraviesa la toca varios
+## fotogramas seguidos.
+const ESPERA_CERO := 0.3
 ## Las mismas claves que las hojas de Dibujo.ANCLAS.
 const PERSONAJES := {
 	"mago": preload("res://recursos/personajes/datos/mago.tres"),
@@ -28,6 +31,7 @@ var _vida_maxima := 1.0
 var _activa := false
 var _rota := false
 var _segundos := 0.0
+var _ultimo_cero := -1.0
 ## El personaje que lleva el jugador ahora.
 var _personaje_activo: DatosPersonaje
 
@@ -65,15 +69,18 @@ func rota() -> bool:
 
 
 ## Misma forma que el resto de objetivos: devuelve a cuántos alcanza. Con otra
-## herramienta también cuenta como alcanzada (el proyectil del Ping se queda
-## en ella), pero no le quita vida.
+## herramienta enseña el 0 pero no cuenta como alcanzada: si contara, el robo
+## de vida curaría y la resistencia del malware lo tomaría por daño. El
+## proyectil del Ping la atraviesa.
 func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0) -> int:
 	if not _activa or global_position.distance_to(centro) > radio_golpe + RADIO:
 		return 0
 	var numero_en := global_position + Vector2(randf_range(-10.0, 10.0), -36.0)
 	if _personaje_activo != PERSONAJES[herramienta]:
-		enemigo_danado.emit(numero_en, 0.0, 1.0)
-		return 1
+		if _segundos - _ultimo_cero > ESPERA_CERO:
+			_ultimo_cero = _segundos
+			enemigo_danado.emit(numero_en, 0.0, 1.0)
+		return 0
 	_vida -= cantidad
 	enemigo_danado.emit(numero_en, cantidad, resistencia)
 	if _vida <= 0.0:
