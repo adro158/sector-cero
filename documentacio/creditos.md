@@ -20,6 +20,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Suelo dañado de la fase 2 | Hecho con IA (Claude) | Ver más abajo |
 | Jefe final NÚCLEO CERO (formas, transformación, muerte, ataques, escudo, hielo y barra de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
+| Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -121,6 +122,11 @@ scripts no forman parte del repositorio.
   y su rotura (tiras de 384x384), el aura de llamas de la rabia (192x192) y
   el proyectil de la ráfaga (16x16). Con ellos vino una demo de cómo se
   dibuja cada uno, que sirvió de referencia.
+- **Anclas del escudo por personaje** (`medios/sprites/jefe_final/`,
+  21/10/2026, de la misma forma; lote 2): las mismas anclas y cadenas del
+  escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el
+  candado (un cristal el Mago, una espada el Espadachín y una guadaña el
+  Segador). Con ellas vino el cambio del dibujo, que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

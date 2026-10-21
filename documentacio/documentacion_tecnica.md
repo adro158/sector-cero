@@ -260,6 +260,13 @@ misma función que el aura de los élites. Todos avisan antes de hacer daño. Al
 cambiar de forma se encierra en un escudo: no recibe daño hasta que se rompen
 sus cuatro anclas, que son objetivos con su vida y están en la escena desde el
 principio, como los élites, porque las armas buscan sus objetivos al empezar.
+Desde el 21/10 cada ancla es de un personaje y solo le quita vida su
+herramienta. Las armas no dicen quién pega, así que el ancla escucha
+`equipo_cambiado` y mira quién se lleva en ese momento: lo demás le saca un 0
+rojo. El reparto es a-b-c-b, para que no queden dos del mismo color juntas,
+y solo con los personajes que no han caído; si alguien cae con el escudo
+puesto, sus anclas pasan a otro, porque si no el escudo no se podría romper.
+Si en 12 s desde la primera rota no caen las cuatro, las rotas se cierran.
 Su barra de vida, arriba en el centro, se entera de todo por el bus. Ninguno
 de estos scripts tiene `class_name` ni toca `project.godot`: así llegan con la
 actualización pequeña.
