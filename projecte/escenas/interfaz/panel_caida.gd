@@ -48,7 +48,7 @@ func _al_caer(personajes: Array, caido: int) -> void:
 			continue
 		var datos: Dictionary = personajes[i]
 		boton.icon = datos.personaje.retrato
-		boton.text = "[%d]  %s  ·  %d / %d de vida  ·  %s" % [i + 1, datos.personaje.nombre.to_upper(), ceili(datos.vida), datos.maxima, datos.arma.nombre]
+		boton.text = "[%d]  %s  ·  %d / %d de vida  ·  %s" % [i + 1, datos.personaje.nombre.to_upper(), ceili(datos.vida), ceili(datos.maxima),datos.arma.nombre]
 		if primero == null:
 			primero = boton
 	_ventana.visible = true

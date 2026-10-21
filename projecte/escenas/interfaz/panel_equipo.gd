@@ -150,7 +150,7 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	# La resistencia se lee del nodo del malware, como el panel técnico: cambia
 	# cada 20 s y no tiene señal en el bus.
 	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(datos.arma)
-	ficha.get_child(2).text = "%d / %d · %s · resiste %d %%" % [ceili(datos.vida), datos.maxima, datos.arma.nombre, roundi(resistencia * 100.0)]
+	ficha.get_child(2).text = "%d / %d · %s · resiste %d %%" % [ceili(datos.vida), ceili(datos.maxima),datos.arma.nombre, roundi(resistencia * 100.0)]
 
 
 ## El primer personaje vivo desde el activo, en el sentido del paso.

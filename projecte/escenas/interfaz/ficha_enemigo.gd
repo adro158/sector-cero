@@ -112,7 +112,9 @@ func _mostrar(ficha: Dictionary) -> void:
 	_barra.max_value = ficha.vida_maxima
 	_barra.value = ficha.vida
 	_relleno.bg_color = ficha.color
-	_vida.text = "Vida %d / %d" % [ceili(ficha.vida), roundi(ficha.vida_maxima)]
+	# Las dos hacia arriba: con la actual hacia arriba y la máxima al más
+	# cercano, una vida de 96,4 salía "97 / 96".
+	_vida.text = "Vida %d / %d" % [ceili(ficha.vida), ceili(ficha.vida_maxima)]
 	# El daño que hace de verdad, con el de la dificultad elegida.
 	var dano: float = ficha.dano * Dificultad.dato("dano")
 	_datos.text = "Daño al tocarte %d · Velocidad %d\n%s" % [roundi(dano), roundi(ficha.velocidad), _texto_resistencia()]
