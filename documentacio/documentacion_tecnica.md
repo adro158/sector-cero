@@ -234,7 +234,15 @@ por cada nivel del jugador y, desde el minuto 3, con un 15 % más por cada
 minuto de partida: el principio es suave y a mitad de partida cuesta más matar.
 Un tipo puede limitar cuántos hay a la vez: sin ese límite, el ransomware se
 acumulaba por cientos. Cada minuto llega un **élite**
-con uno o dos afijos al azar (blindado, replicante, aura lenta, explosivo). Al
+con uno o dos afijos al azar (blindado, replicante, aura lenta, explosivo). Desde
+el 21/10 el rootkit está animado en reposo (cada uno empieza en un punto
+distinto de su animación, sacado de dónde aparece y no de `randf()`, para no
+gastar el azar del simulador) y cada afijo se ve con su efecto teñido de su
+color (`dibujo_elite.gd`): las placas del Blindado encima del rootkit, en un
+hijo que se dibuja con su señal `draw`, y las copias del Replicante y el
+anillo helado del Aura lenta detrás, en el `_draw` del élite, que va antes
+que su `Sprite`. El Explosivo, que no se ve hasta que muere, conserva un
+anillo fino de su color. Al
 morir deja un corazón, que cura la mitad de la vida, y un cofre. El cofre va a
 la misma cola que las subidas de nivel, que distingue "nivel" y "cofre" para
 que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las

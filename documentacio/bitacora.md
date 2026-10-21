@@ -3031,11 +3031,17 @@ trae los PNG, sus vistas previas, `LEEME.txt`, `PROMPT_CLAUDE_CODE.md`,
   del que entra; no al empezar ni al evolucionar) y al coger el corazón, y
   la muerte de cada enemigo de la horda en el color de su tipo y a su
   tamaño. Las partículas de la horda, de 7 a 3 por muerte.
+- **Lote 5, élites:** el rootkit animado en reposo, con un brillo cada 1,5 s
+  y desfasado entre élites; el efecto de cada afijo (placas del Blindado
+  encima, copias del Replicante y anillo helado del Aura lenta detrás); el
+  Aura lenta pasa a azul hielo («aura helada»). Los anillos finos se quitan
+  salvo el del Explosivo, que no tiene efecto hasta que muere. El dibujo del
+  élite pasa a `dibujo_elite.gd`.
 - **Arreglo del lote 2:** un ancla ajena contaba como alcanzada (curaba con
   el robo de vida y la resistencia lo tomaba por daño). Ahora no, y el 0 sale
   como mucho cada 0,3 s.
 - Panel de reglas, manual, README, documentación técnica y créditos al día
-  con los cuatro lotes.
+  con los cinco lotes.
 
 ### Decisiones de Adam
 
@@ -3122,7 +3128,10 @@ son de Adam. Sin subagentes.
   a mitad del pulso (se congela), las chispas (3, de enemigos de verdad) y
   el destello del Ping; subir de nivel al cerrar el panel, el cambio con
   cada personaje, el corazón, la pausa (se congela) y la muerte de los cinco
-  tipos de la horda con su color y su tamaño.
+  tipos de la horda con su color y su tamaño; los élites con cada afijo,
+  con dos a la vez, el jugador dentro del aura helada (ralentizado), el
+  aviso del Explosivo como antes, los cuatro fotogramas del reposo y la
+  pausa.
 - Una partida entera del simulador, solo para ver que no hay errores.
 - Sin simulaciones: Adam las deja para más adelante.
 
@@ -3142,7 +3151,8 @@ son de Adam. Sin subagentes.
    muertes de la horda a la vez (`muertes_horda.gd`).
 5. **Para decidir con Adam:**
    - el proyectil de la ráfaga se ve pequeño (16x16)
-   - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script
-6. Los lotes que faltan: 5 (élites), 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
+   - `jefe.gd` tiene 311 líneas: se podría sacar la rabia a su script.
+     `enemigo_elite.gd`, 219 (el dibujo ya está en `dibujo_elite.gd`)
+6. Los lotes que faltan: 6 (interfaz) y `armas_evolucionadas.zip` (en el README de `zips-lotes` va
    el primero; por decidir cuándo).
 7. Al cerrar: las horas de esta sesión.

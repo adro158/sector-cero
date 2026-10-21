@@ -74,7 +74,9 @@ guardada para la próxima vez):
    embiste en línea recta (apártate de lado), y el **ransomware** (candado
    rojo), lento pero muy duro.
 8. **Élites.** Cada minuto llega uno con habilidades escritas encima
-   (blindado, replicante, aura lenta o explosivo). Al matarlo deja un
+   (blindado, replicante, aura lenta o explosivo), y cada una se ve: placas
+   de armadura, copias fantasma, un anillo helado que te ralentiza si estás
+   dentro, o un anillo naranja si va a explotar al morir. Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
 9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil, la
