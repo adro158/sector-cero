@@ -14,13 +14,17 @@ extends Node2D
 
 const PROYECTIL := preload("res://medios/sprites/jefe/jefe_rafaga.png")
 const LADO := 16.0
+## Se dibuja al doble (32x32), para que se vea entre la horda. Dónde golpea no
+## cambia (RADIO_IMPACTO): si roza el dibujo pero no el cuerpo, no quita vida.
+const ESCALA := 2.0
 const FOTOGRAMAS := 4
 const SEGUNDOS_POR_FOTOGRAMA := 0.08
 
 const CANTIDAD := 12
-const VELOCIDAD := 200.0
-## Segundos que vuela cada proyectil: llega a unos 400 px.
-const VIDA := 2.0
+## Era 200 hasta el 22/10: se esquivaba demasiado fácil.
+const VELOCIDAD := 280.0
+## Segundos que vuela cada proyectil: llega a unos 450 px.
+const VIDA := 1.6
 ## Salen un poco fuera del cuerpo del jefe, no de su centro.
 const SALIDA := 30.0
 ## Media vuelta entre dos proyectiles (15°): la segunda ráfaga pasa por los
@@ -74,9 +78,10 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	var lado := Vector2(LADO, LADO)
+	var dibujado := lado * ESCALA
 	for proyectil in _proyectiles:
 		var fotograma := int(proyectil[2] / SEGUNDOS_POR_FOTOGRAMA) % FOTOGRAMAS
 		# El dibujo mira a la derecha: se gira hacia donde va.
 		draw_set_transform(proyectil[0], proyectil[1].angle())
-		draw_texture_rect_region(PROYECTIL, Rect2(-lado / 2.0, lado), Rect2(Vector2(fotograma * LADO, 0.0), lado))
+		draw_texture_rect_region(PROYECTIL, Rect2(-dibujado / 2.0, dibujado), Rect2(Vector2(fotograma * LADO, 0.0), lado))
 	draw_set_transform(Vector2.ZERO)

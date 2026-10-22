@@ -21,8 +21,12 @@ const JAULA := preload("res://medios/sprites/jefe/jefe_jaula.png")
 const ROTURA := preload("res://medios/sprites/jefe/jefe_jaula_rotura.png")
 ## Todas las tiras son de fotogramas de 384x384, con el centro en el medio.
 const LADO := 384.0
+## Se dibuja un 30 % más grande que la tira (y el muro está igual de lejos):
+## desde el 22/10, para que cueste más salir antes de que se cierre.
+const ESCALA := 1.3
 
-const DURA_AVISO := 0.8
+## Era 0,8 s hasta el 22/10: se esquivaba demasiado fácil.
+const DURA_AVISO := 0.5
 const FOTOGRAMAS_AVISO := 6
 const ONDA_CADA := 0.06
 const FOTOGRAMAS_ONDA := 6
@@ -33,9 +37,9 @@ const FOTOGRAMAS_ROTURA := 5
 ## Lo que está cerrada la jaula.
 const DURA_JAULA := 4.0
 
-## El muro, como está en el dibujo: de 174 a 186 px del centro.
-const RADIO_DENTRO := 174.0
-const RADIO_FUERA := 186.0
+## El muro, como está en el dibujo (de 174 a 186 px del centro), escalado.
+const RADIO_DENTRO := 174.0 * ESCALA
+const RADIO_FUERA := 186.0 * ESCALA
 ## Lo que se suma por el tamaño del jugador: choca con el borde de su cuerpo.
 const RADIO_JUGADOR := 12.0
 
@@ -142,4 +146,5 @@ func _draw() -> void:
 ## Dibuja un fotograma de una tira con su centro en el del pisotón.
 func _tira(textura: Texture2D, fotograma: int) -> void:
 	var lado := Vector2(LADO, LADO)
-	draw_texture_rect_region(textura, Rect2(to_local(_centro) - lado / 2.0, lado), Rect2(Vector2(fotograma * LADO, 0.0), lado))
+	var dibujado := lado * ESCALA
+	draw_texture_rect_region(textura, Rect2(to_local(_centro) - dibujado / 2.0, dibujado), Rect2(Vector2(fotograma * LADO, 0.0), lado))
