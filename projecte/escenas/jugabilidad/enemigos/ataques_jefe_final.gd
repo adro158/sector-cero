@@ -176,8 +176,15 @@ func _rayo() -> void:
 			var desde := _origen + direccion * RAYO_DELANTE
 			var cercano := Geometry2D.get_closest_point_to_segment(_jugador.global_position, desde, desde + direccion * RAYO_LARGO)
 			if cercano.distance_to(_jugador.global_position) < RAYO_RADIO + RADIO_JUGADOR:
+				var antes := _salud_jugador.vida()
 				_salud_jugador.recibir_dano(DANO_RAYO)
-				_rayo_pego = true
+				# Solo cuenta si le ha quitado vida. Si acababa de recibir otro
+				# golpe (la horda le toca a menudo), su salud está protegida medio
+				# segundo y no le hace nada: lo sigue intentando mientras se vea
+				# el rayo. Hasta el 22/10 contaba igual y el rayo no hacía daño.
+				if _salud_jugador.vida() < antes:
+					_rayo_pego = true
+					return
 
 
 func _torbellino() -> void:
