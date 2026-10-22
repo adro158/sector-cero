@@ -156,7 +156,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       cada 0,05 (20), y los anillos del jefe de 8 a 14 enemigos en vez de 12
       a 24.
    2. **Hecho:** robo de vida del Espadachín. El Firewall y su evolución
-      curan un 10 % del daño hecho, como mucho 3 de vida por golpe
+      curan un 10 % del daño hecho, como mucho 1,5 de vida por golpe (eran 3
+      hasta el 22/10: Adam, quieto en el minuto 8:30, casi no perdía vida)
       (`robo_vida` en `DatosArma`, `ROBO_MAXIMO` en `gestor_armas.gd`).
       Probado.
    3. **Hecho** el 22/10 (sesión 18): en media huye la mitad de la horda

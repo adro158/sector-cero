@@ -3492,3 +3492,15 @@ siempre, cargando también la partida.
   empieza al 55 % de opacidad y se va apagando (`OPACIDAD_EFECTO` en
   `aura_arma.gd`). Comparado con ventana, el antes y el después, en cuatro
   momentos de cada ataque. Si se queda corto o se pasa, se cambia ese número.
+- **El robo de vida del Espadachín curaba demasiado** (Adam, jugando: quieto
+  en el minuto 8:30 casi no perdía vida). Con la horda encima siempre llega
+  al tope por golpe, así que lo que manda es el tope: bajó de 3 a 1,5
+  (`ROBO_MAXIMO` en `gestor_armas.gd`), de unos 5 a 2,5 de vida por segundo
+  con el Firewall. **Cambia el equilibrio, que estaba en el objetivo:** hay
+  que volver a medir las victorias con el simulador (en casa, con muchas
+  partidas a la vez; en la nube se tarda horas).
+- **Aclarado a Adam:** la ráfaga es la del jefe del minuto 10, no los
+  disparos del Mago.
+- **Integrado en `main`** a petición de Adam («intégralo todo al main»):
+  avance rápido desde la rama, sin conflictos.
+
