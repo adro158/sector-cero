@@ -1,10 +1,14 @@
 extends Control
 
 ## Panel de subida de nivel: tres tarjetas con icono, nombre, nivel y
-## descripción. Se elige con click o con las teclas 1, 2 y 3.
+## descripción. Se elige con click o con las teclas 1, 2 y 3. La tarjeta de una
+## evolución es de su personaje: de su color, con él dibujado con el arma nueva
+## y con el borde latiendo, para que se note que no es una mejora más.
 ##
 ## La pausa la pone y la quita la jugabilidad: el panel solo muestra las
 ## opciones y avisa de la elegida con mejora_seleccionada.
+
+const TarjetaEvolucion := preload("res://escenas/interfaz/tarjeta_evolucion.gd")
 
 ## Veces que se ha elegido cada mejora. Lo comparte el HUD para su columna.
 var niveles := {}
@@ -12,6 +16,10 @@ var niveles := {}
 var _opciones: Array = []
 var _tarjetas: Array[Button] = []
 var _ventana: ColorRect
+## El latido del borde de las tarjetas de evolución, mientras están a la vista.
+var _latido: Tween
+## Los estilos de las tarjetas de evolución de ahora, con el color de cada una.
+var _bordes: Array = []
 
 
 func _ready() -> void:
@@ -60,7 +68,9 @@ func _crear_tarjeta(indice: int) -> Button:
 
 	var tecla := EstiloInterfaz.etiqueta("[%d]" % (indice + 1), 14, EstiloInterfaz.TEXTO_SUAVE)
 	var icono := TextureRect.new()
-	icono.custom_minimum_size = Vector2(64, 64)
+	# Del alto del personaje de la tarjeta de evolución; los iconos de 16x16
+	# siguen saliendo a x4.
+	icono.custom_minimum_size = TarjetaEvolucion.LADO_PERSONAJE
 	icono.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -79,6 +89,7 @@ func _crear_tarjeta(indice: int) -> Button:
 
 func _al_subir_nivel(opciones: Array) -> void:
 	_opciones = opciones
+	_bordes = []
 	for i in _tarjetas.size():
 		var tarjeta := _tarjetas[i]
 		tarjeta.visible = i < opciones.size()
@@ -91,10 +102,26 @@ func _al_subir_nivel(opciones: Array) -> void:
 		contenido.get_child(2).text = mejora.nombre
 		contenido.get_child(3).text = texto_nivel(mejora, niveles)
 		contenido.get_child(4).text = mejora.descripcion
+		_bordes.append_array(TarjetaEvolucion.vestir(tarjeta, TarjetaEvolucion.personaje_de(mejora)))
+
+	# El borde de las de evolución late entre su color y uno más claro. El
+	# panel funciona en pausa, así que su tween también.
+	if _latido != null:
+		_latido.kill()
+	if not _bordes.is_empty():
+		_latido = create_tween().set_loops()
+		_latido.tween_method(_pintar_bordes, 0.0, 0.6, 0.45)
+		_latido.tween_method(_pintar_bordes, 0.6, 0.0, 0.45)
 
 	_ventana.visible = true
 	# Con el foco en la primera tarjeta también se puede elegir con el mando.
 	_tarjetas[0].grab_focus()
+
+
+## brillo 0 es el color del personaje y 1, blanco.
+func _pintar_bordes(brillo: float) -> void:
+	for borde in _bordes:
+		borde[0].border_color = borde[1].lerp(Color.WHITE, brillo)
 
 
 ## "NUEVA", "NIVEL 1 → 2" o "EVOLUCIÓN". Estática porque la usa también la
@@ -127,4 +154,6 @@ func _elegir(indice: int) -> void:
 	niveles[mejora] = niveles.get(mejora, 0) + 1
 	_opciones = []
 	_ventana.visible = false
+	if _latido != null:
+		_latido.kill()
 	BusEventos.mejora_seleccionada.emit(mejora)
