@@ -53,10 +53,9 @@ Windows avisará de que el instalador no es de un editor conocido («Windows
 protegió su PC»), porque no está firmado: pulsa **Más información** y
 **Ejecutar de todas formas**.
 
-Sigue estando el juego suelto, sin lanzador: el `.zip` de Windows o de Linux
-de cada versión. Se descomprime y se abre `SectorCero.exe` (en Linux,
-`SectorCero.x86_64`), y él mismo avisa de las versiones nuevas con
-**ACTUALIZAR**.
+Desde la v1.8 el juego solo se juega con el lanzador: las releases ya no
+traen el juego suelto. Los `.pck` que se ven en cada release son el contenido
+de esa versión, que baja el lanzador; solos no se pueden abrir.
 
 | Acción | Teclado | Mando |
 |---|---|---|

@@ -243,6 +243,14 @@ de lanzar Godot.
     escribir el de cada versión antes de subir su etiqueta.
   - **El zip del lanzador de Linux** no puede acabar en `_linux.zip`: los
     juegos antiguos lo cogerían para su ACTUALIZAR.
+  - **Desde la v1.8 no se publica el juego suelto** (decisión de Adam, sesión
+    18): la release lleva los dos instaladores, los `.pck` del juego y del
+    lanzador y `version.json`, y no los `SectorCero_vX_<plataforma>.zip`. El
+    juego solo se juega con el lanzador (y la web, que se deja). Por eso, si
+    algún día hace falta subir `EJECUTABLE_MINIMO`, los juegos sueltos
+    antiguos ya no encuentran el `.zip` para cambiar su ejecutable y abren la
+    página de GitHub. La Action comprueba al final que se ha subido cada
+    fichero (en la v1.7 faltó `lanzador_linux.pck` sin dar error).
 
 ## Git
 

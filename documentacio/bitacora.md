@@ -3226,10 +3226,16 @@ Por orden. Lo que dice «con Adam» se le pregunta antes.
 
 ---
 
-## Sesión 18 — 21-22/10/2026 (en casa)
+## Sesión 18 — 22/10/2026, jueves (instituto, en curso)
 
 **Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
-Claude Code en el ordenador de casa)
+Claude Code)
+
+**Se apunta como la sesión de clase del jueves 22/10** (decisión de Adam).
+Lo de abajo se hizo antes, desde el ordenador de casa (con la RTX 5070); en
+clase Adam sigue con esta misma sesión y añade lo que haga. **Al cerrarla en
+clase:** apuntar la duración de toda la sesión, las horas acumuladas y lo
+nuevo en cada apartado.
 
 ### Qué se ha hecho
 
@@ -3346,6 +3352,18 @@ Después de publicar (todo esto va en `main`, no en la v1.7):
     difícil al 0,5 de vida de NÚCLEO CERO y 1,15 de daño (2 de 20), pero
     quedaba con menos vida que en media; se dejó igual que en media para
     que la tabla vaya siempre de fácil a difícil.
+- **Las releases, solo con lo del lanzador** (pedido por Adam: que el juego
+  solo se pueda jugar con el lanzador). Desde la próxima versión la Action
+  ya no publica `SectorCero_vX_windows.zip` ni `_linux.zip` (el juego
+  suelto): quedan los dos instaladores, los `.pck` (el contenido de cada
+  versión, que baja el lanzador, y el del propio lanzador, para que se
+  actualice solo) y `version.json`. Un `.pck` solo no se abre sin el motor
+  que instala el lanzador. La web se deja (decisión de Adam). Además, la
+  Action comprueba al final que se ha subido cada fichero y sube el que
+  falte (en la v1.7 faltó `lanzador_linux.pck`). Las releases ya publicadas
+  (v0.2 a v1.7) siguen con sus zips: borrarlos es cosa de Adam desde la web
+  de GitHub, si quiere. README, manual (que aún explicaba el `.zip` y el
+  menú VERSIONES de antes del lanzador) y CLAUDE.md al día.
 
 ### Decisiones de Adam
 
@@ -3361,6 +3379,10 @@ Después de publicar (todo esto va en `main`, no en la v1.7):
 - Empezar por enseñar al bot a cambiar de personaje y medir las victorias.
 - **El equilibrio, ahora:** que sean 7-8 victorias de cada 10 en fácil, 4-5 en
   media y 1 en difícil. Los valores los eligió Claude con el simulador.
+- **Releases:** solo los instaladores y lo que necesita el lanzador (los
+  `.pck` y `version.json`), sin el juego suelto. La web se queda.
+- Esta sesión se apunta como la de clase del jueves 22/10, y Adam la sigue
+  en clase.
 
 ### Problemas encontrados y cómo se resolvieron
 
@@ -3423,3 +3445,13 @@ del escudo, que decidió Adam. Sin subagentes.
    puede haber cambiado.
 3. Lo de decidir con Adam (sesión 17, punto 5) y `armas_evolucionadas.zip`
    (punto 6).
+4. **La próxima versión (v1.8)**, cuando Adam la pida: lleva el equilibrado,
+   el escudo arreglado, los fallos de la ficha y las releases sin el juego
+   suelto. Antes, escribir `documentacio/novedades/v1.8.txt` y, después,
+   comprobar que la release trae justo los dos instaladores, los cuatro
+   `.pck` y `version.json`.
+
+### Estado al subir desde casa
+
+Todo en `main` y subido a GitHub. Publicada la v1.7 (sin el equilibrado,
+que es de después). La sesión sigue abierta para la clase del 22/10.

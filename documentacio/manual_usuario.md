@@ -9,16 +9,18 @@ integridad (la barra sobre tu personaje) llega a cero, pierdes.
 
 ## Instalar y abrir
 
-Descarga el `.zip` de [Releases](https://github.com/adro158/sector-cero/releases),
-descomprímelo y abre `SectorCero.exe` (en Linux, `SectorCero.x86_64`; si no
-arranca, dale permiso con `chmod +x SectorCero.x86_64`). No hay que instalar
-nada. Si sale una versión nueva, el juego avisa solo (también en plena
-partida): **ACTUALIZAR** la descarga y reinicia el juego, y **AHORA NO** lo deja
-para más tarde, con el botón en el menú. Con **VERSIONES** se puede
-instalar cualquier versión publicada, también una anterior: **INSTALAR** la
-descarga sin salir de la que tienes, y después **CAMBIAR** pasa a ella (el
-juego se reinicia) y **BORRAR** la quita. En Opciones se puede apagar el
-aviso.
+El juego se juega con el **lanzador**. Descarga de la última versión de
+[Releases](https://github.com/adro158/sector-cero/releases) el instalador:
+en Windows, `SectorCero_Instalador_vX.exe` (Siguiente, la carpeta y
+Finalizar; si Windows avisa de que no es de un editor conocido, **Más
+información** y **Ejecutar de todas formas**); en Linux,
+`SectorCero_Lanzador_linux_vX.zip`, que se descomprime para abrir
+`SectorCero_Lanzador.x86_64` (si no arranca, `chmod +x` a los dos
+ejecutables). En el lanzador, elige la versión en el desplegable (se
+descarga en un momento) y pulsa **JUGAR**; al cerrar el juego vuelves al
+lanzador. Las versiones nuevas aparecen solas y el lanzador se actualiza
+solo. Sin descargar nada, la última versión se juega también en el
+navegador, en [adro158.github.io/sector-cero](https://adro158.github.io/sector-cero/).
 
 ## Controles
 

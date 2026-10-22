@@ -93,8 +93,15 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18,
-   21-22/10). Los seis lotes de la sesión 17 se integraron sin conflictos,
+0. **En `main` sin publicar** (sesión 18, 22/10): el equilibrado de las
+   dificultades (punto 3.6), el escudo de NÚCLEO CERO arreglado, los dos
+   fallos de la ficha del enemigo y las releases sin el juego suelto (solo
+   los instaladores, los `.pck` que usa el lanzador y `version.json`; la
+   web se queda). Sale con la v1.8 cuando Adam la pida, con sus novedades
+   en `documentacio/novedades/v1.8.txt`.
+
+   **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18).
+   Los seis lotes de la sesión 17 se integraron sin conflictos,
    se validaron cargando la partida, se miraron con capturas con ventana y
    se midió el rendimiento en casa (bitácora, sesión 18). Falta:
    - **que Adam lo pruebe jugando** (la lista, en la bitácora, sesión 17,
