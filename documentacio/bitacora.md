@@ -3672,3 +3672,57 @@ siempre, cargando también la partida.
 
   Todo está en `mejoras_propuestas.md`, con un resumen por prioridad, y en
   `requisitos_y_estado.md`, punto 16. Nada decidido: lo elige Adam.
+
+### En la nube, el punto 15 (22/10, por la tarde)
+
+Con el prompt del punto 15 de `requisitos_y_estado.md`, desde Claude Code en
+la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
+`main` y sube a `main` al acabar cada paso).
+
+- **Paso 1, hecho: el Firewall ataca en un cono.**
+  - **Cómo:** un script nuevo, `golpe_cono.gd` (sin `class_name`): el cono de
+    un ataque (de dónde sale, hacia dónde, alcance, ángulo y daño pegado y al
+    filo) y `factor()`, que dice por cuánto se multiplica el daño de algo en
+    un punto (0 si queda fuera). Los cinco `danar_en_area` (horda, élites,
+    los dos jefes y las anclas) aceptan el cono como **parámetro opcional al
+    final**: sin él, todo sigue en círculo (el Escáner, los proyectiles y
+    las ultis no cambian). Cada objetivo suma lo que le toca en
+    `cono.golpes`, y el robo de vida y la resistencia del malware usan esa
+    suma: un ancla con otro personaje no cuenta, porque no recibe daño.
+  - **Hacia dónde:** `mirando` en `controlador_jugador.gd`, la dirección de
+    lo último que se pulsó (exacta, no redondeada a las 8 del dibujo: con
+    el mando y el táctil apunta donde se empuja).
+  - **Los datos** (en `DatosArma`, para el Firewall): `angulo_cono` (90),
+    `dano_pegado` (1,5) y `dano_filo` (0,5). El robo de vida tiene ahora su
+    tope en el arma (`robo_maximo`, que era `ROBO_MAXIMO` de
+    `gestor_armas.gd`). La evolución, como propuso Claude: alcance 150 (era
+    125), robo 0,15 (era 0,1), tope 2 (era 1,5) y el mismo daño cerca que
+    lejos.
+  - **El dibujo, por código** (`aura_arma.gd`, `_cono`) hasta que entren los
+    del lote 7: el contorno hacia donde mira y, al atacar, el cono verde,
+    más fuerte cerca. Las chispas del robo de vida solo salen de lo que está
+    dentro del cono.
+  - **El bot del simulador apunta:** en los 0,05 s antes de cada golpe se
+    gira hacia el enemigo más cercano a su alcance (`_apuntar_cono`).
+  - **Probado** con un script temporal: delante y pegado recibe 10,7 (7,5 ×
+    1,43), delante al filo 4,3, detrás y a 50° nada; con la evolución, 11,2
+    pegado y al filo; el Escáner sigue dando al de detrás. Capturas con
+    ventana del cono y una partida del simulador sin errores (llegó a
+    NÚCLEO CERO).
+- **Paso 2, los dibujos del lote 7, hechos y esperando el sí de Adam:** vista
+  previa en `documentacio/capturas/lote7/vista_previa.png`.
+  - **Cómo:** con Python (numpy y Pillow), en la carpeta temporal de la
+    sesión (no se suben). El arma se separa del cuerpo comparando cada hoja
+    con la evolucionada, que tiene el mismo cuerpo: lo que cambia es el
+    arma; luego se completa con los colores que salen sobre todo en ella y
+    su contorno oscuro. Lo que el arma tapa en las dos hojas se rellena con
+    los colores de alrededor. El arma se mueve y se vuelve a poner encima.
+  - **Las seis hojas de ataque** (los tres personajes, normal y
+    evolucionado), de 4 x 8 fotogramas de 64x72 y con el 0 igual al de
+    andar: el Mago adelanta el bastón y le brilla el cristal; el Espadachín
+    echa la espada atrás por su lado, cruza por delante con una estela
+    verde y vuelve; el Segador sube la guadaña 6 px, le brilla el filo y la
+    baja.
+  - **El tajo del cono** (6 fotogramas, el frente avanza y se deshace en
+    damero), el del Firewall más fuerte cerca y el del perimetral igual en
+    todo el cono, y los dos contornos a trazos, en grises para teñirlos.
