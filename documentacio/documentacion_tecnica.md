@@ -273,7 +273,7 @@ desvanece en 1,2 s, sin dar experiencia), en media la mitad (uno sí y otro
 no: cada enemigo lleva su marca y su desvanecido, que el shader lee en el
 cuarto dato de su instancia) y en difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
 15 s se para, late en morado mientras crece un anillo y saca un círculo de 8 a
-14 enemigos, más cuanto menos vida le queda; los crean los gestores de la
+20 enemigos (hasta el 22/10, 14), más cuanto menos vida le queda; los crean los gestores de la
 horda, como hace el élite replicante. Desde el 21/10 tiene tres más. La
 **ráfaga** (`rafaga_jefe.gd`): cada 9 s dispara 12 proyectiles en círculo,
 que se esquivan por los huecos, y con menos de la mitad de vida dos ráfagas,
@@ -283,10 +283,25 @@ cruza. La jaula no empuja a nadie: después de que cada uno se mueve, le
 devuelve a su lado del muro. Como el muro tiene grosor (de 226 a 242 px desde el 22/10; era de 174 a 186),
 basta con mirar si está más cerca del centro que de fuera, y nada va tan
 deprisa como para cruzarlo en un solo fotograma. Lo usan el jugador, el jefe
-y los cinco gestores de la horda, que encuentran la jaula por su grupo. Y la
-**rabia**: por debajo del 25 % de vida va un 30 % más rápido y sus
-intervalos se dividen entre 1,3, pero sus avisos duran lo mismo, así que se
-siguen pudiendo esquivar. Los dibujos de la jaula van en un nodo de la raíz
+y los cinco gestores de la horda, que encuentran la jaula por su grupo. Y las
+**furias** (desde el 22/10; antes era una sola rabia por debajo del 25 %): al
+bajar del 66 % y del 33 % de vida, `_furia` pasa a 1 y a 2, e indexa tres
+tablas pequeñas (`VELOCIDAD_FURIA`, `DANO_FURIA` y `RITMO_FURIA`): va un 15 %
+y un 30 % más rápido, pega un 25 % y un 50 % más (también cada proyectil de
+la ráfaga, que guarda su daño al salir) y sus intervalos se dividen entre
+1,25 y 1,5. Sus avisos duran lo mismo, así que se siguen pudiendo esquivar.
+Saca más horda por dos lados: cada anillo es más grande cuanta menos vida le
+queda, y con el ritmo llegan más a menudo. En la segunda furia arde (el aura
+de llamas que tenía la rabia). Lo vistoso va en su hijo `Efectos`
+(`espectaculo_jefe.gd`), con tiras hechas por nosotros con un script de
+Python: baja en una columna de datos (1,2 s en los que no recibe daño ni
+ataca, y avisa al jefe con la señal `aparecido`), al enfurecerse suelta una
+onda roja con rayos y al morir se agrieta y explota; la fase 2 empieza al
+acabar la explosión (`acabo_de_morir`). Los tres dan un tirón de cámara
+(`sacudir` del jugador), siempre hacia abajo para no gastar números del azar
+de la partida. Su vida va en una barra arriba, como la de NÚCLEO CERO:
+`barra_jefe.gd` sirve para las dos, cada una con su marco, y el HUD las conecta
+al bus (`jefe_vida_cambiada` y `jefe_final_vida_cambiada`). Los dibujos de la jaula van en un nodo de la raíz
 de la partida entre las explosiones y el jugador, para quedar encima del
 suelo y debajo de todo lo demás.
 

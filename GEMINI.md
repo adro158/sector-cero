@@ -14,7 +14,8 @@ pulido que uno ambicioso e incompleto.
 de un ordenador infectado. El jugador es un proceso antivirus que defiende el
 sector de arranque de oleadas de malware. Solo se controla el movimiento; las
 armas atacan solas. Los enemigos sueltan fragmentos de datos que dan experiencia,
-se sube de nivel y se eligen mejoras. A los 10 minutos llega un jefe; al
+se sube de nivel y se eligen mejoras. A los 10 minutos llega un jefe, Kernel
+Panic, que se enfurece al perder vida; al
 derrotarlo empieza la fase 2, con el mapa destrozado, y a los 15 minutos llega
 el jefe final, NÚCLEO CERO, que tiene tres formas y los ataques de los
 personajes y de la horda. Se gana al derrotarlo.
@@ -91,6 +92,8 @@ signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
 signal jefe_invoco
 signal jefe_ataco(ataque: String)
+signal jefe_vida_cambiada(actual: float, maxima: float)
+signal jefe_furia_cambiada(furia: int)
 signal elite_aparecio(descripcion: String)
 signal elite_exploto(posicion: Vector2)
 signal transicion_fase(segundos: float)
@@ -145,10 +148,12 @@ Detalles que la interfaz tiene que respetar:
   para el ranking), `trucos` (bool, si se usó el menú de desarrollador) y
   `dificultad` (String: `facil`, `media` o `dificil`). Al cumplirse
   `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
-  minutos) deja de aparecer horda y llega el jefe, que invoca anillos de
-  horda (`jefe_invoco`); mientras está, el reloj se para en las 10:00. En
-  fácil huye toda la horda que queda, en media la mitad y en difícil se
-  queda.
+  minutos) deja de aparecer horda y llega el jefe, Kernel Panic, que invoca
+  anillos de horda (`jefe_invoco`); mientras está, el reloj se para en las
+  10:00. Su vida llega con `jefe_vida_cambiada` (la barra del HUD) y, al
+  bajar del 66 % y del 33 %, se enfurece (`jefe_furia_cambiada`, 1 y 2):
+  el HUD avisa y el audio suena. En fácil huye toda la horda que queda, en
+  media la mitad y en difícil se queda.
 - **Fase 2.** Al derrotar al jefe, la jugabilidad pausa el juego y emite
   `transicion_fase(segundos)`: la interfaz pone el negro con «SECTOR CERO
   DAÑADO» (`pantalla_fase.gd`) y el menú de pausa no se abre. Detrás del

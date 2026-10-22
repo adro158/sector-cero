@@ -20,6 +20,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Suelo dañado de la fase 2 | Hecho con IA (Claude) | Ver más abajo |
 | Jefe final NÚCLEO CERO (formas, transformación, muerte, ataques, escudo, hielo y barra de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
+| Aparición, furia, muerte y barra de vida de Kernel Panic, el jefe del minuto 10 | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
 | Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
@@ -125,6 +126,13 @@ scripts no forman parte del repositorio.
   y su rotura (tiras de 384x384), el aura de llamas de la rabia (192x192) y
   el proyectil de la ráfaga (16x16). Con ellos vino una demo de cómo se
   dibuja cada uno, que sirvió de referencia.
+- **Kernel Panic, el jefe del minuto 10** (`medios/sprites/jefe/`,
+  22/10/2026): la columna de datos en la que aparece (10 fotogramas de
+  288x528), la onda roja con rayos de la furia (8 de 320x320) y su muerte
+  (12 de 320x320, se agrieta, un destello y una explosión morada). Los dibujó
+  Claude con un script de Python (Pillow), píxel a píxel y con los colores
+  del jefe. El marco y el relleno de su barra de vida son los de NÚCLEO CERO
+  recoloreados en morado, con su nombre escrito encima con la misma letra.
 - **Anclas del escudo por personaje** (`medios/sprites/jefe_final/`,
   21/10/2026, de la misma forma; lote 2): las mismas anclas y cadenas del
   escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el

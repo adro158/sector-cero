@@ -133,6 +133,10 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    publicados en la v1.3; la lista paso a paso está en la bitácora, sesión
    14). Con el
    proyecto de `main` abierto en Godot o con la build:
+   - F1 → JEFE YA: que Kernel Panic baja en su columna de datos y no se le
+     puede dar hasta que acaba, que al 66 % y al 33 % se enfurece (aviso,
+     sonido, onda roja; va más rápido y pega más) y que al morir explota
+     antes del negro (22/10, en la nube).
    - F1 → JEFE YA: matarlo y mirar el negro de la transición, el suelo
      dañado, la música más grave y que el reloj se queda en 10:00 mientras
      está el jefe.
@@ -166,8 +170,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       nube (lote 1, sesión 17): el pisotón que encierra (jaula de 4 s, cada
       20 s), la ráfaga (cada 9 s) y la rabia. El 22/10, más difíciles: la
       jaula avisa 0,5 s y es un 30 % más grande, y la ráfaga va a 280 px/s
-      con el proyectil dibujado a x2. **Hay que volver a medir el equilibrio**
-      (también por el robo de vida, que bajó el mismo día). **Faltan** la embestida triple
+      con el proyectil dibujado a x2. Y se llama Kernel Panic: la rabia pasa
+      a dos furias (al 66 % y al 33 %: más rápido, más daño, ataques más
+      seguidos y anillos de hasta 20 enemigos), con aparición, furia, muerte y
+      barra de vida arriba como NÚCLEO CERO (bitácora, sesión 18, en la
+      nube). **Hay que volver a medir el equilibrio** (también por el robo de
+      vida, que bajó el mismo día; `minuto=10` mide solo el jefe). **Faltan** la embestida triple
       y el guardaespaldas (Adam los deja para otro día). Lo que se pidió:
       - **Pisotón que encierra:** se para, marca un círculo rojo alrededor
         (el anillo del rootkit) y a los 0,8 s el círculo se cierra. Durante

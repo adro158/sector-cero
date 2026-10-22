@@ -83,12 +83,16 @@ guardada para la próxima vez):
    dentro, o un anillo naranja si va a explotar al morir. Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
-9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil huye
-   toda la que queda, y en media, la mitad); el reloj se para mientras está. Cuando se pone rojo, va a
+9. **El jefe, KERNEL PANIC,** llega a los 10 minutos y ya no sale más horda (en fácil huye
+   toda la que queda, y en media, la mitad); el reloj se para mientras está y su
+   vida sale arriba en el centro. Baja en una columna de datos y no ataca hasta
+   que ha acabado de aparecer. Cuando se pone rojo, va a
    embestir: apártate. Cuando late en morado, va a sacar un anillo de malware
    o a disparar una ráfaga en círculo (pasa por los huecos). Si marca un
    anillo rojo en el suelo, va a pisar y dejar una jaula: sal antes o te
-   quedarás encerrado con él. Con poca vida arde y ataca más deprisa.
+   quedarás encerrado con él. Al bajarle al 66 % y al 33 % de vida se
+   enfurece (lo avisa la pantalla): va más rápido, pega más, ataca más
+   seguido y saca más malware. En la última furia, arde.
 10. **Fase 2.** Al derrotarlo, el sector queda dañado: vuelve la horda, más
     dura, hasta los 15 minutos. Entonces llega **NÚCLEO CERO** (su vida, arriba
     en el centro). Al bajarle al 66 % y al 33 % cambia de forma y es más duro.

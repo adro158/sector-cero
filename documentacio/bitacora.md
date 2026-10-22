@@ -3521,3 +3521,54 @@ siempre, cargando también la partida.
   (226 − 12), la pausa lo congela y la ráfaga doble sale bien. **También
   cambia el equilibrio:** se mide junto con el robo de vida.
 
+- **Kernel Panic, el jefe del minuto 10, se endurece y se ve más** (Adam:
+  «cuando le vaya bajando la vida se note que es más difícil» y «como el
+  boss final del minuto 15, que sea más visual; si hace falta, hazte
+  assets»). Se llama como en `assets.md`.
+  - **Furias en vez de rabia.** La rabia (un solo escalón por debajo del
+    25 %) pasa a dos furias, al 66 % y al 33 %, como las formas de NÚCLEO
+    CERO. Tres tablas en `jefe.gd`, indexadas con la furia (0, 1 y 2):
+    velocidad ×1 / 1,15 / 1,3, daño ×1 / 1,25 / 1,5 (contacto, embestida y
+    cada proyectil de la ráfaga) y ritmo ×1 / 1,25 / 1,5 (los intervalos se
+    dividen entre él). Los avisos duran lo mismo: se sigue pudiendo esquivar.
+    Más horda: el anillo de la invocación va de 8 a 20 enemigos (eran 14)
+    según la vida perdida, y con el ritmo llega más a menudo. En la segunda
+    furia arde (el aura de la rabia). Por qué tablas y no fórmulas: se leen
+    de un vistazo y se cambia un número sin tocar nada más.
+  - **Lo vistoso**, en un hijo nuevo, `Efectos` (`espectaculo_jefe.gd`, sin
+    `class_name`), para no pasar `jefe.gd` de las 350 líneas. Baja en una
+    columna de datos que golpea el suelo (1,2 s en los que no recibe daño ni
+    ataca), al enfurecerse suelta una onda roja con rayos y al morir se
+    agrieta, destella y explota; la fase 2 empieza cuando acaba la explosión
+    (casi 1 s después de morir). Los tres dan un tirón de cámara (`sacudir`
+    en `controlador_jugador.gd`), siempre hacia abajo: con `randf()` el
+    simulador ya no repetiría las mismas partidas.
+  - **Barra de vida arriba, como la de NÚCLEO CERO**, y se quita la de encima
+    de su cabeza. `barra_jefe_final.gd` pasa a `barra_jefe.gd`, que sirve para
+    las dos con su marco y su relleno; el HUD las conecta al bus. La cuenta
+    atrás dice «KERNEL PANIC EN …» y avisa al aparecer («¡JEFE: KERNEL
+    PANIC!») y en cada furia («SE ENFURECE», «ARDE DE FURIA»), que también
+    suena (la misma alarma que el cambio de forma de NÚCLEO CERO).
+  - **Señales nuevas del bus:** `jefe_vida_cambiada` y `jefe_furia_cambiada`
+    (apuntadas en `GEMINI.md`); `jefe_ataco` ya no manda `"rabia"`. Sin
+    `class_name` ni cambios en `project.godot`: no hace falta subir
+    `EJECUTABLE_MINIMO`.
+  - **Assets nuevos** (`medios/sprites/jefe/`): `jefe_aparicion.png`,
+    `jefe_furia.png`, `jefe_muerte.png`, `jefe_barra.png` y
+    `jefe_barra_relleno.png`. Los dibujó Claude con un script de Python
+    (Pillow); la barra es la de NÚCLEO CERO recoloreada en morado con su
+    nombre (`creditos.md`).
+  - **Probado:** import, `--quit-after` y la partida cargada en headless; con
+    ventana, capturas de la aparición, las dos furias (con el aviso y la
+    barra), la muerte y la fase 2 detrás; la pausa congela la aparición, en
+    ella no recibe daño, y la ráfaga de la furia 2 pega 22,5 (15 × 1,5).
+  - **Una partida del simulador** con `minuto=10`, la misma semilla antes y
+    después, sin errores: en las dos lo derrota (cayendo dos personajes) y
+    muere en la fase 2, pero ahora llega a ella con 34 de vida en vez de 51
+    y mata 137 enemigos en vez de 78 (los anillos de horda son más grandes y
+    más seguidos). Una sola partida no mide nada: solo dice que va hacia
+    donde pidió Adam.
+  - **Cambia el equilibrio:** el jefe es más duro en su último tercio. Se
+    mide junto con el robo de vida, la jaula y la ráfaga, con el simulador
+    en casa (`minuto=10` mide solo el jefe). Si sale demasiado duro, lo
+    primero que se baja es `DANO_FURIA`.
