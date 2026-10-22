@@ -112,3 +112,51 @@ LOS LOTES, POR ORDEN
 
 Empieza por el lote 1. Antes, dime en dos líneas qué vas a dibujar.
 ```
+
+## Lote 7: ataques de los personajes (22/10/2026, sesión 18)
+
+Los lotes 1 a 6 ya están hechos e integrados (sesiones 17 y 18). Este lote es
+para los cambios en los personajes que pidió Adam (`requisitos_y_estado.md`,
+punto 15). Se pega en el mismo chat de los lotes anteriores; si es uno nuevo,
+antes se pega el prompt de arriba entero, quitando su último párrafo.
+
+```text
+Lote 7: animaciones de ataque de los tres personajes y el golpe nuevo del
+Espadachín (projecte/medios/sprites/personajes/). Mismo estilo y método que
+los lotes anteriores.
+
+Los personajes tienen ahora solo la animación de andar: hojas de 6x8
+fotogramas de 64x72, una fila por dirección y en el mismo orden de
+direcciones que su hoja de andar (escenas/jugabilidad/jugador/
+antivirus_8_direcciones.png es el Mago, ciberespadachin_8_direcciones.png el
+Espadachín y segador_ciber_8_direcciones.png el Segador). Te paso las tres
+hojas.
+
+1. SEGADOR: levanta la guadaña y la baja cuando dispara el Escáner (un pulso
+   en área cada 2,5 s), para que se vea que ataca. Hoja de 4 fotogramas x 8
+   direcciones, 64x72, de unos 0,06 s cada uno. Mismo personaje y paleta
+   que su hoja de andar.
+2. MAGO: la animación de lanzar las bolas del Ping (adelanta el bastón y
+   brilla el cristal morado). Hoja de 4 fotogramas x 8 direcciones, 64x72,
+   unos 0,05 s cada uno.
+3. ESPADACHÍN: ahora ataca en un cono de 90 grados hacia donde se mueve, no
+   en un círculo, y hace más daño cuanto más pegado está el enemigo.
+   - Su animación de tajo: 4 fotogramas x 8 direcciones, 64x72, unos 0,05 s
+     cada uno.
+   - El tajo del Firewall: un cono de 90 grados y 110 px de alcance, que se
+     vea más intenso cerca del personaje que en el filo. 6 fotogramas,
+     dibujado apuntando a la derecha (el juego lo gira), con el vértice en el
+     centro del personaje. Verde #66FF80.
+   - El tajo del Firewall perimetral (la evolución): el mismo cono con 150
+     px de alcance y el mismo brillo en todo el cono (con la evolución el
+     daño ya no depende de la distancia).
+   - El marcador del alcance (hoy es un anillo, firewall_anillo.png): el
+     contorno del cono, suave, para cada uno de los dos alcances.
+
+Las tres animaciones de ataque se pondrán encima de la de andar un momento
+al disparar: que el fotograma 0 sea igual que la postura de andar, para que
+no salte. Mira cómo encajan con las evoluciones visibles en los personajes
+(las armas evolucionadas ya se ven en el personaje).
+
+Antes de dibujar, dime en dos líneas qué vas a hacer.
+```

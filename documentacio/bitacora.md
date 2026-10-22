@@ -3635,3 +3635,22 @@ siempre, cargando también la partida.
   de trabajos de la Action, `publicar` salía como «en cola» aunque había
   terminado (la release y la web estaban subidas, y el instalador, que va
   después, acabó bien).
+- **Revisión de mejoras** (Adam: «qué mejoras le podría hacer al juego»,
+  sobre todo lo visual que aún se dibuja por código). Se lanzó una revisión
+  por áreas (lo visual por código, la interfaz, el sonido y la sensación de
+  juego, y la jugabilidad). El resultado se apunta en `requisitos_y_estado.md`
+  cuando acabe.
+- **Cambios en los personajes** (decisiones de Adam, sin empezar; se harán
+  desde la nube). Apuntados en `requisitos_y_estado.md`, punto 15, y los
+  dibujos, en el lote 7 de `prompt_assets.md`.
+  - **El Espadachín ataca en un cono de 90 grados** hacia donde se mueve.
+    Pegado hace el 150 % del daño y al filo el 50 %. Con la evolución, más
+    alcance, algo más de robo de vida y el mismo daño cerca que lejos.
+    Elegido entre opciones que propuso Claude; las otras eran hacia el ratón
+    o al enemigo más cercano, 60 o 120 grados, y 200 % / 50 % o 120 % / 80 %.
+    No daba tiempo en los 20 minutos que quedaban de clase: son las cinco
+    cosas que reciben daño de área, los dibujos, el bot y volver a equilibrar.
+    Calculado en una sesión para que funcione y dos con los dibujos y el
+    equilibrio.
+  - **El Segador levanta la guadaña** al disparar el Escáner, y **el Mago
+    hace la animación de lanzar** las bolas del Ping.

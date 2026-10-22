@@ -391,6 +391,53 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       sistemas y la escena de la partida. Solo si sobra tiempo después de la
       entrega o como mejora futura en la defensa («qué mejoraríamos»).
 
+15. **Cambios en los personajes** (decisiones de Adam, 22/10, sesión 18; sin
+    empezar; se harán desde la nube). Los dibujos que hacen falta están
+    pedidos en el lote 7 de `prompt_assets.md`.
+    1. **El Espadachín ataca en un triángulo, no en un círculo.**
+       - **Dirección:** hacia donde se mueve; si está quieto, hacia la
+         última. Es hacia donde mira su dibujo, y funciona igual con mando y
+         en el móvil.
+       - **Forma:** un cono de **90 grados** por delante, con el alcance de
+         ahora (110 px).
+       - **Daño según la distancia:** pegado al enemigo, el **150 %**; en el
+         filo del alcance, el **50 %**; en medio, repartido en línea recta.
+         Con los 7,5 de ahora: 11,3 pegado y 3,8 al filo.
+       - **Con la evolución (Firewall perimetral):** más alcance, un poco más
+         de robo de vida y el **mismo daño cerca que lejos**. Propuesta de
+         Claude, para medir con el simulador: alcance de 125 a 150 y robo
+         de vida de 0,1 a 0,15, con su tope por golpe (`ROBO_MAXIMO`) de 1,5
+         a 2.
+       - **Qué toca:**
+         - las cinco cosas que reciben daño de área (`danar_en_area` en
+           `gestor_enemigos.gd`, `enemigo_elite.gd`, `jefe.gd`,
+           `jefe_final.gd` y `ancla_escudo.gd`) tienen que aceptar el cono y
+           el daño según la distancia (por ejemplo, con parámetros
+           opcionales, para que el Escáner y lo demás sigan igual)
+         - `gestor_armas.gd`
+         - los datos del Firewall (`DatosArma`: ángulo, daño pegado y al
+           filo)
+         - el dibujo del golpe (hoy son `firewall_golpe.png` y
+           `firewall_anillo.png`, redondos: hasta que lleguen los del lote 7,
+           el cono se puede pintar por código)
+         - el bot del simulador, que tiene que apuntar
+         - las reglas, el manual y las novedades
+       - **Después, volver a equilibrar** con el simulador, porque cambia el
+         personaje que más aguanta. El objetivo sigue igual: 7-8 victorias de
+         10 en fácil, 4-5 en media y 1 en difícil.
+    2. **El Segador levanta la guadaña al disparar el Escáner**, para que se
+       vea que ataca.
+    3. **El Mago hace la animación de lanzar** cuando dispara las bolas del
+       Ping.
+
+    Hoy los tres personajes solo tienen la animación de andar: hojas de 6x8
+    fotogramas de 64x72, una fila por dirección
+    (`escenas/jugabilidad/jugador/*_8_direcciones.png`). Las animaciones de
+    ataque son hojas nuevas que se ponen encima un momento al atacar (el
+    aviso es la señal `arma_disparada` de `gestor_armas.gd`). Hay que mirar
+    cómo encajan con las evoluciones visibles en los personajes de la
+    sesión 18.
+
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
 El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
