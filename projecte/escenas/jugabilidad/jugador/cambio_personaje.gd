@@ -154,6 +154,13 @@ func aumentar_vida_maxima(cantidad: float) -> void:
 	_salud.aumentar_vida_maxima(cantidad)
 
 
+## Si esa herramienta la lleva alguien que no ha caído: la evolución de un
+## caído no sirve de nada y no se ofrece.
+func puede_evolucionar(base: DatosArma) -> bool:
+	var cual := _armas.find(base)
+	return cual != -1 and not _caidos[cual]
+
+
 ## Sustituye la herramienta base por su evolución en el personaje que la lleva.
 ## Si es el activo, la nueva empieza a disparar ya.
 func evolucionar(base: DatosArma, nueva: DatosArma) -> void:

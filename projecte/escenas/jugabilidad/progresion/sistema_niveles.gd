@@ -156,10 +156,12 @@ func _sortear_sectores() -> Array[DatosMejora]:
 	return sectores
 
 
-## La primera evolución que ya se puede elegir, o null si no hay ninguna.
+## La primera evolución que ya se puede elegir, o null si no hay ninguna. La
+## de un personaje caído no sale: si se le revive (F1), vuelve a salir sola.
 func _evolucion_disponible() -> DatosMejora:
 	for evolucion in pool_mejoras.evoluciones:
-		if evolucion not in _agotadas and _veces.get(evolucion.requisito, 0) >= evolucion.nivel_requisito:
+		if evolucion not in _agotadas and _veces.get(evolucion.requisito, 0) >= evolucion.nivel_requisito \
+				and _cambio_personaje.puede_evolucionar(evolucion.arma_base):
 			return evolucion
 	return null
 
