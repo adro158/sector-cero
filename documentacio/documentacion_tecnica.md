@@ -242,7 +242,9 @@ una herramienta, que es otro recurso de arma, así que el malware empieza sin
 resistencia contra ella. Desde el 22/10 se ve también en el personaje: cada
 uno tiene en su `DatosPersonaje` una segunda hoja (`hoja_evolucion`) con el
 arma nueva, y `cambio_personaje.gd` la pone cuando su arma ya no es la de sus
-datos; así sale con ella también si evolucionó en el banquillo.
+datos; así sale con ella también si evolucionó en el banquillo. En la subida
+de nivel, la tarjeta de una evolución es de su personaje (su color, él con el
+arma nueva y el borde latiendo; `tarjeta_evolucion.gd`).
 
 **El director de oleadas.** La dificultad sale de pocos números: el tiempo
 entre apariciones baja de 0,5 s a 0,05 s en 10 minutos, cada tipo de enemigo

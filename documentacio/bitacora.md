@@ -3503,4 +3503,12 @@ siempre, cargando también la partida.
   disparos del Mago.
 - **Integrado en `main`** a petición de Adam («intégralo todo al main»):
   avance rápido desde la rama, sin conflictos.
+- **La tarjeta de una evolución se nota** (Adam: «que se note que es una
+  mejora del personaje», por ejemplo con el color de la tarjeta entera). En
+  la subida de nivel, la de una evolución es del color de su personaje
+  (fondo y borde grueso), con él de frente y el arma nueva en vez del icono,
+  «EVOLUCIÓN DEL ESPADACHÍN» y el borde latiendo. El personaje se saca del
+  arma base de la evolución (`tarjeta_evolucion.gd`). Visto con ventana con
+  las tres evoluciones, y que una tarjeta vuelve a la normal cuando después
+  trae una mejora normal.
 
