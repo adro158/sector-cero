@@ -33,6 +33,7 @@ enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR, PISOTON, RAFAGA }
 const FOTOGRAMAS_ANDAR := 12
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
+const DibujoJefeFinal := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -77,7 +78,10 @@ const UMBRALES_FURIA: Array[float] = [0.66, 0.33]
 ## antes llegan sus ataques. Los avisos duran lo mismo: se siguen pudiendo
 ## esquivar.
 const VELOCIDAD_FURIA: Array[float] = [1.0, 1.15, 1.3]
-const DANO_FURIA: Array[float] = [1.0, 1.25, 1.5]
+## El daño era 1,25 y 1,5 hasta la tarde del 22/10: con el cono del
+## Espadachín, el simulador ganaba 6 / 3 / 0 de 10 (objetivo 7-8 / 4-5 / 1),
+## y casi todas las derrotas eran contra él o al salir de él con poca vida.
+const DANO_FURIA: Array[float] = [1.0, 1.15, 1.3]
 const RITMO_FURIA: Array[float] = [1.0, 1.25, 1.5]
 
 const FOTOGRAMAS_RABIA := 4
@@ -221,6 +225,7 @@ func _physics_process(delta: float) -> void:
 			# Quieto y mirando al jugador: la embestida irá hacia donde esté
 			# cuando acabe el aviso, no hacia donde vaya después.
 			_direccion = hacia_jugador
+			queue_redraw()
 			if _tiempo_estado >= duracion_aviso:
 				_cambiar_estado(Estado.EMBESTIDA)
 		Estado.EMBESTIDA:
@@ -330,6 +335,11 @@ func _draw() -> void:
 	if not _activo:
 		return
 
+	# Avisando de la embestida, la franja con flechas del rayo de NÚCLEO CERO:
+	# hacia dónde y hasta dónde va a ir, del ancho de lo que pega.
+	if _estado == Estado.AVISO:
+		DibujoJefeFinal.aviso_linea(self, Vector2.ZERO, _direccion, velocidad_embestida * duracion_embestida,
+			(radio + 16.0) * 2.0, _tiempo_estado)
 	# El anillo de la invocación crece hasta donde saldrán los enemigos.
 	if _estado == Estado.INVOCAR:
 		var avance := _tiempo_estado / duracion_invocacion
