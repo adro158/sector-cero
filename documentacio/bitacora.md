@@ -3511,4 +3511,13 @@ siempre, cargando también la partida.
   arma base de la evolución (`tarjeta_evolucion.gd`). Visto con ventana con
   las tres evoluciones, y que una tarjeta vuelve a la normal cuando después
   trae una mejora normal.
+- **La jaula y la ráfaga del jefe del minuto 10, más difíciles** (Adam: «se
+  puede esquivar bastante más fácil»; lo llamó «el boss final», pero son del
+  jefe del minuto 10). La jaula avisa 0,5 s (eran 0,8) y es un 30 % más
+  grande (`ESCALA` en `jaula_jefe.gd`, que escala el dibujo y el muro: de 226
+  a 242 px). La ráfaga va a 280 px/s (eran 200) durante 1,6 s, y su
+  proyectil se dibuja a x2 (`ESCALA` en `rafaga_jefe.gd`) sin cambiar dónde
+  golpea. Probado con ventana: el jugador se para contra el muro a 214 px
+  (226 − 12), la pausa lo congela y la ráfaga doble sale bien. **También
+  cambia el equilibrio:** se mide junto con el robo de vida.
 

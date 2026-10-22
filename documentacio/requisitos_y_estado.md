@@ -164,7 +164,10 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       cuando llega el jefe (en difícil se queda toda).
    4. **Jefe del minuto 10, movimientos nuevos.** Hechos el 21/10 en la
       nube (lote 1, sesión 17): el pisotón que encierra (jaula de 4 s, cada
-      20 s), la ráfaga (cada 9 s) y la rabia. **Faltan** la embestida triple
+      20 s), la ráfaga (cada 9 s) y la rabia. El 22/10, más difíciles: la
+      jaula avisa 0,5 s y es un 30 % más grande, y la ráfaga va a 280 px/s
+      con el proyectil dibujado a x2. **Hay que volver a medir el equilibrio**
+      (también por el robo de vida, que bajó el mismo día). **Faltan** la embestida triple
       y el guardaespaldas (Adam los deja para otro día). Lo que se pidió:
       - **Pisotón que encierra:** se para, marca un círculo rojo alrededor
         (el anillo del rootkit) y a los 0,8 s el círculo se cierra. Durante

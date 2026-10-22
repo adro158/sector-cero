@@ -280,7 +280,7 @@ que se esquivan por los huecos, y con menos de la mitad de vida dos ráfagas,
 la segunda girada 15°. El **pisotón** (`jaula_jefe.gd`): cada 20 s avisa con
 un anillo rojo en el suelo y, al pisar, deja durante 4 s una jaula que nadie
 cruza. La jaula no empuja a nadie: después de que cada uno se mueve, le
-devuelve a su lado del muro. Como el muro tiene grosor (de 174 a 186 px),
+devuelve a su lado del muro. Como el muro tiene grosor (de 226 a 242 px desde el 22/10; era de 174 a 186),
 basta con mirar si está más cerca del centro que de fuera, y nada va tan
 deprisa como para cruzarlo en un solo fotograma. Lo usan el jugador, el jefe
 y los cinco gestores de la horda, que encuentran la jaula por su grupo. Y la
