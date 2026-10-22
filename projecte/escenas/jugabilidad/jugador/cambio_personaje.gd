@@ -211,7 +211,10 @@ func _vivo_desde(desde: int, paso: int) -> int:
 
 func _aplicar() -> void:
 	var personaje := personajes[_indice]
-	get_parent().get_node("Sprite").texture = personaje.hoja
+	# Con la herramienta evolucionada, la hoja con el arma nueva. Vale también
+	# para el que evolucionó en el banquillo: sale con ella al entrar.
+	var evolucionada := _armas[_indice] != personaje.arma and personaje.hoja_evolucion != null
+	get_parent().get_node("Sprite").texture = personaje.hoja_evolucion if evolucionada else personaje.hoja
 	get_parent().get_node("GestorArmas").cambiar_arma(_armas[_indice])
 	_avisar_cambio()
 	_avisar_equipo.call_deferred()

@@ -12,6 +12,8 @@ extends Resource
 ## Hoja de sprites de 6 columnas (pasos) por 8 filas (direcciones), como la del
 ## personaje original.
 @export var hoja: Texture2D
+## La misma hoja con el arma evolucionada: se pone al evolucionar su herramienta.
+@export var hoja_evolucion: Texture2D
 ## Retrato de 64x64 para el panel del equipo y la ventana de caída. Se enseña a
 ## tamaño real: escalado se deforma.
 @export var retrato: Texture2D
