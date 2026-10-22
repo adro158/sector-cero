@@ -3310,6 +3310,42 @@ Después de publicar (todo esto va en `main`, no en la v1.7):
     tiempo (240 s) contra el jefe final, con la vida casi llena.
   - En difícil, 6 de 10 mueren contra el jefe del minuto 10.
   - Antes de arreglar el escudo, las 30 se quedaban en el núcleo armado.
+- **Equilibrado al objetivo de Adam** («arréglalo para que sea tal que así»).
+  El simulador apunta ahora dónde cae cada personaje, y así se vio:
+  - **media:** al llegar el jefe del minuto 10 hay 950-1350 enemigos en
+    pantalla y caen dos personajes enseguida; el jefe es lo de menos (sin la
+    ráfaga o sin el pisotón caen los mismos)
+  - **todas:** contra NÚCLEO CERO se pierde por tiempo, con el personaje
+    entero: el bot le quita unos 30-40 de vida por segundo (suele quedar uno,
+    con su herramienta resistida; el jefe recibe x0,75 y x0,6 en sus formas
+    2 y 3, y cada escudo se lleva 20-40 s)
+  - **difícil:** con solo el Espadachín y su herramienta al 50 %, las cuatro
+    anclas (todas suyas) no se rompían antes de cerrarse y la partida se
+    atascaba en el 66 % de vida del jefe
+
+  Cambios, probados uno a uno con 10 o 20 partidas por dificultad:
+  - **En media huye la mitad de la horda al llegar el jefe** (punto 3.3, ya
+    aprobado por Adam en la sesión 16). Cada enemigo lleva su marca de
+    huida y se desvanece solo él: el shader de la horda lee el cuarto dato
+    de su instancia. Visto con ventana.
+  - **Las anclas reciben el golpe entero**, sin la resistencia del malware.
+  - **La vida de NÚCLEO CERO va aparte en la tabla de dificultades**
+    (`vida_jefe_final`): con un solo multiplicador, para bajársela había que
+    ablandar toda la horda, y fácil saltaba de 4 a 9 victorias entre 0,7 y
+    0,6.
+  - **Los valores:**
+
+    | | Vida | Vida de NÚCLEO CERO | Daño recibido | Huye |
+    |---|---|---|---|---|
+    | Fácil | 0,7 → 0,65 | 0,7 → 0,4 | 0,6 | toda |
+    | Media | 1 → 0,7 | 1 → 0,75 | 1 → 0,85 | nada → la mitad |
+    | Difícil | 1,2 → 1 | 1,2 → 0,75 | 1,3 → 1,1 | nada |
+
+  - **Resultado, con 20 partidas por dificultad** (semillas 1-20): fácil 15
+    (7,5 de cada 10), media 9 (4,5) y difícil 2 (1). Probado también con
+    difícil al 0,5 de vida de NÚCLEO CERO y 1,15 de daño (2 de 20), pero
+    quedaba con menos vida que en media; se dejó igual que en media para
+    que la tabla vaya siempre de fácil a difícil.
 
 ### Decisiones de Adam
 
@@ -3323,6 +3359,8 @@ Después de publicar (todo esto va en `main`, no en la v1.7):
   30 s para romperlas (eran 800 y 12 s). Cada ancla sigue rompiéndola solo
   su herramienta.
 - Empezar por enseñar al bot a cambiar de personaje y medir las victorias.
+- **El equilibrio, ahora:** que sean 7-8 victorias de cada 10 en fácil, 4-5 en
+  media y 1 en difícil. Los valores los eligió Claude con el simulador.
 
 ### Problemas encontrados y cómo se resolvieron
 
@@ -3368,7 +3406,11 @@ del escudo, que decidió Adam. Sin subagentes.
 - Simulador, siempre en una copia aparte (`git worktree`) fijada en el commit
   medido: 30 partidas enteras antes y después del arreglo del escudo, y 9
   desde el minuto 15 con cada versión del escudo (800 y 12 s; sin espera;
-  300 y 30 s).
+  300 y 30 s). Para el equilibrio, una partida por proceso (30 o 60 a la
+  vez) sobre el proyecto sin tocar mientras corren, con un script de
+  PowerShell que las lanza y resume victorias, dónde acaba cada una, dónde
+  caen los personajes y con cuánta vida queda el jefe final: once tandas.
+- Con ventana: la huida de la mitad de la horda en media (tres capturas).
 
 ### Siguiente paso
 
@@ -3376,9 +3418,8 @@ del escudo, que decidió Adam. Sin subagentes.
    (pisotón, ráfaga, rabia), si la jaula y el escudo se entienden, el
    escudo con el cambio sin espera, el Espadachín con el robo de vida y si la
    ráfaga hay que dibujarla a x2.
-2. **Equilibrio**, hacia el objetivo (fácil 7-8, media 4-5, difícil 1 de 10).
-   Lo que dicen las partidas: en media, los dos personajes que caen antes del
-   jefe final (hay que ver dónde); en difícil, el jefe del minuto 10; en
-   fácil, la última forma de NÚCLEO CERO. Para decidir con Adam qué se toca primero.
+2. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`): se
+   midieron en media, que ahora tiene otros valores, y el nivel por minuto
+   puede haber cambiado.
 3. Lo de decidir con Adam (sesión 17, punto 5) y `armas_evolucionadas.zip`
    (punto 6).

@@ -260,8 +260,10 @@ que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las
 mejoras (y una evolución si hay alguna disponible). El premio se sortea antes de
 girar; el disco frena con un `Tween` hasta -45·k grados más unas vueltas, que
 deja el sector k bajo la flecha. A los 10 minutos deja de salir horda y llega
-el **jefe**; en fácil, la horda que queda huye (se aleja del jugador y se
-desvanece en 1,2 s, sin dar experiencia), y en media y difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
+el **jefe**; en fácil huye toda la horda que queda (se aleja del jugador y se
+desvanece en 1,2 s, sin dar experiencia), en media la mitad (uno sí y otro
+no: cada enemigo lleva su marca y su desvanecido, que el shader lee en el
+cuarto dato de su instancia) y en difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
 15 s se para, late en morado mientras crece un anillo y saca un círculo de 8 a
 14 enemigos, más cuanto menos vida le queda; los crean los gestores de la
 horda, como hace el élite replicante. Desde el 21/10 tiene tres más. La
@@ -317,17 +319,26 @@ Mientras está el escudo, cambiar de personaje no tiene espera (`sin_espera`,
 en `cambio_personaje.gd`). Hasta la sesión 18 eran 800 de vida, 12 s y la
 espera de siempre (10 s), y el bot del simulador lo rompió una vez en nueve
 partidas: le quita a un ancla unos 50 de vida por segundo y hacían falta dos
-cambios. Ahora, 300 de vida (la de antes de la sesión 17) y 30 s.
+cambios. Ahora, 300 de vida (la de antes de la sesión 17) y 30 s. Y las
+anclas reciben el golpe entero, sin la resistencia del malware (que es del
+malware, no del escudo): si solo quedaba un personaje con su herramienta al
+50 %, sus cuatro anclas no se rompían antes de cerrarse y la partida se
+atascaba.
 Su barra de vida, arriba en el centro, se entera de todo por el bus. Ninguno
 de estos scripts tiene `class_name` ni toca `project.godot`: así llegan con la
 actualización pequeña.
 
 **Las dificultades.** Se eligen en el menú principal y se guardan con las
-opciones. Están en una tabla (`globales/dificultad.gd`) con tres datos cada una:
-cuánto se multiplica la vida de la horda, los élites y el jefe (0,7, 1 y 1,2),
-cuánto se multiplica el daño que recibe el jugador (0,6, 1 y 1,3) y si la horda
-huye al llegar el jefe (solo en fácil). La media es el juego tal como estaba
-equilibrado. Cada sistema lee la dificultad en su sitio: los enemigos al
+opciones. Están en una tabla (`globales/dificultad.gd`) con cuatro datos cada
+una (fácil, media y difícil): cuánto se multiplica la vida de la horda, los
+élites, el jefe y las anclas (0,65, 0,7 y 1), la de NÚCLEO CERO, que va aparte
+(0,4, 0,75 y 0,75), el daño que recibe el jugador (0,6, 0,85 y 1,1) y qué
+parte de la horda huye al llegar el jefe (toda, la mitad y nada). Están
+ajustadas con el simulador (sesión 18) al objetivo de Adam: de cada 10
+partidas, 7-8 victorias en fácil, 4-5 en media y 1 en difícil; con 20 por
+dificultad salen 15, 9 y 2. La vida de NÚCLEO CERO va aparte porque contra él
+se pierde por falta de daño, no de vida: con un solo multiplicador, bajarla
+para el jefe final ablandaba a la vez toda la horda. Cada sistema lee la dificultad en su sitio: los enemigos al
 aparecer, la salud del jugador al empezar la partida (la pone la raíz) y el
 director al llegar el jefe. La ficha del enemigo enseña el daño que hace de
 verdad, y el ranking y la pantalla final, la dificultad de cada partida.

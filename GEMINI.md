@@ -147,7 +147,8 @@ Detalles que la interfaz tiene que respetar:
   `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
   minutos) deja de aparecer horda y llega el jefe, que invoca anillos de
   horda (`jefe_invoco`); mientras está, el reloj se para en las 10:00. En
-  fácil, la horda que queda huye; en media y difícil se queda.
+  fácil huye toda la horda que queda, en media la mitad y en difícil se
+  queda.
 - **Fase 2.** Al derrotar al jefe, la jugabilidad pausa el juego y emite
   `transicion_fase(segundos)`: la interfaz pone el negro con «SECTOR CERO
   DAÑADO» (`pantalla_fase.gd`) y el menú de pausa no se abre. Detrás del
@@ -160,8 +161,9 @@ Detalles que la interfaz tiene que respetar:
   `jefe_final_ataco` (para el sonido). Se gana al derrotarlo.
 - **Dificultad.** Se elige en el menú principal y se guarda en las opciones
   (`GestorGuardado.opcion("dificultad")`). La partida la lee al empezar con
-  `globales/dificultad.gd`: multiplica la vida de los enemigos y el daño que
-  recibe el jugador, y decide si la horda huye al llegar el jefe.
+  `globales/dificultad.gd`: multiplica la vida de los enemigos, la de NÚCLEO
+  CERO (aparte) y el daño que recibe el jugador, y decide qué parte de la
+  horda huye al llegar el jefe.
 
 Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 

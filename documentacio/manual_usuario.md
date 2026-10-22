@@ -40,11 +40,13 @@ aviso.
 Antes de jugar, elige la **dificultad** en el menú principal (se queda
 guardada para la próxima vez):
 
-- **Fácil:** el malware tiene un 30 % menos de vida, hace un 40 % menos de daño
-  y huye cuando llega el jefe.
-- **Media:** la partida como la hemos equilibrado. Cuando llega el jefe, la
-  horda que queda sigue ahí.
-- **Difícil:** el malware tiene un 20 % más de vida y hace un 30 % más de daño.
+- **Fácil:** comparado con la media, el malware hace un 30 % menos de daño y
+  tiene algo menos de vida, NÚCLEO CERO tiene casi la mitad, y cuando llega
+  el jefe huye toda la horda.
+- **Media:** la partida como la hemos equilibrado. Cuando llega el jefe, huye
+  la mitad de la horda.
+- **Difícil:** el malware tiene un 40 % más de vida y hace un 30 % más de daño
+  que en media, y cuando llega el jefe no huye nadie.
   La horda también sigue cuando llega el jefe.
 
 1. **Solo te mueves.** Tu herramienta ataca sola; tú decides dónde colocarte.
@@ -79,8 +81,8 @@ guardada para la próxima vez):
    dentro, o un anillo naranja si va a explotar al morir. Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
-9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil, la
-   que queda huye); el reloj se para mientras está. Cuando se pone rojo, va a
+9. **El jefe** llega a los 10 minutos y ya no sale más horda (en fácil huye
+   toda la que queda, y en media, la mitad); el reloj se para mientras está. Cuando se pone rojo, va a
    embestir: apártate. Cuando late en morado, va a sacar un anillo de malware
    o a disparar una ráfaga en círculo (pasa por los huecos). Si marca un
    anillo rojo en el suelo, va a pisar y dejar una jaula: sal antes o te

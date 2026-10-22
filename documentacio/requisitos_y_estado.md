@@ -149,8 +149,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       curan un 10 % del daño hecho, como mucho 3 de vida por golpe
       (`robo_vida` en `DatosArma`, `ROBO_MAXIMO` en `gestor_armas.gd`).
       Probado.
-   3. **Falta:** en media, que la mitad de la horda huya cuando llega el
-      jefe (en difícil se queda toda).
+   3. **Hecho** el 22/10 (sesión 18): en media huye la mitad de la horda
+      cuando llega el jefe (en difícil se queda toda).
    4. **Jefe del minuto 10, movimientos nuevos.** Hechos el 21/10 en la
       nube (lote 1, sesión 17): el pisotón que encierra (jaula de 4 s, cada
       20 s), la ráfaga (cada 9 s) y la rabia. **Faltan** la embestida triple
@@ -185,25 +185,18 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
         2,5, 1,8 y 1,2).
       - Presión al llegar: portales y tormenta enseguida, y en la forma 3
         dos ataques a la vez.
-   6. **Al final, el equilibrio con el simulador** (10 partidas por
-      dificultad). Objetivo de Adam:
-      - fácil: **7-8 victorias de 10**
-      - media: **4-5 de 10**
-      - difícil: **1 de 10**
+   6. **Hecho el 22/10 (sesión 18): el equilibrio con el simulador.**
+      Objetivo de Adam, de cada 10 partidas: fácil **7-8**, media **4-5** y
+      difícil **1**. Con 20 partidas por dificultad salen **15, 9 y 2** (7,5,
+      4,5 y 1 de cada 10). Se tocaron los multiplicadores de
+      `globales/dificultad.gd`, con la vida de NÚCLEO CERO aparte; en media
+      huye la mitad de la horda (punto 3.3), y las anclas reciben el golpe
+      sin la resistencia del malware. Los valores y el porqué, en la
+      bitácora, sesión 18. Antes: el 16/10, fácil 5, media 0 y difícil 0.
 
-      El 16/10: fácil 5, media 0, difícil 0. **El 22/10** (sesión 18, con el
-      bot cambiando de personaje para las anclas): **fácil 4, media 0,
-      difícil 0**. Llegan al jefe final 10, 9 y 4 de 10. En media al bot le
-      caen dos personajes antes del jefe final y al que queda, con un
-      50 % de resistencia, no le da tiempo contra NÚCLEO CERO; en difícil, 6
-      de 10 mueren contra el jefe del minuto 10.
-      Ideas para dar margen si los jefes quedan muy duros:
-      - unos segundos sin horda al volver la imagen
-      - que la vida por minuto deje de subir a las 10:00
-      - curar un poco al matar al primer jefe
-      - tocar los multiplicadores de `globales/dificultad.gd`
-
-      Después, volver a medir las tablas del F1 (`progreso_por_minuto.gd`).
+      Falta volver a medir las tablas del F1 (`progreso_por_minuto.gd`). Si
+      se cambia algo de los jefes (la embestida triple, el guardaespaldas o
+      lo que queda de NÚCLEO CERO), volver a pasar el simulador.
 4. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
    probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
    y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El

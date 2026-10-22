@@ -145,8 +145,9 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       negro, suelo dañado, tres formas, ataques, escudo con anclas, hielo,
       barra de vida en el HUD, menú F1 y simulador. Rendimiento medido en la
       RTX 5070 con el jefe en pantalla
-- [ ] Equilibrio de la fase 2 y del jefe final (Adam lo deja para el final:
-      hoy el bot gana 5 de 10 en fácil y ninguna en media ni difícil)
+- [x] Equilibrio de las tres dificultades con el simulador (22/10), al
+      objetivo de Adam: 7-8 victorias de cada 10 en fácil, 4-5 en media y 1
+      en difícil
 - [x] Icono del juego en el `.exe`, la ventana y la web (16/10)
 - [x] Assets nuevos de los lotes 1 a 6 (21/10, en la nube): ataques del jefe
       del minuto 10 (pisotón con jaula, ráfaga y rabia), anclas del escudo

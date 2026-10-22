@@ -96,7 +96,8 @@ personaje.
 - **Ficha del enemigo**: haz click en cualquiera para ver su vida y su daño.
 - **Tres dificultades**, que se eligen en el menú: en fácil el malware tiene
   menos vida, hace menos daño y huye cuando llega el jefe; en difícil, al
-  revés.
+  revés. Equilibradas con el simulador para ganar unas 7-8 de cada 10
+  partidas en fácil, 4-5 en media y 1 en difícil.
 - **Ranking** con las diez mejores partidas y la dificultad de cada una.
 
 El manual completo está en el [manual de usuario](documentacio/manual_usuario.md).
