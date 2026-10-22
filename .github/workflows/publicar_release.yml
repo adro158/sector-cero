@@ -3,11 +3,12 @@
 #   git tag v0.3
 #   git push origin v0.3
 #
-# Exporta el juego completo para Windows y Linux (para quien lo descarga por
-# primera vez), el .pck de cada plataforma (para que el botón ACTUALIZAR del
-# menú se baje solo eso), y lo sube todo a una release de GitHub. También
-# publica la versión web en GitHub Pages (rama gh-pages), la que se abre desde
-# el móvil en https://adro158.github.io/sector-cero/.
+# Exporta el .pck del juego de cada plataforma (el contenido de la versión, que
+# baja el lanzador) y los instaladores del lanzador, y los sube a una release
+# de GitHub. Desde la v1.8 (decisión de Adam, sesión 18) no se publica el juego
+# suelto: solo se juega con el lanzador. También publica la versión web en
+# GitHub Pages (rama gh-pages), la que se abre desde el móvil en
+# https://adro158.github.io/sector-cero/.
 name: Publicar release
 
 on:
@@ -54,18 +55,13 @@ jobs:
 
       - name: Exportar
         run: |
-          mkdir -p build/windows build/linux build/web
+          mkdir -p build/web
           ./$GODOT --headless --path projecte --import
-          ./$GODOT --headless --path projecte --export-release "Windows Desktop" ../build/windows/SectorCero.exe
-          ./$GODOT --headless --path projecte --export-release "Linux" ../build/linux/SectorCero.x86_64
           ./$GODOT --headless --path projecte --export-pack "Windows Desktop" ../build/sector_cero_windows.pck
           ./$GODOT --headless --path projecte --export-pack "Linux" ../build/sector_cero_linux.pck
           ./$GODOT --headless --path projecte --export-release "Web" ../build/web/index.html
           touch build/web/.nojekyll
-          cd build
-          zip -j "SectorCero_${GITHUB_REF_NAME}_windows.zip" windows/SectorCero.exe
-          zip -j "SectorCero_${GITHUB_REF_NAME}_linux.zip" linux/SectorCero.x86_64
-          ls -l
+          ls -l build
 
       # El lanzador (lanzador/) y el juego sin contenido que abre: el .pck de
       # cada versión lo baja el lanzador. En Windows van al instalador (el
@@ -103,17 +99,27 @@ jobs:
         run: |
           NOTAS="documentacio/novedades/${GITHUB_REF_NAME}.txt"
           if [ -f "$NOTAS" ]; then OPCION_NOTAS=(--notes-file "$NOTAS"); else OPCION_NOTAS=(--generate-notes); fi
+          FICHEROS=(
+            "build/SectorCero_Lanzador_linux_${GITHUB_REF_NAME}.zip"
+            build/lanzador_windows.pck
+            build/lanzador_linux.pck
+            build/sector_cero_windows.pck
+            build/sector_cero_linux.pck
+            version.json
+          )
           gh release create "$GITHUB_REF_NAME" \
             --title "Sector Cero $GITHUB_REF_NAME" \
             "${OPCION_NOTAS[@]}" \
-            "build/SectorCero_${GITHUB_REF_NAME}_windows.zip" \
-            "build/SectorCero_${GITHUB_REF_NAME}_linux.zip" \
-            "build/SectorCero_Lanzador_linux_${GITHUB_REF_NAME}.zip" \
-            build/lanzador_windows.pck \
-            build/lanzador_linux.pck \
-            build/sector_cero_windows.pck \
-            build/sector_cero_linux.pck \
-            version.json
+            "${FICHEROS[@]}"
+          # En la v1.7 faltó lanzador_linux.pck sin dar error: se comprueba
+          # cada fichero y se vuelve a subir el que no esté.
+          SUBIDOS=$(gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name')
+          for FICHERO in "${FICHEROS[@]}"; do
+            if ! grep -qx "$(basename "$FICHERO")" <<< "$SUBIDOS"; then
+              echo "Faltaba $FICHERO: se vuelve a subir"
+              gh release upload "$GITHUB_REF_NAME" "$FICHERO"
+            fi
+          done
 
       # La rama gh-pages solo tiene la última versión web: cada release la
       # sustituye entera.
