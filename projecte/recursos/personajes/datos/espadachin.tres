@@ -1,17 +1,22 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://cid6kbgkbttd4" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones.png" id="2_hoja"]
 [ext_resource type="Resource" path="res://recursos/armas/datos/firewall.tres" id="3_arma"]
 [ext_resource type="Texture2D" uid="uid://cqgos1cqdchrc" path="res://medios/interfaz/retrato_espadachin.png" id="4_retrato"]
 [ext_resource type="Texture2D" uid="uid://chf8uhm6053b4" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_evolucion.png" id="5_hoja_evolucion"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_ataque.png" id="6_ataque"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_evolucion_ataque.png" id="7_ataque_evolucion"]
 
 [resource]
 script = ExtResource("1_personaje")
 nombre = "Espadachín"
-descripcion = "Firewall: golpea todo lo que tiene alrededor cada 0,6 s. Es el mejor cuando te rodea la horda, sobre todo bits corruptos. No llega lejos: hay que dejar que se acerquen. Roba vida: cada golpe le cura un 10 % del daño que hace (hasta 3 de vida). Evoluciona a Firewall perimetral con Heurística agresiva ×3."
+descripcion = "Firewall: cada 0,6 s da un tajo en cono hacia donde vas, que hace más daño cuanto más pegado está el malware (el triple de cerca que en el filo). Es el mejor cuando te rodea la horda, sobre todo bits corruptos: encáralos, que lo de detrás no lo toca. Roba vida: cada golpe le cura un 10 % del daño que hace (hasta 1,5 de vida). Evoluciona a Firewall perimetral con Heurística agresiva ×3: llega más lejos, pega igual cerca que lejos y roba más."
 hoja = ExtResource("2_hoja")
 hoja_evolucion = ExtResource("5_hoja_evolucion")
+hoja_ataque = ExtResource("6_ataque")
+hoja_ataque_evolucion = ExtResource("7_ataque_evolucion")
+segundos_ataque = 0.05
 arma = ExtResource("3_arma")
 vida_maxima = 120.0
 ulti = "giro"

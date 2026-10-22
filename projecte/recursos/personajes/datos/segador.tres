@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://bjsr00ce3d6ak" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones.png" id="2_hoja"]
 [ext_resource type="Resource" path="res://recursos/armas/datos/escaner.tres" id="3_arma"]
 [ext_resource type="Texture2D" uid="uid://c48hl1rv75uk6" path="res://medios/interfaz/retrato_segador.png" id="4_retrato"]
 [ext_resource type="Texture2D" uid="uid://dhay7fptlefvc" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_evolucion.png" id="5_hoja_evolucion"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_ataque.png" id="6_ataque"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_evolucion_ataque.png" id="7_ataque_evolucion"]
 
 [resource]
 script = ExtResource("1_personaje")
@@ -12,6 +14,9 @@ nombre = "Segador"
 descripcion = "Escáner: un pulso amplio y fuerte, pero lento (cada 2,5 s). El mejor contra grupos grandes y enemigos duros como el proceso colgado. Entre pulso y pulso estás desprotegido. Evoluciona a Análisis heurístico con Ampliar subred ×3."
 hoja = ExtResource("2_hoja")
 hoja_evolucion = ExtResource("5_hoja_evolucion")
+hoja_ataque = ExtResource("6_ataque")
+hoja_ataque_evolucion = ExtResource("7_ataque_evolucion")
+segundos_ataque = 0.06
 arma = ExtResource("3_arma")
 vida_maxima = 100.0
 ulti = "tormenta"

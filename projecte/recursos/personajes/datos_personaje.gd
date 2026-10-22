@@ -14,6 +14,13 @@ extends Resource
 @export var hoja: Texture2D
 ## La misma hoja con el arma evolucionada: se pone al evolucionar su herramienta.
 @export var hoja_evolucion: Texture2D
+## Al atacar, un momento: 4 columnas por las mismas 8 filas, con la columna 0
+## igual que la 0 de andar. Una con el arma de siempre y otra con la
+## evolucionada.
+@export var hoja_ataque: Texture2D
+@export var hoja_ataque_evolucion: Texture2D
+## Lo que dura cada fotograma del ataque.
+@export var segundos_ataque: float = 0.05
 ## Retrato de 64x64 para el panel del equipo y la ventana de caída. Se enseña a
 ## tamaño real: escalado se deforma.
 @export var retrato: Texture2D

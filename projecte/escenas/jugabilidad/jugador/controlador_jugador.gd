@@ -19,12 +19,21 @@ extends CharacterBody2D
 ## La hoja del sprite tiene una fila por dirección y una columna por fotograma
 ## del ciclo de andar.
 const FOTOGRAMAS_ANDAR := 6
+## La de atacar, las mismas filas y 4 columnas. Sale un momento encima de la
+## de andar cada vez que el arma ataca (arma_disparada).
+const FOTOGRAMAS_ATAQUE := 4
 
 ## Hacia donde mira, de largo 1: hacia donde se mueve o, quieto, hacia donde
 ## iba. Es hacia donde ataca el Espadachín (gestor_armas.gd).
 var mirando := Vector2.DOWN
 
 var _efecto_golpe: Tween
+## Las hojas del personaje que se lleva (las pone cambio_personaje.gd).
+var _hoja_andar: Texture2D
+var _hoja_ataque: Texture2D
+var _segundos_ataque := 0.05
+## Segundos desde que empezó el ataque que se está dibujando (-1: ninguno).
+var _tiempo_ataque := -1.0
 var _fila := 0
 var _tiempo_andando := 0.0
 var _lentitud := 0.0
@@ -33,6 +42,16 @@ var _tiempo_lento := 0.0
 
 func _ready() -> void:
 	$Salud.danado.connect(_al_recibir_dano)
+	$GestorArmas.arma_disparada.connect(func(_indice): _tiempo_ataque = 0.0)
+
+
+## Las hojas de andar y de atacar del personaje que entra.
+func poner_hojas(andar: Texture2D, ataque: Texture2D, segundos: float) -> void:
+	_hoja_andar = andar
+	_hoja_ataque = ataque
+	_segundos_ataque = segundos
+	_tiempo_ataque = -1.0
+	_poner_hoja(andar, FOTOGRAMAS_ANDAR)
 
 
 func _al_recibir_dano(_cantidad: float) -> void:
@@ -102,5 +121,27 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		# al mismo ritmo, los pies patinarían.
 		_tiempo_andando += delta * velocity.length() / velocidad_animacion
 
+	# Atacando, la hoja de ataque mientras le queden fotogramas; las piernas
+	# siguen contando, para que al volver a andar no salten.
+	if _tiempo_ataque >= 0.0 and _hoja_ataque != null:
+		var fotograma := int(_tiempo_ataque / _segundos_ataque)
+		_tiempo_ataque += delta
+		if fotograma < FOTOGRAMAS_ATAQUE:
+			_poner_hoja(_hoja_ataque, FOTOGRAMAS_ATAQUE)
+			$Sprite.frame = _fila * FOTOGRAMAS_ATAQUE + fotograma
+			return
+		_tiempo_ataque = -1.0
+	if _hoja_andar != null:
+		_poner_hoja(_hoja_andar, FOTOGRAMAS_ANDAR)
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
+
+
+## Cambia de hoja solo si hace falta. Primero el fotograma 0: con menos
+## columnas, el que tenía podía no existir.
+func _poner_hoja(hoja: Texture2D, columnas: int) -> void:
+	if $Sprite.texture == hoja:
+		return
+	$Sprite.frame = 0
+	$Sprite.texture = hoja
+	$Sprite.hframes = columnas

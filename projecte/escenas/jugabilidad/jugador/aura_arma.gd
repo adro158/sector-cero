@@ -9,8 +9,8 @@ extends Node2D
 ##
 ## Los dibujos están hechos al radio base de cada herramienta: con la mejora de
 ## alcance se escalan (radio de verdad / radio del dibujo). El Firewall ataca
-## en un cono hacia donde mira el personaje; hasta que estén sus dibujos, el
-## cono se pinta aquí con polígonos (_cono).
+## en un cono hacia donde mira el personaje: su contorno y su tajo están
+## dibujados mirando a la derecha y aquí se giran.
 ##
 ## Va detrás del jugador (show_behind_parent): debajo de él y de la horda,
 ## encima del suelo. Las chispas se dibujan en el hijo Chispas, con z_index 4,
@@ -34,10 +34,6 @@ const VIAJE_CHISPA := 0.35
 const CHISPAS_POR_GOLPE := 5
 ## A dónde llegan: el pecho del personaje, no sus pies.
 const PECHO := Vector2(0.0, -20.0)
-## El verde del golpe del Firewall.
-const VERDE_CONO := Color(0.4, 1.0, 0.5)
-## Los lados de la curva del cono: con 16 ya no se ven las esquinas.
-const LADOS_CONO := 16
 
 var _gestor_armas: Node
 var _resistencia_malware: Node
@@ -113,7 +109,7 @@ func _draw() -> void:
 		var encendido := i < _destellos.size() and _destellos[i] > 0.0
 		var tinte := color.lerp(color_resistido, _resistencia_malware.resistencia(arma))
 		if arma.angulo_cono > 0.0:
-			_dibujar_cono(arma, i, encendido, tinte)
+			_dibujar_cono(arma, i, escala, Color(tinte, 0.9 if encendido else 0.35))
 			continue
 		# El anillo, más transparente cuando no ataca.
 		_fotograma(arma.anillo, 1, 0, escala, Color(tinte, 0.9 if encendido else 0.35))
@@ -124,51 +120,30 @@ func _draw() -> void:
 ## El efecto de un ataque, una sola vez y sin teñir. Para que salga suave y no
 ## a saltos, cada fotograma se funde con el siguiente: es como tener muchos más
 ## fotogramas sin dibujarlos.
-func _efecto(arma: DatosArma, segundos: float, escala: float) -> void:
+func _efecto(arma: DatosArma, segundos: float, escala: float, inicial := OPACIDAD_EFECTO) -> void:
 	var avance := segundos / arma.segundos_por_fotograma
 	if avance >= arma.fotogramas_efecto:
 		return
 	var fotograma := int(avance)
 	var mezcla := avance - fotograma
-	var opacidad := OPACIDAD_EFECTO * (1.0 - avance / arma.fotogramas_efecto)
+	var opacidad := inicial * (1.0 - avance / arma.fotogramas_efecto)
 	_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma, escala, Color(1.0, 1.0, 1.0, opacidad * (1.0 - mezcla)))
 	if fotograma + 1 < arma.fotogramas_efecto:
 		_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma + 1, escala, Color(1.0, 1.0, 1.0, opacidad * mezcla))
 
 
 ## El cono del Firewall: su contorno hacia donde mira el personaje, teñido
-## como el anillo, y en cada ataque el golpe en verde, hacia donde atacó y
-## apagándose. Más fuerte cerca si pega más cerca (dano_pegado y dano_filo).
-func _dibujar_cono(arma: DatosArma, indice: int, encendido: bool, tinte: Color) -> void:
-	var alcance: float = arma.radio * _gestor_armas.multiplicador_alcance
-	var mirando: Vector2 = get_parent().mirando
-	_cono(mirando, alcance, arma.angulo_cono, Color(tinte, 0.0), Color(tinte, 0.0), Color(tinte, 0.9 if encendido else 0.35))
+## como el anillo, y el tajo de cada ataque hacia donde se dio. El tajo ya se
+## apaga en su dibujo y tapa un cuarto de lo que tapaba el golpe redondo: va
+## entero, sin rebajarlo como el efecto de las demás.
+func _dibujar_cono(arma: DatosArma, indice: int, escala: float, modulado: Color) -> void:
+	draw_set_transform(Vector2.ZERO, get_parent().mirando.angle())
+	_fotograma(arma.anillo, 1, 0, escala, modulado)
 	var cono: RefCounted = _gestor_armas.ultimo_cono
-	if cono == null or indice >= _desde_ataque.size():
-		return
-	var duracion := arma.fotogramas_efecto * arma.segundos_por_fotograma
-	if _desde_ataque[indice] >= duracion:
-		return
-	var opacidad := OPACIDAD_EFECTO * (1.0 - _desde_ataque[indice] / duracion)
-	var mas := maxf(arma.dano_pegado, arma.dano_filo)
-	_cono(cono.direccion, alcance, arma.angulo_cono, Color(VERDE_CONO, opacidad * arma.dano_pegado / mas),
-		Color(VERDE_CONO, opacidad * arma.dano_filo / mas), Color(VERDE_CONO, opacidad))
-
-
-## Un cono desde el personaje: relleno del color de cerca al de lejos (un
-## abanico de triángulos con el vértice en el centro) y su contorno.
-func _cono(direccion: Vector2, alcance: float, grados: float, cerca: Color, lejos: Color, borde: Color) -> void:
-	var medio := deg_to_rad(grados) / 2.0
-	var puntos := PackedVector2Array([Vector2.ZERO])
-	var colores := PackedColorArray([cerca])
-	for i in LADOS_CONO + 1:
-		var angulo := direccion.angle() - medio + medio * 2.0 * i / LADOS_CONO
-		puntos.append(Vector2.from_angle(angulo) * alcance)
-		colores.append(lejos)
-	if cerca.a > 0.0 or lejos.a > 0.0:
-		draw_polygon(puntos, colores)
-	puntos.append(Vector2.ZERO)
-	draw_polyline(puntos, borde, 2.0)
+	if cono != null and indice < _desde_ataque.size() and arma.efecto != null:
+		draw_set_transform(Vector2.ZERO, cono.direccion.angle())
+		_efecto(arma, _desde_ataque[indice], escala, 1.0)
+	draw_set_transform(Vector2.ZERO)
 
 
 func _dibujar_chispas() -> void:
