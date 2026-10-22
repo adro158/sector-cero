@@ -61,6 +61,9 @@ const RADIO_TORBELLINO := 200.0
 ## Se aparta de los proyectiles de la ráfaga del jefe que le vienen encima y
 ## están más cerca que esto.
 const RADIO_RAFAGA := 80.0
+## El Espadachín golpea en cono hacia donde mira: en los últimos segundos
+## antes de cada golpe, el bot se gira hacia el enemigo más cercano.
+const APUNTAR_ANTES := 0.05
 ## Las mejoras que prefiere el bot. Hasta el 02/10/2026 elegía al azar, pero
 ## con ocho mejoras en el pool, tres de ellas sin daño, eso ya no se parecía a
 ## jugar: se quedaba sin evoluciones y sin daño para el jefe (bitácora, sesión 7).
@@ -340,6 +343,7 @@ func _mover_bot() -> void:
 		if posicion.length() < 50.0:
 			direccion = Vector2.RIGHT
 
+	direccion = _apuntar_cono(posicion, direccion)
 	for accion in ["mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo"]:
 		Input.action_release(accion)
 	if direccion.x > 0.05:
@@ -350,6 +354,25 @@ func _mover_bot() -> void:
 		Input.action_press("mover_abajo", direccion.y)
 	elif direccion.y < -0.05:
 		Input.action_press("mover_arriba", -direccion.y)
+
+
+## Justo antes de un golpe en cono, hacia el enemigo más cercano a su alcance,
+## como una persona que se gira para pegar; si no, la dirección que llevaba.
+## El giro dura tres fotogramas: casi no cambia por dónde va.
+func _apuntar_cono(posicion: Vector2, direccion: Vector2) -> Vector2:
+	var gestor_armas: Node = _jugador.get_node("GestorArmas")
+	var arma: DatosArma = gestor_armas.armas[0]
+	if arma.angulo_cono <= 0.0 or gestor_armas._tiempos[0] > APUNTAR_ANTES:
+		return direccion
+	var alcance: float = arma.radio * gestor_armas.multiplicador_alcance
+	var mejor := Vector2.INF
+	for objetivo in get_nodes_in_group("objetivos"):
+		var donde: Vector2 = objetivo.mas_cercano(posicion, alcance)
+		if donde != Vector2.INF and posicion.distance_to(donde) < posicion.distance_to(mejor):
+			mejor = donde
+	if mejor == Vector2.INF or mejor == posicion:
+		return direccion
+	return (mejor - posicion).normalized()
 
 
 ## El ataque que está haciendo el jefe final ("" si ninguno o si no está).
