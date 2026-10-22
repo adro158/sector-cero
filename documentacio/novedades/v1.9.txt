@@ -1,3 +1,7 @@
 - El Espadachín da tajos en un cono hacia donde va: cuanto más pegado está el malware, más daño, y lo de detrás no lo toca. Evolucionado llega más lejos, pega igual en todo el cono y roba más vida.
 - Los tres personajes se ven atacar: el Mago adelanta el bastón y le brilla el cristal, el Espadachín da el tajo y el Segador sube y baja la guadaña.
 - Las evoluciones salen las primeras en la columna de mejoras, del color de su personaje.
+- Cuando el malware se adapta a tu herramienta, se avisa en pantalla y suena una alarma; abajo se ve cuánto resiste.
+- Kernel Panic avisa hacia dónde va a embestir y sus furias pegan algo menos.
+- La partida se pausa sola al cambiar de ventana.
+- El ranking ordena las victorias por dificultad y se guarda aunque no pulses GUARDAR. Ya no se ofrece la evolución de un personaje caído, y se han corregido varios textos de las reglas.

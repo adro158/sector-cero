@@ -21,6 +21,16 @@ visual de la partida».
 
 ## Resumen por prioridad
 
+**Hecho el 22/10 por la noche, en la nube** (Adam: «haz los cambios
+pendientes»): todo el apartado A y lo del apartado B que no pide dibujos:
+los textos de las reglas, el ranking que se perdía y su orden por dificultad
+(y la mejor partida del menú), la evolución de un caído, la pausa al cambiar
+de ventana, VERSIONES y el aviso de versiones donde no hacían nada, el aviso
+de la embestida, y el aviso y el sonido cuando el malware se adapta (con la
+señal `malware_adaptado` y lo que resiste en la línea de abajo). El
+indicador con medidor del HUD (interfaz 1) queda para cuando haya sus
+dibujos. Detalle en la bitácora, sesión 18.
+
 ### A. Fallos que conviene arreglar ya (pequeños y sin assets)
 
 - **Textos de las reglas que ya no cuadran** (jugabilidad 1):
