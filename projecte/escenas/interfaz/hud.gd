@@ -107,7 +107,10 @@ func _crear_barras_jefe() -> void:
 	add_child(barra)
 	BusEventos.jefe_aparecio.connect(barra.show)
 	BusEventos.jefe_vida_cambiada.connect(barra.poner)
-	BusEventos.transicion_fase.connect(func(_segundos): barra.hide())
+	# Con unbind y no con una función anónima: esta no usa el HUD, y Godot no
+	# la desconectaría al salir de la partida (en la siguiente, al pasar a la
+	# fase 2, intentaba esconder la barra vieja).
+	BusEventos.transicion_fase.connect(barra.hide.unbind(1))
 	var barra_final := BarraJefe.new(preload("res://medios/sprites/jefe_final/jefe_final_barra.png"), preload("res://medios/sprites/jefe_final/jefe_final_barra_relleno.png"))
 	add_child(barra_final)
 	BusEventos.jefe_final_aparecio.connect(barra_final.show)
