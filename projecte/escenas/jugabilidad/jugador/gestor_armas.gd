@@ -3,8 +3,11 @@ extends Node
 signal arma_disparada(indice: int)
 
 ## Lo que más puede curar un golpe con robo de vida: sin tope, metido en la
-## horda, se curaría del todo en cada golpe.
-const ROBO_MAXIMO := 3.0
+## horda, se curaría del todo en cada golpe. Con la horda encima siempre se
+## llega al tope: el Firewall cura así unos 2,5 de vida por segundo (cada
+## 0,6 s). Era 3 hasta el 22/10: con 5 por segundo, quieto en el minuto 8:30
+## Adam casi no perdía vida.
+const ROBO_MAXIMO := 1.5
 
 @export var armas: Array[DatosArma] = []
 
