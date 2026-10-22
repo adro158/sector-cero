@@ -33,10 +33,10 @@ const GIRO := TAU / CANTIDAD / 2.0
 ## La mitad del proyectil más lo que se suma por el tamaño del jugador: pega si
 ## le roza, no solo si le da en el centro.
 const RADIO_IMPACTO := 8.0 + 12.0
-## Daño al jugador, antes de la dificultad (la aplica su salud).
+## Daño al jugador, antes de la furia y de la dificultad (la aplica su salud).
 const DANO := 15.0
 
-## Cada proyectil: [posición, dirección, segundos volando].
+## Cada proyectil: [posición, dirección, segundos volando, daño].
 var _proyectiles: Array = []
 var _jugador: Node2D
 var _salud_jugador: Salud
@@ -47,10 +47,13 @@ func _ready() -> void:
 	_salud_jugador = _jugador.get_node("Salud")
 
 
-func disparar(centro: Vector2, girada: bool) -> void:
+## multiplicador_dano: el de la furia del jefe en ese momento. Va en cada
+## proyectil: si se enfurece con ellos en el aire, los que ya salieron pegan
+## lo mismo.
+func disparar(centro: Vector2, girada: bool, multiplicador_dano := 1.0) -> void:
 	for i in CANTIDAD:
 		var direccion := Vector2.from_angle(TAU * i / CANTIDAD + (GIRO if girada else 0.0))
-		_proyectiles.append([centro + direccion * SALIDA, direccion, 0.0])
+		_proyectiles.append([centro + direccion * SALIDA, direccion, 0.0, DANO * multiplicador_dano])
 	BusEventos.jefe_ataco.emit("rafaga")
 
 
@@ -69,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		proyectil[0] += proyectil[1] * VELOCIDAD * delta
 		proyectil[2] += delta
 		if proyectil[0].distance_to(_jugador.global_position) < RADIO_IMPACTO:
-			_salud_jugador.recibir_dano(DANO)
+			_salud_jugador.recibir_dano(proyectil[3])
 			# Así lo retira el filtro de abajo.
 			proyectil[2] = VIDA
 	_proyectiles = _proyectiles.filter(func(proyectil): return proyectil[2] < VIDA)

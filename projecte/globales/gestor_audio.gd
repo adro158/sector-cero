@@ -21,8 +21,8 @@ const EFECTOS := [
 
 ## Cada ataque de los jefes suena con uno de los efectos que ya hay, y con
 ## qué tono. Los del jefe final (el rayo, el torbellino y la tormenta), como
-## las armas o las ultis de las que salen; el pisotón, la
-## ráfaga y la rabia son del jefe del minuto 10.
+## las armas o las ultis de las que salen; el pisotón y la ráfaga son del
+## jefe del minuto 10.
 const SONIDO_ATAQUE := {
 	"rayo": ["escaner", 0.6],
 	"torbellino": ["firewall", 0.7],
@@ -32,7 +32,6 @@ const SONIDO_ATAQUE := {
 	"escudo": ["evolucion", 0.6],
 	"pisoton": ["explosion", 0.6],
 	"rafaga": ["ping", 0.8],
-	"rabia": ["alarma_jefe", 0.8],
 }
 
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de
@@ -77,13 +76,14 @@ func _ready() -> void:
 	BusEventos.jefe_aparecio.connect(_al_aparecer_jefe)
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
+	BusEventos.jefe_furia_cambiada.connect(_al_endurecerse_jefe)
 	BusEventos.jefe_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.transicion_fase.connect(_al_empezar_transicion)
 	# La fase 2 suena con la música de la partida, pero más grave.
 	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_partida", 0.85))
 	BusEventos.jefe_final_aparecio.connect(_al_aparecer_jefe_final)
-	BusEventos.jefe_final_forma_cambiada.connect(_al_cambiar_forma_jefe_final)
+	BusEventos.jefe_final_forma_cambiada.connect(_al_endurecerse_jefe)
 	BusEventos.jefe_final_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
@@ -165,7 +165,9 @@ func _al_aparecer_jefe_final() -> void:
 	_poner_musica("musica_jefe", 1.1)
 
 
-func _al_cambiar_forma_jefe_final(_forma: int) -> void:
+## Lo mismo cuando el jefe final cambia de forma y cuando el del minuto 10
+## se enfurece: los dos se vuelven más duros.
+func _al_endurecerse_jefe(_paso: int) -> void:
 	sonar("alarma_jefe", 0.8)
 	sonar("explosion", 0.7)
 

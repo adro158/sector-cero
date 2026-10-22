@@ -46,6 +46,19 @@ func _al_recibir_dano(_cantidad: float) -> void:
 	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
 
 
+## Un tirón de cámara sin teñir al jugador, para los golpes fuertes del jefe
+## (espectaculo_jefe.gd). Usa el mismo tween que el golpe para no pelearse
+## con él por la cámara. Hacia abajo siempre: randf() gastaría números del
+## azar de la partida y el simulador ya no repetiría las mismas partidas.
+func sacudir(fuerza: float) -> void:
+	if _efecto_golpe != null:
+		_efecto_golpe.kill()
+	$Sprite.modulate = Color.WHITE
+	$Camara.offset = Vector2.DOWN * fuerza
+	_efecto_golpe = create_tween()
+	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
+
+
 ## Lo llama el aura de un élite en cada fotograma que el jugador está dentro:
 ## la velocidad baja esa fracción mientras siga dentro.
 func ralentizar(fraccion: float) -> void:

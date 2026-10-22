@@ -1,9 +1,10 @@
 extends Node2D
 
-## Jefe de la fase 1. Está en la escena desde el principio, oculto e inactivo,
-## y el director lo hace aparecer al cumplirse el tiempo de la partida.
-## Derrotarlo abre la fase 2 (raiz_juego.gd); el jefe final es otro,
-## jefe_final.gd.
+## Jefe de la fase 1, Kernel Panic. Está en la escena desde el principio,
+## oculto e inactivo, y el director lo hace aparecer al cumplirse el tiempo de
+## la partida: baja en una columna de datos y no ataca hasta que se ha cargado.
+## Derrotarlo abre la fase 2 (raiz_juego.gd) cuando acaba su explosión; el
+## jefe final es otro, jefe_final.gd. Su vida va en la barra de arriba del HUD.
 ##
 ## Persigue al jugador despacio y hace daño por contacto. Cada cierto tiempo se
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
@@ -13,9 +14,13 @@ extends Node2D
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
 ## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
 ## de ráfaga se para, late en morado y dispara 12 proyectiles en círculo; en la
-## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd). Por
-## debajo del 25 % de vida entra en rabia: le salen llamas por detrás, va más
-## rápido y ataca más seguido.
+## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd).
+##
+## Cuanta menos vida le queda, más duro: al bajar del 66 % y del 33 % se
+## enfurece. En cada furia va más rápido, pega más, sus ataques llegan antes y
+## saca más horda; en la última arde (el aura de la rabia). La aparición, la
+## furia y la muerte, con sus dibujos, van en su hijo Efectos
+## (espectaculo_jefe.gd).
 ##
 ## Para las armas es un objetivo más, igual que los gestores de la horda: está
 ## en el grupo objetivos y tiene danar_en_area y mas_cercano.
@@ -26,7 +31,6 @@ signal derrotado
 enum Estado { PERSEGUIR, AVISO, EMBESTIDA, INVOCAR, PISOTON, RAFAGA }
 
 const FOTOGRAMAS_ANDAR := 12
-const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 
@@ -50,7 +54,7 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 ## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
 ## sin ella.
 @export var invocados_minimo: int = 8
-@export var invocados_maximo: int = 14
+@export var invocados_maximo: int = 20
 @export var radio_invocacion: float = 140.0
 @export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
@@ -67,12 +71,14 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 ## Con menos de la mitad de vida dispara otra, este tiempo después.
 @export var entre_rafagas: float = 0.4
 
-@export_group("Rabia")
-## La parte de la vida por debajo de la cual entra en rabia.
-@export var vida_rabia: float = 0.25
-## En rabia se mueve así de más rápido y sus ataques llegan así de más seguidos.
-## Los avisos duran lo mismo: se siguen pudiendo esquivar.
-@export var ritmo_rabia: float = 1.3
+## La parte de la vida por debajo de la cual pasa a la furia 1 y a la 2.
+const UMBRALES_FURIA: Array[float] = [0.66, 0.33]
+## Por furia (0 sin furia): cuánto más rápido va, cuánto más pega y cuánto
+## antes llegan sus ataques. Los avisos duran lo mismo: se siguen pudiendo
+## esquivar.
+const VELOCIDAD_FURIA: Array[float] = [1.0, 1.15, 1.3]
+const DANO_FURIA: Array[float] = [1.0, 1.25, 1.5]
+const RITMO_FURIA: Array[float] = [1.0, 1.25, 1.5]
 
 const FOTOGRAMAS_RABIA := 4
 const SEGUNDOS_POR_FOTOGRAMA_RABIA := 0.1
@@ -88,7 +94,8 @@ var _hasta_rafaga := 0.0
 ## Las ráfagas que lleva disparadas la de ahora y las que le tocan (1 o 2).
 var _rafagas_hechas := 0
 var _rafagas_toca := 1
-var _rabia := false
+## 0 sin furia; 1 y 2 al bajar de cada umbral.
+var _furia := 0
 var _tiempo_rabia := 0.0
 var _jugador: Node2D
 var _salud_jugador: Salud
@@ -99,6 +106,8 @@ var _jaula: Node2D
 @onready var _rafaga: Node2D = $Rafaga
 ## Las llamas de la rabia, detrás del jefe: es el primer hijo, antes del Sprite.
 @onready var _aura: Sprite2D = $Rabia
+## La aparición, la furia y la muerte (espectaculo_jefe.gd).
+@onready var _efectos: Node2D = $Efectos
 
 
 func _ready() -> void:
@@ -108,6 +117,8 @@ func _ready() -> void:
 	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_salud.murio.connect(_al_morir)
 	_salud.vida_cambiada.connect(_al_cambiar_vida)
+	_efectos.aparecido.connect(func(): _activo = true)
+	_efectos.acabo_de_morir.connect(_al_acabar_de_morir)
 
 
 func aparecer(posicion: Vector2) -> void:
@@ -115,12 +126,15 @@ func aparecer(posicion: Vector2) -> void:
 	# La vida de la escena es la de la dificultad media.
 	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida"))
 	visible = true
-	_activo = true
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton
 	_hasta_rafaga = primera_rafaga
-	_rabia = false
+	_furia = 0
 	_aura.visible = false
+	# No recibe daño ni ataca hasta que acaba de aparecer.
+	_activo = false
+	_cambiar_estado(Estado.PERSEGUIR)
+	_efectos.aparicion()
 	BusEventos.jefe_aparecio.emit()
 
 
@@ -158,9 +172,9 @@ func ficha(_id: int) -> Dictionary:
 	var retrato := AtlasTexture.new()
 	retrato.atlas = _sprite.texture
 	retrato.region = Rect2(Vector2.ZERO, _sprite.texture.get_size() / Vector2(_sprite.hframes, _sprite.vframes))
-	return {"id": 0, "nombre": "Jefe", "textura": retrato, "color": Color(0.75, 0.3, 1.0),
-		"vida": _salud.vida(), "vida_maxima": _salud.vida_maxima, "dano": dano_contacto,
-		"velocidad": velocidad}
+	return {"id": 0, "nombre": "Kernel Panic (jefe)", "textura": retrato, "color": Color(0.75, 0.3, 1.0),
+		"vida": _salud.vida(), "vida_maxima": _salud.vida_maxima, "dano": dano_contacto * DANO_FURIA[_furia],
+		"velocidad": velocidad * VELOCIDAD_FURIA[_furia]}
 
 
 func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
@@ -182,7 +196,7 @@ func _physics_process(delta: float) -> void:
 	match _estado:
 		Estado.PERSEGUIR:
 			_direccion = hacia_jugador
-			global_position += _direccion * velocidad * _ritmo() * delta
+			global_position += _direccion * velocidad * VELOCIDAD_FURIA[_furia] * delta
 			# Con la jaula puesta no invoca (lo deja para cuando se rompa) ni
 			# vuelve a pisar.
 			var sin_jaula: bool = not _jaula.activa()
@@ -227,7 +241,7 @@ func _physics_process(delta: float) -> void:
 			_sprite.modulate = Color.WHITE.lerp(color_invocacion, latido)
 			if _tiempo_estado >= aviso_rafaga + _rafagas_hechas * entre_rafagas:
 				# La segunda, girada: tapa los huecos de la primera.
-				_rafaga.disparar(global_position, _rafagas_hechas == 1)
+				_rafaga.disparar(global_position, _rafagas_hechas == 1, DANO_FURIA[_furia])
 				_rafagas_hechas += 1
 				if _rafagas_hechas == _rafagas_toca:
 					_hasta_rafaga = intervalo_rafaga
@@ -237,7 +251,8 @@ func _physics_process(delta: float) -> void:
 	global_position = _jaula.mantener(global_position, radio)
 
 	if global_position.distance_to(_jugador.global_position) < radio + 16.0:
-		_salud_jugador.recibir_dano(dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto)
+		var dano := dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto
+		_salud_jugador.recibir_dano(dano * DANO_FURIA[_furia])
 
 	_animar(delta)
 
@@ -255,17 +270,32 @@ func _invocar() -> void:
 	BusEventos.jefe_invoco.emit()
 
 
-## 1 normalmente y ritmo_rabia en rabia.
+## Lo que tardan en llegar sus ataques se divide entre esto.
 func _ritmo() -> float:
-	return ritmo_rabia if _rabia else 1.0
+	return RITMO_FURIA[_furia]
 
 
+## Avisa a la barra del HUD (también al reiniciar la vida en aparecer()) y
+## mira si ha bajado de algún umbral de furia.
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
-	queue_redraw()
-	if _activo and not _rabia and actual < maxima * vida_rabia:
-		_rabia = true
-		_aura.visible = true
-		BusEventos.jefe_ataco.emit("rabia")
+	BusEventos.jefe_vida_cambiada.emit(actual, maxima)
+	if not _activo:
+		return
+	var furia := 0
+	for umbral in UMBRALES_FURIA:
+		if actual < maxima * umbral:
+			furia += 1
+	if furia > _furia:
+		_enfurecer(furia)
+
+
+func _enfurecer(furia: int) -> void:
+	_furia = furia
+	# En la última, arde.
+	_aura.visible = _furia == UMBRALES_FURIA.size()
+	_sprite.destellar()
+	_efectos.furia()
+	BusEventos.jefe_furia_cambiada.emit(_furia)
 
 
 func _cambiar_estado(nuevo: Estado) -> void:
@@ -280,12 +310,12 @@ func _animar(delta: float) -> void:
 	# Las piernas van al ritmo al que se mueve: embistiendo, tantas veces más
 	# deprisa como lo es la embestida, y quieto (avisando o invocando), nada.
 	if _estado == Estado.PERSEGUIR:
-		_tiempo_andando += delta * _ritmo()
+		_tiempo_andando += delta * VELOCIDAD_FURIA[_furia]
 	elif _estado == Estado.EMBESTIDA:
 		_tiempo_andando += delta * velocidad_embestida / velocidad
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	_sprite.frame = Direcciones8.fila(_direccion) * FOTOGRAMAS_ANDAR + columna
-	if _rabia:
+	if _aura.visible:
 		_tiempo_rabia += delta
 		_aura.frame = int(_tiempo_rabia / SEGUNDOS_POR_FOTOGRAMA_RABIA) % FOTOGRAMAS_RABIA
 
@@ -294,8 +324,6 @@ func _draw() -> void:
 	if not _activo:
 		return
 
-	# Barra de vida sobre la corona.
-	BarraVida.dibujar(self, Vector2(0.0, -132.0), 140.0, 10.0, _salud.vida() / _salud.vida_maxima, Color(0.75, 0.3, 1.0))
 	# El anillo de la invocación crece hasta donde saldrán los enemigos.
 	if _estado == Estado.INVOCAR:
 		var avance := _tiempo_estado / duracion_invocacion
@@ -304,8 +332,14 @@ func _draw() -> void:
 
 func _al_morir() -> void:
 	_activo = false
-	visible = false
 	_jaula.terminar()
 	_rafaga.vaciar()
+	_aura.visible = false
 	BusEventos.enemigo_muerto.emit(global_position, "jefe")
+	_efectos.muerte()
+
+
+## Cuando acaba su explosión empieza la fase 2.
+func _al_acabar_de_morir() -> void:
+	visible = false
 	derrotado.emit()

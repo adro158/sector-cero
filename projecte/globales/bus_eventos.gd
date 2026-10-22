@@ -48,10 +48,14 @@ signal herramienta_usada(arma: DatosArma)
 signal jefe_aparecio
 ## El jefe acaba de sacar un anillo de horda a su alrededor.
 signal jefe_invoco
-## El jefe del minuto 10 empieza un ataque: "pisoton" (al dar el golpe),
-## "rafaga" (cada una que dispara) o "rabia" (al entrar en ella). Para el
-## sonido.
+## El jefe del minuto 10 empieza un ataque: "pisoton" (al dar el golpe) o
+## "rafaga" (cada una que dispara). Para el sonido.
 signal jefe_ataco(ataque: String)
+## Para la barra de vida del jefe del minuto 10 en el HUD.
+signal jefe_vida_cambiada(actual: float, maxima: float)
+## El jefe del minuto 10 se ha enfurecido: 1 al bajar del 66 % de vida, 2 al
+## bajar del 33 %. Para el aviso del HUD y el sonido.
+signal jefe_furia_cambiada(furia: int)
 ## descripcion: los nombres de sus afijos, como "BLINDADO + EXPLOSIVO".
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.
