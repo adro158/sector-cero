@@ -117,7 +117,9 @@ func ficha(_id: int) -> Dictionary:
 	retrato.atlas = Dibujo.ANCLAS[herramienta]
 	retrato.region = Rect2(0.0, 0.0, 48.0, 56.0)
 	return {"id": 0, "nombre": "Ancla del " + personaje.nombre, "textura": retrato, "color": personaje.color,
-		"vida": _vida, "vida_maxima": _vida_maxima, "dano": 0.0, "velocidad": 0.0}
+		"vida": _vida, "vida_maxima": _vida_maxima, "dano": 0.0, "velocidad": 0.0,
+		# No tiene la resistencia del malware: la ficha dice quién la rompe.
+		"solo_la_rompe": personaje.nombre}
 
 
 func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:

@@ -119,6 +119,9 @@ func _mostrar(ficha: Dictionary) -> void:
 	# El daño que hace de verdad, con el de la dificultad elegida.
 	var dano: float = ficha.dano * Dificultad.dato("dano")
 	_datos.text = "Daño al tocarte %d · Velocidad %d\n%s" % [roundi(dano), roundi(ficha.velocidad), _texto_resistencia()]
+	# Las anclas del escudo no se adaptan: solo las rompe su personaje.
+	if ficha.has("solo_la_rompe"):
+		_datos.text = "Solo la rompe el %s" % ficha.solo_la_rompe
 
 
 ## La resistencia del malware a la herramienta que llevas ahora: es la misma

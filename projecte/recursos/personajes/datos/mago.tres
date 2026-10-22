@@ -11,7 +11,7 @@
 [resource]
 script = ExtResource("1_personaje")
 nombre = "Mago"
-descripcion = "Ping: dispara un paquete que salta de un enemigo a otro, hasta cinco. El mejor contra enemigos sueltos o rápidos (paquetes perdidos) y para pegar al jefe y a los élites sin acercarse. Evoluciona a Ping de inundación con Multihilo ×3."
+descripcion = "Ping: dispara un paquete que salta de un enemigo a otro y golpea hasta a cinco. El mejor contra enemigos sueltos o rápidos (paquetes perdidos) y para pegar al jefe y a los élites sin acercarse. Evoluciona a Ping de inundación con Multihilo ×3."
 hoja = ExtResource("2_hoja")
 hoja_evolucion = ExtResource("5_hoja_evolucion")
 hoja_ataque = ExtResource("6_ataque")
