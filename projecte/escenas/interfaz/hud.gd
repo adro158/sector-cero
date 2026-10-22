@@ -26,6 +26,8 @@ var _etiqueta_jefe: Label
 var _fase := 1
 var _columna: VBoxContainer
 var _iconos := {}
+## Cuántas evoluciones hay en la columna: van las primeras, por orden.
+var _evoluciones := 0
 var _aviso: Label
 var _efecto_aviso: Tween
 
@@ -137,6 +139,10 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		icono.mejora = mejora
 		_columna.add_child(icono)
 		_iconos[mejora] = icono
+		# Las de un personaje (las evoluciones), arriba del todo.
+		if mejora.efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA:
+			_columna.move_child(icono, _evoluciones)
+			_evoluciones += 1
 	_iconos[mejora].poner_nivel(niveles_mejora.get(mejora, 1))
 
 
