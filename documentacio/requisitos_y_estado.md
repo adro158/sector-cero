@@ -97,9 +97,11 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
    dificultades (punto 3.6), el escudo de NÚCLEO CERO arreglado, los dos
    fallos de la ficha del enemigo y las releases sin el juego suelto (solo
    los instaladores, los `.pck` que usa el lanzador y `version.json`; la
-   web se queda). **Publicado en la v1.8** el 22/10 por la noche, desde la
-   nube, a petición de Adam, junto con todo lo de la nube del 22/10 (sus
-   novedades, en `documentacio/novedades/v1.8.txt`).
+   web se queda). **Va en la v1.8**, con todo lo de la nube del 22/10 (sus
+   novedades, en `documentacio/novedades/v1.8.txt`). Adam pidió publicarla,
+   pero desde la nube no se pueden subir etiquetas: **falta subir la
+   etiqueta `v1.8` desde el ordenador** (cómo, en la bitácora, sesión 18, el
+   final de «En la nube»).
 
    **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18).
    Los seis lotes de la sesión 17 se integraron sin conflictos,

@@ -3601,8 +3601,14 @@ siempre, cargando también la partida.
   cada una elige un personaje y solo juega con él). De momento no se hace
   nada: apuntado en `requisitos_y_estado.md` (punto 14) con lo que habría
   que decidir antes.
-- **Publicada la v1.8** a petición de Adam («todo lo que hemos hecho hasta
-  ahora lo subas en una versión nueva»): lo de `main` de la sesión 18 (el
+- **La v1.8, lista para publicar, pero sin publicar** (Adam: «todo lo que
+  hemos hecho hasta ahora lo subas en una versión nueva»). Desde la nube no
+  se pueden subir etiquetas: `git push origin v1.8` da 403 (la sesión solo
+  sube ramas). **Falta subir la etiqueta desde el ordenador:** `git fetch
+  origin`, `git tag v1.8 origin/main` y `git push origin v1.8` (o, en GitHub
+  Desktop, botón derecho en el último commit de `main` → Create Tag → v1.8
+  y Push origin). No crear la release a mano en la web: la Action fallaría
+  al crearla otra vez. Lleva lo de `main` de la sesión 18 (el
   equilibrado, el escudo arreglado, la ficha del enemigo y las releases solo
   con el lanzador) y todo lo de la nube del 22/10. Novedades en
   `documentacio/novedades/v1.8.txt`. Sin cambios en `project.godot` ni
