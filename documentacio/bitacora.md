@@ -3799,3 +3799,16 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
     entrando en ella con casi toda la vida. **Pendiente de Adam:** qué se
     toca (por ejemplo, que la horda de la fase 2 entre poco a poco en el
     primer minuto, o que sea algo menos dura en media y difícil).
+- **La horda de la fase 2 entra poco a poco** (opción 1 que eligió Adam):
+  en su primer minuto, el intervalo va de 0,3 s al de siempre, 0,07
+  (`entrada_fase_2` e `intervalo_inicio_fase_2` en `config_principal.tres`).
+  Simulador, 10 por dificultad, sin errores: fácil 9/10, media 1/10,
+  difícil 0/10. Las derrotas de la fase 2 llegan más tarde (de 10:15 a
+  13:30, antes de 10:25 a 12:15), pero siguen siendo las mismas.
+  - **La causa de fondo:** el bot pierde uno o dos personajes contra Kernel
+    Panic (salen como «cae Segador (t=600s, jefe)») y entra en la fase 2 con
+    uno o dos. Por eso caía aunque entrara con la vida llena: era la del
+    único que le quedaba.
+  - **Ruido:** con 10 partidas sale ±2 victorias. Fácil pasó de 7 a 9 y
+    media de 3 a 1 con un cambio que solo toca la fase 2.
+  - **Pendiente de Adam:** qué hacer con eso (bitácora, aquí mismo).
