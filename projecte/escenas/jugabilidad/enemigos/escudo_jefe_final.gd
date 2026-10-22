@@ -7,11 +7,12 @@ extends Node2D
 ## objetivos con su vida (ancla_escudo.gd): cada una que se rompe pierde su
 ## cadena, y al romper las 4 la burbuja estalla y el jefe se queda aturdido.
 ## Cada ancla es de un personaje y solo la rompe su herramienta, así que hay
-## que ir cambiando: mientras está el escudo, cambiar no tiene espera. Si desde
-## que se rompe la primera pasan 30 s sin romper las 4, las rotas se vuelven a
-## cerrar. Hasta el 22/10 (sesión 18) eran 800 de vida, 12 s y con la espera
-## de siempre, y el bot del simulador no las rompía nunca: le quita a un ancla
-## unos 50 de vida por segundo.
+## que ir cambiando: mientras está el escudo, cambiar no tiene espera. Si pasan
+## 30 s sin romper ninguna, las rotas se vuelven a cerrar. Hasta el 22/10
+## (sesión 18) eran 800 de vida, 12 s y con la espera de siempre, y el bot del
+## simulador no las rompía nunca: le quita a un ancla unos 50 de vida por
+## segundo. Y hasta la noche del 22/10 los 30 s contaban desde la primera rota,
+## y en difícil (con más vida) se cerraba mientras se rompía la segunda.
 ##
 ## Las anclas son sus hijos y están en la escena desde el principio, ocultas,
 ## como los élites: las armas buscan sus objetivos al empezar. Sin class_name.
@@ -21,9 +22,10 @@ signal roto
 const Dificultad := preload("res://globales/dificultad.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
-## Vida de cada ancla en media: se multiplica por la dificultad.
+## Vida de cada ancla antes de la dificultad: se multiplica por su
+## vida_anclas.
 const VIDA_ANCLA := 300.0
-## Lo que hay para romper las 4 desde que se rompe la primera.
+## Lo que hay para romper la siguiente desde que se rompe una.
 const TIEMPO_PARA_ROMPER := 30.0
 ## De quién es cada ancla, por su posición en la lista de personajes vivos:
 ## con tres, a-b-c-b, y ninguna queda junto a otra de su color (están en
@@ -40,8 +42,10 @@ var _activo := false
 ## Lo que le queda a la animación de la rotura.
 var _rotura := 0.0
 var _segundos := 0.0
-## Segundos desde que se rompió la primera ancla (0 si no hay ninguna rota).
-var _desde_primera_rota := 0.0
+## Las anclas rotas y los segundos desde que se rompió la última (0 si no hay
+## ninguna rota).
+var _rotas := 0
+var _desde_ultima_rota := 0.0
 ## Las claves de los personajes que no han caído, como en Ancla.PERSONAJES.
 var _vivos: Array = Ancla.PERSONAJES.keys()
 
@@ -63,7 +67,8 @@ func activo() -> bool:
 func levantar() -> void:
 	_activo = true
 	_cambio_personaje.sin_espera = true
-	_desde_primera_rota = 0.0
+	_rotas = 0
+	_desde_ultima_rota = 0.0
 	# Barajados, para que no salgan siempre en el mismo sitio.
 	var orden := _vivos.duplicate()
 	orden.shuffle()
@@ -71,7 +76,7 @@ func levantar() -> void:
 	for i in _anclas.size():
 		var direccion := Vector2.from_angle(TAU * (i + 0.5) / _anclas.size())
 		var de_quien: String = orden[REPARTO[i] % orden.size()]
-		_anclas[i].activar(global_position + direccion * DISTANCIA_ANCLAS, VIDA_ANCLA * Dificultad.dato("vida"), de_quien)
+		_anclas[i].activar(global_position + direccion * DISTANCIA_ANCLAS, VIDA_ANCLA * Dificultad.dato("vida_anclas"), de_quien)
 	BusEventos.jefe_final_ataco.emit("escudo")
 
 
@@ -103,14 +108,19 @@ func _physics_process(delta: float) -> void:
 		_rotura = ROTURA
 		roto.emit()
 	elif rotas > 0:
-		_desde_primera_rota += delta
-		if _desde_primera_rota >= TIEMPO_PARA_ROMPER:
+		# Cada una que se rompe vuelve a dar todo el tiempo para la siguiente.
+		if rotas > _rotas:
+			_desde_ultima_rota = 0.0
+		_desde_ultima_rota += delta
+		if _desde_ultima_rota >= TIEMPO_PARA_ROMPER:
 			for ancla in _anclas:
 				if ancla.rota():
 					ancla.cerrar()
-			_desde_primera_rota = 0.0
+			rotas = 0
+			_desde_ultima_rota = 0.0
 			# Suena como al levantar el escudo.
 			BusEventos.jefe_final_ataco.emit("escudo")
+	_rotas = rotas
 
 
 ## Si cae un personaje con el escudo puesto, sus anclas pasan a otro: si no,

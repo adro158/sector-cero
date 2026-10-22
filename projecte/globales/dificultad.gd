@@ -5,9 +5,11 @@ extends RefCounted
 ## Adam, bitácora, sesión 11). La elegida se guarda en las opciones
 ## (GestorGuardado) y la partida la lee al empezar.
 ##
-## - vida: multiplica la vida de la horda, los élites, el jefe del minuto 10 y las
-##   anclas del escudo del jefe final.
+## - vida: multiplica la vida de la horda, los élites y el jefe del minuto 10.
 ## - vida_jefe_final: multiplica la de NÚCLEO CERO, que va aparte (sesión 18).
+## - vida_anclas: la de las anclas de su escudo. En difícil, la de la media:
+##   con la de la horda (300) se tardaba demasiado en romperlas (Adam,
+##   22/10). En fácil y en media no cambia.
 ## - dano: multiplica el daño que recibe el jugador.
 ## - huye: la parte de la horda que se va al llegar el jefe (1 toda, 0 nadie).
 ##
@@ -28,15 +30,15 @@ extends RefCounted
 
 const DIFICULTADES := {
 	"facil": {
-		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe_final": 0.4, "dano": 0.6, "huye": 1.0,
+		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe_final": 0.4, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
-		"nombre": "MEDIA", "vida": 0.7, "vida_jefe_final": 0.75, "dano": 0.85, "huye": 0.5,
+		"nombre": "MEDIA", "vida": 0.7, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
 		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
-		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe_final": 0.75, "dano": 1.1, "huye": 0.0,
+		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 1.1, "huye": 0.0,
 		"explicacion": "El malware tiene más vida y hace más daño. La horda sigue cuando llega el jefe.",
 	},
 }
