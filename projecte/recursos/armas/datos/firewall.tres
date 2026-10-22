@@ -18,3 +18,7 @@ fotogramas_efecto = 6
 segundos_por_fotograma = 0.05
 anillo = ExtResource("3_anillo")
 radio_dibujo = 110.0
+robo_maximo = 1.5
+angulo_cono = 90.0
+dano_pegado = 1.5
+dano_filo = 0.5

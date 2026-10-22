@@ -87,9 +87,15 @@ func descripcion() -> String:
 
 
 ## Misma forma que la horda y el jefe: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0) -> int:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
 	if not _activo or global_position.distance_to(centro) > radio_golpe + datos.tamano * 0.5:
 		return 0
+	if cono != null:
+		var factor: float = cono.factor(global_position, datos.tamano * 0.5)
+		if factor <= 0.0:
+			return 0
+		cantidad *= factor
+		cono.golpes += factor
 
 	var blindaje := _valor(DatosAfijoElite.Efecto.BLINDADO)
 	_salud.recibir_dano(cantidad * (1.0 - blindaje))

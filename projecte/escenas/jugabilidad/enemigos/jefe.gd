@@ -139,9 +139,15 @@ func aparecer(posicion: Vector2) -> void:
 
 
 ## Misma forma que en los gestores de la horda: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0) -> int:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
 	if not _activo or global_position.distance_to(centro) > radio_golpe + radio:
 		return 0
+	if cono != null:
+		var factor: float = cono.factor(global_position, radio)
+		if factor <= 0.0:
+			return 0
+		cantidad *= factor
+		cono.golpes += factor
 
 	_salud.recibir_dano(cantidad)
 	# Avisando, invocando o antes de la ráfaga no destella: con el Ping

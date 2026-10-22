@@ -148,8 +148,10 @@ func aparecer(posicion: Vector2) -> void:
 
 ## Devuelve a cuántos enemigos ha alcanzado, que es lo que necesitan los
 ## proyectiles para saber si han impactado. La cantidad llega ya con la
-## resistencia descontada; la resistencia solo se usa para el aviso.
-func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia := 0.0) -> int:
+## resistencia descontada; la resistencia solo se usa para el aviso. Con un
+## cono (golpe_cono.gd, el Firewall), solo a los que están dentro y con su
+## daño según la distancia.
+func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
 	var alcanzados := 0
 
 	for i in _rejilla.indices_cerca(centro, radio):
@@ -160,9 +162,16 @@ func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia :
 			continue
 
 		if _posiciones[i].distance_to(centro) < radio:
-			_vidas[i] -= cantidad
+			var golpe := cantidad
+			if cono != null:
+				var factor: float = cono.factor(_posiciones[i], 0.0)
+				if factor <= 0.0:
+					continue
+				golpe *= factor
+				cono.golpes += factor
+			_vidas[i] -= golpe
 			_destellos[i] = DURACION_DESTELLO
-			enemigo_danado.emit(_posiciones[i], cantidad, resistencia)
+			enemigo_danado.emit(_posiciones[i], golpe, resistencia)
 			alcanzados += 1
 
 	return alcanzados

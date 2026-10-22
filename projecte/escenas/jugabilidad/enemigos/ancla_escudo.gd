@@ -72,8 +72,12 @@ func rota() -> bool:
 ## herramienta enseña el 0 pero no cuenta como alcanzada: si contara, el robo
 ## de vida curaría y la resistencia del malware lo tomaría por daño. El
 ## proyectil del Ping la atraviesa.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0) -> int:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
 	if not _activa or global_position.distance_to(centro) > radio_golpe + RADIO:
+		return 0
+	# Fuera del cono ni el 0 rojo: no le ha llegado el golpe.
+	var factor: float = 1.0 if cono == null else cono.factor(global_position, RADIO)
+	if factor <= 0.0:
 		return 0
 	var numero_en := global_position + Vector2(randf_range(-10.0, 10.0), -36.0)
 	if _personaje_activo != PERSONAJES[herramienta]:
@@ -85,7 +89,9 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 	# no. Las armas mandan el daño ya rebajado y aquí se deshace: si solo
 	# queda un personaje y su herramienta resiste al 50 %, si no, las cuatro
 	# anclas no se podían romper antes de que se cerraran (sesión 18).
-	var golpe := cantidad / (1.0 - resistencia)
+	var golpe := cantidad / (1.0 - resistencia) * factor
+	if cono != null:
+		cono.golpes += factor
 	_vida -= golpe
 	enemigo_danado.emit(numero_en, golpe, 0.0)
 	if _vida <= 0.0:

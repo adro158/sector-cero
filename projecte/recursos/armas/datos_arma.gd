@@ -16,10 +16,13 @@ enum Tipo {
 @export var radio: float = 90.0
 
 ## Robo de vida: la parte del daño hecho que cura al personaje (0.1 es un
-## 10 %), con un tope por golpe (ROBO_MAXIMO en gestor_armas.gd). Solo en las
-## armas de área: lo tiene el Firewall del Espadachín, que llega poco y pega
-## poco, para que compense pegarse a la horda.
+## 10 %), con un tope por golpe. Solo en las armas de área: lo tiene el
+## Firewall del Espadachín, que llega poco, para que compense pegarse a la
+## horda.
 @export var robo_vida: float = 0.0
+## Lo que más puede curar un golpe: sin tope, metido en la horda, se curaría
+## del todo en cada golpe. Con la horda encima siempre se llega a él.
+@export var robo_maximo: float = 1.5
 
 ## Nombre del efecto de medios/audio/ que suena cada vez que ataca.
 @export var sonido: String = "firewall"
@@ -35,6 +38,13 @@ enum Tipo {
 ## El radio al que están dibujados el efecto y el anillo. Con la mejora de
 ## alcance se escalan: radio de verdad / radio del dibujo.
 @export var radio_dibujo: float = 110.0
+## Si es mayor que 0, el golpe es un cono de esos grados hacia donde mira el
+## personaje, no un círculo (el Firewall; golpe_cono.gd).
+@export var angulo_cono: float = 0.0
+## En el cono, el daño (como parte de dano) pegado al personaje y en el filo
+## del alcance; en medio, repartido en línea recta.
+@export var dano_pegado: float = 1.0
+@export var dano_filo: float = 1.0
 
 @export_group("Solo proyectiles")
 @export var velocidad_proyectil: float = 420.0

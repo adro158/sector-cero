@@ -2,12 +2,8 @@ extends Node
 
 signal arma_disparada(indice: int)
 
-## Lo que más puede curar un golpe con robo de vida: sin tope, metido en la
-## horda, se curaría del todo en cada golpe. Con la horda encima siempre se
-## llega al tope: el Firewall cura así unos 2,5 de vida por segundo (cada
-## 0,6 s). Era 3 hasta el 22/10: con 5 por segundo, quieto en el minuto 8:30
-## Adam casi no perdía vida.
-const ROBO_MAXIMO := 1.5
+## El golpe del Firewall, en cono hacia donde mira el personaje.
+const GolpeCono := preload("res://escenas/jugabilidad/jugador/golpe_cono.gd")
 
 @export var armas: Array[DatosArma] = []
 
@@ -24,6 +20,9 @@ var _objetivos: Array = []
 var _pool_proyectiles: Node2D
 var _resistencia_malware: Node
 var _salud: Salud
+## El cono del último ataque en cono (null si el arma ataca en círculo): para
+## que aura_arma.gd lo dibuje y saque las chispas solo de lo que ha golpeado.
+var ultimo_cono: RefCounted
 
 
 func _ready() -> void:
@@ -67,14 +66,23 @@ func _atacar(arma: DatosArma) -> void:
 		DatosArma.Tipo.AREA:
 			var resistencia: float = _resistencia_malware.resistencia(arma)
 			var dano_final := dano * (1.0 - resistencia)
+			var cono: RefCounted = null
+			if arma.angulo_cono > 0.0:
+				cono = GolpeCono.new(_jugador.global_position, _jugador.mirando, radio, arma.angulo_cono, arma.dano_pegado, arma.dano_filo)
+			ultimo_cono = cono
 			var alcanzados := 0
 
 			for objetivo in _objetivos:
-				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia)
+				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia, cono)
 
-			_resistencia_malware.registrar_dano(arma, alcanzados * dano_final)
-			if arma.robo_vida > 0.0 and alcanzados > 0:
-				var robado := minf(alcanzados * dano_final * arma.robo_vida, ROBO_MAXIMO)
+			# En golpes enteros: en el cono, cada uno cuenta según su distancia.
+			var golpes: float = alcanzados if cono == null else cono.golpes
+			_resistencia_malware.registrar_dano(arma, golpes * dano_final)
+			if arma.robo_vida > 0.0 and golpes > 0.0:
+				# El Firewall cura así, con la horda encima, unos 2,5 de vida por
+				# segundo. El tope era 3 hasta el 22/10: quieto en el minuto
+				# 8:30, Adam casi no perdía vida.
+				var robado := minf(golpes * dano_final * arma.robo_vida, arma.robo_maximo)
 				_salud.curar(robado / _salud.vida_maxima)
 		DatosArma.Tipo.PROYECTIL:
 			# El proyectil aplica la resistencia al impactar, no al salir: puede

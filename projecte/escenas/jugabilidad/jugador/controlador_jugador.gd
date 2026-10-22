@@ -20,6 +20,10 @@ extends CharacterBody2D
 ## del ciclo de andar.
 const FOTOGRAMAS_ANDAR := 6
 
+## Hacia donde mira, de largo 1: hacia donde se mueve o, quieto, hacia donde
+## iba. Es hacia donde ataca el Espadachín (gestor_armas.gd).
+var mirando := Vector2.DOWN
+
 var _efecto_golpe: Tween
 var _fila := 0
 var _tiempo_andando := 0.0
@@ -78,6 +82,7 @@ func _physics_process(delta: float) -> void:
 		maxima *= 1.0 - _lentitud
 
 	if direccion != Vector2.ZERO:
+		mirando = direccion.normalized()
 		velocity = velocity.move_toward(direccion * maxima, aceleracion * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, frenado * delta)
