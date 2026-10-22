@@ -18,6 +18,11 @@ extends Node2D
 @export var color_resistido: Color = Color(1.0, 0.0, 0.15, 1.0)
 @export var duracion_destello: float = 0.12
 
+## Lo opaco que empieza el efecto de cada ataque: se va apagando hasta
+## desaparecer. Con el efecto entero, el Firewall (que golpea cada 0,6 s)
+## tapaba la pantalla media partida.
+const OPACIDAD_EFECTO := 0.55
+
 const CHISPA := preload("res://medios/sprites/herramientas/robo_vida_chispa.png")
 const LADO_CHISPA := 8.0
 const FOTOGRAMAS_CHISPA := 4
@@ -99,11 +104,23 @@ func _draw() -> void:
 		var tinte := color.lerp(color_resistido, _resistencia_malware.resistencia(arma))
 		# El anillo, más transparente cuando no ataca.
 		_fotograma(arma.anillo, 1, 0, escala, Color(tinte, 0.9 if encendido else 0.35))
-		# El efecto, una sola vez por ataque y sin teñir.
 		if i < _desde_ataque.size() and arma.efecto != null:
-			var fotograma := int(_desde_ataque[i] / arma.segundos_por_fotograma)
-			if fotograma < arma.fotogramas_efecto:
-				_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma, escala, Color.WHITE)
+			_efecto(arma, _desde_ataque[i], escala)
+
+
+## El efecto de un ataque, una sola vez y sin teñir. Para que salga suave y no
+## a saltos, cada fotograma se funde con el siguiente: es como tener muchos más
+## fotogramas sin dibujarlos.
+func _efecto(arma: DatosArma, segundos: float, escala: float) -> void:
+	var avance := segundos / arma.segundos_por_fotograma
+	if avance >= arma.fotogramas_efecto:
+		return
+	var fotograma := int(avance)
+	var mezcla := avance - fotograma
+	var opacidad := OPACIDAD_EFECTO * (1.0 - avance / arma.fotogramas_efecto)
+	_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma, escala, Color(1.0, 1.0, 1.0, opacidad * (1.0 - mezcla)))
+	if fotograma + 1 < arma.fotogramas_efecto:
+		_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma + 1, escala, Color(1.0, 1.0, 1.0, opacidad * mezcla))
 
 
 func _dibujar_chispas() -> void:
