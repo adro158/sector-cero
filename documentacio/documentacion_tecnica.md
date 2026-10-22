@@ -327,7 +327,11 @@ recibe menos daño (100, 75 y 60 %) y ataca más deprisa. Sus ataques van en
 otro script (`ataques_jefe_final.gd`): un rayo, un torbellino y una tormenta
 robados a los personajes (se dibujan con las mismas funciones que sus ultis),
 portales que sacan horda y cristales que dejan hielo, que ralentiza con la
-misma función que el aura de los élites. Todos avisan antes de hacer daño. Al
+misma función que el aura de los élites. Todos avisan antes de hacer daño. El
+rayo solo cuenta como que ha pegado si le quita vida al jugador: hasta el
+22/10 contaba también si su salud estaba protegida por otro golpe (medio
+segundo tras cada uno, y la horda le toca a menudo) y casi nunca hacía daño.
+Al
 cambiar de forma se encierra en un escudo: no recibe daño hasta que se rompen
 sus cuatro anclas, que son objetivos con su vida y están en la escena desde el
 principio, como los élites, porque las armas buscan sus objetivos al empezar.
@@ -337,12 +341,16 @@ herramienta. Las armas no dicen quién pega, así que el ancla escucha
 rojo. El reparto es a-b-c-b, para que no queden dos del mismo color juntas,
 y solo con los personajes que no han caído; si alguien cae con el escudo
 puesto, sus anclas pasan a otro, porque si no el escudo no se podría romper.
-Si en 30 s desde la primera rota no caen las cuatro, las rotas se cierran.
+Si pasan 30 s sin romper ninguna, las rotas se cierran (hasta el 22/10
+contaban desde la primera rota: en difícil se cerraba la primera mientras se
+rompía la segunda).
 Mientras está el escudo, cambiar de personaje no tiene espera (`sin_espera`,
 en `cambio_personaje.gd`). Hasta la sesión 18 eran 800 de vida, 12 s y la
 espera de siempre (10 s), y el bot del simulador lo rompió una vez en nueve
 partidas: le quita a un ancla unos 50 de vida por segundo y hacían falta dos
-cambios. Ahora, 300 de vida (la de antes de la sesión 17) y 30 s. Y las
+cambios. Ahora, 300 de vida (la de antes de la sesión 17) por
+`vida_anclas` de la dificultad (195 en fácil y 210 en media y en difícil:
+hasta el 22/10 en difícil eran 300) y 30 s. Y las
 anclas reciben el golpe entero, sin la resistencia del malware (que es del
 malware, no del escudo): si solo quedaba un personaje con su herramienta al
 50 %, sus cuatro anclas no se rompían antes de cerrarse y la partida se

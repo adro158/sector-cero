@@ -1,0 +1,7 @@
+- Kernel Panic, el jefe del minuto 10, se enfurece dos veces al perder vida: va más rápido, pega más, ataca más seguido y saca más malware. Aparece en una columna de datos, explota al morir y su vida sale arriba, como la de NÚCLEO CERO.
+- La jaula de Kernel Panic es más grande y se cierra antes, y su ráfaga va más rápida y se ve más grande.
+- Las herramientas evolucionadas se ven en el personaje, y la tarjeta de una evolución es del color de su personaje.
+- El golpe del Espadachín y el radar del Segador se ven más suaves, y el Firewall roba menos vida.
+- El rayo de NÚCLEO CERO ya hace daño. Las anclas de su escudo tienen menos vida en difícil, y solo se cierran si pasan 30 s sin romper ninguna.
+- Dificultades equilibradas de nuevo; en media huye la mitad de la horda al llegar el jefe.
+- Arreglada la ficha del enemigo (la vida y la resistencia).

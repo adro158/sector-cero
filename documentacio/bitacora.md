@@ -3572,3 +3572,44 @@ siempre, cargando también la partida.
     mide junto con el robo de vida, la jaula y la ráfaga, con el simulador
     en casa (`minuto=10` mide solo el jefe). Si sale demasiado duro, lo
     primero que se baja es `DANO_FURIA`.
+- **El rayo de NÚCLEO CERO no hacía daño** (Adam: «me he dejado dar y no me
+  ha hecho nada»). Pegaba una sola vez, pero contaba como que había pegado
+  aunque la salud del jugador estuviera protegida por otro golpe (medio
+  segundo tras cada uno, y con la horda encima casi siempre lo está). Ahora
+  solo cuenta si le quita vida, y si no, lo sigue intentando mientras se ve
+  el rayo (0,6 s). Probado en headless: sin nada antes quita 25 de vida
+  (30 × 0,85 de la media); con un golpe justo antes, antes del arreglo no
+  quitaba nada y ahora quita lo mismo. **Ojo, por si lo vio en la
+  amalgama:** sus dos rayos salen a ±25° de donde está el jugador, así que
+  quieto no le dan nunca. Es como se diseñó; si Adam quiere que tire también
+  uno al centro, se añade.
+- **Las anclas del escudo, en difícil** (Adam: «tiene demasiada vida, para
+  cuando he destruido uno y he empezado con el otro ya se ha regenerado el
+  primero»). Dos cambios:
+  - en difícil tienen la vida de la media, 210 en vez de 300: un dato nuevo,
+    `vida_anclas`, en la tabla de `dificultad.gd`, como `vida_jefe_final`.
+    En fácil (195) y en media (210) no cambia.
+  - los 30 s cuentan desde la última ancla rota, no desde la primera: solo
+    se cierran si se deja de romper. Así un ancla que cuesta más no hace
+    perder las que ya estaban rotas.
+  El bot del simulador las rompe a unos 50 de vida por segundo, mucho antes
+  de los 30 s, así que en fácil y en media el equilibrio medido casi no
+  cambia; en difícil, algo más fácil contra NÚCLEO CERO. Probado en
+  headless: dos rotas con 20 s entre ellas siguen rotas, a los 31 s de la
+  última se cierran, y con las cuatro rotas el escudo estalla.
+- **Para más adelante: un cooperativo en red local** (Adam: tres personas,
+  cada una elige un personaje y solo juega con él). De momento no se hace
+  nada: apuntado en `requisitos_y_estado.md` (punto 14) con lo que habría
+  que decidir antes.
+- **Publicada la v1.8** a petición de Adam («todo lo que hemos hecho hasta
+  ahora lo subas en una versión nueva»): lo de `main` de la sesión 18 (el
+  equilibrado, el escudo arreglado, la ficha del enemigo y las releases solo
+  con el lanzador) y todo lo de la nube del 22/10. Novedades en
+  `documentacio/novedades/v1.8.txt`. Sin cambios en `project.godot` ni
+  `class_name` nuevos: `EJECUTABLE_MINIMO` sigue en 0.2. Antes de subir la
+  etiqueta, el `.pck` de Linux exportado en la nube (2,8 MB, como los 2,7 de
+  la v1.7 más los dibujos nuevos).
+- **Lo que hay que medir en casa** (todo cambia el equilibrio, que estaba en
+  el objetivo): el robo de vida, la jaula y la ráfaga, las furias de Kernel
+  Panic, el rayo que ahora sí pega y las anclas en difícil. Con el
+  simulador, las tres dificultades, como el 22/10 en casa.

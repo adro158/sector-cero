@@ -93,12 +93,13 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **En `main` sin publicar** (sesión 18, 22/10): el equilibrado de las
+0. **Lo que estaba en `main` sin publicar** (sesión 18, 22/10): el equilibrado de las
    dificultades (punto 3.6), el escudo de NÚCLEO CERO arreglado, los dos
    fallos de la ficha del enemigo y las releases sin el juego suelto (solo
    los instaladores, los `.pck` que usa el lanzador y `version.json`; la
-   web se queda). Sale con la v1.8 cuando Adam la pida, con sus novedades
-   en `documentacio/novedades/v1.8.txt`.
+   web se queda). **Publicado en la v1.8** el 22/10 por la noche, desde la
+   nube, a petición de Adam, junto con todo lo de la nube del 22/10 (sus
+   novedades, en `documentacio/novedades/v1.8.txt`).
 
    **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18).
    Los seis lotes de la sesión 17 se integraron sin conflictos,
@@ -193,7 +194,9 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       en la nube (lote 2, sesión 17) los candados: una herramienta por
       ancla y el cierre. El 22/10 (sesión 18), como el bot no los rompía,
       Adam los dejó en 300 de vida, 30 s para romperlos y cambio de personaje
-      sin espera mientras está el escudo. **Faltan** el escudo más
+      sin espera mientras está el escudo. Esa noche, en la nube (Adam, en
+      difícil: «tiene demasiada vida»): en difícil tienen la vida de la media
+      (210) y los 30 s cuentan desde la última rota, no desde la primera. **Faltan** el escudo más
       seguido, más vida y menos pausa, y la presión al llegar. Lo que se
       pidió:
       - **Candados:** las anclas con mucha más vida (de 300 a unos 800, por
@@ -371,6 +374,23 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
       Cada lote llega en un zip con su `PROMPT_CLAUDE_CODE.md`, como el del
       jefe final.
+14. **Para más adelante: cooperativo en red local** (idea de Adam, 22/10,
+    sesión 18; de momento no se hace nada). Tres personas en la misma red,
+    cada una con un personaje: al entrar, cada una elige el suyo y solo
+    juega con él (sin cambiar con E y Q). Lo que habría que decidir antes de
+    empezar, con Adam:
+    - **La red:** la multijugador de Godot (`ENetMultiplayerPeer`), con un
+      ordenador que hace de anfitrión y lleva la partida (la horda, los
+      jefes, el daño) y los otros dos que mandan su movimiento y reciben lo
+      que pasa. Buscar la partida en la red local o escribir la IP.
+    - **Qué cambia en el juego:** tres jugadores en el grupo `jugador` (hoy
+      todo busca uno: la horda, los jefes, la jaula, la cámara); quién elige
+      las mejoras al subir de nivel y qué pasa con la pausa; la ulti de cada
+      uno; qué pasa al caer uno (hoy se elige otro personaje); las anclas
+      del escudo, que ya son una por personaje, irían bien.
+    - **Lo que cuesta:** es lo más grande que queda; tocaría casi todos los
+      sistemas y la escena de la partida. Solo si sobra tiempo después de la
+      entrega o como mejora futura en la defensa («qué mejoraríamos»).
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
