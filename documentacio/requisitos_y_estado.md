@@ -396,8 +396,9 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
     punto 15»): el cono del Espadachín, los dibujos del lote 7 (hechos por
     Claude con Python) y las animaciones de ataque, y las evoluciones arriba
     en la columna de mejoras. **Falta:** equilibrar. Con 10 partidas por
-    dificultad salió 6 / 3 / 0 (objetivo 7-8 / 4-5 / 1); Adam decide qué se
-    cambia. Y probarlo jugando: si el cono se apunta bien con el teclado, el
+    dificultad salió 6 / 3 / 0 (objetivo 7-8 / 4-5 / 1); con las furias de
+    Kernel Panic más suaves, 7 / 3 / 0: fácil ya está. En media y difícil se
+    pierde sobre todo al empezar la fase 2. Adam decide qué se cambia. Y probarlo jugando: si el cono se apunta bien con el teclado, el
     mando y el táctil, y si las animaciones de ataque se notan.
     1. **El Espadachín ataca en un triángulo, no en un círculo.**
        - **Dirección:** hacia donde se mueve; si está quieto, hacia la
@@ -487,6 +488,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
     ```
 
 16. **Mejoras propuestas** (revisión del 22/10, sesión 18; Adam elige cuáles).
+    **Hecho el 22/10 por la noche:** todo el apartado A y lo del B sin
+    dibujos (bitácora, sesión 18). Queda lo de los apartados C a F.
     59 propuestas en `mejoras_propuestas.md`, con cómo está ahora cada cosa y
     qué hacer, y un resumen por prioridad:
     - **A. Fallos pequeños, para arreglar ya** (comprobados en el código):

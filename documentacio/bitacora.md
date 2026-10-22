@@ -3763,3 +3763,39 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
 - **Paso 5:** el manual, la documentación técnica, los créditos (lote 7), la
   descripción del Espadachín (que además decía «hasta 3 de vida» y es 1,5) y
   la de su evolución, y `documentacio/novedades/v1.9.txt`.
+- **Los cambios pendientes** (Adam: «quiero que hagas los cambios
+  pendientes»; la fecha de la entrega aún no la sabe). Se hizo lo que Claude
+  recomendó en la revisión (`mejoras_propuestas.md`): el apartado A entero y
+  lo del B sin dibujos, más el equilibrio propuesto y quitar los dibujos
+  viejos del Firewall.
+  - **Furias de Kernel Panic:** daño ×1,15 / ×1,3 (era ×1,25 / ×1,5).
+  - **Textos:** las evoluciones *empiezan* sin resistencia; el Ping golpea
+    hasta 5 y su evolución hasta 6; Memoria redundante, para los tres; a
+    NÚCLEO CERO le faltaba el escudo cada 35 s; la ficha de un ancla dice
+    quién la rompe (`solo_la_rompe`) en vez de una resistencia que no tiene.
+  - **Ranking:** REINTENTAR y MENÚ guardan si no se pulsó GUARDAR; las
+    victorias, primero por dificultad (las viejas sin ella, como media); la
+    «MEJOR PARTIDA» del menú es la primera del ranking.
+  - **No se ofrece la evolución de un caído** (`puede_evolucionar` en
+    `cambio_personaje.gd`).
+  - **Pausa al cambiar de ventana** (`NOTIFICATION_APPLICATION_FOCUS_OUT`
+    en `menu_pausa.gd`; comprobado el nombre en 4.7.2). Al volver se sigue
+    con Esc o CONTINUAR.
+  - **VERSIONES y «Avisar de versiones nuevas»,** escondidos en la web y
+    desde el lanzador, donde no hacían nada.
+  - **Aviso de la embestida de Kernel Panic:** la franja con flechas del rayo
+    de NÚCLEO CERO (`aviso_linea`), hacia dónde y hasta dónde.
+  - **El malware se adapta, a la vista:** señal nueva `malware_adaptado`
+    (solo al subir; en `GEMINI.md`). Si es contra la herramienta que se
+    lleva, el HUD avisa en rojo y suena `alarma_elite` grave; la línea de
+    abajo dice «(resiste 30 %)». El medidor del HUD queda para cuando haya
+    dibujos.
+  - **Probado:** import, `--quit-after`, partida cargada y un script temporal
+    con las seis cosas (todas bien) y capturas del aviso y de la embestida.
+  - **El simulador otra vez, 10 por dificultad, sin errores:** fácil 7/10
+    (en el objetivo), media 3/10 (objetivo 4-5), difícil 0/10 (objetivo 1).
+    Ahora Kernel Panic ya no es lo que más mata: en media y difícil, 10 de
+    las 17 derrotas son al principio de la fase 2 (de 10:25 a 12:15), muchas
+    entrando en ella con casi toda la vida. **Pendiente de Adam:** qué se
+    toca (por ejemplo, que la horda de la fase 2 entre poco a poco en el
+    primer minuto, o que sea algo menos dura en media y difícil).
