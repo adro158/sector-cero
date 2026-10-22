@@ -86,8 +86,9 @@ func _ready() -> void:
 
 func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
-	# La vida de la escena es la de la dificultad media.
-	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida"))
+	# La de la escena por la de su dificultad, que va aparte de la del resto:
+	# contra él se pierde por daño, no por vida (sesión 18).
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe_final"))
 	_forma = 0
 	_cambiar_estado(Estado.LUCHANDO)
 	_hasta_atacar = PAUSA_ATAQUES[0]

@@ -80,11 +80,12 @@ func _physics_process(delta: float) -> void:
 
 	if _tiempo >= duracion():
 		_jefe_en_juego = true
-		# En fácil, la horda que queda huye: el final es a solas contra el jefe
-		# y lo que él invoque. En media y difícil se queda.
-		if Dificultad.dato("horda_huye"):
+		# En fácil huye toda la horda que queda: el final es a solas contra el
+		# jefe y lo que él invoque. En media huye la mitad y en difícil, nadie.
+		var parte: float = Dificultad.dato("huye")
+		if parte > 0.0:
 			for gestor in _gestores:
-				gestor.huir()
+				gestor.huir(parte)
 		if _fase == 1:
 			llega_el_jefe.emit(_posicion_fuera_de_pantalla())
 		else:

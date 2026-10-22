@@ -5,30 +5,38 @@ extends RefCounted
 ## Adam, bitácora, sesión 11). La elegida se guarda en las opciones
 ## (GestorGuardado) y la partida la lee al empezar.
 ##
-## - vida: multiplica la vida de la horda, los élites y el jefe.
+## - vida: multiplica la vida de la horda, los élites, el jefe del minuto 10 y las
+##   anclas del escudo del jefe final.
+## - vida_jefe_final: multiplica la de NÚCLEO CERO, que va aparte (sesión 18).
 ## - dano: multiplica el daño que recibe el jugador.
-## - horda_huye: si al llegar el jefe la horda que queda se va.
+## - huye: la parte de la horda que se va al llegar el jefe (1 toda, 0 nadie).
 ##
 ## Medido con el simulador el 13/10/2026, 10 partidas en cada una: fácil, 10
 ## victorias; media, 1 (4 si la horda huyera, como en la v0.9: quedarse la
 ## horda es lo que la endurece); difícil, ninguna, y en la mitad no llega al
 ## jefe. Con la fase 2 y el jefe final (16/10/2026): fácil, 5; media y
-## difícil, ninguna. El equilibrio se hace al final, con el juego terminado
-## (decisión de Adam).
+## difícil, ninguna.
+##
+## Equilibrado el 22/10/2026 (sesión 18) al objetivo de Adam: de cada 10
+## partidas, 7-8 victorias en fácil, 4-5 en media y 1 en difícil. Con 20
+## partidas por dificultad: 15, 9 y 2. La vida de NÚCLEO CERO va aparte
+## porque contra él se pierde por falta de daño (se acaba el tiempo con el
+## personaje entero), no de vida: con un solo multiplicador, bajarla para él
+## ablandaba también la horda.
 ##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
 
 const DIFICULTADES := {
 	"facil": {
-		"nombre": "FÁCIL", "vida": 0.7, "dano": 0.6, "horda_huye": true,
+		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe_final": 0.4, "dano": 0.6, "huye": 1.0,
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
-		"nombre": "MEDIA", "vida": 1.0, "dano": 1.0, "horda_huye": false,
-		"explicacion": "La partida como la hemos equilibrado. La horda sigue cuando llega el jefe.",
+		"nombre": "MEDIA", "vida": 0.7, "vida_jefe_final": 0.75, "dano": 0.85, "huye": 0.5,
+		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
-		"nombre": "DIFÍCIL", "vida": 1.2, "dano": 1.3, "horda_huye": false,
+		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe_final": 0.75, "dano": 1.1, "huye": 0.0,
 		"explicacion": "El malware tiene más vida y hace más daño. La horda sigue cuando llega el jefe.",
 	},
 }
@@ -40,6 +48,6 @@ static func actual() -> String:
 	return clave if clave in DIFICULTADES else "media"
 
 
-## Un dato de la elegida: dato("vida"), dato("dano"), dato("horda_huye")...
+## Un dato de la elegida: dato("vida"), dato("dano"), dato("huye")...
 static func dato(nombre: String) -> Variant:
 	return DIFICULTADES[actual()][nombre]

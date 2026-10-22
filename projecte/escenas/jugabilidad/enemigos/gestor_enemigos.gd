@@ -53,6 +53,9 @@ var _embestida: EmbestidaHorda
 var _volteo: VolteoHorda
 ## Segundos que le quedan a la huida (0 si no está huyendo).
 var _huida := 0.0
+## Por enemigo, 1 si huye y 0 si se queda: según la dificultad huye toda la
+## horda, la mitad o nadie.
+var _huye := PackedByteArray()
 ## La jaula del pisotón del jefe (jaula_jefe.gd): mientras está cerrada, la
 ## horda no cruza su muro.
 var _jaula: Node2D
@@ -70,6 +73,7 @@ func _ready() -> void:
 	_vidas_maximas.resize(MAXIMO_ENEMIGOS)
 	_destellos.resize(MAXIMO_ENEMIGOS)
 	_ids.resize(MAXIMO_ENEMIGOS)
+	_huye.resize(MAXIMO_ENEMIGOS)
 	_rejilla = RejillaEspacial.new(radio_separacion)
 	if datos.embiste:
 		_embestida = EmbestidaHorda.new(datos, MAXIMO_ENEMIGOS)
@@ -96,11 +100,19 @@ func cabe_otro() -> bool:
 	return datos.maximo_vivos == 0 or _vivos < datos.maximo_vivos
 
 
-## En fácil, al llegar el jefe la horda huye: durante DURACION_HUIDA se aleja
-## del jugador sin hacerle daño y se desvanece, y después desaparece. No suelta
-## experiencia ni cuenta como eliminada: no la ha matado el jugador.
-func huir() -> void:
+## Al llegar el jefe huye una parte de la horda: toda en fácil y la mitad en
+## media (Dificultad, "huye"). Los que huyen se alejan del jugador durante
+## DURACION_HUIDA sin hacerle daño, se desvanecen y desaparecen. No sueltan
+## experiencia ni cuentan como eliminados: no los ha matado el jugador.
+func huir(parte := 1.0) -> void:
 	_huida = DURACION_HUIDA
+	# Repartidos por toda la horda: con la mitad, uno sí y otro no.
+	var acumulado := 0.0
+	for i in _vivos:
+		acumulado += parte
+		_huye[i] = 1 if acumulado >= 1.0 else 0
+		if acumulado >= 1.0:
+			acumulado -= 1.0
 
 
 ## Al pasar a la fase 2, detrás del negro: la horda desaparece de golpe, sin
@@ -111,7 +123,6 @@ func vaciar() -> void:
 	_retirar_muertos()
 	_vivos = 0
 	_huida = 0.0
-	_horda.modulate.a = 1.0
 	_horda.multimesh.visible_instance_count = 0
 	# Las barras de vida (las del ransomware) también.
 	queue_redraw()
@@ -125,6 +136,7 @@ func aparecer(posicion: Vector2) -> void:
 	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad
 	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
+	_huye[_vivos] = 0
 	_ids[_vivos] = _siguiente_id
 	_siguiente_id += 1
 	if _embestida != null:
@@ -242,8 +254,7 @@ func _physics_process(delta: float) -> void:
 	_respetar_jaula()
 	if _huida > 0.0:
 		_avanzar_huida(delta)
-	else:
-		_danar_jugador()
+	_danar_jugador()
 	_volcar_al_multimesh(delta)
 	if datos.mostrar_vida:
 		queue_redraw()
@@ -277,7 +288,7 @@ func _mover(delta: float) -> void:
 			_posiciones[i] = destino + (destino - _posiciones[i]) * 0.6
 
 		# Mientras avisa o embiste, no persigue: se mueve por su cuenta.
-		if _embestida != null and _huida <= 0.0:
+		if _embestida != null and not _huyendo(i):
 			_embestida.actualizar(i, _posiciones[i], destino, delta)
 			if not _embestida.persigue(i):
 				_posiciones[i] += _embestida.avance(i, delta)
@@ -291,7 +302,7 @@ func _mover(delta: float) -> void:
 		# llegaría a vencer al impulso hacia el jugador, que es justo lo que
 		# hace falta cuando dos enemigos están encima el uno del otro.
 		# Huyendo, al revés y al doble de velocidad.
-		if _huida > 0.0:
+		if _huyendo(i):
 			hacia_jugador *= -2.0
 		_posiciones[i] += (hacia_jugador + empuje) * datos.velocidad * delta
 
@@ -304,12 +315,19 @@ func _respetar_jaula() -> void:
 		_posiciones[i] = _jaula.mantener(_posiciones[i], datos.tamano * 0.5)
 
 
+## Al acabar la huida, desaparecen los que huían. Hacia atrás, como al retirar
+## los muertos: al eliminar uno, el que llega a su hueco ya está comprobado.
 func _avanzar_huida(delta: float) -> void:
 	_huida -= delta
-	_horda.modulate.a = maxf(_huida / DURACION_HUIDA, 0.0)
-	if _huida <= 0.0:
-		_vivos = 0
-		_horda.modulate.a = 1.0
+	if _huida > 0.0:
+		return
+	for i in range(_vivos - 1, -1, -1):
+		if _huye[i] == 1:
+			_eliminar(i)
+
+
+func _huyendo(indice: int) -> bool:
+	return _huida > 0.0 and _huye[indice] == 1
 
 
 func _separacion(indice: int) -> Vector2:
@@ -335,7 +353,7 @@ func _danar_jugador() -> void:
 	var radio_contacto := datos.tamano * 0.5 + 16.0
 
 	for i in _rejilla.indices_cerca(posicion_jugador, radio_contacto):
-		if _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
+		if not _huyendo(i) and _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
 			# Basta con el primero que toque: el golpe activa la invulnerabilidad
 			# y los demás del montón no harían nada.
 			_salud_jugador.recibir_dano(datos.dano_contacto)
@@ -362,6 +380,7 @@ func _eliminar(indice: int) -> void:
 	_vidas[indice] = _vidas[_vivos]
 	_vidas_maximas[indice] = _vidas_maximas[_vivos]
 	_destellos[indice] = _destellos[_vivos]
+	_huye[indice] = _huye[_vivos]
 	_ids[indice] = _ids[_vivos]
 	if _embestida != null:
 		_embestida.copiar(_vivos, indice)
@@ -386,7 +405,9 @@ func _volcar_al_multimesh(delta: float) -> void:
 		# El tercer dato es el desfase de su animación. Sale de su id, que
 		# viaja con él al cambiar de hueco: así no da saltos de fotograma.
 		var desfase := fmod(_ids[i] * 0.37, 1.0)
-		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, desfase, 0.0))
+		# El cuarto, cuánto se ha desvanecido huyendo.
+		var desvanecido := 1.0 - _huida / DURACION_HUIDA if _huyendo(i) else 0.0
+		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, desfase, desvanecido))
 
 	multimesh.visible_instance_count = _vivos
 
@@ -394,7 +415,7 @@ func _volcar_al_multimesh(delta: float) -> void:
 ## Hacia dónde mira un enemigo que se voltea: al jugador, salvo embistiendo
 ## (hacia donde embiste, aunque lo pase de largo) y huyendo (hacia donde huye).
 func _hacia_donde_mira(indice: int, jugador: Vector2) -> Vector2:
-	if _huida > 0.0:
+	if _huyendo(indice):
 		return _posiciones[indice] * 2.0 - jugador
 	if _embestida != null and _embestida.avance(indice, 1.0) != Vector2.ZERO:
 		return _posiciones[indice] + _embestida.avance(indice, 1.0)

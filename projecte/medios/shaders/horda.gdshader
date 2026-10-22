@@ -15,6 +15,8 @@
 // - Aviso de embestida: los que embisten (el troyano) parpadean en rojo
 //   mientras se preparan. Llega por enemigo en INSTANCE_CUSTOM.g: 1 mientras
 //   avisa y 0 si no.
+// - Huida: los que huyen cuando llega el jefe se desvanecen. Llega por enemigo
+//   en INSTANCE_CUSTOM.a: de 0 (se ve entero) a 1 (ya no se ve).
 //
 // Los valores pequeños van como divisiones por el fallo de este proyecto con
 // los números que llevan un cero detrás del punto (ver suelo.gdshader).
@@ -41,6 +43,7 @@ varying float destello;
 varying float glitch;
 varying float aviso;
 varying float fotograma;
+varying float desvanecido;
 // El color del vértice (el modulate del nodo), sin la textura: en fragment()
 // se lee otra parte de la textura y hay que volver a multiplicarlo.
 varying vec4 color_vertice;
@@ -52,6 +55,7 @@ float azar(float semilla) {
 void vertex() {
 	destello = INSTANCE_CUSTOM.r;
 	aviso = INSTANCE_CUSTOM.g;
+	desvanecido = INSTANCE_CUSTOM.a;
 	float tirada = azar(float(INSTANCE_ID) * 7.31 + floor(TIME * TIRADAS_POR_SEGUNDO));
 	glitch = step(1.0 - PROBABILIDAD, tirada);
 	VERTEX.x += glitch * (tirada - 0.5) * 2.0 * SALTO;
@@ -72,8 +76,7 @@ void fragment() {
 	vec2 uv = vec2((UV.x + fotograma) / fotogramas, UV.y);
 	// En Godot 4, COLOR ya llega con la textura aplicada, pero leída con UV: el
 	// fotograma 0. Por eso se lee aquí la que toca y se multiplica por el color
-	// del vértice, que es lo que COLOR traía antes de la textura (y lo que
-	// desvanece la horda al huir).
+	// del vértice, que es lo que COLOR traía antes de la textura.
 	vec4 color = texture(TEXTURE, uv) * color_vertice;
 	if (glitch > 0.5) {
 		// Rojo y azul se leen un poco desplazados: los colores se separan.
@@ -85,5 +88,6 @@ void fragment() {
 	float parpadeo = aviso * step(0.5, fract(TIME * PARPADEOS_POR_SEGUNDO));
 	color.rgb = mix(color.rgb, COLOR_AVISO, parpadeo * 0.75);
 	color.rgb = mix(color.rgb, vec3(1.0), destello);
+	color.a *= 1.0 - desvanecido;
 	COLOR = color;
 }
