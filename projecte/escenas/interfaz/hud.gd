@@ -16,7 +16,7 @@ const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
 const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
-const BarraJefeFinal := preload("res://escenas/interfaz/barra_jefe_final.gd")
+const BarraJefe := preload("res://escenas/interfaz/barra_jefe.gd")
 
 var niveles_mejora := {}
 
@@ -35,7 +35,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(PanelExperiencia.new())
 	_crear_reloj()
-	add_child(BarraJefeFinal.new())
+	_crear_barras_jefe()
 
 	_columna = VBoxContainer.new()
 	_columna.position = Vector2(16, 104)
@@ -46,7 +46,7 @@ func _ready() -> void:
 	_aviso.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	_aviso.offset_left = -400.0
 	_aviso.offset_right = 400.0
-	# Debajo de la barra del jefe final, que va de 62 a 102.
+	# Debajo de las barras de los jefes, que van de 62 a 102.
 	_aviso.offset_top = 108.0
 	_aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_aviso.modulate.a = 0.0
@@ -67,7 +67,8 @@ func _ready() -> void:
 	add_child(caida)
 	move_child(caida, ruleta.get_index() + 1)
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
-	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE!", EstiloInterfaz.DERROTA))
+	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE: KERNEL PANIC!", EstiloInterfaz.DERROTA))
+	BusEventos.jefe_furia_cambiada.connect(func(furia): _avisar(["", "¡KERNEL PANIC SE ENFURECE!", "¡KERNEL PANIC ARDE DE FURIA!"][furia], EstiloInterfaz.DERROTA))
 	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
 	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA))
 	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA))
@@ -97,9 +98,23 @@ func _crear_reloj() -> void:
 	caja.add_child(_etiqueta_jefe)
 
 
+## Las dos se ven al llegar su jefe. La de Kernel Panic se quita con el negro
+## de la fase 2: para entonces ya ha acabado su explosión.
+func _crear_barras_jefe() -> void:
+	var barra := BarraJefe.new(preload("res://medios/sprites/jefe/jefe_barra.png"), preload("res://medios/sprites/jefe/jefe_barra_relleno.png"))
+	add_child(barra)
+	BusEventos.jefe_aparecio.connect(barra.show)
+	BusEventos.jefe_vida_cambiada.connect(barra.poner)
+	BusEventos.transicion_fase.connect(func(_segundos): barra.hide())
+	var barra_final := BarraJefe.new(preload("res://medios/sprites/jefe_final/jefe_final_barra.png"), preload("res://medios/sprites/jefe_final/jefe_final_barra_relleno.png"))
+	add_child(barra_final)
+	BusEventos.jefe_final_aparecio.connect(barra_final.show)
+	BusEventos.jefe_final_vida_cambiada.connect(barra_final.poner)
+
+
 func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
 	_etiqueta_tiempo.text = _formato(segundos)
-	var jefe := "JEFE" if _fase == 1 else "NÚCLEO CERO"
+	var jefe := "KERNEL PANIC" if _fase == 1 else "NÚCLEO CERO"
 	if segundos < duracion:
 		# Hacia arriba: el reloj trunca los segundos, así que la cuenta atrás los
 		# redondea al revés y entre los dos siempre suman la duración.
