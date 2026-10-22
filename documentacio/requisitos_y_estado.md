@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.7 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.8 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.7 publicada el 22/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.8 publicada el 22/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -93,15 +93,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **Lo que estaba en `main` sin publicar** (sesión 18, 22/10): el equilibrado de las
-   dificultades (punto 3.6), el escudo de NÚCLEO CERO arreglado, los dos
-   fallos de la ficha del enemigo y las releases sin el juego suelto (solo
-   los instaladores, los `.pck` que usa el lanzador y `version.json`; la
-   web se queda). **Va en la v1.8**, con todo lo de la nube del 22/10 (sus
-   novedades, en `documentacio/novedades/v1.8.txt`). Adam pidió publicarla,
-   pero desde la nube no se pueden subir etiquetas: **falta subir la
-   etiqueta `v1.8` desde el ordenador** (cómo, en la bitácora, sesión 18, el
-   final de «En la nube»).
+0. **Publicado en la v1.8** (sesión 18, 22/10, la etiqueta subida desde el
+   ordenador del instituto): el equilibrado de las dificultades (punto 3.6),
+   el escudo de NÚCLEO CERO arreglado, los dos fallos de la ficha del
+   enemigo y las releases sin el juego suelto (solo los instaladores, los
+   `.pck` que usa el lanzador y `version.json`; la web se queda), con todo lo
+   de la nube del 22/10 (novedades en `documentacio/novedades/v1.8.txt`).
 
    **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18).
    Los seis lotes de la sesión 17 se integraron sin conflictos,

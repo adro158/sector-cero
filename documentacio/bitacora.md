@@ -3619,3 +3619,19 @@ siempre, cargando también la partida.
   el objetivo): el robo de vida, la jaula y la ráfaga, las furias de Kernel
   Panic, el rayo que ahora sí pega y las anclas en difícil. Con el
   simulador, las tres dificultades, como el 22/10 en casa.
+- **La v1.8, publicada** (22/10, desde el ordenador del instituto). Antes,
+  validada en headless: import del juego y del lanzador, `--quit-after 600`,
+  y un script temporal que cargó la partida, saltó al minuto 10 (nivel 13) y
+  a NÚCLEO CERO (15:06, visible). Los avisos al salir son solo del audio
+  (`AudioStreamPlaybackWAV`, el aviso conocido). La Action «Publicar
+  release» acabó bien. La release lleva:
+  - `SectorCero_Instalador_v1.8.exe` (51,6 MB)
+  - `SectorCero_Lanzador_linux_v1.8.zip` (54,3 MB)
+  - `sector_cero_windows.pck` y `sector_cero_linux.pck` (2,6 MB cada uno)
+  - `lanzador_windows.pck` y `lanzador_linux.pck`
+  - `version.json`
+
+  La web también se actualizó. Una rareza de GitHub, sin efecto: en la lista
+  de trabajos de la Action, `publicar` salía como «en cola» aunque había
+  terminado (la release y la web estaban subidas, y el instalador, que va
+  después, acabó bien).
