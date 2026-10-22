@@ -26,7 +26,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Logo, retratos de los personajes, iconos de los afijos y cabecera del lanzador | Hechos con IA (Claude) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
-| Sprites del jugador (3 personajes) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
+| Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
 | Motor | Godot Engine 4.7.2 | MIT |
@@ -177,6 +177,11 @@ segador) y la del jefe final (`escenas/jugabilidad/jugador/*.png` y
    hojas de ocho direcciones: los tres personajes y el jefe.
 4. **Ajuste:** se adaptaron a la paleta del ordenador con scripts propios de
    Godot (quitar el fondo y recolorear; bitácora, sesión 4).
+5. **Armas evolucionadas** (22/10/2026): Claude hizo, con los mismos scripts,
+   una copia de cada hoja de personaje con el cuerpo idéntico y el arma de su
+   evolución (`*_8_direcciones_evolucion.png`): la guadaña del Análisis
+   heurístico, el bastón del Ping de inundación y la espada del Firewall
+   perimetral.
 
 Se consideran provisionales: si hubiera tiempo, se sustituirían por pixel art
 propio.

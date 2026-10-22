@@ -236,7 +236,10 @@ a los 30 s. Cada nivel cuesta un 50 % más que el anterior. Al subir, el juego s
 pausa y se ofrecen tres de las ocho mejoras; si se suben varios niveles de golpe
 quedan en cola. Elegir tres veces una mejora concreta ofrece la **evolución** de
 una herramienta, que es otro recurso de arma, así que el malware empieza sin
-resistencia contra ella.
+resistencia contra ella. Desde el 22/10 se ve también en el personaje: cada
+uno tiene en su `DatosPersonaje` una segunda hoja (`hoja_evolucion`) con el
+arma nueva, y `cambio_personaje.gd` la pone cuando su arma ya no es la de sus
+datos; así sale con ella también si evolucionó en el banquillo.
 
 **El director de oleadas.** La dificultad sale de pocos números: el tiempo
 entre apariciones baja de 0,5 s a 0,05 s en 10 minutos, cada tipo de enemigo

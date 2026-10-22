@@ -155,7 +155,8 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       animados con sus afijos, logo, retratos, iconos y cabecera del
       lanzador. En la rama `claude/beautiful-maxwell-uijhtj`: falta
       integrarla en `main` y probarlo jugando
-- [ ] `armas_evolucionadas.zip` (en la rama `zips-lotes`)
+- [x] `armas_evolucionadas.zip` (22/10, en la nube): el arma evolucionada se
+      ve en el personaje
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la

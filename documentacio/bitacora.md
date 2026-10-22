@@ -3443,8 +3443,8 @@ del escudo, que decidió Adam. Sin subagentes.
 2. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`): se
    midieron en media, que ahora tiene otros valores, y el nivel por minuto
    puede haber cambiado.
-3. Lo de decidir con Adam (sesión 17, punto 5) y `armas_evolucionadas.zip`
-   (punto 6).
+3. Lo de decidir con Adam (sesión 17, punto 5). `armas_evolucionadas.zip`
+   (punto 6) ya está, abajo.
 4. **La próxima versión (v1.8)**, cuando Adam la pida: lleva el equilibrado,
    el escudo arreglado, los fallos de la ficha y las releases sin el juego
    suelto. Antes, escribir `documentacio/novedades/v1.8.txt` y, después,
@@ -3455,3 +3455,35 @@ del escudo, que decidió Adam. Sin subagentes.
 
 Todo en `main` y subido a GitHub. Publicada la v1.7 (sin el equilibrado,
 que es de después). La sesión sigue abierta para la clase del 22/10.
+
+### En la nube, durante el día (22/10)
+
+Desde Claude Code en la nube, en la rama `claude/beautiful-maxwell-uijhtj`,
+que se volvió a poner al día con `main` (la de ayer ya estaba integrada).
+**Hay que integrarla otra vez en `main`** (`git fetch origin` y `git merge
+origin/claude/beautiful-maxwell-uijhtj`, avance rápido) y validar como
+siempre, cargando también la partida.
+
+- **Adam preguntó qué falta por añadir al juego** y pidió aplicar solo lo que
+  no cambia el equilibrio, que ya está en su objetivo. De la lista (punto 3
+  de `requisitos_y_estado.md` y siguientes), lo único así era
+  `armas_evolucionadas.zip`: los movimientos que faltan del jefe y de NÚCLEO
+  CERO lo descuadrarían.
+- **Las evoluciones se ven en el personaje** (`armas_evolucionadas.zip`, el
+  último zip de `zips-lotes`): tres hojas nuevas con el cuerpo idéntico y el
+  arma evolucionada, un campo nuevo `hoja_evolucion` en `DatosPersonaje` y,
+  en `cambio_personaje.gd`, la hoja que toca según su arma. Sin señales ni
+  `class_name` nuevos.
+- **Aclarado a Adam:** «la ráfaga a x2» es dibujar el proyectil al doble de
+  tamaño (el daño y dónde golpea no cambian), no disparar el doble; queda
+  para que lo decida él. «El retrato en las reglas» era si poner el retrato
+  en la pestaña Personajes: se queda el sprite, porque el retrato a 48 px se
+  deforma.
+- **Probado:** import, `--quit-after` y la partida cargada en headless; con
+  ventana, los tres personajes andando antes y después de evolucionar, y con
+  E y Q cada uno sigue con su hoja; en headless, el Mago evolucionado en el
+  banquillo entra con la suya. Una partida del simulador, para ver que no hay
+  errores. Una vez salió al cerrar «2 resources still in use», que no se
+  repitió en otros tres intentos ni sale en `main` sin el cambio: es el aviso
+  conocido de los sonidos que siguen sonando.
+

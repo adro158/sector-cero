@@ -108,8 +108,11 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
      «Siguiente paso», punto 2): sobre todo cómo suena y si la ráfaga del
      jefe, que se ve pequeña, hay que dibujarla a x2
    - lo que hay que decidir con Adam (bitácora, sesión 17, punto 5)
-1. **Las mejoras, visibles en los personajes** (Adam, 20/10, sesión 16; lo
-   siguiente que se hace). Adam está dibujando los assets para que, cuando
+1. **Hecho el 22/10 (en la nube, sesión 18): las evoluciones, visibles en
+   los personajes.** Con `armas_evolucionadas.zip`, cada personaje cambia a
+   una hoja con el arma evolucionada (`hoja_evolucion` en `DatosPersonaje`).
+   Falta verlo jugando. Lo que se pidió: **Las mejoras, visibles en los
+   personajes** (Adam, 20/10, sesión 16). Adam está dibujando los assets para que, cuando
    los tres personajes cogen las mejoras, se note también en el personaje. Los
    traerá con su prompt en la próxima sesión, como el zip del jefe final.
    El 21/10 subió a la rama `zips-lotes` un `armas_evolucionadas.zip` que es
