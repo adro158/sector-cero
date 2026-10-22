@@ -481,6 +481,30 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
     desde el ordenador.
     ```
 
+16. **Mejoras propuestas** (revisión del 22/10, sesión 18; Adam elige cuáles).
+    59 propuestas en `mejoras_propuestas.md`, con cómo está ahora cada cosa y
+    qué hacer, y un resumen por prioridad:
+    - **A. Fallos pequeños, para arreglar ya** (comprobados en el código):
+      - textos de las reglas que no cuadran (el robo de vida dice «hasta 3»
+        y el tope es 1,5, las evoluciones «sin resistencia»...)
+      - el ranking se pierde si se sale sin GUARDAR
+      - se ofrece la evolución de un personaje caído
+      - el ranking no mira la dificultad
+      - no se pausa al cambiar de ventana
+      - opciones que ya no hacen nada
+    - **B. Que se vea la resistencia adaptativa** (el elemento diferencial):
+      indicador, aviso y sonido.
+    - **C. Sensación de juego sin assets:** tiempo de golpe, sacudida, música
+      amortiguada al elegir, números de daño.
+    - **D. Lo visual por código, con assets:** partículas, caída del
+      personaje, élites, fuente pixel art, paneles y botones, barra del
+      equipo...
+    - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
+    - **F. Experiencia de juego:** consejos en la primera partida, resumen
+      final, accesibilidad, mando.
+
+    Recomendación de Claude: A y B primero.
+
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
 El porqué de cada una está en `bitacora.md`, en la sesión que se indica.

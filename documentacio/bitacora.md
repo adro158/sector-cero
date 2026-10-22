@@ -3660,3 +3660,15 @@ siempre, cargando también la partida.
   ve una vista previa en `documentacio/capturas/lote7/` antes de que entren en
   el juego, y los scripts de Python no se suben. El prompt para empezar está
   en `requisitos_y_estado.md`, punto 15.
+- **Revisión de mejoras, terminada.** Cuatro agentes en paralelo, uno por
+  área (Adam tiene ultracode activado; CLAUDE.md lo da por bueno para buscar
+  por todo el repo), devolvieron 59 propuestas, cada una con cómo está ahora
+  en el código. Claude comprobó a mano los fallos más claros:
+  - el texto del robo de vida dice «hasta 3» y `ROBO_MAXIMO` vale 1,5
+  - `_reintentar` e `_ir_al_menu` de la pantalla final no guardan en el
+    ranking
+  - `_evolucion_disponible` no mira si el personaje ha caído
+  - nada pausa al perder el foco
+
+  Todo está en `mejoras_propuestas.md`, con un resumen por prioridad, y en
+  `requisitos_y_estado.md`, punto 16. Nada decidido: lo elige Adam.
