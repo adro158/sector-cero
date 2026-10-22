@@ -133,7 +133,12 @@ func aparecer_elite() -> void:
 
 func _intervalo_actual() -> float:
 	var progreso := clampf(_tiempo / config.tiempo_hasta_dificultad_maxima, 0.0, 1.0)
-	return lerpf(config.intervalo_inicial, config.intervalo_final, progreso)
+	var intervalo := lerpf(config.intervalo_inicial, config.intervalo_final, progreso)
+	# Al empezar la fase 2, de más despacio a ese ritmo en su primer minuto.
+	if _fase == 2:
+		var entrada := clampf((_tiempo - config.duracion_partida) / config.entrada_fase_2, 0.0, 1.0)
+		intervalo = lerpf(config.intervalo_inicio_fase_2, intervalo, entrada)
+	return intervalo
 
 
 func _elegir_tipo() -> GestorEnemigos:
