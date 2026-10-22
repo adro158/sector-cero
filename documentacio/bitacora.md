@@ -3726,3 +3726,40 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
   - **El tajo del cono** (6 fotogramas, el frente avanza y se deshace en
     damero), el del Firewall más fuerte cerca y el del perimetral igual en
     todo el cono, y los dos contornos a trazos, en grises para teñirlos.
+- **Paso 3, hecho (Adam dio el sí a los dibujos): integrados.** Cada
+  personaje tiene en su `DatosPersonaje` la hoja de ataque normal y la
+  evolucionada y lo que dura cada fotograma (0,05 s; el Segador, 0,06).
+  `cambio_personaje.gd` le pasa al jugador las dos hojas que tocan
+  (`poner_hojas`) y `controlador_jugador.gd`, con `arma_disparada`, cambia el
+  sprite a la de ataque durante sus 4 fotogramas y vuelve a la de andar. El
+  cono del Firewall deja los polígonos: su tajo y su contorno, girados hacia
+  donde mira (`aura_arma.gd`). Los dibujos del golpe redondo de antes
+  (`firewall_golpe.png`, `firewall_anillo.png` y los del perimetral) ya no se
+  usan, pero siguen en el proyecto: borrarlos si Adam quiere.
+- **Pedido por Adam a la vez: las evoluciones, arriba en la columna de
+  mejoras.** Son las únicas mejoras de un personaje: salen las primeras, por
+  orden, del color de su personaje, con el borde grueso y «EVO» en vez de los
+  puntos de nivel (`icono_mejora.gd` y `hud.gd`).
+- **Fallo encontrado con el simulador (y en la v1.8):** la barra de Kernel
+  Panic se escondía al pasar a la fase 2 con una función anónima que no usa
+  el HUD, y Godot no la desconecta al liberarlo. En la partida siguiente
+  (Reintentar) daba un error al llegar a la fase 2. Ahora es
+  `barra.hide.unbind(1)`. Las demás funciones anónimas conectadas al bus sí
+  usan su nodo y se desconectan solas.
+- **Paso 4: el simulador, 10 partidas por dificultad** (semillas 1-10, en
+  cuatro copias a la vez en la nube; todo lo del 22/10 junto: robo de vida,
+  jaula y ráfaga, furias de Kernel Panic, rayo, anclas y el cono). Sin
+  errores.
+
+  | Dificultad | Victorias | Objetivo | Dónde se pierde |
+  |---|---|---|---|
+  | Fácil | 6/10 | 7-8 | 1 en la fase 2, 3 contra NÚCLEO CERO |
+  | Media | 3/10 | 4-5 | 1 contra Kernel Panic, 4 en la fase 2, 2 contra NÚCLEO CERO |
+  | Difícil | 0/10 | 1 | 1 en la fase 1, 4 contra Kernel Panic, 5 en la fase 2 |
+
+  Las de la fase 2 caen casi todas entre los 10:20 y los 12:00: salen de
+  Kernel Panic con poca vida. Un poco por debajo del objetivo en las tres;
+  no se ha tocado ningún número: Adam decide.
+- **Paso 5:** el manual, la documentación técnica, los créditos (lote 7), la
+  descripción del Espadachín (que además decía «hasta 3 de vida» y es 1,5) y
+  la de su evolución, y `documentacio/novedades/v1.9.txt`.

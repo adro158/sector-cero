@@ -391,9 +391,14 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       sistemas y la escena de la partida. Solo si sobra tiempo después de la
       entrega o como mejora futura en la defensa («qué mejoraríamos»).
 
-15. **Cambios en los personajes** (decisiones de Adam, 22/10, sesión 18; sin
-    empezar; se harán desde la nube). Los dibujos que hacen falta están
-    pedidos en el lote 7 de `prompt_assets.md`.
+15. **Cambios en los personajes** (decisiones de Adam, 22/10, sesión 18).
+    **Hechos el 22/10 en la nube** (bitácora, sesión 18, «En la nube, el
+    punto 15»): el cono del Espadachín, los dibujos del lote 7 (hechos por
+    Claude con Python) y las animaciones de ataque, y las evoluciones arriba
+    en la columna de mejoras. **Falta:** equilibrar. Con 10 partidas por
+    dificultad salió 6 / 3 / 0 (objetivo 7-8 / 4-5 / 1); Adam decide qué se
+    cambia. Y probarlo jugando: si el cono se apunta bien con el teclado, el
+    mando y el táctil, y si las animaciones de ataque se notan.
     1. **El Espadachín ataca en un triángulo, no en un círculo.**
        - **Dirección:** hacia donde se mueve; si está quieto, hacia la
          última. Es hacia donde mira su dibujo, y funciona igual con mando y
