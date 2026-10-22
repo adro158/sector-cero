@@ -3654,3 +3654,9 @@ siempre, cargando también la partida.
     equilibrio.
   - **El Segador levanta la guadaña** al disparar el Escáner, y **el Mago
     hace la animación de lanzar** las bolas del Ping.
+- **El punto 15 se hará desde Claude Code en la nube, dibujos incluidos**
+  (Adam preguntó si la nube podía hacer los assets: sí, con el mismo método
+  de Python, y además puede integrarlos y probarlos). Dos condiciones: Adam
+  ve una vista previa en `documentacio/capturas/lote7/` antes de que entren en
+  el juego, y los scripts de Python no se suben. El prompt para empezar está
+  en `requisitos_y_estado.md`, punto 15.

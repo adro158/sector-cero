@@ -160,3 +160,14 @@ no salte. Mira cómo encajan con las evoluciones visibles en los personajes
 
 Antes de dibujar, dime en dos líneas qué vas a hacer.
 ```
+
+### O todo desde Claude Code en la nube (decisión de Adam, 22/10)
+
+Claude Code en la nube puede dibujar el lote 7 él mismo, con el mismo método
+(Python, numpy y Pillow), meterlo en el juego y probarlo, sin pasar por el
+chat ni por un zip. Hay dos condiciones:
+- Adam ve los dibujos antes de que entren en el juego: una vista previa en
+  `documentacio/capturas/lote7/`.
+- Los scripts de Python que dibujan no se suben al repositorio.
+
+El prompt para empezar está en `requisitos_y_estado.md`, punto 15.

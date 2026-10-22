@@ -438,6 +438,49 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
     cómo encajan con las evoluciones visibles en los personajes de la
     sesión 18.
 
+    **Se hará desde Claude Code en la nube**, dibujos incluidos (decisión de
+    Adam, 22/10). El prompt para empezar:
+
+    ```text
+    Haz el punto 15 de documentacio/requisitos_y_estado.md: el Espadachín
+    ataca en un cono, y el Segador y el Mago tienen animación al atacar. Sigue
+    el CLAUDE.md como siempre. Todo lo que hay que hacer y lo que ya está
+    decidido está en ese punto y en la bitácora (sesión 18). Si algo no está
+    claro o choca con una decisión vigente, pregúntame antes.
+
+    1. La mecánica del Espadachín (punto 15.1): el cono de 90 grados hacia
+       donde se mueve, el daño del 150 % pegado al 50 % en el filo y la
+       evolución con más alcance, más robo de vida y el mismo daño cerca que
+       lejos. Que las cinco cosas que reciben daño de área lo acepten sin
+       cambiar el Escáner ni lo demás. Hasta que estén los dibujos, pinta el
+       cono por código. Pruébalo con un script temporal: un enemigo delante
+       y pegado, otro delante en el filo y otro detrás (este no recibe nada).
+       Haz que el bot del simulador apunte.
+    2. Los dibujos del lote 7 de documentacio/prompt_assets.md: hazlos tú,
+       con Python (numpy y Pillow), píxel a píxel y con el estilo de los
+       sprites que ya hay. Los scripts, en una carpeta temporal fuera del
+       repositorio. Sube una vista previa (una hoja con todo ampliado x2) a
+       documentacio/capturas/lote7/ y espera mi sí antes de meterlos en el
+       juego.
+    3. Con mi sí, intégralos: el tajo y el marcador del cono del
+       Espadachín, y las animaciones de ataque de los tres personajes, que
+       salen encima de la de andar un momento al disparar (con la señal
+       arma_disparada). Que encajen con las evoluciones visibles.
+    4. Valida como dice CLAUDE.md (import, --quit-after y la partida cargada
+       con un script temporal), y haz capturas si se puede. Pasa el
+       simulador, 10 partidas por dificultad, y dime las victorias. El
+       objetivo es 7-8 en fácil, 4-5 en media y 1 en difícil. Antes de
+       cambiar los números de equilibrio, pregúntame.
+    5. Pon al día las reglas (panel_reglas.gd), el manual, creditos.md (los
+       dibujos son de Claude, con IA), las novedades de la próxima versión
+       (documentacio/novedades/v1.9.txt), la bitácora y
+       requisitos_y_estado.md.
+
+    Commits pequeños con la convención de flujo_de_trabajo.md, y push a
+    main al acabar cada paso. No publiques versión: la etiqueta la subo yo
+    desde el ordenador.
+    ```
+
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 
 El porqué de cada una está en `bitacora.md`, en la sesión que se indica.
