@@ -94,6 +94,7 @@ signal jefe_invoco
 signal jefe_ataco(ataque: String)
 signal jefe_vida_cambiada(actual: float, maxima: float)
 signal jefe_furia_cambiada(furia: int)
+signal malware_adaptado(arma: DatosArma, resistencia: float)
 signal elite_aparecio(descripcion: String)
 signal elite_exploto(posicion: Vector2)
 signal transicion_fase(segundos: float)

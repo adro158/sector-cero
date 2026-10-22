@@ -56,6 +56,11 @@ signal jefe_vida_cambiada(actual: float, maxima: float)
 ## El jefe del minuto 10 se ha enfurecido: 1 al bajar del 66 % de vida, 2 al
 ## bajar del 33 %. Para el aviso del HUD y el sonido.
 signal jefe_furia_cambiada(furia: int)
+## El malware se ha hecho más resistente a una herramienta (cada 20 s, a la
+## que más daño le ha hecho; resistencia_malware.gd). resistencia: la nueva,
+## de 0 a 0,5. Solo al subir. Para el aviso del HUD y el sonido: es el
+## elemento diferencial y tiene que notarse.
+signal malware_adaptado(arma: DatosArma, resistencia: float)
 ## descripcion: los nombres de sus afijos, como "BLINDADO + EXPLOSIVO".
 signal elite_aparecio(descripcion: String)
 ## Un élite explosivo ha estallado al terminar su aviso.

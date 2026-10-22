@@ -28,6 +28,9 @@ var _columna: VBoxContainer
 var _iconos := {}
 ## Cuántas evoluciones hay en la columna: van las primeras, por orden.
 var _evoluciones := 0
+## La herramienta del personaje que se lleva: el aviso de la adaptación del
+## malware solo sale si es contra ella.
+var _arma_activa: DatosArma
 var _aviso: Label
 var _efecto_aviso: Tween
 
@@ -75,6 +78,8 @@ func _ready() -> void:
 	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA))
 	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
+	BusEventos.personaje_cambiado.connect(func(_actual, arma, _siguiente, _espera): _arma_activa = arma)
+	BusEventos.malware_adaptado.connect(_al_adaptarse_malware)
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.tiempo_partida.connect(_al_pasar_tiempo)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
@@ -154,6 +159,13 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 func _al_regalar_mejora(mejora: DatosMejora) -> void:
 	niveles_mejora[mejora] = niveles_mejora.get(mejora, 0) + 1
 	_al_elegir_mejora(mejora)
+
+
+## El elemento diferencial, a la vista: cuando el malware se hace más
+## resistente a la herramienta que llevas, se avisa de que conviene cambiar.
+func _al_adaptarse_malware(arma: DatosArma, resistencia: float) -> void:
+	if arma == _arma_activa:
+		_avisar("EL MALWARE SE ADAPTA A TU %s: %d %% · CAMBIA DE PERSONAJE" % [arma.nombre.to_upper(), roundi(resistencia * 100.0)], EstiloInterfaz.DERROTA)
 
 
 ## Matar un élite deja en el suelo un corazón y un cofre: se avisa para que se

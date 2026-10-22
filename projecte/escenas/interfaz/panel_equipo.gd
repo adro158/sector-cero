@@ -124,7 +124,13 @@ func _escribir_linea() -> void:
 	else:
 		cambio = "[Q] %s  ·  %s [E]" % [_nombre(anterior), _nombre(siguiente)]
 	var ulti := "      [R] ¡ULTI!" if _ulti(_activo) >= 1.0 else ""
-	_linea.text = "%s · %s      %s%s      [C] equipo" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, cambio, ulti]
+	# Lo que resiste el malware a su herramienta, en cuanto pasa de cero: es lo
+	# que dice cuándo conviene cambiar.
+	var resiste := ""
+	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(actual.arma)
+	if resistencia > 0.0:
+		resiste = " (resiste %d %%)" % roundi(resistencia * 100.0)
+	_linea.text = "%s · %s%s      %s%s      [C] equipo" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, resiste, cambio, ulti]
 	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
 

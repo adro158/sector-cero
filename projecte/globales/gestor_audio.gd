@@ -43,6 +43,8 @@ var _ultima_vez := {}
 var _musica: AudioStreamPlayer
 var _pista_actual := ""
 var _personaje_anterior: DatosPersonaje
+## La herramienta que se lleva: la adaptación del malware suena si es a ella.
+var _arma_activa: DatosArma
 
 
 func _ready() -> void:
@@ -77,6 +79,8 @@ func _ready() -> void:
 	BusEventos.elite_aparecio.connect(func(_descripcion): sonar("alarma_elite"))
 	BusEventos.jefe_invoco.connect(func(): sonar("alarma_elite", 0.7))
 	BusEventos.jefe_furia_cambiada.connect(_al_endurecerse_jefe)
+	# Una alarma grave, como un aviso del sistema.
+	BusEventos.malware_adaptado.connect(func(arma, _resistencia): if arma == _arma_activa: sonar("alarma_elite", 0.55))
 	BusEventos.jefe_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.transicion_fase.connect(_al_empezar_transicion)
@@ -141,12 +145,13 @@ func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 		sonar("muerte", randf_range(0.85, 1.15))
 
 
-func _al_cambiar_personaje(actual: DatosPersonaje, _arma: DatosArma, _siguiente: DatosPersonaje, _espera: float) -> void:
+func _al_cambiar_personaje(actual: DatosPersonaje, arma: DatosArma, _siguiente: DatosPersonaje, _espera: float) -> void:
 	# La señal llega también al empezar la partida y al evolucionar la
 	# herramienta: solo suena si de verdad cambia el personaje.
 	if _personaje_anterior != null and actual != _personaje_anterior:
 		sonar("cambio")
 	_personaje_anterior = actual
+	_arma_activa = arma
 
 
 func _al_lanzar_ulti(_personaje: DatosPersonaje) -> void:
