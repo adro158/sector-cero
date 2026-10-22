@@ -154,7 +154,9 @@ scripts no forman parte del repositorio.
   Firewall perimetral (rejilla de hexágonos y llamas), el pulso de radar del
   Escáner y del Análisis heurístico, el anillo de alcance de cada uno en
   grises, el destello del impacto del Ping y la chispa del robo de vida. Con
-  ellos vino el cambio probado del dibujo, que sirvió de referencia.
+  ellos vino el cambio probado del dibujo, que sirvió de referencia. El golpe
+  y el anillo del Firewall y del Firewall perimetral se quitaron el 22/10:
+  desde el cono, los sustituyen el tajo y el contorno del lote 7.
 - **Respuesta de la partida** (`medios/sprites/efectos/`, 21/10/2026, de la
   misma forma; lote 4): la columna de luz de subir de nivel, el rayo con
   glitch del cambio de personaje y la muerte de la horda (los dos en grises,
