@@ -81,8 +81,13 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 			_ultimo_cero = _segundos
 			enemigo_danado.emit(numero_en, 0.0, 1.0)
 		return 0
-	_vida -= cantidad
-	enemigo_danado.emit(numero_en, cantidad, resistencia)
+	# La resistencia es del malware, que se adapta a tu herramienta; el escudo
+	# no. Las armas mandan el daño ya rebajado y aquí se deshace: si solo
+	# queda un personaje y su herramienta resiste al 50 %, si no, las cuatro
+	# anclas no se podían romper antes de que se cerraran (sesión 18).
+	var golpe := cantidad / (1.0 - resistencia)
+	_vida -= golpe
+	enemigo_danado.emit(numero_en, golpe, 0.0)
 	if _vida <= 0.0:
 		_activa = false
 		_rota = true
