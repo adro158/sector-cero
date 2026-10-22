@@ -22,6 +22,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Ataques nuevos del jefe del minuto 10 (pisotón, jaula, ráfaga y rabia) | Hechos con IA (Claude) | Ver más abajo |
 | Aparición, furia, muerte y barra de vida de Kernel Panic, el jefe del minuto 10 | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
+| Ataques de los tres personajes (normal y evolucionado) y tajo en cono del Firewall | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
@@ -133,6 +134,16 @@ scripts no forman parte del repositorio.
   Claude con un script de Python (Pillow), píxel a píxel y con los colores
   del jefe. El marco y el relleno de su barra de vida son los de NÚCLEO CERO
   recoloreados en morado, con su nombre escrito encima con la misma letra.
+- **Ataques de los personajes** (lote 7, 22/10/2026): las hojas de ataque
+  de los tres personajes, normal y con el arma evolucionada
+  (`escenas/jugabilidad/jugador/*_ataque.png`, 4 x 8 fotogramas de 64x72), y
+  el tajo en cono del Firewall y del Firewall perimetral con sus contornos
+  (`medios/sprites/herramientas/firewall_*tajo.png` y `*_cono.png`). Los
+  dibujó Claude con un script de Python (numpy y Pillow) a partir de las
+  hojas de andar: el arma se separa del cuerpo (comparando la hoja normal
+  con la evolucionada, que tienen el mismo cuerpo), se mueve píxel a píxel y
+  se le añaden los brillos y la estela. Los personajes siguen siendo los de
+  sus hojas originales.
 - **Anclas del escudo por personaje** (`medios/sprites/jefe_final/`,
   21/10/2026, de la misma forma; lote 2): las mismas anclas y cadenas del
   escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el

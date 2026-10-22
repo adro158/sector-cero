@@ -55,7 +55,9 @@ guardada para la próxima vez):
 2. **Recoge los fragmentos de datos** que suelta el malware (amarillos,
    naranjas o magentas según lo que valen). A los 30 segundos parpadean y se
    pierden.
-3. **Al subir de nivel** el juego se pausa y eliges una de tres mejoras. Cada
+3. **Al subir de nivel** el juego se pausa y eliges una de tres mejoras. Las
+   que llevas salen en la columna de la izquierda, con su nivel en puntos; las
+   evoluciones (las de un personaje), arriba del todo y de su color. Cada
    nivel cuesta más, y los enemigos ganan vida con cada nivel que subes y, desde
    el minuto 3, con cada minuto que pasa.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
@@ -64,7 +66,11 @@ guardada para la próxima vez):
    entre cambios). Cada uno tiene su propia vida y los que esperan se curan
    poco a poco. Si cae el que llevas, el juego se pausa y eliges quién sigue;
    pierdes cuando caen los tres:
-   - **Espadachín · Firewall (120 de vida):** golpea todo lo que tienes alrededor, y cada golpe le cura un poco (robo de vida).
+   - **Espadachín · Firewall (120 de vida):** da tajos en un cono hacia donde
+     vas (el contorno verde): cuanto más pegado está el malware, más daño (el
+     triple que en el filo), y lo de detrás no lo toca. Cada golpe le cura un
+     poco (robo de vida). Evolucionado llega más lejos y pega igual en todo
+     el cono.
    - **Mago · Ping (90 de vida):** un paquete que salta de un enemigo a otro, a
      distancia.
    - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.

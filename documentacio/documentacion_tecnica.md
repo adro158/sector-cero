@@ -181,8 +181,31 @@ código está aparte (`embestida_horda.gd`) y solo lo usan los tipos que
 embisten.
 
 **Personajes y herramientas.** Hay dos tipos de arma: de área (el Firewall del
-Espadachín golpea alrededor y el Escáner del Segador da un pulso amplio y
-lento) y de proyectil (el Ping del Mago salta de un enemigo a otro). Solo
+Espadachín da un tajo en cono y el Escáner del Segador, un pulso amplio y
+lento) y de proyectil (el Ping del Mago salta de un enemigo a otro).
+
+**El cono del Firewall** (desde el 22/10, sesión 18). Sale del personaje
+hacia donde mira (`mirando`, en `controlador_jugador.gd`: la dirección de lo
+último que se pulsó), con 90 grados y el alcance del arma, y pega el 150 %
+pegado y el 50 % en el filo, repartido en línea recta (`dano_pegado` y
+`dano_filo` en su `DatosArma`). Lo lleva `golpe_cono.gd`: `gestor_armas.gd`
+crea uno en cada ataque y se lo pasa a `danar_en_area` de cada objetivo como
+último parámetro, opcional, y cada objetivo le pregunta con `factor()` cuánto
+daño le toca (0 si está fuera). Sin cono, `danar_en_area` sigue siendo el
+círculo de siempre, así que el Escáner, los proyectiles y las ultis no han
+cambiado. Cada objetivo suma lo que le toca en `golpes`, que es lo que usan
+el robo de vida y la resistencia del malware (un ancla con otro personaje no
+cuenta). La evolución pega igual cerca que lejos (los dos a 1), llega a 150
+y roba más (0,15, con un tope de 2 por golpe: el tope está ahora en cada
+arma, `robo_maximo`). El bot del simulador se gira hacia el enemigo más
+cercano en los 0,05 s antes de cada golpe.
+
+**Las animaciones de ataque.** Cada personaje tiene, además de la hoja de
+andar, una de atacar (4 columnas por las mismas 8 filas, normal y
+evolucionada, en su `DatosPersonaje`). Cuando el arma ataca
+(`arma_disparada`), `controlador_jugador.gd` cambia el sprite a esa hoja
+durante sus 4 fotogramas (0,05 s cada uno; el Segador, 0,06) y vuelve a la de
+andar; como la columna 0 es la de andar, no se nota el cambio. Solo
 dispara la del personaje activo y se cambia con E (siguiente) o Q (anterior),
 con 10 s de espera. Los tres hacen un daño por segundo parecido; los diferencia
 dónde pegan. Cada uno tiene su vida (Espadachín 120, Segador 100, Mago 90): el

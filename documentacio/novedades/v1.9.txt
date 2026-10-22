@@ -1,0 +1,3 @@
+- El Espadachín da tajos en un cono hacia donde va: cuanto más pegado está el malware, más daño, y lo de detrás no lo toca. Evolucionado llega más lejos, pega igual en todo el cono y roba más vida.
+- Los tres personajes se ven atacar: el Mago adelanta el bastón y le brilla el cristal, el Espadachín da el tajo y el Segador sube y baja la guadaña.
+- Las evoluciones salen las primeras en la columna de mejoras, del color de su personaje.
