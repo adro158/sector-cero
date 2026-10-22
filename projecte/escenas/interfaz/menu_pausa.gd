@@ -49,6 +49,14 @@ func _unhandled_input(evento: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## Al cambiar de ventana (o de pestaña en la web) se pausa sola: si no, la
+## horda seguía y, por ejemplo en la defensa, al enseñar el código el personaje
+## caía. Al volver no se quita: se sigue con Esc o con CONTINUAR.
+func _notification(que: int) -> void:
+	if que == NOTIFICATION_APPLICATION_FOCUS_OUT and not _en_pausa:
+		_alternar_pausa()
+
+
 func _alternar_pausa() -> void:
 	# Si el juego ya está pausado y no lo he pausado yo, es otra pausa (elegir
 	# mejora o fin de partida): el menú confundiría y no hay que tocarla.
