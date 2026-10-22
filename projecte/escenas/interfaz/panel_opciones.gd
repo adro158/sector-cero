@@ -33,7 +33,10 @@ func _ready() -> void:
 	_deslizador(rejilla, "Efectos", "volumen_efectos")
 	_casilla(rejilla, "Pantalla completa", "pantalla_completa")
 	_casilla(rejilla, "Filtro CRT", "crt")
-	_casilla(rejilla, "Avisar de versiones nuevas", "avisar_versiones")
+	# Desde el lanzador y en la web el juego no busca versiones: la casilla no
+	# haría nada.
+	if not "--desde-lanzador" in OS.get_cmdline_user_args() and not OS.has_feature("web"):
+		_casilla(rejilla, "Avisar de versiones nuevas", "avisar_versiones")
 
 	var volver := EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
 	caja.add_child(volver)

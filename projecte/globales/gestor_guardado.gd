@@ -107,12 +107,21 @@ func anadir_al_ranking(estadisticas: Dictionary, nombre: String) -> int:
 	return lista.find(entrada) + 1
 
 
-## El orden del ranking: primero las victorias, de la más rápida a la más
-## lenta; después las derrotas, de la que más aguantó a la que menos.
+## El orden del ranking: primero las victorias, de la dificultad más alta a la
+## más baja y, en cada una, de la más rápida a la más lenta; después las
+## derrotas, de la que más aguantó a la que menos. Hasta el 22/10 las
+## victorias no miraban la dificultad: una en fácil iba delante de una en
+## difícil un poco más lenta. Las partidas viejas sin dificultad cuentan como
+## media.
 static func _va_antes(a: Dictionary, b: Dictionary) -> bool:
 	if a.victoria != b.victoria:
 		return a.victoria
 	if a.victoria:
+		var orden := {"facil": 0, "media": 1, "dificil": 2}
+		var dificultad_a: int = orden.get(a.get("dificultad", "media"), 1)
+		var dificultad_b: int = orden.get(b.get("dificultad", "media"), 1)
+		if dificultad_a != dificultad_b:
+			return dificultad_a > dificultad_b
 		return a.tiempo < b.tiempo
 	return a.tiempo > b.tiempo
 

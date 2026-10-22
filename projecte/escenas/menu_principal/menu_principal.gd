@@ -10,6 +10,7 @@ const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 const PanelVersiones := preload("res://escenas/interfaz/panel_versiones.gd")
 const SelectorDificultad := preload("res://escenas/menu_principal/selector_dificultad.gd")
 const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
+const Dificultad := preload("res://globales/dificultad.gd")
 
 const RESUMEN := [
 	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
@@ -105,8 +106,8 @@ func _crear_version(caja: VBoxContainer) -> void:
 	fila.add_child(versiones)
 	# Abierto desde el lanzador, las versiones las lleva él. Se mira el
 	# argumento aquí y no se le pregunta al Actualizador: el de un ejecutable
-	# viejo no tendría esa función.
-	fila.visible = not "--desde-lanzador" in OS.get_cmdline_user_args()
+	# viejo no tendría esa función. En la web no hay nada que instalar.
+	fila.visible = not "--desde-lanzador" in OS.get_cmdline_user_args() and not OS.has_feature("web")
 	caja.add_child(fila)
 	_versiones = PanelVersiones.new()
 	_versiones.cerrado.connect(versiones.grab_focus)
@@ -148,10 +149,19 @@ func _texto_record() -> String:
 	if partidas == 0:
 		return "Todavía no hay récords: ¡a por la primera partida!"
 
-	var tiempo := int(GestorGuardado.record("tiempo"))
-	return "MEJOR PARTIDA  %02d:%02d  ·  nivel %d  ·  %d eliminados  ·  %d victorias en %d partidas" % [
-		tiempo / 60, tiempo % 60, GestorGuardado.record("nivel"), GestorGuardado.record("eliminados"),
-		GestorGuardado.record("victorias"), partidas]
+	# La mejor es la primera del ranking, que ya va ordenado. Hasta el 22/10
+	# se juntaban los máximos de tiempo, nivel y eliminados, que podían ser de
+	# partidas distintas.
+	var resumen := "%d victorias en %d partidas" % [GestorGuardado.record("victorias"), partidas]
+	var ranking := GestorGuardado.ranking()
+	if ranking.is_empty():
+		return resumen
+	var mejor: Dictionary = ranking[0]
+	var tiempo := int(mejor.tiempo)
+	var dificultad: String = Dificultad.DIFICULTADES.get(mejor.get("dificultad", "media"), Dificultad.DIFICULTADES.media).nombre
+	return "MEJOR PARTIDA  %s %02d:%02d en %s  ·  nivel %d  ·  %d eliminados  ·  %s" % [
+		"victoria" if mejor.victoria else "derrota", tiempo / 60, tiempo % 60, dificultad,
+		mejor.nivel, mejor.eliminados, resumen]
 
 
 func _abrir_reglas() -> void:

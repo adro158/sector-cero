@@ -135,9 +135,18 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _reintentar() -> void:
+	_guardar_si_falta()
 	# Ruta vacía: recargar la escena actual.
 	Transicion.cambiar_a("")
 
 
 func _ir_al_menu() -> void:
+	_guardar_si_falta()
 	Transicion.cambiar_a(MENU_PRINCIPAL)
+
+
+## Si entraba en el ranking y no se pulsó GUARDAR, se guarda igual (como
+## «Anónimo» si no se escribió nombre): si no, se perdía sin avisar.
+func _guardar_si_falta() -> void:
+	if _nombre != null:
+		_guardar_en_ranking()
