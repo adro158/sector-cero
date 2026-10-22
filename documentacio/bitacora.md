@@ -3486,4 +3486,9 @@ siempre, cargando también la partida.
   errores. Una vez salió al cerrar «2 resources still in use», que no se
   repitió en otros tres intentos ni sale en `main` sin el cambio: es el aviso
   conocido de los sonidos que siguen sonando.
-
+- **El golpe del Espadachín y el radar del Segador se veían demasiado**
+  (Adam: «prueba a meter más frames»). En vez de dibujar fotogramas nuevos,
+  cada uno se funde con el siguiente (como tener muchos más) y el efecto
+  empieza al 55 % de opacidad y se va apagando (`OPACIDAD_EFECTO` en
+  `aura_arma.gd`). Comparado con ventana, el antes y el después, en cuatro
+  momentos de cada ataque. Si se queda corto o se pasa, se cambia ese número.

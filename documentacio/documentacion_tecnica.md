@@ -127,7 +127,10 @@ ataque sale encima su efecto en su color: el golpe del Firewall y el pulso
 de radar del Escáner, y los de sus evoluciones. Cada arma lleva sus dibujos
 en su `DatosArma` (efecto, fotogramas, tiempo, anillo y el radio al que están
 dibujados), así que no hay que elegirlos por el nombre; con la mejora de
-alcance se escalan (radio de verdad / radio del dibujo). El aura va detrás
+alcance se escalan (radio de verdad / radio del dibujo). El efecto empieza
+medio transparente y se va apagando, y cada fotograma se funde con el
+siguiente para que salga suave (a petición de Adam, el 22/10: se veía
+demasiado). El aura va detrás
 del jugador (`show_behind_parent`), debajo de él y de la horda. El Ping saca
 un destello donde impacta o rebota (`pool_proyectiles.gd`). Con el robo de
 vida salen chispas verdes de los enemigos alcanzados al Espadachín: como
