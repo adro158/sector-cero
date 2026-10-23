@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 22/10/2026** contra la bitácora (hasta la sesión 18) y
+**Estado verificado el 23/10/2026** contra la bitácora (hasta la sesión 18) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -93,431 +93,132 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-0. **Publicado en la v1.8** (sesión 18, 22/10, la etiqueta subida desde el
-   ordenador del instituto): el equilibrado de las dificultades (punto 3.6),
-   el escudo de NÚCLEO CERO arreglado, los dos fallos de la ficha del
-   enemigo y las releases sin el juego suelto (solo los instaladores, los
-   `.pck` que usa el lanzador y `version.json`; la web se queda), con todo lo
-   de la nube del 22/10 (novedades en `documentacio/novedades/v1.8.txt`).
+Puesto al día el 23/10 (sesión 18). Lo hecho está en la bitácora, en la sesión
+que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-   **Lo hecho en la nube, ya en `main` y publicado en la v1.7** (sesión 18).
-   Los seis lotes de la sesión 17 se integraron sin conflictos,
-   se validaron cargando la partida, se miraron con capturas con ventana y
-   se midió el rendimiento en casa (bitácora, sesión 18). Falta:
-   - **que Adam lo pruebe jugando** (la lista, en la bitácora, sesión 17,
-     «Siguiente paso», punto 2): sobre todo cómo suena y si la ráfaga del
-     jefe, que se ve pequeña, hay que dibujarla a x2
-   - lo que hay que decidir con Adam (bitácora, sesión 17, punto 5)
-1. **Hecho el 22/10 (en la nube, sesión 18): las evoluciones, visibles en
-   los personajes.** Con `armas_evolucionadas.zip`, cada personaje cambia a
-   una hoja con el arma evolucionada (`hoja_evolucion` en `DatosPersonaje`).
-   Falta verlo jugando. Lo que se pidió: **Las mejoras, visibles en los
-   personajes** (Adam, 20/10, sesión 16). Adam está dibujando los assets para que, cuando
-   los tres personajes cogen las mejoras, se note también en el personaje. Los
-   traerá con su prompt en la próxima sesión, como el zip del jefe final.
-   El 21/10 subió a la rama `zips-lotes` un `armas_evolucionadas.zip` que es
-   seguramente esto: es el único zip que queda por aplicar.
-   Entonces:
-   1. Mirar lo que trae (`git status` si lo descomprime en el repo) y sus
-      vistas previas.
-   2. Proponer un plan corto (ficheros nuevos y tocados, cómo se dibuja sobre
-      la hoja de 8 direcciones de 64x72) y esperar el sí de Adam.
-   3. Integrarlo con `preload` y sin `class_name` si se puede, para no subir
-      `EJECUTABLE_MINIMO`.
-   4. Validar en headless y con capturas, y apuntarlo en `creditos.md`, la
-      bitácora y aquí.
+**Publicado:** la última es la **v1.9** (23/10): instaladores de Windows y de
+Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego suelto
+(decisión de Adam, sesión 18), y la web. Lleva todo lo de la nube del 22/10
+(cono del Espadachín, animaciones de ataque, Kernel Panic con sus furias,
+caídos que vuelven en la fase 2, los fallos del apartado A de las mejoras
+propuestas y el aviso de la resistencia) y el equilibrio ajustado en casa.
 
-   Si hay dudas sobre qué mejoras o evoluciones tienen dibujo, preguntárselo
-   a Adam.
-2. **Probar jugando la fase 2 y el jefe final** (hechos el 16/10 y
-   publicados en la v1.3; la lista paso a paso está en la bitácora, sesión
-   14). Con el
-   proyecto de `main` abierto en Godot o con la build:
-   - F1 → JEFE YA: que Kernel Panic baja en su columna de datos y no se le
-     puede dar hasta que acaba, que al 66 % y al 33 % se enfurece (aviso,
-     sonido, onda roja; va más rápido y pega más) y que al morir explota
-     antes del negro (22/10, en la nube).
-   - F1 → JEFE YA: matarlo y mirar el negro de la transición, el suelo
-     dañado, la música más grave y que el reloj se queda en 10:00 mientras
-     está el jefe.
-   - F1 → JEFE FINAL YA (15:00) y SIGUIENTE FORMA: las tres formas, cada
-     ataque (que el aviso se entienda y se pueda esquivar), el escudo con sus
-     anclas, el hielo, la barra de vida, la muerte y la victoria.
-   - Una partida normal mirando el nivel con F3 en los minutos 5, 10 y 15:
-     las tablas del F1 (medidas otra vez el 16/10 con el bot que recoge
-     fragmentos: nivel 13 en el minuto 10) siguen por debajo de lo que vio
-     Adam (nivel 14 en el minuto 5).
-   - Al abrir la versión nueva, el ranking y los récords salen vacíos (y la
-     v1.2, si se vuelve a ella, sigue teniendo los suyos).
-   - Lo de antes que aún no se ha probado jugando: la explosión del rootkit
-     (v1.2) y lo de la v1.1 (horda animada, destellos, piernas, barra de
-     experiencia).
-3. **Jefes más duros y después el equilibrio** (decisiones de Adam del 20/10,
-   sesión 16). Adam aprobó todas las propuestas de Claude y añadió lo del
-   pisotón y el robo de vida. Por separado, de lo más fácil a lo más difícil:
-   1. **Hecho:** menos horda al final de la fase 1, que en el minuto 10 salía
-      demasiada. Como mucho una cada 0,07 s (unas 14 por segundo) en vez de
-      cada 0,05 (20), y los anillos del jefe de 8 a 14 enemigos en vez de 12
-      a 24.
-   2. **Hecho:** robo de vida del Espadachín. El Firewall y su evolución
-      curan un 10 % del daño hecho, como mucho 1,5 de vida por golpe (eran 3
-      hasta el 22/10: Adam, quieto en el minuto 8:30, casi no perdía vida)
-      (`robo_vida` en `DatosArma`, `ROBO_MAXIMO` en `gestor_armas.gd`).
-      Probado.
-   3. **Hecho** el 22/10 (sesión 18): en media huye la mitad de la horda
-      cuando llega el jefe (en difícil se queda toda).
-   4. **Jefe del minuto 10, movimientos nuevos.** Hechos el 21/10 en la
-      nube (lote 1, sesión 17): el pisotón que encierra (jaula de 4 s, cada
-      20 s), la ráfaga (cada 9 s) y la rabia. El 22/10, más difíciles: la
-      jaula avisa 0,5 s y es un 30 % más grande, y la ráfaga va a 280 px/s
-      con el proyectil dibujado a x2. Y se llama Kernel Panic: la rabia pasa
-      a dos furias (al 66 % y al 33 %: más rápido, más daño, ataques más
-      seguidos y anillos de hasta 20 enemigos), con aparición, furia, muerte y
-      barra de vida arriba como NÚCLEO CERO (bitácora, sesión 18, en la
-      nube). **Hay que volver a medir el equilibrio** (también por el robo de
-      vida, que bajó el mismo día; `minuto=10` mide solo el jefe). **Faltan** la embestida triple
-      y el guardaespaldas (Adam los deja para otro día). Lo que se pidió:
-      - **Pisotón que encierra:** se para, marca un círculo rojo alrededor
-        (el anillo del rootkit) y a los 0,8 s el círculo se cierra. Durante
-        unos segundos no puedes salir de él y te quedas encerrado con el
-        jefe (petición de Adam).
-      - **Ráfaga de datos:** 12 proyectiles en círculo que se esquivan por
-        los huecos; en la segunda mitad de su vida, dos ráfagas giradas.
-      - **Embestida triple** (por debajo del 50 %): tres seguidas, cada una
-        con su aviso rojo corto.
-      - **Guardaespaldas:** una vez, al bajar del 50 %, llama a un rootkit
-        élite explosivo.
-      - **Rabia** (por debajo del 25 %): un 30 % más rápido y ataca más
-        seguido.
-   5. **NÚCLEO CERO, más duro sin más movimientos.** **Hechos** el 21/10
-      en la nube (lote 2, sesión 17) los candados: una herramienta por
-      ancla y el cierre. El 22/10 (sesión 18), como el bot no los rompía,
-      Adam los dejó en 300 de vida, 30 s para romperlos y cambio de personaje
-      sin espera mientras está el escudo. Esa noche, en la nube (Adam, en
-      difícil: «tiene demasiada vida»): en difícil tienen la vida de la media
-      (210) y los 30 s cuentan desde la última rota, no desde la primera. **Faltan** el escudo más
-      seguido, más vida y menos pausa, y la presión al llegar. Lo que se
-      pidió:
-      - **Candados:** las anclas con mucha más vida (de 300 a unos 800, por
-        la dificultad). Si no se rompen las 4 en 12 s, las rotas se vuelven
-        a cerrar. Cada ancla solo recibe daño de una herramienta, marcada
-        con su color (morado el Mago, verde el Espadachín, rojo el Segador):
-        hay que ir cambiando de personaje.
-      - El escudo también cada 45 s en la forma 2, y cada 25 s en la 3 (ahora
-        35).
-      - Un 50 % más de vida; pausa entre ataques de 2, 1,4 y 0,9 s (ahora
-        2,5, 1,8 y 1,2).
-      - Presión al llegar: portales y tormenta enseguida, y en la forma 3
-        dos ataques a la vez.
-   6. **Hecho el 22/10 (sesión 18): el equilibrio con el simulador.**
-      Objetivo de Adam, de cada 10 partidas: fácil **7-8**, media **4-5** y
-      difícil **1**. Con 20 partidas por dificultad salen **15, 9 y 2** (7,5,
-      4,5 y 1 de cada 10). Se tocaron los multiplicadores de
-      `globales/dificultad.gd`, con la vida de NÚCLEO CERO aparte; en media
-      huye la mitad de la horda (punto 3.3), y las anclas reciben el golpe
-      sin la resistencia del malware. Los valores y el porqué, en la
-      bitácora, sesión 18. Antes: el 16/10, fácil 5, media 0 y difícil 0.
-      **Reajustado el 23/10** tras los cambios de la nube (cono, furias,
-      caídos que vuelven): en el ordenador de casa salía 13 / 9 / 0 de 20;
-      con NÚCLEO CERO a 0,42 en fácil y, en difícil, Kernel Panic a 0,55,
-      NÚCLEO CERO a 0,6 y el daño recibido a 1, sale **15 / 9 / 2 de 20**,
-      en el objetivo. Medir siempre en el mismo ordenador: en la nube, el
-      mismo código daba otros números.
+### Para la entrega
 
-      Falta volver a medir las tablas del F1 (`progreso_por_minuto.gd`). Si
-      se cambia algo de los jefes (la embestida triple, el guardaespaldas o
-      lo que queda de NÚCLEO CERO), volver a pasar el simulador.
-4. **La v1.3, publicada el 16/10** a petición de Adam, sin que la haya
-   probado él jugando: fase 2, jefe final e icono. No hay `class_name` nuevos
-   y `project.godot` solo cambia el icono: `EJECUTABLE_MINIMO` sigue en 0.2. El
-   icono de la ventana llega con el `.pck` (lo pone `transicion.gd`) y el del
-   `.exe`, con el ejecutable nuevo. Si al probar sale algo, se arregla y se
-   saca una v1.4.
-5. **Versiones: un lanzador, como el de Minecraft** (decisiones de Adam del
-   16 y el 20/10, sesiones 15 y 16). Desde el ordenador se tienen que poder
-   jugar **todas** las versiones. La web es solo un extra para probar la
-   última. Ya no se hace la página web con todas (sesión 14), ni se sigue
-   parcheando el menú VERSIONES de dentro del juego.
+1. **Vídeo demostrativo** (2-4 min).
+2. **Ensayar la defensa** con `presentacion.md`, que ya tiene el guion y las
+   preguntas probables. Repasar que cuente lo nuevo (Kernel Panic, NÚCLEO
+   CERO, el lanzador, el equilibrio con el simulador).
+3. **Probar en un ordenador limpio** (sin Godot): instalar con
+   `SectorCero_Instalador_vX.exe`, abrir varias versiones desde el
+   lanzador, jugar y desinstalar. Y lo mismo en un Linux de verdad con
+   `SectorCero_Lanzador_linux_vX.zip` (los pasos, en la bitácora, sesión
+   16), mirando también el icono: el juego escribe al arrancar
+   `~/.local/share/applications/sector-cero.desktop` (`icono_linux.gd`); si
+   el dock no lo enseña, mirar que `StartupWMClass` ("Sector Cero")
+   coincida con la clase de la ventana (`xprop WM_CLASS` en X11).
+4. **Acordar con Alan** qué parte de la entrega asume (vídeo, presentación,
+   pruebas).
+5. **Cerrar la sesión 18** en la bitácora con la duración de toda la sesión
+   y las horas acumuladas.
 
-   Cómo va:
-   - **Un instalador de verdad**, para todo el ordenador (en Archivos de
-     programa; pide permisos de administrador): Siguiente → carpeta → accesos
-     directos → Finalizar, con su desinstalador. Se hace con Inno Setup y lo
-     genera la GitHub Action. Instala dos cosas, una sola vez: el lanzador y
-     el juego (el motor). En Linux, un zip con lo mismo.
-   - **El lanzador y el juego van separados.** El juego instalado es siempre
-     el mismo ejecutable y no se vuelve a instalar. Lo que cambia entre
-     versiones es su contenido, el `.pck` de cada release.
-   - **En el lanzador:** un desplegable con todas las versiones, sacadas de
-     la API de releases de GitHub. Al elegir una, se baja su `.pck` si no
-     está (en la carpeta de datos del usuario, porque Archivos de programa
-     no se puede escribir) y se queda como la elegida, también para la
-     próxima vez.
-   - **JUGAR** abre el juego instalado con el contenido elegido
-     (copia su `.pck` junto al juego y lo abre). El lanzador se esconde y,
-     al cerrar el juego, vuelve a aparecer.
-   - **El lanzador se actualiza solo**, para no tener que volver a GitHub.
-   - **El juego nuevo ya no tiene ACTUALIZAR ni VERSIONES:** de eso se
-     encarga el lanzador.
-   - **No hay botón para pasar del juego viejo al lanzador:** quien lo baje,
-     bajará directamente el instalador (decisión de Adam).
+### Probar jugando (Adam)
 
-   Por qué funciona: el `.pck` de cada release pesa entre 1 y 2 MB (los
-   37 MB del zip son casi todo el motor). Todas las releases se hicieron con
-   Godot 4.7.2 (la Action no ha cambiado de motor desde el 01/10), así que el
-   contenido de cualquier versión se abre con el motor instalado. **Las
-   versiones antiguas no hay que recompilarlas.**
+El simulador no juzga sensaciones ni sonido. Con la v1.9 (o `main` abierto
+en Godot):
 
-   Lo que queda con las antiguas:
-   - Seguirán enseñando dentro sus botones ACTUALIZAR y VERSIONES.
-   - Todas guardan sus datos en la misma carpeta: el lanzador borra
-     `user://actualizacion.pck` (y su `.txt`) antes de abrir cualquier
-     versión, para que no cargue un parche de otra.
-   - El instalador no está firmado: Windows avisará con «Windows protegió
-     su PC» (Más información → Ejecutar de todas formas). Avisarlo en el
-     README.
+- **El Espadachín:** si el cono apunta bien con teclado, mando y táctil, y si
+  el robo de vida se nota (como mucho 1,5 por golpe; 2 con la evolución).
+- **Las animaciones de ataque** de los tres personajes y las armas
+  evolucionadas en el personaje.
+- **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la
+  embestida, las dos furias (al 66 % y al 33 %) y su muerte antes del negro
+  de la fase 2.
+- **NÚCLEO CERO** (F1 → JEFE FINAL YA y SIGUIENTE FORMA): cada ataque (que el
+  aviso se entienda y se pueda esquivar), el escudo cambiando de personaje
+  para cada ancla (sin espera mientras está), el hielo y la victoria.
+- **Las tres dificultades:** si se sienten como se quiere al jugarlas una
+  persona, no el bot.
+- **El aviso de que el malware se adapta** a tu herramienta, y cómo suena
+  todo (pisotón, ráfaga, furias, escudo).
+- **El lanzador se actualiza solo:** uno instalado con una versión anterior
+  tiene que pasar a la v1.9 sin hacer nada.
+- Lo que nunca se ha probado jugando: la explosión del rootkit (v1.2) y lo
+  de la v1.1 (horda animada, destellos, piernas, barra de experiencia).
 
-   **Hecho el 20/10 (sesión 16), probado en Windows en el instituto:**
-   - el lanzador (`lanzador/`, un proyecto de Godot aparte): el desplegable con
-     las 13 versiones (v0.2 a v1.4), la descarga del `.pck` al elegir, JUGAR,
-     el lanzador minimizado mientras se juega y de vuelta al cerrar el juego,
-     y la versión elegida recordada
-   - los presets de exportación del juego sin contenido (`Windows
-     (lanzador)` y `Linux (lanzador)` en `projecte/export_presets.cfg`)
-   - **`--main-pack` no sirve:** los ejecutables exportados no lo admiten. Lo
-     que sí funciona: Godot abre solo el `SectorCero.pck` que está junto a
-     `SectorCero.exe`. El lanzador copia ahí el de la versión elegida.
-     Probado con la v0.2, la v0.5, la v0.9, la v1.2 y la v1.4: cada una abre
-     tal como era.
+Ojo al probar: si se cierra el juego a la fuerza (matando el proceso), la
+caché de shaders puede quedar a medias y la siguiente vez sale la pantalla en
+blanco (pasó en el instituto). Se arregla borrando `shader_cache` en la
+carpeta de datos del juego.
 
-   **Hecho también el 20/10:**
-   - el juego abierto por el lanzador (`--desde-lanzador`) no busca
-     actualizaciones ni enseña ACTUALIZAR ni VERSIONES (probado con capturas)
-   - el lanzador se actualiza solo: cada release publica
-     `lanzador_windows.pck` y `lanzador_linux.pck`, y su autoload
-     (`actualizador_lanzador.gd`) carga el parche al arrancar. Probado con un
-     parche hecho a mano; un parche más viejo que el lanzador se borra.
-   - **la lista de versiones guardada** (`user://releases.json`): GitHub solo
-     deja 60 consultas por hora a cada red, y en el instituto todos comparten
-     la misma (se agotaron al probar). Sin respuesta, se usa la última lista,
-     y las descargas siguen funcionando porque no cuentan para ese límite.
-     Probado.
-   - el instalador (`lanzador/instalador.iss`) y la Action (los probó la
-     publicación de la v1.5: el instituto no tiene Inno Setup, y la Action
-     solo corre al publicar una versión)
+### Pendiente técnico
 
-   **Publicado el 20/10, con permiso de Adam: v1.5 (el lanzador) y v1.6 (el
-   acceso del menú de Linux).** La Action generó a la primera el instalador
-   de Windows (`SectorCero_Instalador_vX.exe`, 51 MB), el zip del lanzador
-   de Linux y sus `.pck`.
-   - Las novedades de cada versión están en `documentacio/novedades/`. Se
-     copiaron a las 13 releases ya publicadas (con permiso de Adam) y la
-     Action las usa al publicar. Es lo que enseña el lanzador.
-   - El README explica el lanzador y el aviso de Windows («Windows protegió
-     su PC», porque el instalador no está firmado).
-   - En Linux, el acceso del menú lo pone el lanzador
-     (`lanzador/icono_linux.gd`): uno visible que lo abre a él y otro
-     escondido para el icono de la ventana del juego. El juego abierto desde
-     el lanzador ya no pone el suyo, que se saltaba el lanzador.
+6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
+   mejoras por minuto): se midieron antes de cambiar las dificultades.
+7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el
+   simulador**: 20 partidas por dificultad, en el mismo ordenador que la
+   medida anterior (en la nube y en casa el mismo código da otros números).
+   Objetivo de Adam, de cada 20: **15-16 victorias en fácil, 8-10 en media y
+   2 en difícil**. La última medida (23/10, en casa) da 15 / 9 / 2.
 
-   **Falta:**
-   1. **Que Adam pruebe el instalador** en Windows: instalar, jugar a varias
-      versiones, desinstalar.
-   2. **Probarlo en Linux** (los pasos están en la bitácora, sesión 16).
-   3. **Ver que el lanzador se actualiza solo** cuando salga la próxima
-      versión: uno instalado desde la v1.5 tiene que pasar solo a la nueva.
+### Opcional (Adam decide si se hace)
 
-   Ojo al probar: si se cierra el juego a la fuerza (matando el proceso), la
-   caché de shaders puede quedar a medias, y la siguiente vez sale la
-   pantalla en blanco (pasó en el instituto). Se arregla borrando
-   `shader_cache` en la carpeta de datos del juego. Con versiones distintas
-   no pasa: se probó la v0.5 con la caché de la v1.4 y abre bien.
-6. **Icono del juego: publicado en la v1.3** (bitácora, sesión 14). Lo dibujó
-   Claude a partir de la idea de Adam (`medios/icono/`). El 16/10 Adam vio
-   que en Linux no salía. Un ejecutable de Linux no lleva icono, y GNOME en
-   Wayland no usa el de la ventana: lo saca de un `.desktop` instalado. Desde
-   entonces, el juego exportado escribe al arrancar en Linux
-   `~/.local/share/applications/sector-cero.desktop` y su icono
-   (`globales/icono_linux.gd`, lo llama `transicion.gd`). Probado en headless
-   en Windows; **falta probarlo en un Linux de verdad** y publicarlo. Si la
-   ventana sigue sin icono en el dock, mirar que `StartupWMClass` ("Sector
-   Cero") coincida con la clase de la ventana (`xprop WM_CLASS` en X11).
-   En Windows, quien actualizó solo con el `.pck` tiene el `.exe` con el icono
-   viejo: llega bajando el zip, o subiendo `EJECUTABLE_MINIMO` en la v1.4 (por
-   decidir con Adam).
-   - el `.exe`: preset de Windows (`application/icon`, el `.ico`); probado
-     exportando en casa
-   - la ventana: `config/icon` y `config/windows_native_icon` de
-     `project.godot`, y además `transicion.gd` lo pone al arrancar, para que
-     llegue también con el `.pck` a los ejecutables viejos; probado con
-     ventana
-   - la web: el favicon sale de `config/icon` (`html/export_icon=true`).
-     Falta mirarlo en la web publicada: en casa no están las plantillas web
-   - para que llegue a los jugadores basta una release normal: el `.pck`
-     trae el icono de la ventana y el ejecutable nuevo, el del `.exe`. No hace
-     falta subir `EJECUTABLE_MINIMO`
-7. **Vídeo demostrativo** (2-4 min).
-8. **Ensayar la defensa** con `presentacion.md`, que ya tiene las respuestas
-   sobre el suelo, el troyano, el ransomware y Actualizar firmas.
-9. **Probar en un ordenador limpio** (sin Godot) una release y su botón
-   ACTUALIZAR.
-10. Acordar con Alan qué parte de la entrega asume (vídeo, presentación, pruebas).
-11. Más adelante: ranking mundial con Supabase (Adam crea el proyecto; Claude
-   le pasa el script SQL y los pasos).
-12. Opcional: sustituir los sprites de IA por pixel art propio.
-13. **Assets nuevos** (20/10, sesión 16). Lo de las mejoras visibles en los
-    personajes es el punto 1.
-    - **Más assets con Claude (chat):** el prompt está en
-      `prompt_assets.md`, en seis lotes por prioridad:
-      1. los ataques nuevos del jefe del minuto 10
-      2. las anclas de NÚCLEO CERO por herramienta
-      3. los efectos de las herramientas y del robo de vida
-      4. la respuesta en la partida (subir de nivel, cambio de personaje,
-         curarse, muerte de la horda)
-      5. los élites
-      6. la interfaz y el lanzador
+8. **Kernel Panic, lo que falta** (pedido el 20/10, sesión 16; Adam lo dejó
+   para otro día):
+   - **Embestida triple** (por debajo del 50 %): tres seguidas, cada una con
+     su aviso rojo corto.
+   - **Guardaespaldas:** una vez, al bajar del 50 %, llama a un rootkit élite
+     explosivo.
+9. **NÚCLEO CERO, lo que falta** (también del 20/10):
+   - el escudo también cada 45 s en la forma 2 y cada 25 s en la 3 (ahora,
+     cada 35 s en la amalgama)
+   - un 50 % más de vida, y pausa entre ataques de 2, 1,4 y 0,9 s (ahora 2,5,
+     1,8 y 1,2)
+   - presión al llegar: portales y tormenta enseguida, y en la forma 3 dos
+     ataques a la vez
 
-      Cada lote llega en un zip con su `PROMPT_CLAUDE_CODE.md`, como el del
-      jefe final.
-14. **Para más adelante: cooperativo en red local** (idea de Adam, 22/10,
-    sesión 18; de momento no se hace nada). Tres personas en la misma red,
-    cada una con un personaje: al entrar, cada una elige el suyo y solo
-    juega con él (sin cambiar con E y Q). Lo que habría que decidir antes de
-    empezar, con Adam:
-    - **La red:** la multijugador de Godot (`ENetMultiplayerPeer`), con un
-      ordenador que hace de anfitrión y lleva la partida (la horda, los
-      jefes, el daño) y los otros dos que mandan su movimiento y reciben lo
-      que pasa. Buscar la partida en la red local o escribir la IP.
-    - **Qué cambia en el juego:** tres jugadores en el grupo `jugador` (hoy
-      todo busca uno: la horda, los jefes, la jaula, la cámara); quién elige
-      las mejoras al subir de nivel y qué pasa con la pausa; la ulti de cada
-      uno; qué pasa al caer uno (hoy se elige otro personaje); las anclas
-      del escudo, que ya son una por personaje, irían bien.
-    - **Lo que cuesta:** es lo más grande que queda; tocaría casi todos los
-      sistemas y la escena de la partida. Solo si sobra tiempo después de la
-      entrega o como mejora futura en la defensa («qué mejoraríamos»).
-
-15. **Cambios en los personajes** (decisiones de Adam, 22/10, sesión 18).
-    **Hechos el 22/10 en la nube** (bitácora, sesión 18, «En la nube, el
-    punto 15»): el cono del Espadachín, los dibujos del lote 7 (hechos por
-    Claude con Python) y las animaciones de ataque, y las evoluciones arriba
-    en la columna de mejoras. **Falta:** equilibrar. Con 10 partidas por
-    dificultad salió 6 / 3 / 0 (objetivo 7-8 / 4-5 / 1); con las furias de
-    Kernel Panic más suaves, 7 / 3 / 0: fácil ya está. En media y difícil se
-    pierde sobre todo al empezar la fase 2. Adam decide qué se cambia. Y probarlo jugando: si el cono se apunta bien con el teclado, el
-    mando y el táctil, y si las animaciones de ataque se notan.
-    1. **El Espadachín ataca en un triángulo, no en un círculo.**
-       - **Dirección:** hacia donde se mueve; si está quieto, hacia la
-         última. Es hacia donde mira su dibujo, y funciona igual con mando y
-         en el móvil.
-       - **Forma:** un cono de **90 grados** por delante, con el alcance de
-         ahora (110 px).
-       - **Daño según la distancia:** pegado al enemigo, el **150 %**; en el
-         filo del alcance, el **50 %**; en medio, repartido en línea recta.
-         Con los 7,5 de ahora: 11,3 pegado y 3,8 al filo.
-       - **Con la evolución (Firewall perimetral):** más alcance, un poco más
-         de robo de vida y el **mismo daño cerca que lejos**. Propuesta de
-         Claude, para medir con el simulador: alcance de 125 a 150 y robo
-         de vida de 0,1 a 0,15, con su tope por golpe (`ROBO_MAXIMO`) de 1,5
-         a 2.
-       - **Qué toca:**
-         - las cinco cosas que reciben daño de área (`danar_en_area` en
-           `gestor_enemigos.gd`, `enemigo_elite.gd`, `jefe.gd`,
-           `jefe_final.gd` y `ancla_escudo.gd`) tienen que aceptar el cono y
-           el daño según la distancia (por ejemplo, con parámetros
-           opcionales, para que el Escáner y lo demás sigan igual)
-         - `gestor_armas.gd`
-         - los datos del Firewall (`DatosArma`: ángulo, daño pegado y al
-           filo)
-         - el dibujo del golpe (hoy son `firewall_golpe.png` y
-           `firewall_anillo.png`, redondos: hasta que lleguen los del lote 7,
-           el cono se puede pintar por código)
-         - el bot del simulador, que tiene que apuntar
-         - las reglas, el manual y las novedades
-       - **Después, volver a equilibrar** con el simulador, porque cambia el
-         personaje que más aguanta. El objetivo sigue igual: 7-8 victorias de
-         10 en fácil, 4-5 en media y 1 en difícil.
-    2. **El Segador levanta la guadaña al disparar el Escáner**, para que se
-       vea que ataca.
-    3. **El Mago hace la animación de lanzar** cuando dispara las bolas del
-       Ping.
-
-    Hoy los tres personajes solo tienen la animación de andar: hojas de 6x8
-    fotogramas de 64x72, una fila por dirección
-    (`escenas/jugabilidad/jugador/*_8_direcciones.png`). Las animaciones de
-    ataque son hojas nuevas que se ponen encima un momento al atacar (el
-    aviso es la señal `arma_disparada` de `gestor_armas.gd`). Hay que mirar
-    cómo encajan con las evoluciones visibles en los personajes de la
-    sesión 18.
-
-    **Se hará desde Claude Code en la nube**, dibujos incluidos (decisión de
-    Adam, 22/10). El prompt para empezar:
-
-    ```text
-    Haz el punto 15 de documentacio/requisitos_y_estado.md: el Espadachín
-    ataca en un cono, y el Segador y el Mago tienen animación al atacar. Sigue
-    el CLAUDE.md como siempre. Todo lo que hay que hacer y lo que ya está
-    decidido está en ese punto y en la bitácora (sesión 18). Si algo no está
-    claro o choca con una decisión vigente, pregúntame antes.
-
-    1. La mecánica del Espadachín (punto 15.1): el cono de 90 grados hacia
-       donde se mueve, el daño del 150 % pegado al 50 % en el filo y la
-       evolución con más alcance, más robo de vida y el mismo daño cerca que
-       lejos. Que las cinco cosas que reciben daño de área lo acepten sin
-       cambiar el Escáner ni lo demás. Hasta que estén los dibujos, pinta el
-       cono por código. Pruébalo con un script temporal: un enemigo delante
-       y pegado, otro delante en el filo y otro detrás (este no recibe nada).
-       Haz que el bot del simulador apunte.
-    2. Los dibujos del lote 7 de documentacio/prompt_assets.md: hazlos tú,
-       con Python (numpy y Pillow), píxel a píxel y con el estilo de los
-       sprites que ya hay. Los scripts, en una carpeta temporal fuera del
-       repositorio. Sube una vista previa (una hoja con todo ampliado x2) a
-       documentacio/capturas/lote7/ y espera mi sí antes de meterlos en el
-       juego.
-    3. Con mi sí, intégralos: el tajo y el marcador del cono del
-       Espadachín, y las animaciones de ataque de los tres personajes, que
-       salen encima de la de andar un momento al disparar (con la señal
-       arma_disparada). Que encajen con las evoluciones visibles.
-    4. Valida como dice CLAUDE.md (import, --quit-after y la partida cargada
-       con un script temporal), y haz capturas si se puede. Pasa el
-       simulador, 10 partidas por dificultad, y dime las victorias. El
-       objetivo es 7-8 en fácil, 4-5 en media y 1 en difícil. Antes de
-       cambiar los números de equilibrio, pregúntame.
-    5. Pon al día las reglas (panel_reglas.gd), el manual, creditos.md (los
-       dibujos son de Claude, con IA), las novedades de la próxima versión
-       (documentacio/novedades/v1.9.txt), la bitácora y
-       requisitos_y_estado.md.
-
-    Commits pequeños con la convención de flujo_de_trabajo.md, y push a
-    main al acabar cada paso. No publiques versión: la etiqueta la subo yo
-    desde el ordenador.
-    ```
-
-16. **Mejoras propuestas** (revisión del 22/10, sesión 18; Adam elige cuáles).
-    **Hecho el 22/10 por la noche:** todo el apartado A y lo del B sin
-    dibujos (bitácora, sesión 18). Queda lo de los apartados C a F.
-    59 propuestas en `mejoras_propuestas.md`, con cómo está ahora cada cosa y
-    qué hacer, y un resumen por prioridad:
-    - **A. Fallos pequeños, para arreglar ya** (comprobados en el código):
-      - textos de las reglas que no cuadran (el robo de vida dice «hasta 3»
-        y el tope es 1,5, las evoluciones «sin resistencia»...)
-      - el ranking se pierde si se sale sin GUARDAR
-      - se ofrece la evolución de un personaje caído
-      - el ranking no mira la dificultad
-      - no se pausa al cambiar de ventana
-      - opciones que ya no hacen nada
-    - **B. Que se vea la resistencia adaptativa** (el elemento diferencial):
-      indicador, aviso y sonido.
+   Ojo: el equilibrio de ahora cuenta con el NÚCLEO CERO de ahora. Si se
+   hace, volver a equilibrar (punto 7).
+10. **Mejoras propuestas, apartados C a F** de `mejoras_propuestas.md` (la A
+    entera y la B sin dibujos están hechas):
     - **C. Sensación de juego sin assets:** tiempo de golpe, sacudida, música
       amortiguada al elegir, números de daño.
     - **D. Lo visual por código, con assets:** partículas, caída del
       personaje, élites, fuente pixel art, paneles y botones, barra del
-      equipo...
+      equipo, y el medidor de la resistencia en el HUD (de la B, espera a
+      tener dibujos).
     - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
     - **F. Experiencia de juego:** consejos en la primera partida, resumen
       final, accesibilidad, mando.
-
-    Recomendación de Claude: A y B primero.
+11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
+    «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
+    guía y se podrían sacar las furias a su script; y lo que eligió Claude en
+    el lote 6 (los personajes de las reglas sin retrato, el aviso del HUD del
+    élite sin iconos y el lema del lanzador quitado).
+12. **Las releases antiguas** (v0.2 a v1.7) siguen teniendo el juego suelto
+    (`SectorCero_vX_windows.zip` y `_linux.zip`). Si Adam quiere quitarlos
+    también de ellas, se borran a mano desde la web de GitHub (no se puede
+    deshacer; el lanzador no los usa).
+13. **Para más adelante:**
+    - **Ranking mundial** con Supabase (Adam crea el proyecto; Claude le pasa
+      el script SQL y los pasos).
+    - **Pixel art propio** en lugar de los sprites hechos con IA.
+    - **Cooperativo en red local** (idea de Adam, 22/10, sesión 18). Tres
+      personas en la misma red, cada una con un personaje, sin cambiar con E
+      y Q. Lo que habría que decidir antes, con Adam:
+      - **La red:** la multijugador de Godot (`ENetMultiplayerPeer`), con un
+        ordenador que hace de anfitrión y lleva la partida (la horda, los
+        jefes, el daño) y los otros dos que mandan su movimiento y reciben lo
+        que pasa. Buscar la partida en la red local o escribir la IP.
+      - **Qué cambia en el juego:** tres jugadores en el grupo `jugador` (hoy
+        todo busca uno: la horda, los jefes, la jaula, la cámara); quién
+        elige las mejoras y qué pasa con la pausa; la ulti de cada uno; qué
+        pasa al caer uno; las anclas del escudo, que ya son una por
+        personaje, irían bien.
+      - **Lo que cuesta:** es lo más grande que queda; tocaría casi todos
+        los sistemas y la escena de la partida. Solo si sobra tiempo después
+        de la entrega o como mejora futura en la defensa («qué
+        mejoraríamos»).
 
 ## Decisiones vigentes (no revertir sin hablarlo con Adam)
 

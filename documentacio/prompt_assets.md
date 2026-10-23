@@ -116,8 +116,8 @@ Empieza por el lote 1. Antes, dime en dos líneas qué vas a dibujar.
 ## Lote 7: ataques de los personajes (22/10/2026, sesión 18)
 
 Los lotes 1 a 6 ya están hechos e integrados (sesiones 17 y 18). Este lote es
-para los cambios en los personajes que pidió Adam (`requisitos_y_estado.md`,
-punto 15). Se pega en el mismo chat de los lotes anteriores; si es uno nuevo,
+para los cambios en los personajes que pidió Adam (hechos el 22/10: bitácora,
+sesión 18, «En la nube, el punto 15»). Se pega en el mismo chat de los lotes anteriores; si es uno nuevo,
 antes se pega el prompt de arriba entero, quitando su último párrafo.
 
 ```text
@@ -170,4 +170,4 @@ chat ni por un zip. Hay dos condiciones:
   `documentacio/capturas/lote7/`.
 - Los scripts de Python que dibujan no se suben al repositorio.
 
-El prompt para empezar está en `requisitos_y_estado.md`, punto 15.
+Hecho el 22/10 en la nube: el prompt con el que se hizo y lo que se hizo están en la bitácora, sesión 18, «En la nube, el punto 15».

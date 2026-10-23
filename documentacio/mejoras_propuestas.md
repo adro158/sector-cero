@@ -14,7 +14,7 @@ mano en el código los fallos del apartado A.
 
 **Nada de esto está decidido:** es una lista para que Adam elija. No se
 incluye lo que ya estaba pendiente (el cooperativo, el cono del Espadachín y
-las animaciones de ataque del punto 15 de `requisitos_y_estado.md`); si una
+las animaciones de ataque, hechas el 22/10: bitácora, sesión 18, «En la nube, el punto 15»); si una
 propuesta ya estaba apuntada en otro sitio, lo dice. Las referencias entre
 paréntesis son a las secciones de abajo: «visual 2» es la propuesta 2 de «Lo
 visual de la partida».
@@ -150,7 +150,7 @@ Impacto **alto** · esfuerzo **pequeño** · assets: **no**
 
 - **Cómo está ahora:** La embestida de Kernel Panic solo avisa tiñendo el sprite de rojo: `_cambiar_estado` pone `_sprite.modulate = color_aviso` (escenas/jugabilidad/enemigos/jefe.gd:304) y en `Estado.AVISO` (jefe.gd:214) solo se gira hacia el jugador. No se dibuja hacia dónde va a salir ni hasta dónde llega (480 px/s × 0,7 s ≈ 336 px). El troyano tampoco: solo parpadea en rojo en el shader (`INSTANCE_CUSTOM.g` de horda.gdshader). NÚCLEO CERO, en cambio, avisa su rayo con flechas que avanzan sobre una franja (`aviso_linea`, dibujo_jefe_final.gd:54-60).
 - **Propuesta:** Durante el AVISO, dibujar en el `_draw` del jefe (jefe.gd:323) la misma franja con flechas de NÚCLEO CERO: `DibujoJefeFinal.aviso_linea(self, Vector2.ZERO, _direccion, velocidad_embestida * duracion_embestida, (radio + 16) * 2, _tiempo_estado)`. Es la función que ya existe, con preload y sin class_name. Se ve hacia dónde y hasta dónde va a embestir, y queda igual que el aviso del jefe final. Si se hace la embestida triple, cada embestida usaría este mismo aviso. Para el troyano se podría hacer igual desde el `_draw` del gestor (como la barra del ransomware, gestor_enemigos.gd:263), pero ahí puede haber muchos a la vez: mejor solo en el jefe.
-- **Ya apuntado:** El aviso en el suelo no. Está relacionado con la embestida triple, que sigue pendiente (requisitos_y_estado.md, punto 3.4: «cada una con su aviso rojo corto»).
+- **Ya apuntado:** El aviso en el suelo no. Está relacionado con la embestida triple, que sigue pendiente (requisitos_y_estado.md, punto 8: «cada una con su aviso rojo corto»).
 
 ### 2. Animación al caer un personaje y al perder la partida
 
@@ -239,7 +239,7 @@ Impacto **alto** · esfuerzo **grande** · assets: **sí**
 - **Cómo está ahora:** La hoja de Kernel Panic (escenas/jugabilidad/enemigos/jefe_8_direcciones.png, 1536x1152: 12 fotogramas de 128x144 × 8 direcciones) solo tiene el ciclo de andar. Al avisar, invocar, disparar la ráfaga o pisar se queda quieto en un fotograma (`_animar` solo avanza al perseguir y al embestir, jefe.gd:309-317), y los ataques se distinguen solo por el tinte rojo o morado (`modulate`, jefe.gd:227, 241 y 304). creditos.md dice que esta hoja es provisional.
 - **Propuesta:** Rehacer la hoja con su pixel art definitivo y añadir poses de ataque: alzar el bastón para invocar o disparar la ráfaga, agacharse antes de embestir y dar un pisotón. `_animar` elegiría la tira según `_estado`. Es lo que más se notaría en el minuto 10, el momento fuerte de la demo.
 - **Assets:** Hoja de ataque de 128x144 por fotograma, 8 direcciones × 4-6 fotogramas por pose (lanzar y pisotón; la embestida puede reutilizar la de lanzar). Sería una hoja de unos 768x1152 por pose, con el mismo cuerpo, la misma paleta y la misma sombra que la de andar.
-- **Ya apuntado:** requisitos_y_estado.md, punto 12 («Opcional: sustituir los sprites de IA por pixel art propio») y creditos.md (los personajes y el jefe «se consideran provisionales»). Las poses de ataque no están apuntadas.
+- **Ya apuntado:** requisitos_y_estado.md, punto 13 («Pixel art propio en lugar de los sprites hechos con IA») y creditos.md (los personajes y el jefe «se consideran provisionales»). Las poses de ataque no están apuntadas.
 
 ### 13. Animación de reposo de los personajes
 
@@ -248,7 +248,7 @@ Impacto **medio** · esfuerzo **medio** · assets: **sí**
 - **Cómo está ahora:** Cuando el jugador está quieto, el personaje se queda en el primer fotograma del ciclo de andar (`_animar`, escenas/jugabilidad/jugador/controlador_jugador.gd:89-92: «Quieto: primer fotograma»). Las hojas solo tienen andar (6x8 de 64x72), también las de evolución. Los élites sí tienen reposo desde el lote 5 (`fotograma_reposo`, dibujo_elite.gd:34).
 - **Propuesta:** Añadir una tira de reposo por personaje (la capa que ondea, los ojos que brillan, el arma que late) y elegirla en `_animar` cuando `direccion == Vector2.ZERO`. Como con `hoja_evolucion`: un campo nuevo en `DatosPersonaje` y, en `cambio_personaje._aplicar` (línea 212), la hoja que toque. Sin class_name nuevo.
 - **Assets:** Por personaje y por versión (normal y evolucionada, 6 hojas): 4 fotogramas × 8 direcciones de 64x72 (256x576), a unos 0,15 s por fotograma, con el cuerpo idéntico al de andar.
-- **Ya apuntado:** El reposo no. El redibujado de los personajes en general sí: requisitos_y_estado.md, punto 12.
+- **Ya apuntado:** El reposo no. El redibujado de los personajes en general sí: requisitos_y_estado.md, punto 13.
 
 ### 14. Mira de la ulti del Mago con sprites
 
@@ -412,7 +412,7 @@ Impacto **alto** · esfuerzo **medio** · assets: **sí**
 
 El escudo roto, además, con tiempo de golpe y sacudida (las dos primeras mejoras de cámara y tiempo). Se sintetiza con lo que ya tiene generar_audio.gd (_nota, _mezclar, _arpegio).
 - **Assets:** 3 efectos nuevos (ancla_bloqueada, ancla_rota y escudo_roto), sintetizados por código en generar_audio.gd. Sin dibujos.
-- **Ya apuntado:** Solo la prueba: bitácora, sesión 18, «Siguiente paso» punto 1 (ver jugando si el escudo se entiende), y requisitos_y_estado.md, punto 2 (probar el escudo con sus anclas). Los sonidos no están apuntados.
+- **Ya apuntado:** Solo la prueba: bitácora, sesión 18, «Siguiente paso» punto 1 (ver jugando si el escudo se entiende), y requisitos_y_estado.md, «Probar jugando» (el escudo con sus anclas). Los sonidos no están apuntados.
 
 ### 3. Ultis y herramientas evolucionadas con sonido propio, y NÚCLEO CERO que suene a lo que roba
 
