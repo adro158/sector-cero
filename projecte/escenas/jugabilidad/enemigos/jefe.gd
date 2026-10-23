@@ -127,8 +127,9 @@ func _ready() -> void:
 
 func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
-	# La vida de la escena es la de la dificultad media.
-	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida"))
+	# La vida de la escena por la de su dificultad, que va aparte de la de la
+	# horda desde el 23/10.
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe"))
 	visible = true
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton

@@ -5,7 +5,10 @@ extends RefCounted
 ## Adam, bitácora, sesión 11). La elegida se guarda en las opciones
 ## (GestorGuardado) y la partida la lee al empezar.
 ##
-## - vida: multiplica la vida de la horda, los élites y el jefe del minuto 10.
+## - vida: multiplica la vida de la horda y los élites.
+## - vida_jefe: la de Kernel Panic, el jefe del minuto 10. Hasta el 23/10 era
+##   la de la horda; en difícil (×1) se perdía contra él casi la mitad de las
+##   partidas.
 ## - vida_jefe_final: multiplica la de NÚCLEO CERO, que va aparte (sesión 18).
 ## - vida_anclas: la de las anclas de su escudo. En difícil, la de la media:
 ##   con la de la horda (300) se tardaba demasiado en romperlas (Adam,
@@ -26,19 +29,25 @@ extends RefCounted
 ## personaje entero), no de vida: con un solo multiplicador, bajarla para él
 ## ablandaba también la horda.
 ##
+## Vuelto a equilibrar el 23/10 (en la nube), tras el cono del Espadachín, las
+## furias de Kernel Panic y los caídos que vuelven en la fase 2: con 20
+## partidas salía 18 / 6 / 0. Se subió la vida de NÚCLEO CERO en fácil (0,4 a
+## 0,5), se bajó en media (0,75 a 0,65) y Kernel Panic pasó a tener la suya
+## (en difícil, 0,8).
+##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
 
 const DIFICULTADES := {
 	"facil": {
-		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe_final": 0.4, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
+		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe": 0.65, "vida_jefe_final": 0.5, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
-		"nombre": "MEDIA", "vida": 0.7, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
+		"nombre": "MEDIA", "vida": 0.7, "vida_jefe": 0.7, "vida_jefe_final": 0.65, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
 		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
-		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 1.1, "huye": 0.0,
+		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe": 0.8, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 1.1, "huye": 0.0,
 		"explicacion": "El malware tiene más vida y hace más daño. La horda sigue cuando llega el jefe.",
 	},
 }

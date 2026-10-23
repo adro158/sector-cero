@@ -167,8 +167,8 @@ Detalles que la interfaz tiene que respetar:
   `jefe_final_ataco` (para el sonido). Se gana al derrotarlo.
 - **Dificultad.** Se elige en el menú principal y se guarda en las opciones
   (`GestorGuardado.opcion("dificultad")`). La partida la lee al empezar con
-  `globales/dificultad.gd`: multiplica la vida de los enemigos, la de NÚCLEO
-  CERO (aparte) y el daño que recibe el jugador, y decide qué parte de la
+  `globales/dificultad.gd`: multiplica la vida de los enemigos, la de Kernel
+  Panic y la de NÚCLEO CERO (cada una aparte) y el daño que recibe el jugador, y decide qué parte de la
   horda huye al llegar el jefe.
 
 Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
