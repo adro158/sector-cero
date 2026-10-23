@@ -6,3 +6,4 @@
 - La partida se pausa sola al cambiar de ventana.
 - El ranking ordena las victorias por dificultad y se guarda aunque no pulses GUARDAR. Ya no se ofrece la evolución de un personaje caído, y se han corregido varios textos de las reglas.
 - Al derrotar a Kernel Panic, los personajes que habían caído vuelven con la mitad de su vida.
+- Dificultades reequilibradas: de cada 20 partidas, unas 15 victorias en fácil, 9 en media y 2 en difícil. En difícil la horda tiene más vida y hace más daño, y los jefes algo menos de vida.
