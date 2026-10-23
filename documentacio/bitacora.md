@@ -3812,3 +3812,17 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
   - **Ruido:** con 10 partidas sale ±2 victorias. Fácil pasó de 7 a 9 y
     media de 3 a 1 con un cambio que solo toca la fase 2.
   - **Pendiente de Adam:** qué hacer con eso (bitácora, aquí mismo).
+- **Los caídos vuelven al pasar a la fase 2** (Adam eligió la opción que
+  recomendó Claude: revivirlos y quitar la entrada poco a poco). Detrás del
+  negro, `revivir_caidos(0,5)` en `cambio_personaje.gd`, que llama
+  `raiz_juego.gd` (`VIDA_AL_REVIVIR`). Probado con dos caídos: vuelven con
+  45/90 y 50/100. La entrada poco a poco se deshizo (no bajó las derrotas de
+  la fase 2 y subió fácil).
+  - **Simulador, 20 por dificultad** (semillas 1-20, sin errores): fácil
+    18/20 (objetivo 15-16), media 6/20 (8-10), difícil 0/20 (2). En la fase 2
+    ya casi no se pierde (0 en media, 2 en difícil). Ahora: media pierde
+    sobre todo contra NÚCLEO CERO (11 de 14) y difícil contra Kernel Panic
+    (9) y NÚCLEO CERO (7). Fácil, por encima.
+  - **Pendiente de Adam:** los números de la tabla de dificultades (Claude
+    propone tocar solo `vida_jefe_final` en fácil y en media, y una vida de
+    Kernel Panic aparte en difícil).
