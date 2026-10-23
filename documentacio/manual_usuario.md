@@ -43,13 +43,14 @@ Antes de jugar, elige la **dificultad** en el menú principal (se queda
 guardada para la próxima vez):
 
 - **Fácil:** comparado con la media, el malware hace un 30 % menos de daño y
-  tiene algo menos de vida, NÚCLEO CERO tiene casi la mitad, y cuando llega
-  el jefe huye toda la horda.
+  tiene algo menos de vida, NÚCLEO CERO tiene un tercio menos, y cuando
+  llega el jefe huye toda la horda.
 - **Media:** la partida como la hemos equilibrado. Cuando llega el jefe, huye
   la mitad de la horda.
-- **Difícil:** el malware tiene un 40 % más de vida y hace un 30 % más de daño
-  que en media, y cuando llega el jefe no huye nadie.
-  La horda también sigue cuando llega el jefe.
+- **Difícil:** la horda tiene un 40 % más de vida, el malware hace un 20 %
+  más de daño que en media y cuando llega el jefe no huye nadie. Los dos
+  jefes tienen algo menos de vida que en media: llegas a ellos con toda la
+  horda encima.
 
 1. **Solo te mueves.** Tu herramienta ataca sola; tú decides dónde colocarte.
 2. **Recoge los fragmentos de datos** que suelta el malware (amarillos,

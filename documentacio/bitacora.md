@@ -3862,3 +3862,21 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
     comparar un antes y un después, medir los dos en el mismo ordenador.
   - **Pendiente de Adam:** si se toca algo para fácil (las derrotas son por
     tiempo contra NÚCLEO CERO) y para difícil (Kernel Panic).
+- **Equilibrio ajustado en el ordenador de casa** (23/10, Adam: «cambia el
+  balance para que quede como yo quiero que quede»). Solo
+  `globales/dificultad.gd`, probando cada cambio con 20 partidas (semillas
+  1-20, en 23 copias a la vez):
+  - **Fácil:** `vida_jefe_final` de 0,5 a **0,42** (las 7 derrotas eran por
+    tiempo contra NÚCLEO CERO): **15/20**.
+  - **Difícil:** `vida_jefe` (Kernel Panic) de 0,8 a 0,65, sin tocar lo
+    demás: 0/20 (7 contra Kernel Panic y 7 muertos en la primera forma
+    de NÚCLEO CERO). Kernel Panic a **0,55** y NÚCLEO CERO a **0,6**: 1/20.
+    Además, el daño recibido de 1,1 a **1**: **2/20** (siguen 7 muertos en la
+    primera forma de NÚCLEO CERO y 5 contra Kernel Panic).
+  - **Media, sin tocar:** 9/20.
+  - **Resultado: 15 / 9 / 2 de 20**, en el objetivo (15-16, 8-10 y 2).
+  - **A tener en cuenta:** en difícil los dos jefes tienen ahora menos vida
+    que en media (Kernel Panic 0,55 frente a 0,7; NÚCLEO CERO 0,6 frente a
+    0,65). Lo que hace difícil la dificultad es la horda: un 40 % más de
+    vida, no huye nadie y un 20 % más de daño recibido que en media. Así lo
+    dicen el manual y la documentación técnica.

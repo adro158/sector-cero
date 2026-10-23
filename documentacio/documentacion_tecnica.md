@@ -385,16 +385,19 @@ de estos scripts tiene `class_name` ni toca `project.godot`: así llegan con la
 actualización pequeña.
 
 **Las dificultades.** Se eligen en el menú principal y se guardan con las
-opciones. Están en una tabla (`globales/dificultad.gd`) con cuatro datos cada
-una (fácil, media y difícil): cuánto se multiplica la vida de la horda, los
-élites, el jefe y las anclas (0,65, 0,7 y 1), la de NÚCLEO CERO, que va aparte
-(0,4, 0,75 y 0,75), el daño que recibe el jugador (0,6, 0,85 y 1,1) y qué
-parte de la horda huye al llegar el jefe (toda, la mitad y nada). Están
-ajustadas con el simulador (sesión 18) al objetivo de Adam: de cada 10
-partidas, 7-8 victorias en fácil, 4-5 en media y 1 en difícil; con 20 por
-dificultad salen 15, 9 y 2. La vida de NÚCLEO CERO va aparte porque contra él
-se pierde por falta de daño, no de vida: con un solo multiplicador, bajarla
-para el jefe final ablandaba a la vez toda la horda. Cada sistema lee la dificultad en su sitio: los enemigos al
+opciones. Están en una tabla (`globales/dificultad.gd`) con seis datos cada
+una (fácil, media y difícil): cuánto se multiplica la vida de la horda y los
+élites (0,65, 0,7 y 1), la de Kernel Panic (0,65, 0,7 y 0,55), la de NÚCLEO
+CERO (0,42, 0,65 y 0,6), la de las anclas de su escudo (0,65, 0,7 y 0,7), el
+daño que recibe el jugador (0,6, 0,85 y 1) y qué parte de la horda huye al
+llegar el jefe (toda, la mitad y nada). Están ajustadas con el simulador al
+objetivo de Adam: de cada 20 partidas, 15-16 victorias en fácil, 8-10 en
+media y 2 en difícil; medido el 23/10 en el ordenador de casa, salen 15, 9 y
+2. Los jefes van aparte porque contra ellos se pierde de otra forma que
+contra la horda: contra NÚCLEO CERO, por falta de daño (se acaba el tiempo);
+con un solo multiplicador, bajarles la vida ablandaba a la vez toda la
+horda. Por eso en difícil los jefes tienen menos vida que en media: allí se
+llega a ellos con la horda entera y un 20 % más de daño recibido. Cada sistema lee la dificultad en su sitio: los enemigos al
 aparecer, la salud del jugador al empezar la partida (la pone la raíz) y el
 director al llegar el jefe. La ficha del enemigo enseña el daño que hace de
 verdad, y el ranking y la pantalla final, la dificultad de cada partida.

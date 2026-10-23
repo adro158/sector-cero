@@ -217,6 +217,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
       huye la mitad de la horda (punto 3.3), y las anclas reciben el golpe
       sin la resistencia del malware. Los valores y el porqué, en la
       bitácora, sesión 18. Antes: el 16/10, fácil 5, media 0 y difícil 0.
+      **Reajustado el 23/10** tras los cambios de la nube (cono, furias,
+      caídos que vuelven): en el ordenador de casa salía 13 / 9 / 0 de 20;
+      con NÚCLEO CERO a 0,42 en fácil y, en difícil, Kernel Panic a 0,55,
+      NÚCLEO CERO a 0,6 y el daño recibido a 1, sale **15 / 9 / 2 de 20**,
+      en el objetivo. Medir siempre en el mismo ordenador: en la nube, el
+      mismo código daba otros números.
 
       Falta volver a medir las tablas del F1 (`progreso_por_minuto.gd`). Si
       se cambia algo de los jefes (la embestida triple, el guardaespaldas o
