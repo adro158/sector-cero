@@ -3880,3 +3880,10 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
     0,65). Lo que hace difícil la dificultad es la horda: un 40 % más de
     vida, no huye nadie y un 20 % más de daño recibido que en media. Así lo
     dicen el manual y la documentación técnica.
+- **Publicada la v1.9** (23/10, Adam: «sube la nueva versión»), desde el
+  ordenador de casa: validada antes (import del juego y del lanzador y la
+  partida cargada, sin errores; 16 clases globales; `project.godot` sin
+  cambios desde la v1.8, así que `EJECUTABLE_MINIMO` sigue en 0.2). A sus
+  novedades se les añadió el reequilibrado. La Action acabó bien y la
+  release trae justo lo decidido: los dos instaladores, los cuatro `.pck` y
+  `version.json`, sin el juego suelto. `version.json`: 1.9, mínimo 0.2.
