@@ -3831,11 +3831,11 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
   antes la de la horda: 0,65 / 0,7 / 1) y `vida_jefe_final` a 0,5 en fácil
   (era 0,4) y 0,65 en media (era 0,75). Simulador, 20 por dificultad, sin
   errores: fácil 17/20, media 5/20, difícil 0/20.
-  - **Fallo del simulador encontrado:** `TIEMPO_MAXIMO_JEFE` (240 s) debía
-    ser por jefe («tanto tiempo después de aparecer»), pero `_con_jefe` no
-    se pone a cero al cambiar de jefe: los dos jefes comparten los 240 s.
-    Con Kernel Panic más largo, a NÚCLEO CERO le quedan menos y el bot
-    «pierde» por tiempo con el jefe casi muerto (a uno le quedaban 30 de
-    7800). En esta tanda, 15 de las 58 derrotas fueron por tiempo (10 de las
-    15 de media). Una persona no tiene ese límite. **Pendiente de Adam:**
-    si se arregla (contar cada jefe por separado) y se vuelve a medir.
+  - **Las derrotas por tiempo** (`TIEMPO_MAXIMO_JEFE`, 240 s): 15 de las 58,
+    10 de las 15 de media, todas contra NÚCLEO CERO, que se queda con un 13
+    a un 50 % de su vida (a uno, 30 de 7800). Claude creyó que el contador
+    se compartía entre los dos jefes, pero no: se pone a cero en
+    `_al_cambiar_fase` y en `_al_aparecer_jefe_final`, y caen justo a los
+    900 + 240 s. Es lo de la sesión 18: contra NÚCLEO CERO se pierde por
+    falta de daño, no de vida. **Pendiente de Adam:** bajar más su vida en
+    media o darle al bot más tiempo contra él.
