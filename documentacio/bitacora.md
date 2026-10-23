@@ -3826,3 +3826,16 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
   - **Pendiente de Adam:** los números de la tabla de dificultades (Claude
     propone tocar solo `vida_jefe_final` en fácil y en media, y una vida de
     Kernel Panic aparte en difícil).
+- **Vida de Kernel Panic aparte y la de NÚCLEO CERO ajustada** (los números
+  que aceptó Adam): `vida_jefe` nueva (fácil 0,65, media 0,7, difícil 0,8,
+  antes la de la horda: 0,65 / 0,7 / 1) y `vida_jefe_final` a 0,5 en fácil
+  (era 0,4) y 0,65 en media (era 0,75). Simulador, 20 por dificultad, sin
+  errores: fácil 17/20, media 5/20, difícil 0/20.
+  - **Fallo del simulador encontrado:** `TIEMPO_MAXIMO_JEFE` (240 s) debía
+    ser por jefe («tanto tiempo después de aparecer»), pero `_con_jefe` no
+    se pone a cero al cambiar de jefe: los dos jefes comparten los 240 s.
+    Con Kernel Panic más largo, a NÚCLEO CERO le quedan menos y el bot
+    «pierde» por tiempo con el jefe casi muerto (a uno le quedaban 30 de
+    7800). En esta tanda, 15 de las 58 derrotas fueron por tiempo (10 de las
+    15 de media). Una persona no tiene ese límite. **Pendiente de Adam:**
+    si se arregla (contar cada jefe por separado) y se vuelve a medir.
