@@ -3839,3 +3839,26 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
     900 + 240 s. Es lo de la sesión 18: contra NÚCLEO CERO se pierde por
     falta de daño, no de vida. **Pendiente de Adam:** bajar más su vida en
     media o darle al bot más tiempo contra él.
+- **Medido en el ordenador de casa** (23/10, a petición de Adam, sin tocar
+  ningún número): commit `ec99547`, 20 partidas por dificultad (semillas
+  1-20), repartidas en 23 copias a la vez (`git worktree`, 24 núcleos menos
+  uno). Sin errores.
+
+  | Dificultad | Victorias | Objetivo | Dónde se pierde |
+  |---|---|---|---|
+  | Fácil | 13/20 | 15-16 | 7 contra NÚCLEO CERO, las 7 por tiempo en la amalgama |
+  | Media | 9/20 | 8-10 | 3 contra Kernel Panic, 1 en la fase 2, 7 contra NÚCLEO CERO por tiempo (2 en el núcleo armado y 5 en la amalgama) |
+  | Difícil | 0/20 | 2 | 3 en la fase 1, 10 contra Kernel Panic, 5 muertos contra NÚCLEO CERO en su primera forma (entre los 15:08 y los 15:53) y 2 por tiempo (1 en el núcleo armado y 1 en la amalgama) |
+
+  - Media, en el objetivo; fácil, 2-3 por debajo, y difícil, 2 por debajo.
+  - De las 58 derrotas, 17 son por tiempo contra NÚCLEO CERO
+    (`TIEMPO_MAXIMO_JEFE`, 240 s): todas las de fácil y 7 de las 11 de
+    media.
+  - **Sale distinto que en la nube** con el mismo código (allí, 17 / 5 / 0;
+    después solo cambió la documentación). Lo más probable: las semillas son
+    fijas, pero en Windows y en Linux los cálculos con decimales no tienen
+    por qué dar exactamente igual, y una diferencia pequeña cambia toda la
+    partida. No se ha comprobado. Para
+    comparar un antes y un después, medir los dos en el mismo ordenador.
+  - **Pendiente de Adam:** si se toca algo para fácil (las derrotas son por
+    tiempo contra NÚCLEO CERO) y para difícil (Kernel Panic).
