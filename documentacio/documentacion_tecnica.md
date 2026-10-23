@@ -331,7 +331,9 @@ suelo y debajo de todo lo demás.
 **La fase 2 y el jefe final.** Al derrotar al jefe, la raíz de la partida
 pausa el juego y emite `transicion_fase`: la interfaz pone un negro de 3 s con
 «SECTOR CERO DAÑADO» escrito letra a letra. Detrás del negro, la horda
-desaparece sin dar experiencia y llega `fase_cambiada(2)`: la arena pone el
+desaparece sin dar experiencia, los personajes caídos vuelven con la mitad
+de su vida (`revivir_caidos`, desde el 23/10: el bot los perdía contra Kernel
+Panic y caía al empezar la fase 2) y llega `fase_cambiada(2)`: la arena pone el
 suelo dañado (el mismo shader con otras texturas y dos efectos nuevos,
 chispazos y humo, que con sus valores por defecto no cambian nada: lo
 comprobamos comparando el suelo normal píxel a píxel), el audio baja el tono

@@ -99,7 +99,8 @@ guardada para la próxima vez):
    quedarás encerrado con él. Al bajarle al 66 % y al 33 % de vida se
    enfurece (lo avisa la pantalla): va más rápido, pega más, ataca más
    seguido y saca más malware. En la última furia, arde.
-10. **Fase 2.** Al derrotarlo, el sector queda dañado: vuelve la horda, más
+10. **Fase 2.** Al derrotarlo, el sector se reinicia (los personajes caídos
+    vuelven con la mitad de su vida) y queda dañado: vuelve la horda, más
     dura, hasta los 15 minutos. Entonces llega **NÚCLEO CERO** (su vida, arriba
     en el centro). Al bajarle al 66 % y al 33 % cambia de forma y es más duro.
     Te ataca con un rayo (flechas rojas), un torbellino (anillo a su
