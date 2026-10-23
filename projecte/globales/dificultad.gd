@@ -35,11 +35,20 @@ extends RefCounted
 ## 0,5), se bajó en media (0,75 a 0,65) y Kernel Panic pasó a tener la suya
 ## (en difícil, 0,8).
 ##
+## Ajustado otra vez el 23/10 en el ordenador de casa, al objetivo de Adam en
+## 20 partidas: 15-16 en fácil, 8-10 en media y 2 en difícil. Antes salía 13 /
+## 9 / 0 (en la nube daba 17 / 5 / 0 con el mismo código; seguramente porque
+## los cálculos con decimales no dan igual en Windows y en Linux). Fácil: NÚCLEO CERO de 0,5 a
+## 0,42 (perdía por tiempo contra él). Difícil: Kernel Panic de 0,8 a 0,55,
+## NÚCLEO CERO de 0,75 a 0,6 y daño recibido de 1,1 a 1 (se perdía contra
+## Kernel Panic y muriendo en la primera forma de NÚCLEO CERO). Ahora sale
+## 15 / 9 / 2. Media no se tocó.
+##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
 
 const DIFICULTADES := {
 	"facil": {
-		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe": 0.65, "vida_jefe_final": 0.5, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
+		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe": 0.65, "vida_jefe_final": 0.42, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
@@ -47,7 +56,7 @@ const DIFICULTADES := {
 		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
-		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe": 0.8, "vida_jefe_final": 0.75, "vida_anclas": 0.7, "dano": 1.1, "huye": 0.0,
+		"nombre": "DIFÍCIL", "vida": 1.0, "vida_jefe": 0.55, "vida_jefe_final": 0.6, "vida_anclas": 0.7, "dano": 1.0, "huye": 0.0,
 		"explicacion": "El malware tiene más vida y hace más daño. La horda sigue cuando llega el jefe.",
 	},
 }
