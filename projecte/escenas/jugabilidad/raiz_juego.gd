@@ -3,6 +3,8 @@ extends Node2D
 const Dificultad := preload("res://globales/dificultad.gd")
 ## Segundos de negro entre la fase 1 y la 2.
 const DURACION_TRANSICION := 3.0
+## La parte de su vida con la que vuelven los caídos al pasar a la fase 2.
+const VIDA_AL_REVIVIR := 0.5
 
 var _eliminados := 0
 var _terminada := false
@@ -80,6 +82,7 @@ func _pasar_a_fase_2() -> void:
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
 	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
 		gestor.vaciar()
+	$Jugador/CambioPersonaje.revivir_caidos(VIDA_AL_REVIVIR)
 	# Emite fase_cambiada: la arena, el audio y el HUD cambian detrás del negro.
 	_director.empezar_fase_2()
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout

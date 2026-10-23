@@ -132,6 +132,17 @@ func revivir_todos() -> void:
 	_salud.poner(_maximas[_indice], _maximas[_indice])
 
 
+## Al pasar a la fase 2 (raiz_juego.gd): el sector se reinicia y los que han
+## caído contra el jefe vuelven con esa parte de su vida. Sin esto se llegaba a
+## la fase 2 con uno o dos personajes y casi siempre se perdía al empezarla.
+func revivir_caidos(fraccion: float) -> void:
+	for i in personajes.size():
+		if _caidos[i]:
+			_caidos[i] = false
+			_vidas[i] = _maximas[i] * fraccion
+	_avisar_equipo()
+
+
 ## Para el menú de desarrollador: cambiar de personaje sin esperar.
 func quitar_espera() -> void:
 	espera = 0.0
