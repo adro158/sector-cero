@@ -9,6 +9,13 @@ extends Control
 ## opciones y avisa de la elegida con mejora_seleccionada.
 
 const TarjetaEvolucion := preload("res://escenas/interfaz/tarjeta_evolucion.gd")
+## Al abrirse, las tarjetas entran una detrás de otra y durante este rato no
+## se puede elegir: en partida se hace click a menudo (la ficha del enemigo, la
+## ulti del Mago) y un click justo al subir elegía una tarjeta sin leerla
+## (mejoras propuestas, interfaz 9).
+const ESPERA_ELEGIR := 0.3
+const ENTRADA := 0.2
+const DESFASE_ENTRADA := 0.06
 
 ## Veces que se ha elegido cada mejora. Lo comparte el HUD para su columna.
 var niveles := {}
@@ -20,6 +27,8 @@ var _ventana: ColorRect
 var _latido: Tween
 ## Los estilos de las tarjetas de evolución de ahora, con el color de cada una.
 var _bordes: Array = []
+## Cuándo se abrió, en milisegundos del reloj real (el panel va en pausa).
+var _abierto_en := 0
 
 
 func _ready() -> void:
@@ -56,7 +65,9 @@ func _crear_tarjeta(indice: int) -> Button:
 	# letras), también con la fuente de Linux, que es más ancha. Con 230x260
 	# se salían por abajo.
 	tarjeta.custom_minimum_size = Vector2(260, 320)
-	tarjeta.pressed.connect(_elegir.bind(indice))
+	# Crece desde el centro al entrar.
+	tarjeta.pivot_offset = tarjeta.custom_minimum_size / 2.0
+	tarjeta.pressed.connect(_pulsar.bind(indice))
 
 	var contenido := VBoxContainer.new()
 	contenido.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 14)
@@ -114,6 +125,15 @@ func _al_subir_nivel(opciones: Array) -> void:
 		_latido.tween_method(_pintar_bordes, 0.6, 0.0, 0.45)
 
 	_ventana.visible = true
+	_abierto_en = Time.get_ticks_msec()
+	# Entran una detrás de otra, creciendo y apareciendo.
+	for i in _tarjetas.size():
+		var tarjeta := _tarjetas[i]
+		tarjeta.scale = Vector2(0.8, 0.8)
+		tarjeta.modulate.a = 0.0
+		var entrada := create_tween().set_parallel()
+		entrada.tween_property(tarjeta, "scale", Vector2.ONE, ENTRADA).set_delay(i * DESFASE_ENTRADA).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		entrada.tween_property(tarjeta, "modulate:a", 1.0, ENTRADA).set_delay(i * DESFASE_ENTRADA)
 	# Con el foco en la primera tarjeta también se puede elegir con el mando.
 	_tarjetas[0].grab_focus()
 
@@ -139,8 +159,16 @@ func _unhandled_input(evento: InputEvent) -> void:
 	if not _ventana.visible or not evento is InputEventKey or not evento.pressed or evento.echo:
 		return
 	if evento.keycode in [KEY_1, KEY_2, KEY_3]:
-		_elegir(evento.keycode - KEY_1)
+		_pulsar(evento.keycode - KEY_1)
 		get_viewport().set_input_as_handled()
+
+
+## Lo que elige el jugador (click, Enter o 1, 2, 3): nada en los primeros
+## ESPERA_ELEGIR segundos.
+func _pulsar(indice: int) -> void:
+	if Time.get_ticks_msec() - _abierto_en < ESPERA_ELEGIR * 1000.0:
+		return
+	_elegir(indice)
 
 
 func _elegir(indice: int) -> void:
