@@ -22,6 +22,7 @@ var _trucos := false
 func _ready() -> void:
 	var aparicion: Node2D = get_tree().get_first_node_in_group("aparicion_jugador")
 	$Jugador.global_position = aparicion.global_position
+	_interpolar_jugador()
 
 	# La vida de los enemigos la multiplica cada uno al aparecer; el daño que
 	# recibe el jugador, su salud.
@@ -40,6 +41,31 @@ func _ready() -> void:
 	BusEventos.juego_pausado.connect(_al_pausar)
 	# El frenazo de los momentos fuertes (tiempo_golpe.gd).
 	add_child(TiempoGolpe.new())
+
+
+## La física va a 60 pasos por segundo: en una pantalla de 144 o 240 Hz, el
+## jugador y la cámara (y con ella todo el mapa) avanzaban a saltos, cada 3 o 4
+## fotogramas y no siempre igual (Adam, 24/10: «se ve como lagueado»). Con la
+## interpolación de física, Godot los dibuja entre un paso y el siguiente.
+## Solo el jugador y sus hijos: lo demás se mueve también fuera de la física
+## (tweens, partículas, la interfaz) o reordena las instancias de sus
+## MultiMesh al quitar una, y así daría tirones o estelas. Se pone por código,
+## y no en project.godot, para que llegue con el .pck.
+func _interpolar_jugador() -> void:
+	# Con la interpolación, la cámara tiene que seguirle en la física (si no,
+	# Godot la cambia él solo y avisa).
+	$Jugador/Camara.process_callback = Camera2D.CAMERA2D_PROCESS_PHYSICS
+	get_tree().physics_interpolation = true
+	get_tree().root.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	$Jugador.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
+	# Recién colocado: que no se deslice desde donde estaba.
+	$Jugador.reset_physics_interpolation()
+
+
+func _exit_tree() -> void:
+	# Fuera de la partida, como antes.
+	get_tree().physics_interpolation = false
+	get_tree().root.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_INHERIT
 
 
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
