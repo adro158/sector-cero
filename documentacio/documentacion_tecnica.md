@@ -388,16 +388,17 @@ actualización pequeña.
 opciones. Están en una tabla (`globales/dificultad.gd`) con seis datos cada
 una (fácil, media y difícil): cuánto se multiplica la vida de la horda y los
 élites (0,65, 0,7 y 1), la de Kernel Panic (0,65, 0,7 y 0,55), la de NÚCLEO
-CERO (0,42, 0,65 y 0,6), la de las anclas de su escudo (0,65, 0,7 y 0,7), el
+CERO (0,42, 0,5 y 0,6), la de las anclas de su escudo (0,65, 0,7 y 0,7), el
 daño que recibe el jugador (0,6, 0,85 y 1) y qué parte de la horda huye al
 llegar el jefe (toda, la mitad y nada). Están ajustadas con el simulador al
-objetivo de Adam: de cada 20 partidas, 15-16 victorias en fácil, 8-10 en
-media y 2 en difícil; medido el 23/10 en el ordenador de casa, salen 15, 9 y
-2. Los jefes van aparte porque contra ellos se pierde de otra forma que
-contra la horda: contra NÚCLEO CERO, por falta de daño (se acaba el tiempo);
-con un solo multiplicador, bajarles la vida ablandaba a la vez toda la
-horda. Por eso en difícil los jefes tienen menos vida que en media: allí se
-llega a ellos con la horda entera y un 20 % más de daño recibido. Cada sistema lee la dificultad en su sitio: los enemigos al
+objetivo de Adam: de cada 100 partidas, 75-80 victorias en fácil, 40-50 en
+media y unas 10 en difícil; medido el 23/10 en el ordenador de casa con 100
+partidas por dificultad, salen 78, 49 y 13. Los jefes van aparte porque
+contra ellos se pierde de otra forma que contra la horda: contra NÚCLEO
+CERO, por falta de daño (se acaba el tiempo); con un solo multiplicador,
+bajarles la vida ablandaba a la vez toda la horda. Por eso en difícil Kernel
+Panic tiene menos vida que en media: allí se llega a él con la horda entera
+y un 20 % más de daño recibido. Cada sistema lee la dificultad en su sitio: los enemigos al
 aparecer, la salud del jugador al empezar la partida (la pone la raíz) y el
 director al llegar el jefe. La ficha del enemigo enseña el daño que hace de
 verdad, y el ranking y la pantalla final, la dificultad de cada partida.

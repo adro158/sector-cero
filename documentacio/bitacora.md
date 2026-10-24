@@ -3887,3 +3887,33 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
   novedades se les añadió el reequilibrado. La Action acabó bien y la
   release trae justo lo decidido: los dos instaladores, los cuatro `.pck` y
   `version.json`, sin el juego suelto. `version.json`: 1.9, mínimo 0.2.
+- **Calibrado con 100 partidas por dificultad** (23/10, en casa; Adam: «hazte
+  muchas partidas para calibrar las dificultades»). Semillas 1-100, en 23
+  copias a la vez (`git worktree`), commit `f4e119b`; unos 20 minutos por
+  cada 100 partidas. Sin errores. El objetivo de Adam, de cada 100: 75-80
+  victorias en fácil, 40-50 en media y unas 10 en difícil.
+
+  | Dificultad | Victorias | Dónde se pierde |
+  |---|---|---|
+  | Fácil | **78/100** ✓ | 15 en la amalgama y 6 en el núcleo armado (20 de las 22, por tiempo contra NÚCLEO CERO); 1 contra Kernel Panic |
+  | Media | **36/100** | 35 en la amalgama, 13 en el núcleo armado y 2 en la primera forma de NÚCLEO CERO (47 por tiempo); 13 contra Kernel Panic; 1 en la fase 2 |
+  | Difícil | **13/100** ✓ | 29 muertos en la primera forma de NÚCLEO CERO, 26 contra Kernel Panic, 14 en la amalgama, 9 en el núcleo armado (15 por tiempo), 8 en la fase 2 y 1 en la fase 1 |
+
+  - **Con 20 partidas el azar pesa mucho:** en bloques de 20 semillas, media
+    sale entre 2 y 9, fácil entre 13 y 19, y difícil entre 1 y 6. El 9/20 de
+    media de antes fue un bloque con suerte. Para calibrar, 100.
+  - **Media, ajustada** (Adam eligió bajar NÚCLEO CERO, donde se pierde):
+    `vida_jefe_final` de 0,65 a 0,58, **39/100** (siguen 45 por tiempo), y a
+    **0,5, 49/100** ✓ (33 en la amalgama, 3 en el núcleo armado y 1 en la
+    primera forma, 35 de ellas por tiempo; 13 contra Kernel Panic; 1 en la
+    fase 2). Bajarle la vida rinde poco porque buena parte de la pelea se va
+    en los escudos y las transformaciones, como ya se vio en la sesión 18.
+  - **Resultado: 78 / 49 / 13 de 100**, las tres en el objetivo. Fácil y
+    difícil no se tocaron (el cambio de media no les afecta). Manual,
+    documentación técnica, estado y el comentario de `dificultad.gd`, al día:
+    en difícil, ahora solo Kernel Panic tiene menos vida que en media.
+  - Adam pidió guardarlo en GitHub y apagar el ordenador al acabar, pero la
+    sesión se paró al terminar la última tanda y no llegó a hacerse; se
+    guardó al volver Adam a casa (24/10). Va en la próxima versión: sus
+    novedades tienen que decir que media es algo más fácil contra NÚCLEO
+    CERO.

@@ -159,7 +159,7 @@ carpeta de datos del juego.
    simulador**: 20 partidas por dificultad, en el mismo ordenador que la
    medida anterior (en la nube y en casa el mismo código da otros números).
    Objetivo de Adam, de cada 20: **15-16 victorias en fácil, 8-10 en media y
-   2 en difícil**. La última medida (23/10, en casa) da 15 / 9 / 2.
+   2 en difícil** (de cada 100: 75-80, 40-50 y unas 10). La última medida, con 100 partidas por dificultad (23/10, en casa), da **78 / 49 / 13**. Con 20, el azar mueve el resultado ±2-3 victorias: para calibrar, 100.
 
 ### Opcional (Adam decide si se hace)
 
