@@ -71,6 +71,7 @@ func _ready() -> void:
 	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
 	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA, true))
 	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA, true))
+	BusEventos.jefe_final_ataco.connect(_al_atacar_jefe_final)
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.personaje_cambiado.connect(func(_actual, arma, _siguiente, _espera): _arma_activa = arma)
 	BusEventos.malware_adaptado.connect(_al_adaptarse_malware)
@@ -160,6 +161,14 @@ func _al_regalar_mejora(mejora: DatosMejora) -> void:
 func _al_adaptarse_malware(arma: DatosArma, resistencia: float) -> void:
 	if arma == _arma_activa:
 		_avisar("EL MALWARE SE ADAPTA A TU %s: %d %% · CAMBIA DE PERSONAJE" % [arma.nombre.to_upper(), roundi(resistencia * 100.0)], EstiloInterfaz.DERROTA)
+
+
+## Al levantarse (o volver a cerrarse) el escudo de NÚCLEO CERO, qué hay que
+## hacer: es lo que más cuesta entender. A quién cambiar lo dice la línea de
+## abajo (panel_equipo.gd).
+func _al_atacar_jefe_final(ataque: String) -> void:
+	if ataque == "escudo":
+		_avisar("ESCUDO: ROMPE CADA ANCLA CON SU PERSONAJE", EstiloInterfaz.NEON, true)
 
 
 ## Matar un élite deja en el suelo un corazón y un cofre: se avisa para que se

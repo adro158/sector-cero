@@ -20,6 +20,8 @@ var _linea: Label
 var _panel: PanelContainer
 var _fichas: Array = []
 var _resistencia: Node
+## Con el escudo de NÚCLEO CERO puesto, los personajes con anclas sin romper.
+var _anclas: Array = []
 
 
 func _ready() -> void:
@@ -31,8 +33,8 @@ func _ready() -> void:
 
 	_linea = EstiloInterfaz.etiqueta("", 16)
 	_linea.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_linea.offset_left = -400.0
-	_linea.offset_right = 400.0
+	_linea.offset_left = -620.0
+	_linea.offset_right = 620.0
 	_linea.offset_top = -44.0
 	_linea.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_linea)
@@ -69,6 +71,7 @@ func _ready() -> void:
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
 	BusEventos.ulti_cambiada.connect(func(cargas, _activo): _ultis = cargas)
 	BusEventos.personaje_cambiado.connect(func(_actual, _arma, _siguiente, espera): _espera = espera)
+	BusEventos.anclas_pendientes.connect(func(personajes): _anclas = personajes)
 
 
 ## Una ficha: nombre y estado, barra de vida y una línea de datos.
@@ -123,6 +126,13 @@ func _escribir_linea() -> void:
 		cambio = "cambio en %d s" % ceili(_espera)
 	else:
 		cambio = "[Q] %s  ·  %s [E]" % [_nombre(anterior), _nombre(siguiente)]
+	# Con el escudo de NÚCLEO CERO, de quién son las anclas que quedan: así se
+	# sabe a quién cambiar sin fiarse solo del color.
+	if not _anclas.is_empty():
+		var nombres := PackedStringArray()
+		for personaje in _anclas:
+			nombres.append(personaje.nombre.to_upper())
+		cambio = "ANCLAS: %s   %s" % [", ".join(nombres), cambio]
 	var ulti := "      [R] ¡ULTI!" if _ulti(_activo) >= 1.0 else ""
 	# Lo que resiste el malware a su herramienta, en cuanto pasa de cero: es lo
 	# que dice cuándo conviene cambiar.
@@ -130,7 +140,9 @@ func _escribir_linea() -> void:
 	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(actual.arma)
 	if resistencia > 0.0:
 		resiste = " (resiste %d %%)" % roundi(resistencia * 100.0)
-	_linea.text = "%s · %s%s      %s%s      [C] equipo" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, resiste, cambio, ulti]
+	# Con el escudo, sin «[C] equipo»: si no, no cabe.
+	var equipo := "" if not _anclas.is_empty() else "      [C] equipo"
+	_linea.text = "%s · %s%s      %s%s%s" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, resiste, cambio, ulti, equipo]
 	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
 

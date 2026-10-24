@@ -79,6 +79,10 @@ signal jefe_final_forma_cambiada(forma: int)
 ## El jefe final empieza un ataque: "rayo", "torbellino", "tormenta",
 ## "invocar", "hielo" o "escudo". Para el sonido.
 signal jefe_final_ataco(ataque: String)
+## Con el escudo del jefe final puesto, los personajes (DatosPersonaje) que
+## tienen anclas sin romper; vacío al quitarse. Llega cuando cambia, para que el
+## HUD diga a quién hay que cambiar.
+signal anclas_pendientes(personajes: Array)
 ## Al caer los tres personajes o al derrotar al jefe final. Claves de
 ## estadisticas: victoria (bool), tiempo (float, en segundos), nivel (int),
 ## eliminados (int), personaje (String), trucos (bool) y dificultad (String).

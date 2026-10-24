@@ -48,6 +48,8 @@ var _rotas := 0
 var _desde_ultima_rota := 0.0
 ## Las claves de los personajes que no han caído, como en Ancla.PERSONAJES.
 var _vivos: Array = Ancla.PERSONAJES.keys()
+## Lo último que se avisó con anclas_pendientes, para avisar solo al cambiar.
+var _pendientes: Array = []
 
 @onready var _anclas: Array[Node] = get_children()
 ## El equipo del jugador: con el escudo puesto se cambia de personaje sin
@@ -87,7 +89,22 @@ func quitar() -> void:
 	_rotura = 0.0
 	for ancla in _anclas:
 		ancla.ocultar()
+	_avisar_pendientes()
 	queue_redraw()
+
+
+## Los personajes con anclas sin romper (ninguno sin escudo), al bus si han
+## cambiado.
+func _avisar_pendientes() -> void:
+	var pendientes: Array = []
+	if _activo:
+		for ancla in _anclas:
+			var personaje: DatosPersonaje = Ancla.PERSONAJES[ancla.herramienta]
+			if not ancla.rota() and not personaje in pendientes:
+				pendientes.append(personaje)
+	if pendientes != _pendientes:
+		_pendientes = pendientes
+		BusEventos.anclas_pendientes.emit(pendientes)
 
 
 func _physics_process(delta: float) -> void:
@@ -121,6 +138,7 @@ func _physics_process(delta: float) -> void:
 			# Suena como al levantar el escudo.
 			BusEventos.jefe_final_ataco.emit("escudo")
 	_rotas = rotas
+	_avisar_pendientes()
 
 
 ## Si cae un personaje con el escudo puesto, sus anclas pasan a otro: si no,
