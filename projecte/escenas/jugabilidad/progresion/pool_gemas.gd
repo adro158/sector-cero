@@ -2,9 +2,21 @@ extends Node2D
 
 const MAXIMO_GEMAS := 800
 
-## Sprite del fragmento de datos, en grises: cada gema lo tiñe según lo que vale.
-@export var textura: Texture2D
-@export var tamano: float = 12.0
+const TiraFotogramas := preload("res://escenas/jugabilidad/efectos/tira_fotogramas.gd")
+## El fragmento de datos, en grises (cada gema lo tiñe según lo que vale): 4
+## fotogramas de 12x12 en los que un brillo recorre el cristal. Todas las gemas
+## van en el mismo fotograma: se cambia la textura del MultiMesh.
+const FRAGMENTO := preload("res://medios/sprites/efectos/fragmento_datos_anim.png")
+const FOTOGRAMAS := 4
+const SEGUNDOS_POR_FOTOGRAMA := 0.12
+## El destello al recogerlo, del color del fragmento: 4 fotogramas de 24x24.
+const RECOGIDA := preload("res://medios/sprites/efectos/fragmento_recogida.png")
+const FOTOGRAMAS_RECOGIDA := 4
+const SEGUNDOS_POR_FOTOGRAMA_RECOGIDA := 0.06
+## Si se recogen más a la vez, los destellos nuevos no se dibujan: son
+## decoración.
+const MAXIMO_RECOGIDAS := 40
+
 @export var radio_iman: float = 100.0
 @export var radio_recogida: float = 18.0
 @export var velocidad_iman: float = 420.0
@@ -34,6 +46,11 @@ var _restantes := PackedFloat32Array()
 var _vivas := 0
 var _experiencia_por_tipo := {}
 var _jugador: Node2D
+var _fotogramas: Array[Texture2D] = []
+## Segundos que lleva la animación.
+var _tiempo := 0.0
+## Cada destello: [posición, color, segundos desde que se recogió].
+var _recogidas: Array = []
 
 @onready var _gemas: MultiMeshInstance2D = $Gemas
 
@@ -43,6 +60,7 @@ func _ready() -> void:
 	_posiciones.resize(MAXIMO_GEMAS)
 	_valores.resize(MAXIMO_GEMAS)
 	_restantes.resize(MAXIMO_GEMAS)
+	_fotogramas = TiraFotogramas.cortar(FRAGMENTO, FOTOGRAMAS)
 	_preparar_multimesh()
 
 	# Cada gestor de la horda y cada élite trae sus datos, con la experiencia
@@ -55,7 +73,7 @@ func _ready() -> void:
 
 func _preparar_multimesh() -> void:
 	var malla := QuadMesh.new()
-	malla.size = Vector2(tamano, tamano)
+	malla.size = _fotogramas[0].get_size()
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
@@ -67,7 +85,7 @@ func _preparar_multimesh() -> void:
 	multimesh.visible_instance_count = 0
 
 	_gemas.multimesh = multimesh
-	_gemas.texture = textura
+	_gemas.texture = _fotogramas[0]
 	_gemas.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
@@ -93,6 +111,8 @@ func _physics_process(delta: float) -> void:
 
 		if distancia < radio_recogida:
 			BusEventos.experiencia_ganada.emit(_valores[i])
+			if _recogidas.size() < MAXIMO_RECOGIDAS:
+				_recogidas.append([_posiciones[i], _color(_valores[i]), 0.0])
 			_eliminar(i)
 		elif distancia < radio_iman:
 			# Si ya vuela hacia el jugador no caduca: perderla en el último
@@ -129,6 +149,27 @@ func _volcar_al_multimesh() -> void:
 		multimesh.set_instance_color(i, color)
 
 	multimesh.visible_instance_count = _vivas
+
+
+## Con el juego en pausa no se llama: los fragmentos y los destellos se quedan
+## quietos.
+func _process(delta: float) -> void:
+	_tiempo += delta
+	_gemas.texture = _fotogramas[int(_tiempo / SEGUNDOS_POR_FOTOGRAMA) % FOTOGRAMAS]
+
+	if _recogidas.is_empty():
+		return
+	for recogida in _recogidas:
+		recogida[2] += delta
+	var dura := FOTOGRAMAS_RECOGIDA * SEGUNDOS_POR_FOTOGRAMA_RECOGIDA
+	_recogidas = _recogidas.filter(func(recogida): return recogida[2] < dura)
+	queue_redraw()
+
+
+func _draw() -> void:
+	for recogida in _recogidas:
+		var fotograma := int(recogida[2] / SEGUNDOS_POR_FOTOGRAMA_RECOGIDA)
+		draw_texture_rect_region(RECOGIDA, Rect2(recogida[0] - Vector2(12.0, 12.0), Vector2(24.0, 24.0)), Rect2(fotograma * 24.0, 0.0, 24.0, 24.0), recogida[1])
 
 
 func _color(valor: int) -> Color:

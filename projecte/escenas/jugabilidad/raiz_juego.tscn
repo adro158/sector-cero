@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://escenas/jugabilidad/raiz_juego.gd" id="1_raiz"]
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/jugador/jugador.tscn" id="2_jugador"]
@@ -20,8 +20,6 @@
 [ext_resource type="PackedScene" path="res://escenas/jugabilidad/enemigos/enemigo_elite.tscn" id="20_elite"]
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/ransomware.tres" id="21_ransomware"]
 [ext_resource type="Resource" path="res://recursos/enemigos/datos/troyano.tres" id="22_troyano"]
-[ext_resource type="Texture2D" path="res://medios/sprites/fragmento_datos.png" id="23_fragmento"]
-[ext_resource type="Texture2D" path="res://medios/sprites/proyectil_ping.png" id="24_proyectil"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/progresion/premios_elite.gd" id="25_premios"]
 [ext_resource type="Script" path="res://escenas/jugabilidad/depuracion/panel_trucos.gd" id="26_trucos"]
 [ext_resource type="Script" uid="uid://dquayuisw5av5" path="res://escenas/jugabilidad/efectos/explosiones_elite.gd" id="27_explosiones"]
@@ -81,8 +79,8 @@ datos = ExtResource("21_ransomware")
 [node name="Horda" type="MultiMeshInstance2D" parent="Ransomware"]
 
 [node name="PoolGemas" type="Node2D" parent="." groups=["pool_gemas"]]
+texture_filter = 1
 script = ExtResource("5_gemas")
-textura = ExtResource("23_fragmento")
 
 [node name="Gemas" type="MultiMeshInstance2D" parent="PoolGemas"]
 
@@ -113,9 +111,10 @@ script = ExtResource("25_premios")
 [node name="PoolProyectiles" type="Node2D" parent="." groups=["pool_proyectiles"]]
 texture_filter = 1
 script = ExtResource("14_proyectiles")
-textura = ExtResource("24_proyectil")
 
 [node name="Proyectiles" type="MultiMeshInstance2D" parent="PoolProyectiles"]
+
+[node name="ProyectilesInundacion" type="MultiMeshInstance2D" parent="PoolProyectiles"]
 
 [node name="MuertesHorda" type="Node2D" parent="."]
 z_index = 4

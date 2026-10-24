@@ -13,9 +13,16 @@ const LADO_IMPACTO := 24.0
 const FOTOGRAMAS_IMPACTO := 4
 const SEGUNDOS_POR_FOTOGRAMA_IMPACTO := 0.05
 
-## Sprite del proyectil, apuntando a la derecha: se gira hacia donde va.
-@export var textura: Texture2D
-@export var tamano: Vector2 = Vector2(24, 12)
+const TiraFotogramas := preload("res://escenas/jugabilidad/efectos/tira_fotogramas.gd")
+## Los proyectiles, apuntando a la derecha (se giran hacia donde van): 4
+## fotogramas que se repiten. El Ping de inundación (la evolución) tiene el suyo,
+## más grande, y va en su propio MultiMesh: cada MultiMesh tiene una textura.
+const PING := preload("res://medios/sprites/herramientas/proyectil_ping_anim.png")
+const PING_INUNDACION := preload("res://medios/sprites/herramientas/proyectil_ping_inundacion.png")
+const INUNDACION := preload("res://recursos/armas/datos/ping_inundacion.tres")
+const FOTOGRAMAS := 4
+const SEGUNDOS_POR_FOTOGRAMA := 0.06
+
 @export var radio_busqueda_rebote: float = 320.0
 
 var _posiciones := PackedVector2Array()
@@ -33,8 +40,14 @@ var _objetivos: Array = []
 var _resistencia_malware: Node
 ## Cada destello: [posición, segundos desde el impacto].
 var _impactos: Array = []
+## Los fotogramas de cada sprite, cortados al empezar, y los segundos que lleva
+## la animación.
+var _fotogramas: Array[Texture2D] = []
+var _fotogramas_inundacion: Array[Texture2D] = []
+var _tiempo := 0.0
 
 @onready var _malla: MultiMeshInstance2D = $Proyectiles
+@onready var _malla_inundacion: MultiMeshInstance2D = $ProyectilesInundacion
 
 
 func _ready() -> void:
@@ -53,12 +66,15 @@ func _ready() -> void:
 
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 
-	_preparar_multimesh()
+	_fotogramas = TiraFotogramas.cortar(PING, FOTOGRAMAS)
+	_fotogramas_inundacion = TiraFotogramas.cortar(PING_INUNDACION, FOTOGRAMAS)
+	_preparar_multimesh(_malla, _fotogramas[0])
+	_preparar_multimesh(_malla_inundacion, _fotogramas_inundacion[0])
 
 
-func _preparar_multimesh() -> void:
+func _preparar_multimesh(malla: MultiMeshInstance2D, textura: Texture2D) -> void:
 	var quad := QuadMesh.new()
-	quad.size = tamano
+	quad.size = textura.get_size()
 
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_2D
@@ -66,9 +82,9 @@ func _preparar_multimesh() -> void:
 	multimesh.instance_count = MAXIMO_PROYECTILES
 	multimesh.visible_instance_count = 0
 
-	_malla.multimesh = multimesh
-	_malla.texture = textura
-	_malla.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	malla.multimesh = multimesh
+	malla.texture = textura
+	malla.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float) -> void:
@@ -171,18 +187,36 @@ func _eliminar(indice: int) -> void:
 
 
 func _volcar_al_multimesh() -> void:
-	var multimesh := _malla.multimesh
+	var normales := _malla.multimesh
+	var inundacion := _malla_inundacion.multimesh
+	var cuantos_normales := 0
+	var cuantos_inundacion := 0
 
 	# Girado hacia donde va; al rebotar cambia la dirección y el giro la sigue.
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
+	# Cada uno, en el MultiMesh de su sprite.
 	for i in _activos:
-		multimesh.set_instance_transform_2d(i, Transform2D(_direcciones[i].angle(), Vector2(1.0, -1.0), 0.0, _posiciones[i]))
+		var transformada := Transform2D(_direcciones[i].angle(), Vector2(1.0, -1.0), 0.0, _posiciones[i])
+		if _armas[i] == INUNDACION:
+			inundacion.set_instance_transform_2d(cuantos_inundacion, transformada)
+			cuantos_inundacion += 1
+		else:
+			normales.set_instance_transform_2d(cuantos_normales, transformada)
+			cuantos_normales += 1
 
-	multimesh.visible_instance_count = _activos
+	normales.visible_instance_count = cuantos_normales
+	inundacion.visible_instance_count = cuantos_inundacion
 
 
-## Con el juego en pausa no se llama: los destellos se quedan quietos.
+## Con el juego en pausa no se llama: los proyectiles y los destellos se
+## quedan quietos.
 func _process(delta: float) -> void:
+	# Todos los proyectiles van en el mismo fotograma: se cambia la textura.
+	_tiempo += delta
+	var fotograma := int(_tiempo / SEGUNDOS_POR_FOTOGRAMA) % FOTOGRAMAS
+	_malla.texture = _fotogramas[fotograma]
+	_malla_inundacion.texture = _fotogramas_inundacion[fotograma]
+
 	if _impactos.is_empty():
 		return
 	for impacto in _impactos:
