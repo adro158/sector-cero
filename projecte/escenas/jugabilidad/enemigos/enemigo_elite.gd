@@ -3,9 +3,10 @@ extends Node2D
 ## Enemigo élite: más grande y resistente que la horda, con uno o dos afijos
 ## sorteados al aparecer (blindado, replicante, aura lenta o explosivo). Cada
 ## afijo se ve con su efecto, de su color (dibujo_elite.gd): las placas del
-## Blindado encima del rootkit, y las copias del Replicante y el anillo helado
-## del Aura lenta detrás. El Explosivo, que no tiene efecto hasta que muere,
-## se ve como un anillo. Los nombres de los afijos van escritos encima.
+## Blindado encima del rootkit, y las copias del Replicante, el anillo helado
+## del Aura lenta y la mecha del Explosivo detrás. Los nombres de los afijos
+## van escritos encima. Al morir se parte en trozos en su sitio, salvo el
+## Explosivo, que avisa y estalla.
 ##
 ## Como el jefe, es un nodo y no una posición en un MultiMesh: hay muy pocos a
 ## la vez y cada uno se comporta distinto. Hay unos cuantos en la escena desde
@@ -30,6 +31,8 @@ var _activo := false
 var _afijos: Array[DatosAfijoElite] = []
 ## Tiempo que falta para explotar; cero si no está a punto de hacerlo.
 var _cuenta_atras := 0.0
+## Tiempo que le queda a su muerte; cero si no está muriendo.
+var _muerte := 0.0
 ## Nivel del jugador: como la horda, aparece con más vida cuanto más alto.
 var _nivel := 1
 var _segundos := 0.0
@@ -61,7 +64,7 @@ func _ready() -> void:
 
 
 func activo() -> bool:
-	return _activo or _cuenta_atras > 0.0
+	return _activo or _cuenta_atras > 0.0 or _muerte > 0.0
 
 
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
@@ -132,6 +135,14 @@ func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
 
 ## Con el juego en pausa no se llama: la animación se queda quieta.
 func _process(delta: float) -> void:
+	if _muerte > 0.0:
+		_muerte -= delta
+		queue_redraw()
+		if _muerte <= 0.0:
+			_sprite.visible = true
+			visible = false
+			z_index = 0
+		return
 	if not _activo:
 		return
 	_tiempo += delta
@@ -188,11 +199,14 @@ func _al_morir() -> void:
 		gestor.aparecer(global_position + Vector2.RIGHT.rotated(TAU * i / copias) * 40.0)
 
 	# El explosivo no desaparece aún: avisa con un anillo y luego estalla.
+	# Los demás se parten en trozos en su sitio y luego desaparecen. Mientras,
+	# encima de la horda, como la explosión.
+	_sprite.visible = false
 	if _valor(DatosAfijoElite.Efecto.EXPLOSIVO) > 0.0:
 		_cuenta_atras = AVISO_EXPLOSION
-		_sprite.visible = false
 	else:
-		visible = false
+		_muerte = Dibujo.DURA_MUERTE
+		z_index = 4
 
 
 func _explotar() -> void:
@@ -207,14 +221,16 @@ func _draw() -> void:
 	if _cuenta_atras > 0.0:
 		Dibujo.aviso_explosion(self, _cuenta_atras, AVISO_EXPLOSION, RADIO_EXPLOSION)
 		return
+	if _muerte > 0.0:
+		Dibujo.muerte(self, Dibujo.DURA_MUERTE - _muerte)
+		return
 	if not _activo:
 		return
 
 	# Detrás del rootkit: este _draw va antes que el Sprite, que es su hijo.
-	var radio := datos.tamano * 0.5
-	Dibujo.afijos_detras(self, _afijos, _tiempo, radio)
+	Dibujo.afijos_detras(self, _afijos, _tiempo)
 
-	var arriba := Vector2(0.0, -radio - 20.0)
+	var arriba := Vector2(0.0, -datos.tamano * 0.5 - 20.0)
 	BarraVida.dibujar(self, arriba, 70.0, 7.0, _salud.vida() / _salud.vida_maxima, datos.color)
 	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
 	draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
