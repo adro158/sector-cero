@@ -21,6 +21,8 @@ const OPCIONES_POR_DEFECTO := {
 	# (controlador_jugador.gd, sacudir) se pueden quitar.
 	"sacudir_camara": true,
 	"vibracion": true,
+	# Los consejos de las primeras partidas (escenas/interfaz/consejos.gd).
+	"consejos": true,
 	# Si sale el aviso de versión nueva (aviso_actualizacion.gd). Con él apagado
 	# se puede seguir jugando una versión anterior sin que insista.
 	"avisar_versiones": true,

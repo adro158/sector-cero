@@ -18,6 +18,7 @@ const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
 const BarraJefe := preload("res://escenas/interfaz/barra_jefe.gd")
 const AvisosHud := preload("res://escenas/interfaz/avisos_hud.gd")
+const Consejos := preload("res://escenas/interfaz/consejos.gd")
 
 var niveles_mejora := {}
 
@@ -54,6 +55,8 @@ func _ready() -> void:
 	# Los avisos grandes de arriba, en cola (avisos_hud.gd).
 	_avisos = AvisosHud.new()
 	add_child(_avisos)
+	# Los consejos de las primeras partidas, abajo (consejos.gd).
+	add_child(Consejos.new())
 	for i in get_child_count() - de_la_escena:
 		move_child(get_child(de_la_escena + i), i)
 
