@@ -17,6 +17,7 @@ const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
 const BarraJefe := preload("res://escenas/interfaz/barra_jefe.gd")
+const AvisosHud := preload("res://escenas/interfaz/avisos_hud.gd")
 
 var niveles_mejora := {}
 
@@ -31,8 +32,7 @@ var _evoluciones := 0
 ## La herramienta del personaje que se lleva: el aviso de la adaptación del
 ## malware solo sale si es contra ella.
 var _arma_activa: DatosArma
-var _aviso: Label
-var _efecto_aviso: Tween
+var _avisos: Label
 
 
 func _ready() -> void:
@@ -47,15 +47,9 @@ func _ready() -> void:
 	_columna.add_theme_constant_override("separation", 6)
 	add_child(_columna)
 
-	_aviso = EstiloInterfaz.etiqueta("", 26)
-	_aviso.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	_aviso.offset_left = -400.0
-	_aviso.offset_right = 400.0
-	# Debajo de las barras de los jefes, que van de 62 a 102.
-	_aviso.offset_top = 108.0
-	_aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_aviso.modulate.a = 0.0
-	add_child(_aviso)
+	# Los avisos grandes de arriba, en cola (avisos_hud.gd).
+	_avisos = AvisosHud.new()
+	add_child(_avisos)
 
 	# Los primeros hijos: así quedan por debajo de la pausa y las mejoras.
 	for panel in [PanelEquipo.new(), FichaEnemigo.new()]:
@@ -72,11 +66,11 @@ func _ready() -> void:
 	add_child(caida)
 	move_child(caida, ruleta.get_index() + 1)
 	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
-	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE: KERNEL PANIC!", EstiloInterfaz.DERROTA))
-	BusEventos.jefe_furia_cambiada.connect(func(furia): _avisar(["", "¡KERNEL PANIC SE ENFURECE!", "¡KERNEL PANIC ARDE DE FURIA!"][furia], EstiloInterfaz.DERROTA))
+	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE: KERNEL PANIC!", EstiloInterfaz.DERROTA, true))
+	BusEventos.jefe_furia_cambiada.connect(func(furia): _avisar(["", "¡KERNEL PANIC SE ENFURECE!", "¡KERNEL PANIC ARDE DE FURIA!"][furia], EstiloInterfaz.DERROTA, true))
 	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
-	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA))
-	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA))
+	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA, true))
+	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA, true))
 	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
 	BusEventos.personaje_cambiado.connect(func(_actual, arma, _siguiente, _espera): _arma_activa = arma)
 	BusEventos.malware_adaptado.connect(_al_adaptarse_malware)
@@ -138,7 +132,7 @@ func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
 func _al_cambiar_fase(fase: int) -> void:
 	_fase = fase
 	_etiqueta_jefe.remove_theme_color_override("font_color")
-	_avisar("¡FASE 2! EL SECTOR ESTÁ DAÑADO", EstiloInterfaz.DERROTA)
+	_avisar("¡FASE 2! EL SECTOR ESTÁ DAÑADO", EstiloInterfaz.DERROTA, true)
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
@@ -175,17 +169,10 @@ func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 		_avisar("ÉLITE ELIMINADO: RECOGE EL CORAZÓN Y EL COFRE", EstiloInterfaz.VICTORIA)
 
 
-## Mensaje grande arriba en el centro que se desvanece a los pocos segundos.
-func _avisar(texto: String, color: Color) -> void:
-	_aviso.text = texto
-	_aviso.add_theme_color_override("font_color", color)
-	# Un aviso nuevo sustituye al anterior aunque no se haya apagado.
-	if _efecto_aviso != null:
-		_efecto_aviso.kill()
-	_aviso.modulate.a = 1.0
-	_efecto_aviso = create_tween()
-	_efecto_aviso.tween_interval(2.0)
-	_efecto_aviso.tween_property(_aviso, "modulate:a", 0.0, 1.0)
+## Mensaje grande arriba en el centro, en la cola de avisos_hud.gd. Los urgentes
+## (jefes, furias, fase 2) pasan delante.
+func _avisar(texto: String, color: Color, urgente := false) -> void:
+	_avisos.avisar(texto, color, urgente)
 
 
 static func _formato(segundos: float) -> String:
