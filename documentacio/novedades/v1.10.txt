@@ -1,0 +1,8 @@
+- El Espadachín da el tajo hacia el malware más cercano, aunque vayas en otra dirección: ya no hace falta encararlo.
+- Efectos nuevos: el personaje se deshace al caer y al perder, se ve el golpe al recibir daño, el escudo al entrar tras una caída y la evolución de la herramienta. Los élites se parten en trozos al morir, el Explosivo lleva una mecha encendida y Kernel Panic dibuja un círculo de runas al invocar.
+- Barras de vida nuevas; con la ulti llena parpadea un rayo a su lado (vale también con mando). El Ping y los fragmentos de datos están animados, y los fragmentos destellan al recogerlos. La mira del rayo del Mago tiene flechas y diana.
+- Más sensación de golpe: un instante de frenazo en los momentos fuertes, la cámara tiembla según el golpe, la música se amortigua en pausa y los números de daño son más grandes y legibles.
+- Los avisos salen en cola sin taparse, el escudo de NÚCLEO CERO explica qué anclas faltan, la pausa tiene REGLAS y pregunta antes de abandonar, y en las tres primeras partidas salen consejos.
+- La pantalla final dice dónde caíste y cuánto daño hizo cada personaje.
+- Mando completo (LB, RB, cruceta y Select para ver el equipo) con vibración. Opciones nuevas: quitar la sacudida de la cámara y la vibración, los consejos y el texto grande.
+- En media, NÚCLEO CERO tiene menos vida: de cada 10 partidas se ganan unas 4-5.
