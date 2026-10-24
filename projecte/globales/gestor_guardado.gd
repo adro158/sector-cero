@@ -17,6 +17,10 @@ const OPCIONES_POR_DEFECTO := {
 	"volumen_efectos": 0.8,
 	"pantalla_completa": false,
 	"crt": true,
+	# Accesibilidad: la sacudida de la cámara y la vibración del mando
+	# (controlador_jugador.gd, sacudir) se pueden quitar.
+	"sacudir_camara": true,
+	"vibracion": true,
 	# Si sale el aviso de versión nueva (aviso_actualizacion.gd). Con él apagado
 	# se puede seguir jugando una versión anterior sin que insista.
 	"avisar_versiones": true,

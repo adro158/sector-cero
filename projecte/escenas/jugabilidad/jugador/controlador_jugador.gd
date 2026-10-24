@@ -7,7 +7,6 @@ extends CharacterBody2D
 @export_group("Respuesta al recibir daño")
 @export var color_golpe: Color = Color(1.0, 0.25, 0.25, 1.0)
 @export var duracion_golpe: float = 0.3
-@export var sacudida_camara: float = 6.0
 
 @export_group("Animación")
 ## Las hojas de los personajes están hechas para 130 ms por fotograma.
@@ -22,6 +21,10 @@ const FOTOGRAMAS_ANDAR := 6
 ## La de atacar, las mismas filas y 4 columnas. Sale un momento encima de la
 ## de andar cada vez que el arma ataca (arma_disparada).
 const FOTOGRAMAS_ATAQUE := 4
+## La sacudida de la cámara: los píxeles que se mueve como mucho y lo que se
+## apaga por segundo. Un golpe de fuerza 6 mueve la cámara 6 px y dura 0,25 s.
+const SACUDIDA_MAXIMA := 16.0
+const APAGADO_SACUDIDA := 1.5
 
 ## Hacia donde mira, de largo 1: hacia donde se mueve o, quieto, hacia donde
 ## iba. Es hacia donde ataca el Espadachín (gestor_armas.gd).
@@ -38,11 +41,22 @@ var _fila := 0
 var _tiempo_andando := 0.0
 var _lentitud := 0.0
 var _tiempo_lento := 0.0
+## Cuánto tiembla la cámara, de 0 a 1: sube con cada golpe y se apaga sola.
+var _trauma := 0.0
+## Un azar propio para el temblor, con semilla fija: el de la partida decide la
+## horda y los premios, y si el temblor lo gastara, el simulador ya no
+## repetiría las mismas partidas.
+var _azar_camara := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	_azar_camara.seed = 7
 	$Salud.danado.connect(_al_recibir_dano)
 	$GestorArmas.arma_disparada.connect(func(_indice): _tiempo_ataque = 0.0)
+	# Otros momentos fuertes que también mueven la cámara.
+	BusEventos.ulti_lanzada.connect(func(_personaje): sacudir(5.0))
+	BusEventos.elite_exploto.connect(func(_posicion): sacudir(8.0))
+	BusEventos.jefe_final_aparecio.connect(func(): sacudir(10.0))
 
 
 ## Las hojas de andar y de atacar del personaje que entra.
@@ -54,32 +68,39 @@ func poner_hojas(andar: Texture2D, ataque: Texture2D, segundos: float) -> void:
 	_poner_hoja(andar, FOTOGRAMAS_ANDAR)
 
 
-func _al_recibir_dano(_cantidad: float) -> void:
-	# El jugador se tiñe de rojo y la cámara da un tirón, y los dos vuelven a
-	# su estado normal a la vez. Si llega otro golpe antes de acabar, se corta
-	# el efecto anterior para que no compitan dos animaciones por lo mismo.
+func _al_recibir_dano(cantidad: float) -> void:
+	# El jugador se tiñe de rojo y vuelve a su color. Si llega otro golpe antes
+	# de acabar, se corta el efecto anterior para que no compitan dos tweens.
 	if _efecto_golpe != null:
 		_efecto_golpe.kill()
-
 	$Sprite.modulate = color_golpe
-	$Camara.offset = Vector2.RIGHT.rotated(randf() * TAU) * sacudida_camara
-
-	_efecto_golpe = create_tween().set_parallel()
-	_efecto_golpe.tween_property($Sprite, "modulate", Color.WHITE, duracion_golpe)
-	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
-
-
-## Un tirón de cámara sin teñir al jugador, para los golpes fuertes del jefe
-## (espectaculo_jefe.gd). Usa el mismo tween que el golpe para no pelearse
-## con él por la cámara. Hacia abajo siempre: randf() gastaría números del
-## azar de la partida y el simulador ya no repetiría las mismas partidas.
-func sacudir(fuerza: float) -> void:
-	if _efecto_golpe != null:
-		_efecto_golpe.kill()
-	$Sprite.modulate = Color.WHITE
-	$Camara.offset = Vector2.DOWN * fuerza
 	_efecto_golpe = create_tween()
-	_efecto_golpe.tween_property($Camara, "offset", Vector2.ZERO, duracion_golpe)
+	_efecto_golpe.tween_property($Sprite, "modulate", Color.WHITE, duracion_golpe)
+	# La cámara, según lo fuerte que sea el golpe.
+	sacudir(clampf(cantidad / 5.0, 3.0, 12.0))
+
+
+## La única forma de mover la cámara, para que dos temblores no se peleen por
+## ella: lo usan el golpe al jugador, Kernel Panic (espectaculo_jefe.gd),
+## NÚCLEO CERO, las ultis y la explosión de los élites. La fuerza son los
+## píxeles que se mueve al empezar. Con mando, además, vibra. Las dos cosas se
+## pueden quitar en Opciones.
+func sacudir(fuerza: float) -> void:
+	if GestorGuardado.opcion("sacudir_camara"):
+		_trauma = minf(_trauma + fuerza / SACUDIDA_MAXIMA, 1.0)
+	if GestorGuardado.opcion("vibracion"):
+		var parte := clampf(fuerza / 12.0, 0.0, 1.0)
+		for mando in Input.get_connected_joypads():
+			Input.start_joy_vibration(mando, 0.3 * parte, 0.7 * parte, 0.1 + 0.2 * parte)
+
+
+## Con el juego en pausa no se llama: el temblor se queda donde esté.
+func _process(delta: float) -> void:
+	if _trauma <= 0.0:
+		return
+	_trauma = maxf(_trauma - APAGADO_SACUDIDA * delta, 0.0)
+	var salto := Vector2(_azar_camara.randf_range(-1.0, 1.0), _azar_camara.randf_range(-1.0, 1.0))
+	$Camara.offset = salto * _trauma * SACUDIDA_MAXIMA
 
 
 ## Lo llama el aura de un élite en cada fotograma que el jugador está dentro:

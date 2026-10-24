@@ -1,8 +1,8 @@
 class_name PanelOpciones
 extends Control
 
-## Ventana de opciones: volumen de la música y de los efectos, pantalla completa
-## y filtro CRT. La usan el menú principal y el menú de pausa. Cada cambio se
+## Ventana de opciones: volumen de la música y de los efectos, pantalla completa,
+## filtro CRT, la sacudida de la cámara y la vibración del mando. La usan el menú principal y el menú de pausa. Cada cambio se
 ## guarda en el momento a través de GestorGuardado, que también lo aplica.
 
 signal cerrado
@@ -33,6 +33,8 @@ func _ready() -> void:
 	_deslizador(rejilla, "Efectos", "volumen_efectos")
 	_casilla(rejilla, "Pantalla completa", "pantalla_completa")
 	_casilla(rejilla, "Filtro CRT", "crt")
+	_casilla(rejilla, "Sacudir la cámara", "sacudir_camara")
+	_casilla(rejilla, "Vibración del mando", "vibracion")
 	# Desde el lanzador y en la web el juego no busca versiones: la casilla no
 	# haría nada.
 	if not "--desde-lanzador" in OS.get_cmdline_user_args() and not OS.has_feature("web"):

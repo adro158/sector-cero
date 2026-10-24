@@ -274,15 +274,10 @@ func _animar() -> void:
 	_sprite.position.y = sin(_segundos * 2.0) * 4.0
 
 
-## La cámara da unos tirones. Siempre los mismos: así no gasta números del
-## azar de la partida.
+## La cámara tiembla con la sacudida del jugador, la única que la mueve: si
+## tuviera la suya, se pelearían por ella.
 func _temblar() -> void:
-	var camara := get_viewport().get_camera_2d()
-	if camara == null:
-		return
-	var temblor := create_tween()
-	for desplazamiento in [Vector2(10, -6), Vector2(-8, 7), Vector2(7, 5), Vector2(-6, -8), Vector2(3, 4), Vector2.ZERO]:
-		temblor.tween_property(camara, "offset", desplazamiento, 0.05)
+	_jugador.sacudir(12.0)
 
 
 func _draw() -> void:
