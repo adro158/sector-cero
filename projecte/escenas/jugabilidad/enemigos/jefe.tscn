@@ -20,6 +20,7 @@ hframes = 4
 
 [node name="Sprite" type="Sprite2D" parent="."]
 script = ExtResource("4_destello")
+intensidad = 0.6
 texture_filter = 1
 texture = ExtResource("2_dibujo")
 offset = Vector2(0, -42)
