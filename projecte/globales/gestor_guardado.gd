@@ -23,6 +23,8 @@ const OPCIONES_POR_DEFECTO := {
 	"vibracion": true,
 	# Los consejos de las primeras partidas (escenas/interfaz/consejos.gd).
 	"consejos": true,
+	# Accesibilidad: los textos un 25 % más grandes (EstiloInterfaz.tamano_texto).
+	"texto_grande": false,
 	# Si sale el aviso de versión nueva (aviso_actualizacion.gd). Con él apagado
 	# se puede seguir jugando una versión anterior sin que insista.
 	"avisar_versiones": true,

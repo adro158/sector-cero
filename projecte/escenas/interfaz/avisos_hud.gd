@@ -24,7 +24,7 @@ var _tiempo := -1.0
 
 
 func _ready() -> void:
-	add_theme_font_size_override("font_size", 26)
+	add_theme_font_size_override("font_size", EstiloInterfaz.tamano_texto(26))
 	# Con contorno: va encima de la placa base y de la horda.
 	add_theme_constant_override("outline_size", 8)
 	add_theme_color_override("font_outline_color", Color(0.02, 0.04, 0.07))

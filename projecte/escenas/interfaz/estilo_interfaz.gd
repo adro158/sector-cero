@@ -12,6 +12,10 @@ const TEXTO_SUAVE := Color(0.55, 0.65, 0.75)
 const FONDO := Color(0.03, 0.06, 0.1, 0.95)
 const VICTORIA := Color(0.3, 1.0, 0.6)
 const DERROTA := Color(1.0, 0.3, 0.4)
+## Con la opción «Texto grande» (accesibilidad, mejoras propuestas, jugabilidad
+## 12), los textos salen así de más grandes. Se mira al crear cada pantalla: al
+## cambiar la opción, se nota al volver a abrirla.
+const ESCALA_TEXTO_GRANDE := 1.25
 
 static var _tema: Theme
 
@@ -84,9 +88,15 @@ static func caja(color_borde: Color, margen: int = 20) -> StyleBoxFlat:
 static func etiqueta(texto: String, tamano: int = 16, color: Color = TEXTO) -> Label:
 	var nueva := Label.new()
 	nueva.text = texto
-	nueva.add_theme_font_size_override("font_size", tamano)
+	nueva.add_theme_font_size_override("font_size", tamano_texto(tamano))
 	nueva.add_theme_color_override("font_color", color)
 	return nueva
+
+
+## El tamaño de letra que toca, con «Texto grande» o sin él. Todos los textos de
+## la interfaz pasan por aquí.
+static func tamano_texto(tamano: int) -> int:
+	return roundi(tamano * ESCALA_TEXTO_GRANDE) if GestorGuardado.opcion("texto_grande") else tamano
 
 
 ## Fondo que oscurece lo que hay detrás y centra un panel encima. Devuelve el
