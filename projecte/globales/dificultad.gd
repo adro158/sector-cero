@@ -44,6 +44,11 @@ extends RefCounted
 ## Kernel Panic y muriendo en la primera forma de NÚCLEO CERO). Ahora sale
 ## 15 / 9 / 2. Media no se tocó.
 ##
+## Con 100 partidas por dificultad (23/10, en casa): fácil 78, media 36 y
+## difícil 13; objetivo 75-80, 40-50 y unas 10. En media, 47 de las 64
+## derrotas eran por tiempo contra NÚCLEO CERO: su vida bajó de 0,65 a 0,58
+## (39) y a 0,5 (49). Fácil y difícil no se tocaron: 78 / 49 / 13.
+##
 ## Sin class_name: se carga con preload, como embestida_horda.gd.
 
 const DIFICULTADES := {
@@ -52,7 +57,7 @@ const DIFICULTADES := {
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
-		"nombre": "MEDIA", "vida": 0.7, "vida_jefe": 0.7, "vida_jefe_final": 0.65, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
+		"nombre": "MEDIA", "vida": 0.7, "vida_jefe": 0.7, "vida_jefe_final": 0.5, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
 		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
