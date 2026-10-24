@@ -142,11 +142,30 @@ func _enemigos() -> VBoxContainer:
 		var tipo: DatosTipoEnemigo = load(ruta)
 		lista.add_child(_fila(tipo.textura, tipo.nombre, tipo.color, tipo.descripcion))
 
-	# Los jefes no tienen recurso de datos: son únicos y su texto va aquí.
+	# Los jefes no tienen recurso de datos: son únicos y su texto va aquí. Una
+	# fila por ataque, con el dibujo de ese ataque: hasta el 24/10 eran dos
+	# párrafos de 800 y 900 letras (mejoras propuestas, interfaz 13).
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "KERNEL PANIC (jefe)", EstiloInterfaz.DERROTA,
-		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil huye toda y en media, la mitad). Mientras está, el reloj se para. Persigue despacio y cada 6 s se pone rojo y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda. Cada 9 s late en morado y dispara una ráfaga de datos en círculo: pasa por los huecos (con menos de la mitad de vida, dispara dos). Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s nadie cruza la jaula que deja, y si estabas dentro te quedas encerrado con él. Al bajarle al 66 % y al 33 % de vida se enfurece: va más rápido, pega más, ataca más seguido y saca más malware; en la última furia arde. Al derrotarlo empieza la fase 2 y los personajes que habían caído vuelven con la mitad de su vida. El Ping y el Escáner le pegan sin acercarse."))
+		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil huye toda y en media, la mitad). Mientras está, el reloj se para. El Ping y el Escáner le pegan sin acercarse."))
+	for ataque in [
+		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho."],
+		["", 0, 0, "ANILLO DE MALWARE", "Cada 15 s se para, late en morado y saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda."],
+		["jefe/jefe_rafaga.png", 4, 0, "RÁFAGA DE DATOS", "Cada 9 s late en morado y dispara datos en círculo: pasa por los huecos. Con menos de la mitad de vida, dispara dos."],
+		["jefe/jefe_jaula.png", 4, 0, "PISOTÓN Y JAULA", "Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s nadie cruza la jaula, y si estabas dentro te quedas encerrado con él."],
+		["jefe/jefe_furia.png", 8, 3, "FURIAS", "Al bajarle al 66 % y al 33 % de vida se enfurece: va más rápido, pega más, ataca más seguido y saca más malware. En la última furia, arde."],
+		["jefe/jefe_muerte.png", 12, 5, "AL DERROTARLO", "Empieza la fase 2, y los personajes que habían caído vuelven con la mitad de su vida."],
+	]:
+		lista.add_child(_ataque(ataque))
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE_FINAL), 6, 3), "NÚCLEO CERO (jefe final)", EstiloInterfaz.DERROTA,
-		"Llega a los 15 minutos, al acabar la fase 2. Tiene tres formas: al bajarle al 66 % y al 33 % de vida se transforma y cuesta más matarlo (recibe menos daño y ataca más deprisa). Usa los ataques de tus personajes (el rayo, el torbellino y la tormenta, que avisan antes de caer), abre portales de malware y deja hielo que te ralentiza. Al cambiar de forma se encierra en un escudo que no deja pasar el daño: rompe las cuatro anclas y se quedará aturdido, recibiendo más daño. Cada ancla es del color de un personaje y solo la rompe su herramienta: ve cambiando, que con el escudo puesto se cambia sin espera. Si pasan 30 s sin que rompas ninguna, las rotas se vuelven a cerrar. En su última forma vuelve a encerrarse cada 35 s. Derrótalo para ganar."))
+		"Llega a los 15 minutos, al acabar la fase 2: derrótalo para ganar. Tiene tres formas: al bajarle al 66 % y al 33 % de vida se transforma y cuesta más matarlo (recibe menos daño y ataca más deprisa)."))
+	for ataque in [
+		["jefe_final/jefe_final_aviso_diana.png", 4, 0, "TUS ATAQUES", "Usa los ataques de tus personajes: el rayo, el torbellino y la tormenta. Avisan antes de caer."],
+		["jefe_final/jefe_final_portal.png", 8, 3, "PORTALES", "Abre portales de los que sale malware."],
+		["jefe_final/jefe_final_hielo.png", 8, 4, "HIELO", "Deja zonas de hielo que te ralentizan mientras estás dentro."],
+		["jefe_final/jefe_final_escudo.png", 4, 0, "ESCUDO", "Al cambiar de forma se encierra en un escudo que no deja pasar el daño. Rompe las cuatro anclas y se quedará aturdido, recibiendo más daño. En su última forma vuelve a encerrarse cada 35 s."],
+		["jefe_final/jefe_final_ancla_mago.png", 5, 0, "ANCLAS", "Cada ancla es de un personaje (su color y su nombre, abajo) y solo la rompe su herramienta: ve cambiando, que con el escudo puesto se cambia sin espera. Si pasan 30 s sin que rompas ninguna, las rotas se vuelven a cerrar."],
+	]:
+		lista.add_child(_ataque(ataque))
 
 	lista.add_child(EstiloInterfaz.etiqueta("AFIJOS DE LOS ÉLITES", 20, Color(1.0, 0.85, 0.3)))
 	var oleadas: DatosConfigOleada = load(OLEADAS)
@@ -203,6 +222,23 @@ func _fila(icono: Texture2D, titulo: String, color: Color, texto: String) -> HBo
 	explicacion.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	textos.add_child(explicacion)
 	fila.add_child(textos)
+	return fila
+
+
+## Un ataque de un jefe, debajo de su fila y un poco metido: [dibujo dentro de
+## medios/sprites/ (o "" para el cuadrado de color), fotogramas de su tira, el
+## que se enseña (en algunos el primero casi no se ve), título, explicación].
+func _ataque(ataque: Array) -> HBoxContainer:
+	var icono: AtlasTexture = null
+	if ataque[0] != "":
+		icono = _primer_fotograma(load("res://medios/sprites/" + ataque[0]), ataque[1], 1)
+		icono.region.position.x = ataque[2] * icono.region.size.x
+	var fila := _fila(icono, ataque[3], Color(EstiloInterfaz.DERROTA, 0.8), ataque[4])
+	# Metida a la altura del texto del jefe.
+	var sangria := Control.new()
+	sangria.custom_minimum_size.x = 48.0
+	fila.add_child(sangria)
+	fila.move_child(sangria, 0)
 	return fila
 
 
