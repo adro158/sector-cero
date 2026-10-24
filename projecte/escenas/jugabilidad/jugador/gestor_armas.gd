@@ -2,7 +2,7 @@ extends Node
 
 signal arma_disparada(indice: int)
 
-## El golpe del Firewall, en cono hacia donde mira el personaje.
+## El golpe del Firewall, en cono hacia el enemigo más cercano.
 const GolpeCono := preload("res://escenas/jugabilidad/jugador/golpe_cono.gd")
 
 @export var armas: Array[DatosArma] = []
@@ -23,6 +23,11 @@ var _salud: Salud
 ## El cono del último ataque en cono (null si el arma ataca en círculo): para
 ## que aura_arma.gd lo dibuje y saque las chispas solo de lo que ha golpeado.
 var ultimo_cono: RefCounted
+## Hacia dónde iría ahora un golpe en cono, de largo 1: al enemigo más cercano
+## a su alcance o, si no hay ninguno, hacia donde mira el personaje. Hasta el
+## 24/10 era siempre hacia donde miraba, y jugando casi nunca daba a nada
+## (Adam). aura_arma.gd dibuja el contorno hacia aquí.
+var apuntando := Vector2.DOWN
 
 
 func _ready() -> void:
@@ -48,6 +53,8 @@ func cambiar_arma(arma: DatosArma) -> void:
 
 func _physics_process(delta: float) -> void:
 	for i in armas.size():
+		if armas[i].angulo_cono > 0.0:
+			_apuntar(armas[i].radio * multiplicador_alcance)
 		_tiempos[i] -= delta
 		if _tiempos[i] > 0.0:
 			continue
@@ -68,7 +75,7 @@ func _atacar(arma: DatosArma) -> void:
 			var dano_final := dano * (1.0 - resistencia)
 			var cono: RefCounted = null
 			if arma.angulo_cono > 0.0:
-				cono = GolpeCono.new(_jugador.global_position, _jugador.mirando, radio, arma.angulo_cono, arma.dano_pegado, arma.dano_filo)
+				cono = GolpeCono.new(_jugador.global_position, apuntando, radio, arma.angulo_cono, arma.dano_pegado, arma.dano_filo)
 			ultimo_cono = cono
 			var alcanzados := 0
 
@@ -88,3 +95,18 @@ func _atacar(arma: DatosArma) -> void:
 			# El proyectil aplica la resistencia al impactar, no al salir: puede
 			# pasar un análisis mientras vuela.
 			_pool_proyectiles.lanzar(_jugador.global_position, arma, dano, radio)
+
+
+## Pone en apuntando la dirección al enemigo más cercano a menos de alcance (de
+## la horda, un élite, un jefe o un ancla), o hacia donde mira si no hay.
+func _apuntar(alcance: float) -> void:
+	var desde := _jugador.global_position
+	var mejor := Vector2.INF
+	for objetivo in _objetivos:
+		var donde: Vector2 = objetivo.mas_cercano(desde, alcance)
+		if donde != Vector2.INF and desde.distance_to(donde) < desde.distance_to(mejor):
+			mejor = donde
+	if mejor == Vector2.INF or mejor == desde:
+		apuntando = _jugador.mirando
+	else:
+		apuntando = (mejor - desde).normalized()

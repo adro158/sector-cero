@@ -1,7 +1,7 @@
 extends RefCounted
 
 ## Un golpe en cono, el del Firewall del Espadachín: sale del personaje hacia
-## donde mira y hace más daño cuanto más pegado está el enemigo. Lo crea
+## el enemigo más cercano y hace más daño cuanto más pegado está. Lo crea
 ## gestor_armas.gd en cada ataque y se lo pasa a danar_en_area de cada
 ## objetivo, que le pregunta con factor() cuánto daño le toca. Sin cono (el
 ## Escáner, los proyectiles, las ultis), danar_en_area sigue siendo un círculo

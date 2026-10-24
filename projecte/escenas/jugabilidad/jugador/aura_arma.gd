@@ -9,7 +9,7 @@ extends Node2D
 ##
 ## Los dibujos están hechos al radio base de cada herramienta: con la mejora de
 ## alcance se escalan (radio de verdad / radio del dibujo). El Firewall ataca
-## en un cono hacia donde mira el personaje: su contorno y su tajo están
+## en un cono hacia el enemigo más cercano: su contorno y su tajo están
 ## dibujados mirando a la derecha y aquí se giran.
 ##
 ## Va detrás del jugador (show_behind_parent): debajo de él y de la horda,
@@ -132,12 +132,12 @@ func _efecto(arma: DatosArma, segundos: float, escala: float, inicial := OPACIDA
 		_fotograma(arma.efecto, arma.fotogramas_efecto, fotograma + 1, escala, Color(1.0, 1.0, 1.0, opacidad * mezcla))
 
 
-## El cono del Firewall: su contorno hacia donde mira el personaje, teñido
-## como el anillo, y el tajo de cada ataque hacia donde se dio. El tajo ya se
-## apaga en su dibujo y tapa un cuarto de lo que tapaba el golpe redondo: va
-## entero, sin rebajarlo como el efecto de las demás.
+## El cono del Firewall: su contorno hacia donde iría el siguiente golpe,
+## teñido como el anillo, y el tajo de cada ataque hacia donde se dio. El tajo
+## ya se apaga en su dibujo y tapa un cuarto de lo que tapaba el golpe
+## redondo: va entero, sin rebajarlo como el efecto de las demás.
 func _dibujar_cono(arma: DatosArma, indice: int, escala: float, modulado: Color) -> void:
-	draw_set_transform(Vector2.ZERO, get_parent().mirando.angle())
+	draw_set_transform(Vector2.ZERO, _gestor_armas.apuntando.angle())
 	_fotograma(arma.anillo, 1, 0, escala, modulado)
 	var cono: RefCounted = _gestor_armas.ultimo_cono
 	if cono != null and indice < _desde_ataque.size() and arma.efecto != null:

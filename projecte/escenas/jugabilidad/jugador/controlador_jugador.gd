@@ -27,7 +27,8 @@ const SACUDIDA_MAXIMA := 16.0
 const APAGADO_SACUDIDA := 1.5
 
 ## Hacia donde mira, de largo 1: hacia donde se mueve o, quieto, hacia donde
-## iba. Es hacia donde ataca el Espadachín (gestor_armas.gd).
+## iba. Hacia aquí ataca el Espadachín si no tiene a nadie a su alcance
+## (gestor_armas.gd).
 var mirando := Vector2.DOWN
 
 var _efecto_golpe: Tween
@@ -38,6 +39,9 @@ var _segundos_ataque := 0.05
 ## Segundos desde que empezó el ataque que se está dibujando (-1: ninguno).
 var _tiempo_ataque := -1.0
 var _fila := 0
+## La fila (la dirección) del ataque que se está dibujando: la del tajo del
+## Espadachín, que va al enemigo más cercano, o hacia donde se mueve.
+var _fila_ataque := 0
 var _tiempo_andando := 0.0
 var _lentitud := 0.0
 var _tiempo_lento := 0.0
@@ -52,7 +56,7 @@ var _azar_camara := RandomNumberGenerator.new()
 func _ready() -> void:
 	_azar_camara.seed = 7
 	$Salud.danado.connect(_al_recibir_dano)
-	$GestorArmas.arma_disparada.connect(func(_indice): _tiempo_ataque = 0.0)
+	$GestorArmas.arma_disparada.connect(_al_atacar)
 	# Otros momentos fuertes que también mueven la cámara.
 	BusEventos.ulti_lanzada.connect(func(_personaje): sacudir(5.0))
 	BusEventos.elite_exploto.connect(func(_posicion): sacudir(8.0))
@@ -66,6 +70,13 @@ func poner_hojas(andar: Texture2D, ataque: Texture2D, segundos: float) -> void:
 	_segundos_ataque = segundos
 	_tiempo_ataque = -1.0
 	_poner_hoja(andar, FOTOGRAMAS_ANDAR)
+
+
+func _al_atacar(indice: int) -> void:
+	_tiempo_ataque = 0.0
+	_fila_ataque = _fila
+	if $GestorArmas.armas[indice].angulo_cono > 0.0:
+		_fila_ataque = Direcciones8.fila($GestorArmas.ultimo_cono.direccion)
 
 
 func _al_recibir_dano(cantidad: float) -> void:
@@ -149,7 +160,7 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		_tiempo_ataque += delta
 		if fotograma < FOTOGRAMAS_ATAQUE:
 			_poner_hoja(_hoja_ataque, FOTOGRAMAS_ATAQUE)
-			$Sprite.frame = _fila * FOTOGRAMAS_ATAQUE + fotograma
+			$Sprite.frame = _fila_ataque * FOTOGRAMAS_ATAQUE + fotograma
 			return
 		_tiempo_ataque = -1.0
 	if _hoja_andar != null:
