@@ -68,9 +68,10 @@ guardada para la próxima vez):
    poco a poco. Si cae el que llevas, el juego se pausa, se deshace y eliges
    quién sigue, que entra con 2 segundos de escudo; pierdes cuando caen los
    tres:
-   - **Espadachín · Firewall (120 de vida):** da tajos en un cono hacia donde
-     vas (el contorno verde): cuanto más pegado está el malware, más daño (el
-     triple que en el filo), y lo de detrás no lo toca. Cada golpe le cura un
+   - **Espadachín · Firewall (120 de vida):** da tajos en un cono hacia el
+     malware más cercano (el contorno verde; si no hay nadie cerca, hacia
+     donde vas): cuanto más pegado está, más daño (el triple que en el filo),
+     y lo que queda detrás del tajo no lo toca. Cada golpe le cura un
      poco (robo de vida). Evolucionado llega más lejos y pega igual en todo
      el cono.
    - **Mago · Ping (90 de vida):** un paquete que salta de un enemigo a otro, a

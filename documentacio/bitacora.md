@@ -4066,3 +4066,27 @@ herramienta de Python. Primero, un plan corto que Adam aprobó.
   sirve, porque los shaders del suelo se animan siempre. La partida guardada
   de Adam, sin tocar.
 - **Simulador:** no hacía falta medir (la pausa no se retrasa), pero se pasaron\n  12 partidas en fácil como prueba de humo, por si la espera en pausa lo\n  colgaba: idénticas a las de antes del lote 8 (mismas caídas en los mismos\n  minutos y mismo resultado, 10 de 12).
+
+### En casa, el tajo del Espadachín al más cercano (24/10)
+
+Adam: «quiero cambiar el ataque del espadachín porque atacar adonde mira es
+muy inútil, no hace nada ahora el personaje». En el simulador no se veía
+porque el bot se giraba hacia el enemigo más cercano antes de cada golpe; una
+persona que esquiva va mirando hacia donde huye, que es justo donde no hay
+nadie.
+
+- **Decisión de Adam** (ventana de preguntas): el mismo cono, pero hacia el
+  enemigo más cercano a su alcance; si no hay ninguno, hacia donde mira. Sin
+  volver a medir el equilibrio por ahora (queda junto con la medida de C/F).
+- **Cómo:** `gestor_armas.gd` calcula cada fotograma `apuntando` con
+  `mas_cercano` de cada objetivo (la horda, los élites, los jefes y las
+  anclas). El golpe, el contorno (`aura_arma.gd`) y la animación de ataque
+  (`controlador_jugador.gd`, que guarda la fila del ataque aparte de la de
+  andar) van hacia ahí. El giro del bot se quita del simulador: ya no hace
+  falta. La descripción del Espadachín, el manual y la documentación técnica,
+  al día.
+- **Ojo:** con el escudo de NÚCLEO CERO apunta también a un ancla que no es
+  suya si es lo más cercano, igual que hacía el bot.
+- **Prueba:** validación en headless y una captura con ventana con el
+  Espadachín quieto en el minuto 4: el contorno apunta al enemigo y 11 de 16
+  tajos dieron a algo.

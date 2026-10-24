@@ -108,7 +108,9 @@ partidas por dificultad: 78 / 49 / 13), las mejoras C y F sin dibujos
 (bitácora, sesión 18, «En casa, las mejoras C y F») y el lote 8 de dibujos,
 los efectos de la partida («En casa, el lote 8»). Antes de publicar, volver
 a medir el equilibrio con 100 partidas (punto 7): el tiempo de golpe y la
-sacudida cambian un poco las partidas. Las novedades, en
+sacudida cambian un poco las partidas, y desde el 24/10 el tajo del
+Espadachín apunta solo (el bot ya apuntaba, así que debería moverse poco).
+Las novedades, en
 `documentacio/novedades/v1.10.txt` (por escribir).
 
 ### Para la entrega
@@ -135,8 +137,9 @@ sacudida cambian un poco las partidas. Las novedades, en
 El simulador no juzga sensaciones ni sonido. Con la v1.9 (o `main` abierto
 en Godot):
 
-- **El Espadachín:** si el cono apunta bien con teclado, mando y táctil, y si
-  el robo de vida se nota (como mucho 1,5 por golpe; 2 con la evolución).
+- **El Espadachín:** desde el 24/10 el cono va solo al enemigo más cercano;
+  si ahora se nota útil, y si el robo de vida se nota (como mucho 1,5 por
+  golpe; 2 con la evolución).
 - **Las animaciones de ataque** de los tres personajes y las armas
   evolucionadas en el personaje.
 - **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la

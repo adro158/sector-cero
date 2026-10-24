@@ -239,8 +239,13 @@ Espadachín da un tajo en cono y el Escáner del Segador, un pulso amplio y
 lento) y de proyectil (el Ping del Mago salta de un enemigo a otro).
 
 **El cono del Firewall** (desde el 22/10, sesión 18). Sale del personaje
-hacia donde mira (`mirando`, en `controlador_jugador.gd`: la dirección de lo
-último que se pulsó), con 90 grados y el alcance del arma, y pega el 150 %
+hacia el enemigo más cercano a su alcance (`apuntando`, que `gestor_armas.gd`
+calcula cada fotograma con `mas_cercano` de cada objetivo) o, si no hay
+ninguno, hacia donde mira (`mirando`, en `controlador_jugador.gd`: la
+dirección de lo último que se pulsó). Hasta el 24/10 salía siempre hacia
+donde miraba y, jugando, casi nunca daba a nada (Adam). El contorno y la
+animación de ataque van hacia el mismo sitio. Tiene 90 grados y el alcance
+del arma, y pega el 150 %
 pegado y el 50 % en el filo, repartido en línea recta (`dano_pegado` y
 `dano_filo` en su `DatosArma`). Lo lleva `golpe_cono.gd`: `gestor_armas.gd`
 crea uno en cada ataque y se lo pasa a `danar_en_area` de cada objetivo como
@@ -251,8 +256,8 @@ cambiado. Cada objetivo suma lo que le toca en `golpes`, que es lo que usan
 el robo de vida y la resistencia del malware (un ancla con otro personaje no
 cuenta). La evolución pega igual cerca que lejos (los dos a 1), llega a 150
 y roba más (0,15, con un tope de 2 por golpe: el tope está ahora en cada
-arma, `robo_maximo`). El bot del simulador se gira hacia el enemigo más
-cercano en los 0,05 s antes de cada golpe.
+arma, `robo_maximo`). Hasta el 24/10, el bot del simulador se giraba hacia
+el enemigo más cercano antes de cada golpe; ya no hace falta.
 
 **Las animaciones de ataque.** Cada personaje tiene, además de la hoja de
 andar, una de atacar (4 columnas por las mismas 8 filas, normal y
