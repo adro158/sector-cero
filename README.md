@@ -12,3 +12,4 @@ Orden para pasárselos a Claude Code, de uno en uno:
 5. `lote4_efectos.zip`
 6. `lote5_elites.zip`
 7. `lote6_interfaz.zip`
+8. `lote8_efectos.zip` (efectos de la partida; el lote 7 se hizo aparte)
