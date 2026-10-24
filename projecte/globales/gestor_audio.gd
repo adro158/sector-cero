@@ -37,6 +37,9 @@ const SONIDO_ATAQUE := {
 ## Tiempo mínimo, en segundos, entre dos veces el mismo efecto. Con decenas de
 ## enemigos muriendo a la vez, sonar en cada muerte sería solo ruido.
 const ESPERA_MINIMA := 0.05
+## Por encima de esta frecuencia se corta la música mientras se elige (mejora,
+## premio de la ruleta, quién sigue) o en pausa: suena «detrás de un cristal».
+const CORTE_AMORTIGUADA := 700.0
 
 var _reproductores := {}
 var _ultima_vez := {}
@@ -45,6 +48,9 @@ var _pista_actual := ""
 var _personaje_anterior: DatosPersonaje
 ## La herramienta que se lleva: la adaptación del malware suena si es a ella.
 var _arma_activa: DatosArma
+## El bus de la música y el número de su filtro de paso bajo (-1 si no hay).
+var _bus_musica := -1
+var _filtro := -1
 
 
 func _ready() -> void:
@@ -53,6 +59,7 @@ func _ready() -> void:
 	_musica = AudioStreamPlayer.new()
 	_musica.bus = "Musica"
 	add_child(_musica)
+	_preparar_filtro()
 
 	# Un reproductor por efecto, todos cargados al arrancar el juego: cargar un
 	# sonido la primera vez que suena daría un tirón en mitad de la partida.
@@ -93,6 +100,13 @@ func _ready() -> void:
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
 	BusEventos.juego_pausado.connect(_al_pausar)
 	BusEventos.partida_terminada.connect(_al_terminar)
+	# La música, amortiguada mientras se elige. Si hay varias subidas de nivel
+	# seguidas, se quita y se vuelve a poner en el mismo fotograma: no se nota.
+	BusEventos.jugador_subio_nivel.connect(func(_opciones): _amortiguar(true))
+	BusEventos.ruleta_abierta.connect(func(_opciones, _premio): _amortiguar(true))
+	BusEventos.personaje_caido.connect(func(_personajes, _caido): _amortiguar(true))
+	BusEventos.mejora_seleccionada.connect(func(_mejora): _amortiguar(false))
+	BusEventos.personaje_elegido.connect(func(_indice): _amortiguar(false))
 	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)
 	get_tree().scene_changed.connect(_al_cambiar_escena)
 	# Cada botón que aparezca, en cualquier pantalla, hará clic al pulsarlo.
@@ -125,8 +139,27 @@ func _poner_musica(pista: String, tono := 1.0) -> void:
 	create_tween().tween_property(_musica, "volume_db", 0.0, 1.0)
 
 
+## El filtro de paso bajo, en el bus de la música y apagado. Se pone por código
+## y no en default_bus_layout.tres para que llegue con el .pck.
+func _preparar_filtro() -> void:
+	_bus_musica = AudioServer.get_bus_index("Musica")
+	if _bus_musica == -1:
+		return
+	var filtro := AudioEffectLowPassFilter.new()
+	filtro.cutoff_hz = CORTE_AMORTIGUADA
+	AudioServer.add_bus_effect(_bus_musica, filtro)
+	_filtro = AudioServer.get_bus_effect_count(_bus_musica) - 1
+	AudioServer.set_bus_effect_enabled(_bus_musica, _filtro, false)
+
+
+func _amortiguar(encendido: bool) -> void:
+	if _filtro != -1:
+		AudioServer.set_bus_effect_enabled(_bus_musica, _filtro, encendido)
+
+
 func _al_cambiar_escena() -> void:
 	_personaje_anterior = null
+	_amortiguar(false)
 	var escena := get_tree().current_scene
 	if escena != null and MUSICA_POR_ESCENA.has(escena.scene_file_path):
 		_poner_musica(MUSICA_POR_ESCENA[escena.scene_file_path])
@@ -186,8 +219,9 @@ func _al_empezar_transicion(segundos: float) -> void:
 
 func _al_pausar(en_pausa: bool) -> void:
 	sonar("pausa")
-	# La música baja mientras dura la pausa.
+	# La música baja y se amortigua mientras dura la pausa.
 	_musica.volume_db = -12.0 if en_pausa else 0.0
+	_amortiguar(en_pausa)
 
 
 func _al_terminar(estadisticas: Dictionary) -> void:
