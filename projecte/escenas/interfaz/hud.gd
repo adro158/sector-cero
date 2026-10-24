@@ -38,6 +38,10 @@ var _avisos: Label
 func _ready() -> void:
 	theme = EstiloInterfaz.tema()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Los paneles de la escena (mejoras, pausa, pantalla final) van encima de lo
+	# que se crea aquí: si no, el nivel, el reloj y la columna de mejoras salían
+	# sin oscurecer encima de la pausa y de la subida de nivel.
+	var de_la_escena := get_child_count()
 	add_child(PanelExperiencia.new())
 	_crear_reloj()
 	_crear_barras_jefe()
@@ -50,6 +54,8 @@ func _ready() -> void:
 	# Los avisos grandes de arriba, en cola (avisos_hud.gd).
 	_avisos = AvisosHud.new()
 	add_child(_avisos)
+	for i in get_child_count() - de_la_escena:
+		move_child(get_child(de_la_escena + i), i)
 
 	# Los primeros hijos: así quedan por debajo de la pausa y las mejoras.
 	for panel in [PanelEquipo.new(), FichaEnemigo.new()]:
