@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 23/10/2026** contra la bitácora (hasta la sesión 18) y
+**Estado verificado el 24/10/2026** contra la bitácora (hasta la sesión 18) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -103,6 +103,13 @@ Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego suelto
 caídos que vuelven en la fase 2, los fallos del apartado A de las mejoras
 propuestas y el aviso de la resistencia) y el equilibrio ajustado en casa.
 
+**En `main` sin publicar** (23-24/10): NÚCLEO CERO a 0,5 en media (100
+partidas por dificultad: 78 / 49 / 13) y las mejoras C y F sin dibujos
+(bitácora, sesión 18, «En casa, las mejoras C y F»). Antes de publicar, volver
+a medir el equilibrio con 100 partidas (punto 7): el tiempo de golpe y la
+sacudida cambian un poco las partidas. Las novedades, en
+`documentacio/novedades/v1.10.txt` (por escribir).
+
 ### Para la entrega
 
 1. **Vídeo demostrativo** (2-4 min).
@@ -179,17 +186,17 @@ carpeta de datos del juego.
 
    Ojo: el equilibrio de ahora cuenta con el NÚCLEO CERO de ahora. Si se
    hace, volver a equilibrar (punto 7).
-10. **Mejoras propuestas, apartados C a F** de `mejoras_propuestas.md` (la A
-    entera y la B sin dibujos están hechas):
-    - **C. Sensación de juego sin assets:** tiempo de golpe, sacudida, música
-      amortiguada al elegir, números de daño.
+10. **Mejoras propuestas, lo que queda** de `mejoras_propuestas.md` (A, B sin
+    dibujos, C entera y F sin dibujos, hechas):
     - **D. Lo visual por código, con assets:** partículas, caída del
       personaje, élites, fuente pixel art, paneles y botones, barra del
       equipo, y el medidor de la resistencia en el HUD (de la B, espera a
       tener dibujos).
     - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
-    - **F. Experiencia de juego:** consejos en la primera partida, resumen
-      final, accesibilidad, mando.
+    - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar) y los
+      iconos de los apartados de las reglas (dibujos).
+    - **Los dibujos de D:** el prompt de los lotes 8 a 10 está al final de
+      `prompt_assets.md`; Adam se lo pasa a Claude (chat).
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
     «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
     guía y se podrían sacar las furias a su script; y lo que eligió Claude en

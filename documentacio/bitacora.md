@@ -3917,3 +3917,85 @@ la nube (rama `claude/beautiful-maxwell-uijhtj`, que se pone al día con
     guardó al volver Adam a casa (24/10). Va en la próxima versión: sus
     novedades tienen que decir que media es algo más fácil contra NÚCLEO
     CERO.
+
+### En casa, las mejoras C y F sin dibujos (24/10)
+
+Adam: «dame el prompt para los dibujos que se lo paso al Claude normal y
+luego empieza por la C y lo de la F». Todo en `main`, sin subir ni publicar.
+
+- **El prompt de los dibujos:** lotes 8 (efectos de la partida), 9
+  (interfaz) y 10 (si da tiempo: poses de Kernel Panic y reposo de los
+  personajes), al final de `prompt_assets.md`. Es el apartado D de
+  `mejoras_propuestas.md`.
+- **C. Sensación de juego:**
+  - **Destello de los jefes** (`sprite_destello.gd`): después de cada
+    destello, 0,1 s sin volver a destellar, y los jefes al 45 %
+    (`intensidad` en sus escenas). Con el 60 % aún salían blancos en las
+    capturas.
+  - **Música amortiguada** (`gestor_audio.gd`): un filtro de paso bajo de
+    700 Hz en el bus de la música, puesto por código para que llegue con el
+    `.pck`, al subir de nivel, en la ruleta, al elegir quién sigue y en
+    pausa.
+  - **Tiempo de golpe** (`tiempo_golpe.gd`, nuevo, lo crea `raiz_juego.gd`):
+    `Engine.time_scale` a 0,05 durante 0,05 s (élite muerto, ulti), 0,1 s
+    (furias, cambios de forma) o 0,15 s (muerte de un jefe). Respeta la
+    velocidad del F1 y cuenta los golpes pendientes, no el reloj real: con
+    el reloj, en el simulador (que va más rápido que el reloj) se quedaba
+    congelado.
+  - **Una sola sacudida de cámara** (`controlador_jugador.gd`, `sacudir`):
+    un «trauma» que sube con cada golpe y se apaga solo, con un azar propio
+    de semilla fija. Antes había tres formas de mover la cámara que se
+    peleaban (la de NÚCLEO CERO, con su propio tween). Sacuden también las
+    ultis, la explosión de los élites y la llegada de NÚCLEO CERO. Con mando,
+    vibra.
+  - **Números de daño** (`pool_numeros_flotantes.gd`): la letra del juego,
+    contorno, centrados, de 14 a 24 según el daño, un «pop» al salir y una
+    subida que frena. Los de la horda se separan un poco con un azar propio.
+- **F. Experiencia de juego:**
+  - **Avisos en cola** (`avisos_hud.gd`, nuevo): cada uno se ve al menos
+    1,5 s y los urgentes (jefes, furias, fase 2) van delante. Antes uno
+    nuevo borraba el anterior.
+  - **El escudo, explicado:** aviso «ESCUDO: ROMPE CADA ANCLA CON SU
+    PERSONAJE» y, en la línea de abajo, «ANCLAS: MAGO, SEGADOR...». Señal
+    nueva `anclas_pendientes` (en `GEMINI.md`).
+  - **Subida de nivel:** las tarjetas entran una detrás de otra y durante
+    0,3 s no se puede elegir (un click de más elegía sin leer).
+  - **Pausa:** botón REGLAS y «¿ABANDONAR LA PARTIDA?» con el foco en NO.
+  - **Consejos** (`consejos.gd`, nuevo): una línea encima de la del equipo,
+    una vez por partida cada uno (moverse, fragmentos, adaptación, ulti,
+    cofre, jaula, escudo), en las tres primeras partidas.
+  - **Resumen en la pantalla final:** dónde caíste, el retrato de cada
+    personaje (en gris si cayó) con la parte del daño que hizo, y el aviso
+    si se usó F1. `partida_terminada` trae dos claves nuevas, `equipo` y
+    `donde` (en el bus y en `GEMINI.md`; el ranking no las guarda).
+  - **Menú principal:** los tres personajes andando en el sitio
+    (`personajes_menu.gd`, nuevo) y el «cómo se juega» en una línea.
+  - **Reglas de los jefes:** una fila por ataque, con el dibujo de ese
+    ataque (eran dos párrafos de 800 y 900 letras).
+  - **Mando completo** (`teclas_antiguas.gd`): LB anterior, RB siguiente,
+    cruceta y Select para el equipo (acción nueva `ver_equipo`, también la
+    C), añadidos al empezar la partida sin tocar `project.godot`. La línea
+    de abajo enseña los botones del mando si se juega con él.
+  - **Opciones nuevas:** Sacudir la cámara, Vibración del mando, Consejos y
+    Texto grande (un 25 % más, en `EstiloInterfaz.tamano_texto`).
+- **Fallo encontrado con las capturas:** el nivel, el reloj, la columna de
+  mejoras y los avisos se veían sin oscurecer encima de la pausa y de la
+  subida de nivel: el HUD los crea en su `_ready`, después de los paneles
+  de su escena. Ahora se mueven debajo.
+- **Sin hacer de C y F:** lo que pide dibujos (los iconos de «Cómo se
+  juega», las mini caras de las anclas, el medidor de la resistencia), el
+  Popup de la fase 2 (dibujo y reequilibrar) y la sección E (sonidos
+  nuevos).
+- **Métodos de test:** después de cada cambio, import, `--quit-after` y un
+  recorrido de la partida en headless con un script temporal (fase 1,
+  Kernel Panic con su furia y su muerte, fase 2 y NÚCLEO CERO con sus tres
+  formas hasta la victoria). Capturas con ventana de los números, el jefe,
+  el escudo, la subida de nivel, la pausa, los consejos, la pantalla final,
+  el menú, las reglas y el texto grande; pruebas en headless de la cola de
+  avisos y del mando con eventos de mentira. La partida guardada de Adam,
+  sin tocar (las pruebas cambian la dificultad y el texto grande solo en
+  memoria).
+- **Pendiente:** volver a medir el equilibrio con 100 partidas por
+  dificultad: el tiempo de golpe y la sacudida (que ya no gasta el azar de
+  la partida) cambian un poco el ritmo y las partidas. Se lanzó y se cortó
+  al acabar la sesión (46 de 300); Adam lo deja para más adelante.

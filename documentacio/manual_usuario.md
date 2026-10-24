@@ -26,9 +26,9 @@ navegador, en [adro158.github.io/sector-cero](https://adro158.github.io/sector-c
 
 | Acción | Teclado | Mando |
 |---|---|---|
-| Moverse | WASD o flechas | Stick izquierdo |
-| Personaje siguiente / anterior | E o Tab / Q | Y / — |
-| Ver el equipo (vida de cada personaje) | C | — |
+| Moverse | WASD o flechas | Stick izquierdo o cruceta |
+| Personaje siguiente / anterior | E o Tab / Q | Y o RB / LB |
+| Ver el equipo (vida de cada personaje) | C | Select |
 | Lanzar la ulti (cuando está cargada) | R | B |
 | Pausa | Esc o P | Start |
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
@@ -61,7 +61,8 @@ guardada para la próxima vez):
    nivel cuesta más, y los enemigos ganan vida con cada nivel que subes y, desde
    el minuto 3, con cada minuto que pasa.
 4. **El malware se adapta.** Cada 20 segundos se hace más resistente a la
-   herramienta que más le ha dañado: tus números de daño se vuelven rojos.
+   herramienta que más le ha dañado: te avisa la pantalla, suena una alarma,
+   abajo se ve cuánto resiste y tus números de daño se vuelven rojos.
 5. **Cambia de personaje** para atacarle con otra herramienta (10 s de espera
    entre cambios). Cada uno tiene su propia vida y los que esperan se curan
    poco a poco. Si cae el que llevas, el juego se pausa y eliges quién sigue;
@@ -110,17 +111,24 @@ guardada para la próxima vez):
     aturdido, recibiendo más daño. Cada ancla es del color de un personaje y
     solo la rompe su herramienta (un 0 rojo es que no le haces nada): cambia
     de personaje, que con el escudo puesto se hace sin espera. Si pasan 30 s
-    sin que rompas ninguna, las rotas se cierran.
+    sin que rompas ninguna, las rotas se cierran. Mientras dura el escudo, la
+    línea de abajo dice de quién son las anclas que quedan.
 
 Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
-herramienta.
+herramienta. En las tres primeras partidas salen consejos abajo, cuando pasa lo
+que explican (se pueden apagar en Opciones). La línea de abajo enseña las
+teclas o, si juegas con mando, sus botones.
 
 ## Pantallas
 
 - **Menú:** dificultad, jugar, reglas (qué hace cada personaje, mejora y
-  enemigo), ranking, opciones y salir.
+  enemigo, y cada ataque de los jefes), ranking, opciones y salir.
+- **Pausa:** continuar, reglas, opciones y volver al menú (pregunta antes de
+  abandonar la partida, que no cuenta para el ranking).
 - **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de
   cada una. Si tu partida entra, al acabar te pide un nombre.
-- **Opciones:** volumen, pantalla completa y filtro CRT. Se guardan solas.
-- **Resultados:** tiempo, nivel, malware eliminado y dificultad, y si has
-  batido un récord.
+- **Opciones:** volumen, pantalla completa, filtro CRT, sacudir la cámara,
+  vibración del mando, consejos y texto grande (un 25 % más). Se guardan
+  solas.
+- **Resultados:** tiempo, nivel, malware eliminado y dificultad, dónde
+  caíste, qué parte del daño hizo cada personaje y si has batido un récord.

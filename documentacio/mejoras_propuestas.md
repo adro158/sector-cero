@@ -31,6 +31,19 @@ señal `malware_adaptado` y lo que resiste en la línea de abajo). El
 indicador con medidor del HUD (interfaz 1) queda para cuando haya sus
 dibujos. Detalle en la bitácora, sesión 18.
 
+**Hecho el 24/10, en casa** (Adam: «empieza por la C y lo de la F»): todo el
+apartado C y lo del F que no pide dibujos ni reequilibrar. C: tiempo de golpe,
+una sola sacudida de cámara (con opción para quitarla), música amortiguada,
+números de daño con contorno y más pegada, y jefes que no se quedan blancos.
+F: avisos en cola, el escudo explicado en el HUD, entrada de las tarjetas con
+un instante sin poder elegir, REGLAS y confirmar en la pausa, consejos en las
+primeras partidas, resumen en la pantalla final (dónde acabó, el daño de cada
+personaje y el aviso del F1), menú con los personajes y menos texto, las reglas
+de los jefes por ataque, mando completo con vibración, y texto grande. Quedan
+de F el Popup de la fase 2 (dibujo y reequilibrar) y los iconos de las reglas
+(dibujos). Lo de D va en los lotes 8 a 10 de `prompt_assets.md`. Detalle en la
+bitácora, sesión 18, «En casa, las mejoras C y F».
+
 ### A. Fallos que conviene arreglar ya (pequeños y sin assets)
 
 - **Textos de las reglas que ya no cuadran** (jugabilidad 1):

@@ -116,7 +116,9 @@ cambia de lado si el jugador está a más de 8 px, para no parpadear.
 **El destello de los élites y del jefe.** Son nodos, y su `Sprite2D` lleva
 `sprite_destello.gd`: un material propio con un shader que mezcla con blanco,
 como la horda. No usa el `modulate`, que ya cambian el aviso rojo y el latido
-morado del jefe. Las piernas del jugador y del jefe avanzan en proporción a la
+morado del jefe. Después de cada destello pasan 0,1 s sin otro, y en los jefes
+se ponen blancos solo al 45 % (`intensidad`): con el Firewall y los rebotes
+del Ping se veían casi siempre blancos. Las piernas del jugador y del jefe avanzan en proporción a la
 velocidad a la que se mueven de verdad (con la mejora de velocidad, en el aura
 lenta o embistiendo), para que los pies no patinen.
 
@@ -320,9 +322,8 @@ de llamas que tenía la rabia). Lo vistoso va en su hijo `Efectos`
 Python: baja en una columna de datos (1,2 s en los que no recibe daño ni
 ataca, y avisa al jefe con la señal `aparecido`), al enfurecerse suelta una
 onda roja con rayos y al morir se agrieta y explota; la fase 2 empieza al
-acabar la explosión (`acabo_de_morir`). Los tres dan un tirón de cámara
-(`sacudir` del jugador), siempre hacia abajo para no gastar números del azar
-de la partida. Su vida va en una barra arriba, como la de NÚCLEO CERO:
+acabar la explosión (`acabo_de_morir`). Los tres sacuden la cámara
+(`sacudir` del jugador). Su vida va en una barra arriba, como la de NÚCLEO CERO:
 `barra_jefe.gd` sirve para las dos, cada una con su marco, y el HUD las conecta
 al bus (`jefe_vida_cambiada` y `jefe_final_vida_cambiada`). Los dibujos de la jaula van en un nodo de la raíz
 de la partida entre las explosiones y el jugador, para quedar encima del
@@ -427,6 +428,32 @@ la horda, que cambia de posición en la lista cuando muere otro, cada uno lleva
 un número único. La barra de experiencia se llena con un `Tween` y destella al
 subir de nivel; como al subir de nivel el juego ya está en pausa, sus `Tween`
 siguen corriendo en pausa (`TWEEN_PAUSE_PROCESS`).
+
+**La sensación de juego** (24/10). La cámara solo se mueve desde `sacudir` del
+jugador: un «trauma» que sube con cada golpe y se apaga solo, con un azar
+propio de semilla fija para no gastar el de la partida (si no, el simulador
+ya no repetiría las mismas partidas); antes NÚCLEO CERO tenía su propio tween
+y se peleaba con el del jugador por la cámara. Con mando, además vibra. En
+los momentos fuertes, `tiempo_golpe.gd` pone `Engine.time_scale` a 0,05 unas
+centésimas, con un temporizador que no usa la escala y un contador de golpes
+pendientes: con el reloj real, en el simulador, que va más deprisa que el
+reloj, el juego se quedaba congelado. La música pasa por un filtro de paso
+bajo (`AudioEffectLowPassFilter`, puesto por código para que llegue con el
+`.pck`) mientras se elige o en pausa. Los números de daño usan la letra del
+tema con `draw_string_outline`, más grandes cuanto más daño.
+
+**Que se entienda** (24/10). Los avisos grandes van en cola
+(`avisos_hud.gd`): cada uno se ve al menos 1,5 s y los urgentes van delante.
+El escudo de NÚCLEO CERO avisa qué hacer, y la señal `anclas_pendientes` dice
+al HUD de quién son las anclas que quedan, para no fiarlo solo al color. En
+las tres primeras partidas salen consejos (`consejos.gd`), uno por cosa y
+partida. La pantalla final enseña dónde se acabó y qué parte del daño hizo
+cada personaje: `resistencia_malware.gd` lleva el total de cada arma y
+`partida_terminada` trae `equipo` y `donde`. El mando está completo (LB, RB,
+cruceta y Select), añadido por `teclas_antiguas.gd` sin tocar
+`project.godot`, y la línea de abajo enseña sus botones si se juega con él. Con
+«Texto grande», todos los textos pasan por `EstiloInterfaz.tamano_texto` y
+salen un 25 % más grandes.
 
 **Guardado y actualizaciones.** `GestorGuardado` guarda en un fichero de texto
 de Godot (`ConfigFile`) los récords, el ranking de las 10 mejores partidas y
@@ -538,5 +565,8 @@ alrededor de un 10 %.
 
 - Pixel art propio para los personajes y el jefe.
 - Más variedad de élites.
-- Que la resistencia del malware se vea directamente en el HUD.
+- Un medidor de la resistencia del malware en el HUD (ya se avisa y se ve en
+  la línea de abajo, pero falta su dibujo).
+- Los dibujos que aún se hacen por código: partículas, caída del personaje,
+  barras de vida, paneles y botones, y una fuente pixel art propia.
 - Controles configurables y un ranking compartido en línea.
