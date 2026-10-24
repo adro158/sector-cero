@@ -250,6 +250,8 @@ func _preparar_multimesh() -> void:
 		material.set_shader_parameter("fotogramas_por_segundo", datos.fotogramas_por_segundo)
 	_horda.modulate = Color.WHITE if datos.textura else datos.color
 	_horda.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	# Y lo que se dibuja aquí mismo: las barras de vida, que son sprites.
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func _physics_process(delta: float) -> void:
@@ -274,7 +276,7 @@ func _draw() -> void:
 		return
 	for i in _vivos:
 		var arriba := _posiciones[i] - Vector2(0.0, datos.tamano * 0.5 + 10.0)
-		BarraVida.dibujar(self, arriba, datos.tamano, 5.0, _vidas[i] / _vidas_maximas[i], datos.color)
+		BarraVida.dibujar(self, arriba, datos.tamano, _vidas[i] / _vidas_maximas[i], datos.color)
 
 
 func _reconstruir_rejilla() -> void:

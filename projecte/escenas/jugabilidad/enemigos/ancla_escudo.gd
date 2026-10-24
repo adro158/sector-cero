@@ -139,4 +139,4 @@ func _draw() -> void:
 	# Brilla con los fotogramas 0-3; el 4 es el ancla rota.
 	Dibujo.fotograma(self, Dibujo.ANCLAS[herramienta], 4 if _rota else int(_segundos * 8.0) % 4, 48.0, Vector2.ZERO)
 	if _activa:
-		BarraVida.dibujar(self, Vector2(0.0, -40.0), 44.0, 5.0, _vida / _vida_maxima, PERSONAJES[herramienta].color)
+		BarraVida.dibujar(self, Vector2(0.0, -40.0), 44.0, _vida / _vida_maxima, PERSONAJES[herramienta].color)
