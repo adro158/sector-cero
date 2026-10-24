@@ -152,6 +152,58 @@ color de su tipo, escalados a su tamaño (`muertes_horda.gd`): un solo nodo
 las dibuja todas con la misma textura, así que el motor las junta en pocas
 llamadas de dibujado; las partículas de la horda bajaron de 7 a 3 por muerte.
 
+**Los efectos de la partida (lote 8, 24/10).** Lo que aún se dibujaba con
+código o no tenía efecto pasó a sprites:
+
+- **El personaje.** `efectos_jugador.gd` saca además el golpe al recibir daño
+  (en rojo), el escudo en bucle durante los 2 s de protección del que entra
+  tras una caída y la evolución de la herramienta (solo si evoluciona el que
+  juega: la del banquillo ya la avisan el HUD y las partículas). Cada efecto
+  lleva cuánto dura, para que el escudo pueda ir en bucle, y si se anima en
+  pausa.
+- **La caída.** Al caer el activo, `cambio_personaje.gd` pausa el juego como
+  antes, esconde su sprite y pide la caída (o la derrota, si era el último),
+  teñida de su color. Espera con un `create_timer`, que corre en pausa, a que
+  acabe (0,64 s, o 0,96 s la derrota) y solo entonces emite `personaje_caido`
+  (o `equipo_derrotado`): el panel y la pantalla final salen después del
+  efecto sin tocar la interfaz. Para que se anime con el juego parado,
+  `efectos_jugador.gd` se procesa siempre y los demás efectos se quedan
+  quietos en pausa. Como la partida está parada mientras tanto, el juego no
+  cambia nada y el simulador da lo mismo. La pausa es del equipo desde que cae
+  (`eligiendo()`), así que el menú de pausa no la quita.
+- **El élite.** Al morir se esconde y se parte en trozos en su sitio, con
+  `z_index` 4 mientras dura (encima de la horda); `activo()` sigue siendo
+  verdad hasta que acaba, para que el director no lo reutilice. El Explosivo no
+  la saca: su aviso ya es el rootkit agrietándose. Su anillo fino pasa a ser
+  una mecha encendida, detrás del élite como los demás afijos.
+- **Kernel Panic.** El anillo que crecía al invocar es un círculo de runas en
+  el suelo, debajo de él: sus 8 fotogramas se reparten lo que dure
+  `duracion_invocacion`, así que se ajusta si cambia ese número.
+- **Las barras de vida.** La de los enemigos (`barra_vida_enemigo.gd`) es un
+  marco de 48x9 que se estira en 3 trozos (5 px de cada lado tal cual y el
+  centro estirado, que es igual en todas las columnas) y un relleno recortado
+  a la vida y teñido del color del enemigo: vale para cualquier ancho (el
+  élite, 70 px). La del personaje (`barra_vida.gd`) es un marco con los dos
+  rellenos; con la ulti llena, a su lado parpadea un rayo en lugar de la "R",
+  que no valía para el mando.
+- **El Ping y los fragmentos** son MultiMesh: una textura para todas las
+  instancias. Un `AtlasTexture` (un trozo de la tira) no vale como textura de
+  un MultiMesh: lo probamos con ventana y sale la tira entera aplastada. Así
+  que al empezar cada tira se corta en una textura por fotograma
+  (`tira_fotogramas.gd`) y se cambia la del MultiMesh cada 0,06 s (el Ping) o
+  0,12 s (los fragmentos): todos van en el mismo fotograma. El Ping de
+  inundación tiene su sprite, más grande, en un segundo MultiMesh, y cada
+  proyectil va al de su arma. Al recoger un fragmento sale un destello de su
+  color (`pool_gemas.gd`, con un máximo de 40 a la vez).
+- **La mira del Mago** es el tramo con flechas repetido a lo largo del rayo y
+  girado con `draw_set_transform`, con la diana al final y un ratón en lugar
+  del texto "CLICK".
+- **Las partículas** son una chispa de 8x8 en grises en lugar de cuadrados
+  lisos.
+
+En la prueba de los sprites, las texturas cargadas con `load()` dentro de
+`_draw` salían como rectángulos blancos al grabar: todas van con `preload`.
+
 **La interfaz con arte propio.** Desde el 21/10, el título del menú es el logo
 (`medios/interfaz/`, la carpeta del arte de la interfaz) con un glitch cada 2
 a 5 s (`logo_glitch.gd`): un `AtlasTexture` al que un `Tween` le cambia la
@@ -213,9 +265,10 @@ con 10 s de espera. Los tres hacen un daño por segundo parecido; los diferencia
 dónde pegan. Cada uno tiene su vida (Espadachín 120, Segador 100, Mago 90): el
 nodo `Salud` del jugador es siempre la del activo, y el equipo
 (`cambio_personaje.gd`) guarda la de los demás, que se curan 1,5 por segundo
-mientras esperan. Si cae el activo y quedan otros, el juego se pausa y se elige
-quién sigue (`personaje_caido` y `personaje_elegido`), y entra con 2 s sin
-recibir daño; la partida se pierde al caer los tres. Con C se ve la vida de
+mientras esperan. Si cae el activo y quedan otros, el juego se pausa, se
+deshace (la caída, más arriba) y se elige quién sigue (`personaje_caido` y
+`personaje_elegido`), y entra con 2 s sin recibir daño; la partida se pierde
+al caer los tres. Con C se ve la vida de
 todos.
 
 **Las ultis.** Cada personaje carga la suya matando mientras juega (180
@@ -285,8 +338,8 @@ gastar el azar del simulador) y cada afijo se ve con su efecto teñido de su
 color (`dibujo_elite.gd`): las placas del Blindado encima del rootkit, en un
 hijo que se dibuja con su señal `draw`, y las copias del Replicante y el
 anillo helado del Aura lenta detrás, en el `_draw` del élite, que va antes
-que su `Sprite`. El Explosivo, que no se ve hasta que muere, conserva un
-anillo fino de su color. Al
+que su `Sprite`. El Explosivo, que no se nota hasta que muere, lleva detrás
+una mecha encendida (desde el 24/10; antes, un anillo fino de su color). Al
 morir deja un corazón, que cura la mitad de la vida, y un cofre. El cofre va a
 la misma cola que las subidas de nivel, que distingue "nivel" y "cofre" para
 que cada uno salga con su panel, y abre una **ruleta** de 8 sectores con las
@@ -297,7 +350,8 @@ el **jefe**; en fácil huye toda la horda que queda (se aleja del jugador y se
 desvanece en 1,2 s, sin dar experiencia), en media la mitad (uno sí y otro
 no: cada enemigo lleva su marca y su desvanecido, que el shader lee en el
 cuarto dato de su instancia) y en difícil se queda. Además de embestir, el jefe tiene un tercer estado: cada
-15 s se para, late en morado mientras crece un anillo y saca un círculo de 8 a
+15 s se para, late en morado mientras dibuja un círculo de runas en el suelo
+(hasta el 24/10, un anillo que crecía) y saca un círculo de 8 a
 20 enemigos (hasta el 22/10, 14), más cuanto menos vida le queda; los crean los gestores de la
 horda, como hace el élite replicante. Desde el 21/10 tiene tres más. La
 **ráfaga** (`rafaga_jefe.gd`): cada 9 s dispara 12 proyectiles en círculo,
@@ -567,6 +621,6 @@ alrededor de un 10 %.
 - Más variedad de élites.
 - Un medidor de la resistencia del malware en el HUD (ya se avisa y se ve en
   la línea de abajo, pero falta su dibujo).
-- Los dibujos que aún se hacen por código: partículas, caída del personaje,
-  barras de vida, paneles y botones, y una fuente pixel art propia.
+- Los dibujos que aún se hacen por código: paneles y botones, y una fuente
+  pixel art propia.
 - Controles configurables y un ranking compartido en línea.

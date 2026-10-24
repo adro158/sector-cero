@@ -27,6 +27,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Logo, retratos de los personajes, iconos de los afijos y cabecera del lanzador | Hechos con IA (Claude) | Ver más abajo |
+| Efectos de la partida (caída, derrota, golpe, escudo, evolución, partícula, muerte del élite, mecha, invocación, barras de vida, mira del Mago, Ping y fragmentos animados) | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
@@ -81,7 +82,9 @@ scripts no forman parte del repositorio.
   forma): `fragmento_datos.png` (12x12), un cristal de datos en grises que el
   juego tiñe según lo que vale, y `proyectil_ping.png` (24x12), un rayo de
   energía con estela que el juego gira hacia donde va. El 06/10/2026 se
-  sustituyó por la misma forma en morado, el color del Mago.
+  sustituyó por la misma forma en morado, el color del Mago. El 24/10/2026
+  los dos se quitaron: son el primer fotograma de sus tiras animadas del
+  lote 8.
 - **Premio de los élites** (`medios/sprites/`, 06/10/2026, de la misma forma):
   `corazon.png` (20x20), `cofre.png` (4 fotogramas de 32x32, de cerrado a
   abierto), `ruleta_rueda.png` (96x96, el disco de 8 sectores) y
@@ -176,6 +179,21 @@ scripts no forman parte del repositorio.
   lanzador (`lanzador/cabecera.png`): la placa base, NÚCLEO CERO al fondo,
   los tres personajes y el logo. Con ellos vino el cambio probado, que sirvió
   de referencia.
+- **Efectos de la partida** (`medios/sprites/efectos/` y
+  `medios/sprites/herramientas/`, 24/10/2026, de la misma forma; lote 8): lo
+  que aún se dibujaba con código o no tenía efecto. Del personaje, la caída
+  (la silueta común de los tres se rompe en franjas de glitch y se deshace en
+  píxeles), la derrota (igual, más lenta, y se apaga como una tele vieja), el
+  golpe, el escudo de hexágonos y la evolución de la herramienta, todos en
+  grises para teñirlos con su color. Además, la chispa de las partículas, la
+  muerte del élite (el rootkit partiéndose en trozos), la mecha del
+  Explosivo, el círculo de runas de la invocación de Kernel Panic, el marco y
+  los rellenos de las barras de vida, el rayo de la ulti lista, los
+  fragmentos de datos animados y su destello al recogerlos, la mira del rayo
+  del Mago (el tramo con flechas, la diana y el ratón del click) y el Ping
+  animado y el de inundación. Los dibujó Claude con un script de Python
+  (numpy y Pillow). Con ellos vino el cambio probado de las barras, las
+  partículas y la mecha, que sirvió de referencia.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

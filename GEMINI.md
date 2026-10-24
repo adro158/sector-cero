@@ -129,9 +129,10 @@ Detalles que la interfaz tiene que respetar:
   `mejora_seleccionada(premio)`. Cada elemento de la cola sale con su panel.
 - **Equipo.** Cada personaje tiene su vida. `equipo_cambiado` trae el estado de
   los tres (personaje, arma, vida, maxima, caido) y el índice del activo. Si cae
-  el activo y quedan otros, la jugabilidad pausa y emite `personaje_caido`; la
-  interfaz contesta con `personaje_elegido(indice)`. Al caer los tres llega
-  `partida_terminada`. Acciones de input: `cambiar_personaje` (E, Tab, Y del
+  el activo y quedan otros, la jugabilidad pausa, anima la caída (0,64 s, en
+  pausa) y emite `personaje_caido`; la interfaz contesta con
+  `personaje_elegido(indice)`. Al caer los tres, después de la derrota
+  (0,96 s), llega `partida_terminada`. Acciones de input: `cambiar_personaje` (E, Tab, Y del
   mando) pasa al siguiente y `personaje_anterior` (Q) vuelve al anterior.
 - **Ulti.** Cada personaje carga la suya matando; `ulti_cambiada` trae la carga
   de los tres (de 0 a 1) y el activo, y `ulti_lanzada` avisa al lanzarla. La

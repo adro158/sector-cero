@@ -44,6 +44,13 @@ de F el Popup de la fase 2 (dibujo y reequilibrar) y los iconos de las reglas
 (dibujos). Lo de D va en los lotes 8 a 10 de `prompt_assets.md`. Detalle en la
 bitácora, sesión 18, «En casa, las mejoras C y F».
 
+**Hecho el 24/10, en casa, con el lote 8 de dibujos:** todo lo de D «en la
+partida»: partículas, caída y derrota, golpe y protección, muerte de los
+élites (y la mecha del Explosivo), evolución, invocación del jefe, barras de
+vida con el aviso de la ulti para el mando, Ping animado y el de inundación,
+fragmentos con brillo y recogida, y la mira del Mago. Detalle en la
+bitácora, sesión 18, «En casa, el lote 8».
+
 ### A. Fallos que conviene arreglar ya (pequeños y sin assets)
 
 - **Textos de las reglas que ya no cuadran** (jugabilidad 1):
@@ -90,7 +97,7 @@ casi no se ve al jugar: solo en el panel técnico (F3).
 
 ### D. Lo visual hecho por código que quedaría mejor con assets
 
-- **En la partida:**
+- **En la partida** (hecho el 24/10, lote 8):
   - partículas con textura en vez de cuadrados (visual 5)
   - animación al caer un personaje y al perder (visual 2)
   - golpe recibido y protección visibles (visual 3)

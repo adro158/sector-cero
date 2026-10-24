@@ -38,8 +38,8 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 6 | Pausa o menú equivalente | Hecho | Menú de pausa con opciones, y pausa automática al subir de nivel |
 | 7 | Persistencia | Hecho | `globales/gestor_guardado.gd`: récords (tiempo, nivel, eliminados, partidas, victorias), ranking de las 10 mejores partidas con nombre y opciones en `user://sector_cero.cfg` |
 | 8 | Audio (música o ambiente y al menos 3 efectos) | Hecho | 3 músicas (menú, partida, jefe) y 17 efectos, sintetizados con `herramientas/generar_audio.gd` |
-| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, explosión del rootkit (aviso, explosión y quemadura), transición a negro de la fase 2, jefe final (tres formas, transformación, muerte, ataques, escudo y hielo), suelo animado (pulsos, LEDs, ventiladores; en la fase 2, chispazos y humo), barra de experiencia que se llena y destella, tweens en menús y avisos |
-| 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
+| 9 | Animaciones o transiciones | Hecho | Fundidos entre escenas, personajes en 8 direcciones (las piernas al ritmo de la velocidad), horda animada con una tira de fotogramas por tipo en el shader, glitch de la horda, destello de élites y jefe al recibir golpes, explosión del rootkit (aviso, explosión y quemadura), caída y derrota del personaje, muerte de los élites, círculo de la invocación de Kernel Panic, Ping y fragmentos animados, transición a negro de la fase 2, jefe final (tres formas, transformación, muerte, ataques, escudo y hielo), suelo animado (pulsos, LEDs, ventiladores; en la fase 2, chispazos y humo), barra de experiencia que se llena y destella, tweens en menús y avisos |
+| 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, golpe, escudo y evolución sobre el personaje, destello al recoger experiencia, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
 | 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.9 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
@@ -104,8 +104,9 @@ caídos que vuelven en la fase 2, los fallos del apartado A de las mejoras
 propuestas y el aviso de la resistencia) y el equilibrio ajustado en casa.
 
 **En `main` sin publicar** (23-24/10): NÚCLEO CERO a 0,5 en media (100
-partidas por dificultad: 78 / 49 / 13) y las mejoras C y F sin dibujos
-(bitácora, sesión 18, «En casa, las mejoras C y F»). Antes de publicar, volver
+partidas por dificultad: 78 / 49 / 13), las mejoras C y F sin dibujos
+(bitácora, sesión 18, «En casa, las mejoras C y F») y el lote 8 de dibujos,
+los efectos de la partida («En casa, el lote 8»). Antes de publicar, volver
 a medir el equilibrio con 100 partidas (punto 7): el tiempo de golpe y la
 sacudida cambian un poco las partidas. Las novedades, en
 `documentacio/novedades/v1.10.txt` (por escribir).
@@ -150,6 +151,10 @@ en Godot):
   todo (pisotón, ráfaga, furias, escudo).
 - **El lanzador se actualiza solo:** uno instalado con una versión anterior
   tiene que pasar a la v1.9 sin hacer nada.
+- **Los efectos del lote 8** (en `main`): si la caída antes del panel (0,64 s)
+  y la derrota antes de la pantalla final (0,96 s) se sienten bien o se hacen
+  largas; si el golpe rojo tapa demasiado al personaje; la mira del Mago y el
+  rayo de la ulti lista junto a la barra.
 - Lo que nunca se ha probado jugando: la explosión del rootkit (v1.2) y lo
   de la v1.1 (horda animada, destellos, piernas, barra de experiencia).
 
@@ -188,15 +193,17 @@ carpeta de datos del juego.
    hace, volver a equilibrar (punto 7).
 10. **Mejoras propuestas, lo que queda** de `mejoras_propuestas.md` (A, B sin
     dibujos, C entera y F sin dibujos, hechas):
-    - **D. Lo visual por código, con assets:** partículas, caída del
-      personaje, élites, fuente pixel art, paneles y botones, barra del
-      equipo, y el medidor de la resistencia en el HUD (de la B, espera a
-      tener dibujos).
+    - **D. Lo visual por código, con assets:** lo de la partida está hecho
+      (lote 8, 24/10). Queda lo de la interfaz (fuente pixel art, paneles y
+      botones, barra del equipo, HUD de arriba, teclas dibujadas) y el
+      medidor de la resistencia en el HUD (de la B, espera a tener dibujos).
     - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
     - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar) y los
       iconos de los apartados de las reglas (dibujos).
     - **Los dibujos de D:** el prompt de los lotes 8 a 10 está al final de
-      `prompt_assets.md`; Adam se lo pasa a Claude (chat).
+      `prompt_assets.md`; Adam se lo pasa a Claude (chat). El 8 ya está en el
+      juego (24/10); faltan el 9 (interfaz) y el 10 (poses de Kernel Panic y
+      reposo de los personajes).
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
     «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
     guía y se podrían sacar las furias a su script; y lo que eligió Claude en

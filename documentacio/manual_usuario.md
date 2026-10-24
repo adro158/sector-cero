@@ -65,8 +65,9 @@ guardada para la próxima vez):
    abajo se ve cuánto resiste y tus números de daño se vuelven rojos.
 5. **Cambia de personaje** para atacarle con otra herramienta (10 s de espera
    entre cambios). Cada uno tiene su propia vida y los que esperan se curan
-   poco a poco. Si cae el que llevas, el juego se pausa y eliges quién sigue;
-   pierdes cuando caen los tres:
+   poco a poco. Si cae el que llevas, el juego se pausa, se deshace y eliges
+   quién sigue, que entra con 2 segundos de escudo; pierdes cuando caen los
+   tres:
    - **Espadachín · Firewall (120 de vida):** da tajos en un cono hacia donde
      vas (el contorno verde): cuanto más pegado está el malware, más daño (el
      triple que en el filo), y lo de detrás no lo toca. Cada golpe le cura un
@@ -76,9 +77,10 @@ guardada para la próxima vez):
      distancia.
    - **Segador · Escáner (100 de vida):** un pulso fuerte y amplio, pero lento.
    Cada uno carga su **ulti** matando (la barra amarilla bajo su vida); llena,
-   se lanza con **R**: el Mago dispara un rayo morado (con R apuntas con el
-   ratón y con click lo lanzas), el Espadachín gira con sus hojas y al Segador
-   le cae una tormenta de rayos.
+   parpadea un rayo a su lado y se lanza con **R** (B con mando): el Mago
+   dispara un rayo morado (con R apuntas con el ratón, siguiendo la mira de
+   flechas hasta la diana, y con click lo lanzas), el Espadachín gira con sus
+   hojas y al Segador le cae una tormenta de rayos.
 6. **Evoluciones.** Elige tres veces la misma mejora de daño, cadencia o
    alcance y tu herramienta evoluciona.
 7. **Cuidado con:** el **troyano** (caballo verde), que parpadea en rojo y
@@ -87,7 +89,7 @@ guardada para la próxima vez):
 8. **Élites.** Cada minuto llega uno con habilidades escritas encima
    (blindado, replicante, aura lenta o explosivo), y cada una se ve: placas
    de armadura, copias fantasma, un anillo helado que te ralentiza si estás
-   dentro, o un anillo naranja si va a explotar al morir. Al matarlo deja un
+   dentro, o una mecha encendida si va a explotar al morir. Al matarlo deja un
    **corazón**, que cura la mitad de la vida, y un **cofre**: al recogerlo gira
    una ruleta y te llevas la mejora que toque. Hay que ir a por ellos.
 9. **El jefe, KERNEL PANIC,** llega a los 10 minutos y ya no sale más horda (en fácil huye
@@ -95,7 +97,8 @@ guardada para la próxima vez):
    vida sale arriba en el centro. Baja en una columna de datos y no ataca hasta
    que ha acabado de aparecer. Cuando se pone rojo, va a
    embestir: apártate. Cuando late en morado, va a sacar un anillo de malware
-   o a disparar una ráfaga en círculo (pasa por los huecos). Si marca un
+   (dibuja un círculo de runas en el suelo, y al cerrarse sale) o a disparar
+   una ráfaga en círculo (pasa por los huecos). Si marca un
    anillo rojo en el suelo, va a pisar y dejar una jaula: sal antes o te
    quedarás encerrado con él. Al bajarle al 66 % y al 33 % de vida se
    enfurece (lo avisa la pantalla): va más rápido, pega más, ataca más

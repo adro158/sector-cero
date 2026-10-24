@@ -3999,3 +3999,70 @@ luego empieza por la C y lo de la F». Todo en `main`, sin subir ni publicar.
   dificultad: el tiempo de golpe y la sacudida (que ya no gasta el azar de
   la partida) cambian un poco el ritmo y las partidas. Se lanzó y se cortó
   al acabar la sesión (46 de 300); Adam lo deja para más adelante.
+
+### En casa, el lote 8: efectos de la partida (24/10)
+
+Adam trajo el lote 8 de dibujos, hecho con Claude en el chat a partir del
+prompt de `prompt_assets.md`: sprites para lo que aún se dibujaba con código
+(anillos, rectángulos, la «R» de la ulti, el texto «CLICK») o no tenía
+efecto. El zip está en la rama `zips-lotes` del repo, que solo guarda los
+zips y no se fusiona con `main`. Se descomprimió en la raíz del repo; solo se
+commitean los PNG de `projecte/`, no las vistas previas, la referencia ni la
+herramienta de Python. Primero, un plan corto que Adam aprobó.
+
+- **Decisiones de Adam** (en la ventana de preguntas):
+  - **La caída y la pausa:** se pausa al momento, como antes, y la caída se
+    anima en pausa; `personaje_caido` se emite al acabar (0,64 s), así que el
+    panel sale después sin tocar la interfaz. Como la partida está parada,
+    el juego no cambia. El sonido de la caída suena al salir el panel; al
+    caer ya suena el golpe.
+  - **Evolución en el banquillo:** sin efecto en el personaje (no está en
+    pantalla); ya avisan el HUD y las partículas.
+  - **Élite Explosivo:** sin la muerte nueva. Su aviso ya es el rootkit
+    agrietándose y la muerte (el rootkit partiéndose) lo contradiría.
+- **Lo hecho**, un commit por grupo:
+  - **Personaje** (`efectos_jugador.gd`, `cambio_personaje.gd`): la caída y
+    la derrota (0,96 s, antes de `equipo_derrotado`) con el sprite escondido,
+    el golpe rojo con `Salud.danado`, el escudo en bucle durante los 2 s de
+    protección del que entra y la evolución si es del que juega (si coincide
+    con la de subir de nivel, solo sale esta). `efectos_jugador.gd` se
+    procesa siempre y cada efecto dice cuánto dura y si se anima en pausa.
+  - **Partículas:** la chispa de 8x8 como textura del MultiMesh.
+  - **Élite:** la muerte la dibuja el propio élite en su sitio, con `z_index`
+    4 mientras dura, y `activo()` sigue siendo verdad para que el director no
+    lo reutilice. No hace falta señal nueva: el élite sabe si es Explosivo.
+    La mecha sustituye al anillo fino, detrás con los demás afijos.
+  - **Invocación:** el círculo de runas en el `_draw` de `jefe.gd`, debajo
+    de él; sus 8 fotogramas se reparten `duracion_invocacion`. El jefe dibuja
+    ahora con el filtro nearest.
+  - **Barras:** la de los enemigos con el marco en 3 trozos y el relleno
+    recortado (se quita el alto de la función y de sus tres llamadas; el
+    gestor de la horda dibuja con nearest); la del personaje con el marco,
+    los dos rellenos y el rayo de la ulti lista en lugar de la «R».
+  - **Ping y fragmentos:** **un `AtlasTexture` no vale como textura de un
+    MultiMesh** (se comprobó con ventana antes del plan: sale la tira entera
+    aplastada). Al empezar, cada tira se corta en una textura por fotograma
+    (`tira_fotogramas.gd`, nuevo, sin `class_name`) y se cambia la del
+    MultiMesh: todos a la vez. El Ping de inundación va en un segundo
+    MultiMesh (`ProyectilesInundacion` en `raiz_juego.tscn`). Al recoger un
+    fragmento, su destello (con un máximo de 40 a la vez). Se quitaron
+    `fragmento_datos.png` y `proyectil_ping.png`, que son el fotograma 0 de
+    las tiras.
+  - **Mira del Mago:** el tramo repetido y girado con `draw_set_transform`,
+    la diana al final y el ratón en lugar de «CLICK».
+  - **Reglas:** la ulti lista con el rayo (y el botón del mando), y el
+    anillo de malware con su icono y el círculo de runas.
+- **Sin señales nuevas ni clases globales** (siguen 16): `GEMINI.md` solo
+  cambia la explicación de la caída.
+- **Métodos de test:** import, `--quit-after` y el recorrido de la partida
+  en headless después de cada grupo. Capturas con ventana con un script
+  temporal (borrado) de cada efecto: la caída y el panel, la derrota y la
+  pantalla final, el golpe, el escudo, las partículas, la muerte del élite
+  con y sin Explosivo, la mecha, la evolución, la invocación, las barras
+  (ransomware, élite, ancla y jugador con la ulti llena), el Ping y el de
+  inundación, los fragmentos y su recogida, la mira con su diana y las
+  reglas. Que todo se para en pausa se comprobó mirando el tiempo de cada
+  efecto con la pausa abierta (igual) y al quitarla (sigue): la imagen no
+  sirve, porque los shaders del suelo se animan siempre. La partida guardada
+  de Adam, sin tocar.
+- **Simulador:** no hacía falta medir (la pausa no se retrasa), pero se pasaron\n  12 partidas en fácil como prueba de humo, por si la espera en pausa lo\n  colgaba: idénticas a las de antes del lote 8 (mismas caídas en los mismos\n  minutos y mismo resultado, 10 de 12).
