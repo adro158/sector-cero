@@ -18,8 +18,13 @@ const TORMENTA_RAYO := preload("res://medios/sprites/ultis/ulti_tormenta_rayo.pn
 const TORMENTA_IMPACTO := preload("res://medios/sprites/ultis/ulti_tormenta_impacto.png")
 const TORMENTA_MINI := preload("res://medios/sprites/ultis/ulti_tormenta_mini.png")
 const TORMENTA_CHISPA := preload("res://medios/sprites/ultis/ulti_tormenta_chispa.png")
+## La mira: el tramo (32x16, apunta a la derecha), la diana del final (32x32)
+## y el ratón del click (16x16).
+const MIRA_TRAMO := preload("res://medios/sprites/efectos/mira_rayo_tramo.png")
+const MIRA_DIANA := preload("res://medios/sprites/efectos/mira_rayo_diana.png")
+const CLICK := preload("res://medios/sprites/efectos/click_izquierdo.png")
 
-## El dibujo del rayo se repite cada 32 px; la punta mide 48.
+## El dibujo del rayo y el de la mira se repiten cada 32 px; la punta mide 48.
 const TRAMO := 32.0
 const PUNTA := 48.0
 
@@ -87,10 +92,17 @@ static func tormenta(lienzo: CanvasItem, centro: Vector2, mini: Array[Vector2], 
 			_fotograma(lienzo, TORMENTA_MINI, int(t / 0.04) % 3, 32.0, mini[i] - Vector2(16.0, TORMENTA_MINI.get_height()))
 
 
-## Mira del rayo mientras el Mago apunta con el ratón: una línea morada a trazos
-## del largo del rayo y el aviso de que sale con el click. Sin sprite.
-static func mira(lienzo: CanvasItem, desde: Vector2, direccion: Vector2, largo: float) -> void:
-	var color := Color(0.8, 0.45, 1.0, 0.6)
-	lienzo.draw_dashed_line(desde, desde + direccion * largo, color, 3.0, 14.0)
-	lienzo.draw_circle(desde, 17.0, Color(color, 0.3))
-	lienzo.draw_string(ThemeDB.fallback_font, Vector2(-34.0, 46.0), "CLICK", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, color)
+## Mira del rayo mientras el Mago apunta con el ratón: el tramo con flechas
+## repetido a lo largo del rayo y girado con él, la diana al final y, bajo el
+## Mago, el ratón con el botón izquierdo encendido: sale con el click.
+static func mira(lienzo: CanvasItem, desde: Vector2, direccion: Vector2, largo: float, tiempo: float) -> void:
+	# Cada fotograma las flechas avanzan 4 px hacia la punta; como el dibujo se
+	# repite cada 16 px, los tramos empalman.
+	lienzo.draw_set_transform(desde, direccion.angle(), Vector2.ONE)
+	var tramos := int(largo / TRAMO)
+	for i in tramos:
+		_fotograma(lienzo, MIRA_TRAMO, int(tiempo / 0.08) % 4, TRAMO, Vector2(i * TRAMO, -8.0))
+	lienzo.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	lienzo.draw_circle(desde, 17.0, Color(0.8, 0.45, 1.0, 0.18))
+	_fotograma(lienzo, MIRA_DIANA, int(tiempo / 0.1) % 4, 32.0, desde + direccion * tramos * TRAMO - Vector2(16.0, 16.0))
+	lienzo.draw_texture(CLICK, Vector2(-8.0, 34.0))

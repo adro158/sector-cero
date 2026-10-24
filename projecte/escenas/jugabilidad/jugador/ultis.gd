@@ -54,6 +54,8 @@ var _origen := Vector2.ZERO
 var _mini: Array[Vector2] = []
 ## El Mago está apuntando el rayo con el ratón.
 var _apuntando := false
+## Segundos que lleva apuntando, para animar la mira.
+var _tiempo_mira := 0.0
 var _equipo: Node
 var _armas: Node
 
@@ -152,6 +154,7 @@ func lanzar(direccion := Vector2.ZERO) -> void:
 
 func _physics_process(delta: float) -> void:
 	if _apuntando:
+		_tiempo_mira += delta
 		# Si cambia de personaje mientras apunta, ya no es el Mago.
 		if _equipo.personaje_actual().ulti != "rayo":
 			_dejar_de_apuntar()
@@ -200,7 +203,7 @@ func _avisar() -> void:
 func _draw() -> void:
 	if _apuntando:
 		var hacia := (get_global_mouse_position() - global_position).normalized()
-		DibujoUltis.mira(self, RAYO_PECHO + hacia * RAYO_DELANTE, hacia, RAYO_LARGO - RAYO_DELANTE)
+		DibujoUltis.mira(self, RAYO_PECHO + hacia * RAYO_DELANTE, hacia, RAYO_LARGO - RAYO_DELANTE, _tiempo_mira)
 	match _efecto:
 		"rayo":
 			var desde := to_local(_origen) + RAYO_PECHO + _direccion * RAYO_DELANTE
