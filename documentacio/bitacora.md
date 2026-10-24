@@ -4090,3 +4090,16 @@ nadie.
 - **Prueba:** validación en headless y una captura con ventana con el
   Espadachín quieto en el minuto 4: el contorno apunta al enemigo y 11 de 16
   tajos dieron a algo.
+
+### En casa, publicada la v1.10 (24/10)
+
+Adam: «publícalo todo y sube la nueva versión». Novedades en
+`documentacio/novedades/v1.10.txt` (el lote 8, el tajo del Espadachín al más
+cercano, las mejoras C y F y NÚCLEO CERO más fácil en media). Antes se
+comprobó que el lanzador y el actualizador comparan las versiones por
+números, así que la v1.10 va después de la v1.9. Se borraron de la carpeta
+los restos del zip del lote 8, que no se suben (siguen en la rama
+`zips-lotes`). `main` y la etiqueta `v1.10` subidas; la Action acabó bien:
+los dos instaladores, los cuatro `.pck` y `version.json` (1.10, ejecutable
+mínimo 0.2), la web desplegada y la v1.10 como última release. **Se publicó
+sin volver a medir el equilibrio**, que Adam deja para más adelante.
