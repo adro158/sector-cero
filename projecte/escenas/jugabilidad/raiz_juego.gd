@@ -1,6 +1,7 @@
 extends Node2D
 
 const Dificultad := preload("res://globales/dificultad.gd")
+const TiempoGolpe := preload("res://escenas/jugabilidad/efectos/tiempo_golpe.gd")
 ## Segundos de negro entre la fase 1 y la 2.
 const DURACION_TRANSICION := 3.0
 ## La parte de su vida con la que vuelven los caídos al pasar a la fase 2.
@@ -37,6 +38,8 @@ func _ready() -> void:
 	$JefeFinal.derrotado.connect(_terminar_partida.bind(true))
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.juego_pausado.connect(_al_pausar)
+	# El frenazo de los momentos fuertes (tiempo_golpe.gd).
+	add_child(TiempoGolpe.new())
 
 
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
