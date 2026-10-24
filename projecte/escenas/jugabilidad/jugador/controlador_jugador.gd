@@ -18,8 +18,8 @@ extends CharacterBody2D
 ## La hoja del sprite tiene una fila por dirección y una columna por fotograma
 ## del ciclo de andar.
 const FOTOGRAMAS_ANDAR := 6
-## La de atacar, las mismas filas y 4 columnas. Sale un momento encima de la
-## de andar cada vez que el arma ataca (arma_disparada).
+## La de atacar, las mismas filas y 4 columnas. Sale un momento en lugar de la
+## de andar cada vez que el arma ataca (arma_disparada), si está quieto.
 const FOTOGRAMAS_ATAQUE := 4
 ## La sacudida de la cámara: los píxeles que se mueve como mucho y lo que se
 ## apaga por segundo. Un golpe de fuerza 6 mueve la cámara 6 px y dura 0,25 s.
@@ -153,8 +153,12 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		# al mismo ritmo, los pies patinarían.
 		_tiempo_andando += delta * velocity.length() / velocidad_animacion
 
-	# Atacando, la hoja de ataque mientras le queden fotogramas; las piernas
-	# siguen contando, para que al volver a andar no salten.
+	# Atacando quieto, la hoja de ataque mientras le queden fotogramas. Andando
+	# no: está dibujada de pie, y al correr paraba las piernas en cada golpe y
+	# se veía a tirones (Adam, 24/10). Andando, el ataque se ve por su efecto
+	# (el tajo, el pulso, el Ping).
+	if direccion != Vector2.ZERO:
+		_tiempo_ataque = -1.0
 	if _tiempo_ataque >= 0.0 and _hoja_ataque != null:
 		var fotograma := int(_tiempo_ataque / _segundos_ataque)
 		_tiempo_ataque += delta
