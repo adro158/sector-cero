@@ -147,8 +147,11 @@ Detalles que la interfaz tiene que respetar:
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
-  para el ranking), `trucos` (bool, si se usó el menú de desarrollador) y
-  `dificultad` (String: `facil`, `media` o `dificil`). Al cumplirse
+  para el ranking), `trucos` (bool, si se usó el menú de desarrollador),
+  `dificultad` (String: `facil`, `media` o `dificil`), `equipo` (Array: por
+  personaje, un diccionario con `personaje`, `caido` y `dano`, el daño de su
+  herramienta en la partida) y `donde` (String: dónde acabó). Las dos últimas
+  son para el resumen de la pantalla final; el ranking no las guarda. Al cumplirse
   `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
   minutos) deja de aparecer horda y llega el jefe, Kernel Panic, que invoca
   anillos de horda (`jefe_invoco`); mientras está, el reloj se para en las

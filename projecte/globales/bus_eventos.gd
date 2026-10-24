@@ -85,6 +85,8 @@ signal jefe_final_ataco(ataque: String)
 signal anclas_pendientes(personajes: Array)
 ## Al caer los tres personajes o al derrotar al jefe final. Claves de
 ## estadisticas: victoria (bool), tiempo (float, en segundos), nivel (int),
-## eliminados (int), personaje (String), trucos (bool) y dificultad (String).
+## eliminados (int), personaje (String), trucos (bool), dificultad (String),
+## equipo (Array: por personaje, un diccionario con personaje, caido y dano, el
+## daño de su herramienta en toda la partida) y donde (String: dónde acabó).
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)

@@ -56,6 +56,16 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	centro.add_child(datos)
 	caja.add_child(centro)
 
+	# Dónde acabó y qué hizo cada personaje (mejoras propuestas, jugabilidad 11 e
+	# interfaz 5). get(): una partida de una versión anterior no trae estas
+	# claves.
+	if not victoria and estadisticas.has("donde"):
+		caja.add_child(EstiloInterfaz.etiqueta("Caíste %s" % estadisticas.donde, 16, EstiloInterfaz.TEXTO))
+	if not estadisticas.get("equipo", []).is_empty():
+		caja.add_child(_resumen_equipo(estadisticas.equipo))
+	if estadisticas.get("trucos", false):
+		caja.add_child(EstiloInterfaz.etiqueta("Partida con el menú de desarrollador (F1): no cuenta para los récords ni el ranking", 13, EstiloInterfaz.TEXTO_SUAVE))
+
 	if not GestorGuardado.records_batidos.is_empty():
 		var nombres := []
 		for clave in GestorGuardado.records_batidos:
@@ -93,6 +103,49 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		_nombre.grab_focus()
 	else:
 		_boton_reintentar.grab_focus()
+
+
+## Una columna por personaje: su retrato (en gris si cayó) y la parte del daño
+## que hizo su herramienta, en una barra de su color. Enseña que cambiar de
+## personaje sirvió.
+func _resumen_equipo(equipo: Array) -> HBoxContainer:
+	var total := 0.0
+	for datos in equipo:
+		total += datos.dano
+	var fila := HBoxContainer.new()
+	fila.alignment = BoxContainer.ALIGNMENT_CENTER
+	fila.add_theme_constant_override("separation", 28)
+	for datos in equipo:
+		var personaje: DatosPersonaje = datos.personaje
+		var columna := VBoxContainer.new()
+		columna.add_theme_constant_override("separation", 4)
+		var retrato := TextureRect.new()
+		retrato.texture = personaje.retrato
+		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		retrato.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+		retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE
+		columna.add_child(retrato)
+		var parte: float = datos.dano / total if total > 0.0 else 0.0
+		var nombre := EstiloInterfaz.etiqueta("%s%s" % [personaje.nombre.to_upper(), "  (caído)" if datos.caido else ""], 13, personaje.color)
+		nombre.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		columna.add_child(nombre)
+		var barra := ProgressBar.new()
+		barra.custom_minimum_size = Vector2(150, 8)
+		barra.show_percentage = false
+		barra.max_value = 1.0
+		barra.value = parte
+		var fondo := StyleBoxFlat.new()
+		fondo.bg_color = Color(0.1, 0.15, 0.2)
+		var relleno := StyleBoxFlat.new()
+		relleno.bg_color = personaje.color
+		barra.add_theme_stylebox_override("background", fondo)
+		barra.add_theme_stylebox_override("fill", relleno)
+		columna.add_child(barra)
+		var cifra := EstiloInterfaz.etiqueta("%d %% del daño" % roundi(parte * 100.0), 13, EstiloInterfaz.TEXTO_SUAVE)
+		cifra.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		columna.add_child(cifra)
+		fila.add_child(columna)
+	return fila
 
 
 ## La partida entra en el top 10: se pide un nombre para el ranking. Enter en

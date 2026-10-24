@@ -119,6 +119,12 @@ func indice_actual() -> int:
 	return _indice
 
 
+## Cómo está cada personaje (lo mismo que trae equipo_cambiado). Para el
+## resumen de la pantalla final.
+func estado() -> Array:
+	return _estado()
+
+
 ## Si el juego está pausado porque se está eligiendo quién sigue.
 func eligiendo() -> bool:
 	return _eligiendo

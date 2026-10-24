@@ -112,4 +112,33 @@ func _terminar_partida(victoria: bool) -> void:
 		"personaje": $Jugador/CambioPersonaje.personaje_actual().nombre,
 		"trucos": _trucos,
 		"dificultad": Dificultad.actual(),
+		# Para el resumen de la pantalla final: el ranking no las guarda.
+		"equipo": _resumen_equipo(),
+		"donde": _donde(victoria),
 	})
+
+
+## Cada personaje: su DatosPersonaje, si cayó y el daño que hizo su
+## herramienta (la base y su evolución) en toda la partida. Enseña que cambiar
+## de personaje ha servido (el elemento diferencial).
+func _resumen_equipo() -> Array:
+	var danos: Dictionary = $ResistenciaMalware.dano_total()
+	var equipo := []
+	for estado in $Jugador/CambioPersonaje.estado():
+		var dano := 0.0
+		for arma in danos:
+			if arma == estado.personaje.arma or arma == estado.arma:
+				dano += danos[arma]
+		equipo.append({"personaje": estado.personaje, "caido": estado.caido, "dano": dano})
+	return equipo
+
+
+## Dónde ha acabado la partida, para la pantalla final.
+func _donde(victoria: bool) -> String:
+	if victoria:
+		return "NÚCLEO CERO derrotado"
+	if $Jefe.activo():
+		return "contra Kernel Panic"
+	if $JefeFinal.activo():
+		return "contra NÚCLEO CERO (%s)" % ["rootkit gigante", "núcleo armado", "amalgama"][$JefeFinal.forma()]
+	return "en la fase 2" if _director.fase() == 2 else "en la fase 1"
