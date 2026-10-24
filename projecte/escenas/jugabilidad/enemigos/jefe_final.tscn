@@ -15,7 +15,7 @@ script = ExtResource("1_jefe")
 [node name="Sprite" type="Sprite2D" parent="."]
 show_behind_parent = true
 script = ExtResource("4_destello")
-intensidad = 0.6
+intensidad = 0.45
 texture = ExtResource("2_dibujo")
 hframes = 6
 vframes = 3

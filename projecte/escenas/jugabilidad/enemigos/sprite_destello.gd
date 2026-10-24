@@ -15,7 +15,7 @@ const DURACION := 0.1
 ## siempre blancos (mejoras propuestas, sonido 15).
 const RESPIRO := 0.1
 
-## Lo blanco que se pone, de 0 a 1. Los jefes, 0,6: así no pierden su color.
+## Lo blanco que se pone, de 0 a 1. Los jefes, 0,45: así no pierden su color.
 @export var intensidad: float = 1.0
 
 ## Lo que le queda al destello, en segundos.
