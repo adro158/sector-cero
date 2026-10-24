@@ -40,7 +40,7 @@ const COMO_SE_JUEGA := [
 	["ULTI", "Cada personaje carga su ulti matando mientras juega: la barra amarilla bajo su vida. Llena, parpadea con una R: púlsala y la lanza. El Mago dispara un rayo morado enorme (apunta con el ratón y lanza con click), el Espadachín gira con sus hojas y al Segador le cae una tormenta de rayos."],
 	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
 	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
-	["CONTROLES", "Moverse: WASD, flechas o stick · Personaje siguiente: E, Tab o Y · Anterior: Q · Ulti: R o B · Equipo: C · Pausa: Esc, P o Start · Mejoras: click o 1, 2, 3 · Panel técnico: F3 · Menú de desarrollador: F1 (la partida deja de contar para el ranking)"],
+	["CONTROLES", "Moverse: WASD, flechas, stick o cruceta · Personaje siguiente: E, Tab, Y o RB · Anterior: Q o LB · Ulti: R o B · Equipo: C o Select · Pausa: Esc, P o Start · Mejoras: click, 1, 2, 3 o A · Panel técnico: F3 · Menú de desarrollador: F1 (la partida deja de contar para el ranking)"],
 ]
 
 var _ventana: ColorRect

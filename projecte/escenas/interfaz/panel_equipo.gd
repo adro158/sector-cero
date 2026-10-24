@@ -22,6 +22,9 @@ var _fichas: Array = []
 var _resistencia: Node
 ## Con el escudo de NÚCLEO CERO puesto, los personajes con anclas sin romper.
 var _anclas: Array = []
+## Si lo último que se tocó fue el mando: la línea de abajo enseña sus botones
+## en vez de las teclas.
+var _con_mando := false
 
 
 func _ready() -> void:
@@ -98,8 +101,18 @@ func _al_cambiar_equipo(personajes: Array, activo: int) -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if evento is InputEventKey and evento.pressed and not evento.echo and evento.physical_keycode == KEY_C:
+	# C o Select (la acción la añade teclas_antiguas.gd al empezar la partida).
+	if evento.is_action_pressed("ver_equipo"):
 		_panel.visible = not _panel.visible
+
+
+## Con qué se juega: el mando, o el teclado y el ratón. _input, y no
+## _unhandled_input, para enterarse aunque otro se quede el evento.
+func _input(evento: InputEvent) -> void:
+	if evento is InputEventJoypadButton or (evento is InputEventJoypadMotion and absf(evento.axis_value) > 0.5):
+		_con_mando = true
+	elif evento is InputEventKey or evento is InputEventMouseButton:
+		_con_mando = false
 
 
 func _process(delta: float) -> void:
@@ -125,7 +138,7 @@ func _escribir_linea() -> void:
 	elif _espera > 0.0:
 		cambio = "cambio en %d s" % ceili(_espera)
 	else:
-		cambio = "[Q] %s  ·  %s [E]" % [_nombre(anterior), _nombre(siguiente)]
+		cambio = "[%s] %s  ·  %s [%s]" % [_boton("Q", "LB"), _nombre(anterior), _nombre(siguiente), _boton("E", "RB")]
 	# Con el escudo de NÚCLEO CERO, de quién son las anclas que quedan: así se
 	# sabe a quién cambiar sin fiarse solo del color.
 	if not _anclas.is_empty():
@@ -133,7 +146,7 @@ func _escribir_linea() -> void:
 		for personaje in _anclas:
 			nombres.append(personaje.nombre.to_upper())
 		cambio = "ANCLAS: %s   %s" % [", ".join(nombres), cambio]
-	var ulti := "      [R] ¡ULTI!" if _ulti(_activo) >= 1.0 else ""
+	var ulti := "      [%s] ¡ULTI!" % _boton("R", "B") if _ulti(_activo) >= 1.0 else ""
 	# Lo que resiste el malware a su herramienta, en cuanto pasa de cero: es lo
 	# que dice cuándo conviene cambiar.
 	var resiste := ""
@@ -141,7 +154,7 @@ func _escribir_linea() -> void:
 	if resistencia > 0.0:
 		resiste = " (resiste %d %%)" % roundi(resistencia * 100.0)
 	# Con el escudo, sin «[C] equipo»: si no, no cabe.
-	var equipo := "" if not _anclas.is_empty() else "      [C] equipo"
+	var equipo := "" if not _anclas.is_empty() else "      [%s] equipo" % _boton("C", "Select")
 	_linea.text = "%s · %s%s      %s%s%s" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, resiste, cambio, ulti, equipo]
 	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
@@ -182,6 +195,11 @@ func _vivo_desde(paso: int) -> int:
 
 func _ulti(indice: int) -> float:
 	return _ultis[indice] if indice < _ultis.size() else 0.0
+
+
+## La tecla o, si se juega con mando, el botón.
+func _boton(tecla: String, boton: String) -> String:
+	return boton if _con_mando else tecla
 
 
 func _nombre(indice: int) -> String:
