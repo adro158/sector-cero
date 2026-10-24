@@ -1,8 +1,9 @@
 extends Control
 
-## Menú de inicio: título, un resumen de cómo se juega, la mejor partida
-## guardada y los botones. Las reglas completas (personajes, mejoras y
-## enemigos) y el ranking están en sus propias ventanas. Enter empieza la partida y Esc sale.
+## Menú de inicio: el logo, los tres personajes, una línea de cómo se juega,
+## la mejor partida guardada y los botones. Las reglas completas (personajes,
+## mejoras y enemigos) y el ranking están en sus propias ventanas. Enter empieza
+## la partida y Esc sale.
 
 const PARTIDA := "res://escenas/juego.tscn"
 const PanelRanking := preload("res://escenas/interfaz/panel_ranking.gd")
@@ -11,12 +12,11 @@ const PanelVersiones := preload("res://escenas/interfaz/panel_versiones.gd")
 const SelectorDificultad := preload("res://escenas/menu_principal/selector_dificultad.gd")
 const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
+const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd")
 
-const RESUMEN := [
-	"Eres un proceso antivirus. Te mueves; tu herramienta ataca sola.",
-	"Derrota al jefe a los 10 minutos y, tras la fase 2, a NÚCLEO CERO a los 15.",
-	"El malware se adapta a tu herramienta: cambia de personaje con Q y E para sorprenderle.",
-]
+## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
+## panel de cuatro líneas, y el menú era casi todo texto.
+const RESUMEN := "Te mueves y tu herramienta ataca sola · El malware se adapta: cambia de personaje con Q y E"
 
 var _reglas: PanelReglas
 var _opciones: PanelOpciones
@@ -44,7 +44,10 @@ func _ready() -> void:
 	lema.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(lema)
 
-	caja.add_child(_panel_resumen())
+	caja.add_child(PersonajesMenu.new())
+	var resumen := EstiloInterfaz.etiqueta(RESUMEN, 15)
+	resumen.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(resumen)
 
 	var record := EstiloInterfaz.etiqueta(_texto_record(), 15, EstiloInterfaz.VICTORIA)
 	record.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -129,19 +132,6 @@ func _mostrar_version() -> void:
 		_version.add_theme_color_override("font_color", EstiloInterfaz.VICTORIA)
 	# Al acabar la descarga el juego se reinicia: no se puede empezar partida.
 	_jugar_boton.disabled = estado == Actualizador.Estado.DESCARGANDO
-
-
-func _panel_resumen() -> PanelContainer:
-	var panel := PanelContainer.new()
-	var caja := VBoxContainer.new()
-	caja.add_theme_constant_override("separation", 6)
-	panel.add_child(caja)
-
-	caja.add_child(EstiloInterfaz.etiqueta("CÓMO SE JUEGA", 20, EstiloInterfaz.NEON))
-	for linea in RESUMEN:
-		caja.add_child(EstiloInterfaz.etiqueta(linea, 15))
-	caja.add_child(EstiloInterfaz.etiqueta("En REGLAS tienes qué hace cada personaje, cada mejora y cada enemigo.", 14, EstiloInterfaz.TEXTO_SUAVE))
-	return panel
 
 
 func _texto_record() -> String:
