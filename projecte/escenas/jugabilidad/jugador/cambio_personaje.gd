@@ -8,8 +8,8 @@ extends Node
 ##
 ## El nodo Salud del jugador es siempre la vida del activo: al cambiar, se
 ## guarda la suya aquí y Salud pasa a tener la del que entra. Cuando el activo
-## cae, el juego se pausa y se elige quién sigue entre los que quedan; la
-## partida se pierde cuando han caído todos.
+## cae, el juego se pausa, se deshace (efectos_jugador.gd) y se elige quién
+## sigue entre los que quedan; la partida se pierde cuando han caído todos.
 
 ## Han caído todos los personajes: se acaba la partida.
 signal equipo_derrotado
@@ -52,6 +52,8 @@ var _caidos: Array[bool] = []
 var _eligiendo := false
 
 @onready var _salud: Salud = get_parent().get_node("Salud")
+@onready var _sprite: Sprite2D = get_parent().get_node("Sprite")
+@onready var _efectos: Node2D = get_parent().get_node("EfectosJugador")
 
 
 func _ready() -> void:
@@ -102,9 +104,8 @@ func cambiar(paso: int = 1) -> bool:
 	_aplicar()
 
 	# Destello al cambiar, para que se note que es otro personaje.
-	var sprite: Sprite2D = get_parent().get_node("Sprite")
-	sprite.modulate = Color(2.0, 2.0, 2.0)
-	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.3)
+	_sprite.modulate = Color(2.0, 2.0, 2.0)
+	create_tween().tween_property(_sprite, "modulate", Color.WHITE, 0.3)
 	return true
 
 
@@ -186,7 +187,10 @@ func evolucionar(base: DatosArma, nueva: DatosArma) -> void:
 		return
 	_armas[cual] = nueva
 	BusEventos.arma_evolucionada.emit(nueva)
+	# El efecto, solo si es el que juega: el del banquillo no está en pantalla
+	# (ya avisan el HUD y las partículas).
 	if cual == _indice:
+		_efectos.evolucion(personajes[cual].color)
 		_aplicar()
 
 
@@ -194,13 +198,20 @@ func _al_caer() -> void:
 	_vidas[_indice] = 0.0
 	_caidos[_indice] = true
 	_avisar_equipo()
-	if not _caidos.has(false):
-		equipo_derrotado.emit()
-		return
-	# La pausa la pone la jugabilidad, como al subir de nivel: la interfaz solo
-	# enseña quién queda y avisa del elegido con personaje_elegido.
+	# La pausa la pone la jugabilidad, como al subir de nivel, y es suya hasta
+	# que se elige quién sigue o se acaba la partida: el menú de pausa no la
+	# quita (raiz_juego.gd mira eligiendo()).
 	_eligiendo = true
 	get_tree().paused = true
+	# Con el juego parado, el personaje se deshace (el efecto se anima en
+	# pausa) y al acabar se avisa. El temporizador corre en pausa.
+	var ultimo := not _caidos.has(false)
+	_sprite.visible = false
+	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, ultimo)).timeout
+	if ultimo:
+		equipo_derrotado.emit()
+		return
+	# La interfaz enseña quién queda y avisa del elegido con personaje_elegido.
 	BusEventos.personaje_caido.emit(_estado(), _indice)
 
 
@@ -209,7 +220,9 @@ func _al_elegir_personaje(indice: int) -> void:
 		return
 	_eligiendo = false
 	_entrar(indice)
+	_sprite.visible = true
 	_salud.proteger(proteccion_al_entrar)
+	_efectos.escudo(personajes[indice].color, proteccion_al_entrar)
 	_aplicar()
 	get_tree().paused = false
 
