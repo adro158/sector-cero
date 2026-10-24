@@ -4103,3 +4103,36 @@ los restos del zip del lote 8, que no se suben (siguen en la rama
 los dos instaladores, los cuatro `.pck` y `version.json` (1.10, ejecutable
 mínimo 0.2), la web desplegada y la v1.10 como última release. **Se publicó
 sin volver a medir el equilibrio**, que Adam deja para más adelante.
+
+### En casa, correr fluido (24/10)
+
+Adam: «cuando estoy corriendo con los personajes la animación se ve como
+lagueada» y «quiero que el mago cuando tire las bolas haga la animación con
+el arma».
+
+- **Dos causas:**
+  - Su pantalla va a **239 Hz** y la física a 60. El jugador avanzaba cada 4
+    fotogramas mientras la cámara (con suavizado) se movía en todos, así que
+    el personaje bailaba sobre el fondo. Medido con ventana, corriendo: la
+    barra de vida oscilaba entre los píxeles 644 y 651 de la pantalla.
+  - Las hojas de ataque del lote 7 están **dibujadas de pie**. Al correr,
+    cada ataque paraba las piernas 0,2 s (con el Espadachín, un tercio del
+    tiempo). Y la del Mago apenas cambia: solo brilla el cristal.
+  - No se pueden juntar las piernas de andar con la parte de arriba de
+    atacar: medido en las hojas, al andar se mueve todo el cuerpo.
+- **Decisiones de Adam** (ventana de preguntas): interpolación y que el
+  ataque no pare las piernas; el Mago, con hojas nuevas pedidas a Claude
+  chat (lote 11 de `prompt_assets.md`: atacar corriendo, los tres
+  personajes, y el ataque del Mago con el bastón).
+- **Hecho:**
+  - **Interpolación de física** solo para el jugador y sus hijos
+    (`raiz_juego.gd`), comprobada antes en la documentación de Godot y con la
+    API de 4.7.2. Lo demás no se interpola: se mueve también fuera de la
+    física o reordena sus MultiMesh. La cámara pasa a seguirle en la física
+    (si no, Godot la cambia solo y avisa). Por código, para que llegue con el
+    `.pck`, y se quita al salir de la partida. Con ella, la barra se queda en
+    el mismo píxel los 60 fotogramas.
+  - **El ataque solo sale quieto** (`controlador_jugador.gd`); corriendo se
+    ve por su efecto.
+- **Pruebas:** import, `--quit-after` y el recorrido en headless; la medida
+  con ventana, con y sin interpolación.

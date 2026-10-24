@@ -150,6 +150,9 @@ en Godot):
   todo (pisotón, ráfaga, furias, escudo).
 - **El lanzador se actualiza solo:** uno instalado con una versión anterior
   tiene que pasar a la v1.10 sin hacer nada.
+- **Correr** (en `main`, 24/10): si el personaje ya se ve fluido en la
+  pantalla de 239 Hz, y si al correr se echa de menos la animación de ataque
+  (hasta que lleguen las hojas del lote 11).
 - **Los efectos del lote 8:** si la caída antes del panel (0,64 s)
   y la derrota antes de la pantalla final (0,96 s) se sienten bien o se hacen
   largas; si el golpe rojo tapa demasiado al personaje; la mira del Mago y el
@@ -202,7 +205,8 @@ carpeta de datos del juego.
     - **Los dibujos de D:** el prompt de los lotes 8 a 10 está al final de
       `prompt_assets.md`; Adam se lo pasa a Claude (chat). El 8 ya está en el
       juego (24/10); faltan el 9 (interfaz) y el 10 (poses de Kernel Panic y
-      reposo de los personajes).
+      reposo de los personajes). Y el 11 (atacar corriendo y el ataque del Mago
+      con el bastón), pedido el 24/10.
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
     «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
     guía y se podrían sacar las furias a su script; y lo que eligió Claude en
