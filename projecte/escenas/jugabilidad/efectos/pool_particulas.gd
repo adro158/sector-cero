@@ -1,16 +1,19 @@
 extends Node2D
 
-## Partículas: chispas cuadradas que salen disparadas, frenan y se apagan. Las
+## Partículas: chispas que salen disparadas, frenan y se apagan. Las
 ## sueltan el malware al morir (de su color), el jugador al recibir daño y al
 ## subir de nivel.
 ##
 ## Mismo patrón que la horda: arrays de tamaño fijo y un MultiMesh que las
 ## dibuja todas de una vez. Cada partícula lleva su propio color en el MultiMesh
-## (use_colors), que es lo que permite que cada explosión sea de un color.
+## (use_colors), que es lo que permite que cada explosión sea de un color: la
+## chispa está en grises y el color la tiñe.
 
 const MAXIMO_PARTICULAS := 1200
+## Una chispa de 8x8 con el centro blanco.
+const CHISPA := preload("res://medios/sprites/efectos/particula.png")
 
-@export var tamano: float = 4.0
+@export var tamano: float = 8.0
 @export var duracion: float = 0.45
 ## Fracción de la velocidad que se pierde por segundo.
 @export var frenado: float = 3.5
@@ -58,6 +61,8 @@ func _preparar_multimesh() -> void:
 	multimesh.instance_count = MAXIMO_PARTICULAS
 	multimesh.visible_instance_count = 0
 	_malla.multimesh = multimesh
+	_malla.texture = CHISPA
+	_malla.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 ## Suelta cantidad partículas en todas direcciones desde posicion.
