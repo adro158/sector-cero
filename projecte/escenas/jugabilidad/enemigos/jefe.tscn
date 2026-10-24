@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://escenas/jugabilidad/enemigos/espectaculo_jefe.gd" id="7_efectos"]
 
 [node name="Jefe" type="Node2D" groups=["objetivos"]]
+texture_filter = 1
 script = ExtResource("1_jefe")
 
 [node name="Rabia" type="Sprite2D" parent="."]

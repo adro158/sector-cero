@@ -9,7 +9,8 @@ extends Node2D
 ## Persigue al jugador despacio y hace daño por contacto. Cada cierto tiempo se
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
 ## jugador: se puede esquivar si se reacciona al aviso. Y cada intervalo de
-## invocación se para, late en morado y saca un anillo de horda a su alrededor:
+## invocación se para, late en morado mientras dibuja un círculo de runas en el
+## suelo y saca un anillo de horda a su alrededor:
 ## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
 ## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
@@ -50,7 +51,7 @@ const DibujoJefeFinal := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe
 
 @export_group("Invocación")
 @export var intervalo_invocacion: float = 15.0
-## Lo que dura el aviso (late en morado y crece el anillo) antes de invocar.
+## Lo que dura el aviso (late en morado y se dibuja el círculo) antes de invocar.
 @export var duracion_invocacion: float = 1.0
 ## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
 ## sin ella.
@@ -86,6 +87,10 @@ const RITMO_FURIA: Array[float] = [1.0, 1.25, 1.5]
 
 const FOTOGRAMAS_RABIA := 4
 const SEGUNDOS_POR_FOTOGRAMA_RABIA := 0.1
+## El círculo de runas de la invocación: 8 fotogramas de 320x320, ya pintados,
+## que se cierra a 140 px de radio (radio_invocacion).
+const INVOCACION := preload("res://medios/sprites/efectos/invocacion_kernel_panic.png")
+const FOTOGRAMAS_INVOCACION := 8
 
 var _activo := false
 var _estado := Estado.PERSEGUIR
@@ -239,7 +244,7 @@ func _physics_process(delta: float) -> void:
 			if _tiempo_estado >= duracion_embestida:
 				_cambiar_estado(Estado.PERSEGUIR)
 		Estado.INVOCAR:
-			# Quieto, latiendo en morado mientras crece el anillo.
+			# Quieto, latiendo en morado mientras se dibuja el círculo.
 			var latido := 0.5 + 0.5 * sin(_tiempo_estado * 20.0)
 			_sprite.modulate = Color.WHITE.lerp(color_invocacion, latido)
 			queue_redraw()
@@ -319,7 +324,7 @@ func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
 	_sprite.modulate = color_aviso if nuevo == Estado.AVISO else Color.WHITE
-	# Para borrar el anillo de la invocación al terminarla.
+	# Para borrar el círculo de la invocación al terminarla.
 	queue_redraw()
 
 
@@ -346,10 +351,12 @@ func _draw() -> void:
 	if _estado == Estado.AVISO:
 		DibujoJefeFinal.aviso_linea(self, Vector2.ZERO, _direccion, velocidad_embestida * duracion_embestida,
 			(radio + 16.0) * 2.0, _tiempo_estado)
-	# El anillo de la invocación crece hasta donde saldrán los enemigos.
+	# El círculo de la invocación se va dibujando en el suelo, debajo de él (este
+	# _draw va antes que el Sprite), hasta cerrarse donde saldrán los enemigos.
+	# Sus fotogramas se reparten lo que dure la invocación.
 	if _estado == Estado.INVOCAR:
-		var avance := _tiempo_estado / duracion_invocacion
-		draw_arc(Vector2.ZERO, radio_invocacion * avance, 0.0, TAU, 48, Color(color_invocacion, 0.8), 4.0)
+		var fotograma := mini(int(_tiempo_estado / duracion_invocacion * FOTOGRAMAS_INVOCACION), FOTOGRAMAS_INVOCACION - 1)
+		draw_texture_rect_region(INVOCACION, Rect2(-160.0, -160.0, 320.0, 320.0), Rect2(fotograma * 320.0, 0.0, 320.0, 320.0))
 
 
 func _al_morir() -> void:
