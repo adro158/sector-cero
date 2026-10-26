@@ -19,7 +19,8 @@ extends CharacterBody2D
 ## del ciclo de andar.
 const FOTOGRAMAS_ANDAR := 6
 ## La de atacar, las mismas filas y 4 columnas. Sale un momento encima de la
-## de andar cada vez que el arma ataca (arma_disparada).
+## de andar cada vez que el arma ataca (arma_disparada), si está quieto.
+## Andando sale la de atacar corriendo, que tiene las 6 columnas de andar.
 const FOTOGRAMAS_ATAQUE := 4
 ## La sacudida de la cámara: los píxeles que se mueve como mucho y lo que se
 ## apaga por segundo. Un golpe de fuerza 6 mueve la cámara 6 px y dura 0,25 s.
@@ -35,6 +36,7 @@ var _efecto_golpe: Tween
 ## Las hojas del personaje que se lleva (las pone cambio_personaje.gd).
 var _hoja_andar: Texture2D
 var _hoja_ataque: Texture2D
+var _hoja_correr_ataque: Texture2D
 var _segundos_ataque := 0.05
 ## Segundos desde que empezó el ataque que se está dibujando (-1: ninguno).
 var _tiempo_ataque := -1.0
@@ -63,10 +65,11 @@ func _ready() -> void:
 	BusEventos.jefe_final_aparecio.connect(func(): sacudir(10.0))
 
 
-## Las hojas de andar y de atacar del personaje que entra.
-func poner_hojas(andar: Texture2D, ataque: Texture2D, segundos: float) -> void:
+## Las hojas de andar, de atacar y de atacar corriendo del personaje que entra.
+func poner_hojas(andar: Texture2D, ataque: Texture2D, correr_ataque: Texture2D, segundos: float) -> void:
 	_hoja_andar = andar
 	_hoja_ataque = ataque
+	_hoja_correr_ataque = correr_ataque
 	_segundos_ataque = segundos
 	_tiempo_ataque = -1.0
 	_poner_hoja(andar, FOTOGRAMAS_ANDAR)
@@ -153,19 +156,30 @@ func _animar(direccion: Vector2, delta: float) -> void:
 		# al mismo ritmo, los pies patinarían.
 		_tiempo_andando += delta * velocity.length() / velocidad_animacion
 
-	# Atacando, la hoja de ataque mientras le queden fotogramas; las piernas
-	# siguen contando, para que al volver a andar no salten.
+	# La columna de las piernas: cuenta siempre, también atacando, para que al
+	# acabar el ataque no salten.
+	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
+
+	# Atacando, mientras le queden fotogramas al ataque (4 de _segundos_ataque).
 	if _tiempo_ataque >= 0.0 and _hoja_ataque != null:
 		var fotograma := int(_tiempo_ataque / _segundos_ataque)
 		_tiempo_ataque += delta
 		if fotograma < FOTOGRAMAS_ATAQUE:
-			_poner_hoja(_hoja_ataque, FOTOGRAMAS_ATAQUE)
-			$Sprite.frame = _fila_ataque * FOTOGRAMAS_ATAQUE + fotograma
+			if direccion != Vector2.ZERO and _hoja_correr_ataque != null:
+				# Andando: la de atacar corriendo, en la columna de las piernas y
+				# en la fila hacia donde corre, para que el cuerpo no gire a mitad
+				# de paso. El tajo del Espadachín (aura_arma.gd) sigue yendo al
+				# enemigo más cercano.
+				_poner_hoja(_hoja_correr_ataque, FOTOGRAMAS_ANDAR)
+				$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
+			else:
+				# Quieto: la de atacar, hacia donde va el ataque.
+				_poner_hoja(_hoja_ataque, FOTOGRAMAS_ATAQUE)
+				$Sprite.frame = _fila_ataque * FOTOGRAMAS_ATAQUE + fotograma
 			return
 		_tiempo_ataque = -1.0
 	if _hoja_andar != null:
 		_poner_hoja(_hoja_andar, FOTOGRAMAS_ANDAR)
-	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
 
 
