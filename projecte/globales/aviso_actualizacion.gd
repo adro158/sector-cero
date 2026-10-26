@@ -28,6 +28,7 @@ func _ready() -> void:
 
 	_panel = PanelContainer.new()
 	_panel.theme = EstiloInterfaz.tema()
+	_panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(EstiloInterfaz.VICTORIA, 16))
 	# Arriba en el centro, debajo del reloj de la partida.
 	_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)

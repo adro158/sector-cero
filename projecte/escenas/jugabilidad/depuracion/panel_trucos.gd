@@ -35,6 +35,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	theme = EstiloInterfaz.tema()
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_raiz = get_tree().get_first_node_in_group("jugador").get_parent()
 	_jugador = _raiz.get_node("Jugador")
 

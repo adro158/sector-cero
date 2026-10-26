@@ -50,12 +50,10 @@ static func vestir(tarjeta: Button, personaje: DatosPersonaje) -> Array:
 	nombre.add_theme_color_override("font_color", personaje.color)
 	nivel.add_theme_color_override("font_color", personaje.color)
 
-	# El fondo, oscuro de su color, y el borde, grueso y de su color.
-	var estilo := EstiloInterfaz.caja(personaje.color, 10)
-	estilo.bg_color = personaje.color.darkened(0.82)
-	estilo.set_border_width_all(4)
-	var encima := estilo.duplicate() as StyleBoxFlat
-	encima.bg_color = personaje.color.darkened(0.7)
+	# El panel de borde grueso (lote 9), teñido de su color: el fondo sale
+	# oscuro de su color, y con el ratón encima, un poco más claro.
+	var estilo := EstiloInterfaz.caja_evolucion(personaje.color, false)
+	var encima := EstiloInterfaz.caja_evolucion(personaje.color, true)
 	tarjeta.add_theme_stylebox_override("normal", estilo)
 	for estado in ["hover", "focus", "pressed"]:
 		tarjeta.add_theme_stylebox_override(estado, encima)

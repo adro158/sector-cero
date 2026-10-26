@@ -42,6 +42,8 @@ var _avisos: PanelContainer
 
 func _ready() -> void:
 	theme = EstiloInterfaz.tema()
+	# Sin suavizar, como los paneles y botones (lote 9): lo heredan los hijos.
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Los paneles de la escena (mejoras, pausa, pantalla final) van encima de lo
 	# que se crea aquí: si no, el nivel, el reloj y la columna de mejoras salían

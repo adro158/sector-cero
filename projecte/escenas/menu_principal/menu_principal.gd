@@ -29,6 +29,9 @@ var _jugar_boton: Button
 
 func _ready() -> void:
 	theme = EstiloInterfaz.tema()
+	# Sin suavizar: los paneles y botones son de pixel art (lote 9) y lo heredan
+	# todos los hijos.
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_crear_fondo()
 
 	var centro := CenterContainer.new()

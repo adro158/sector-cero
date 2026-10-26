@@ -24,6 +24,7 @@ func _ready() -> void:
 	visible = false
 
 	theme = EstiloInterfaz.tema()
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_theme_stylebox_override("normal", EstiloInterfaz.caja(COLOR, 12))
 	add_theme_color_override("font_color", COLOR)
 	add_theme_font_size_override("font_size", 14)

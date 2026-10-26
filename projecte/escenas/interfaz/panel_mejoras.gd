@@ -141,7 +141,7 @@ func _al_subir_nivel(opciones: Array) -> void:
 ## brillo 0 es el color del personaje y 1, blanco.
 func _pintar_bordes(brillo: float) -> void:
 	for borde in _bordes:
-		borde[0].border_color = borde[1].lerp(Color.WHITE, brillo)
+		borde[0].modulate_color = borde[1].lerp(Color.WHITE, brillo)
 
 
 ## "NUEVA", "NIVEL 1 → 2" o "EVOLUCIÓN". Estática porque la usa también la
