@@ -23,6 +23,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Aparición, furia, muerte y barra de vida de Kernel Panic, el jefe del minuto 10 | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Anclas y cadenas del escudo de NÚCLEO CERO, una por personaje | Hechas con IA (Claude) | Ver más abajo |
 | Ataques de los tres personajes (normal y evolucionado) y tajo en cono del Firewall | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
+| Atacar corriendo (los tres personajes, normal y evolucionado) y ataque quieto del Mago rehecho | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Efectos de las herramientas (golpes, pulsos, anillos de alcance, impacto del Ping y chispa del robo de vida) | Hechos con IA (Claude) | Ver más abajo |
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
@@ -147,6 +148,15 @@ scripts no forman parte del repositorio.
   con la evolucionada, que tienen el mismo cuerpo), se mueve píxel a píxel y
   se le añaden los brillos y la estela. Los personajes siguen siendo los de
   sus hojas originales.
+- **Atacar corriendo y el ataque del Mago** (lote 11, 24/10/2026, hecho por
+  Adam con Claude en el chat e integrado el 26/10): una hoja de 6 x 8
+  fotogramas de 64x72 por personaje, normal y con el arma evolucionada
+  (`escenas/jugabilidad/jugador/*_correr_ataque.png`), en la que la columna c
+  es la c de andar (cuerpo, capa, piernas y sombra, sacados con los mismos
+  scripts que las hojas de andar) con los brazos y el arma del golpe; y el
+  ataque quieto del Mago rehecho, con los mismos nombres y fotogramas
+  (adelanta el bastón, se carga el cristal y suelta la bola morada). Los
+  dibujó Claude con un script de Python (numpy, scipy y Pillow).
 - **Anclas del escudo por personaje** (`medios/sprites/jefe_final/`,
   21/10/2026, de la misma forma; lote 2): las mismas anclas y cadenas del
   escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el

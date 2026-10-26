@@ -4103,3 +4103,50 @@ los restos del zip del lote 8, que no se suben (siguen en la rama
 los dos instaladores, los cuatro `.pck` y `version.json` (1.10, ejecutable
 mínimo 0.2), la web desplegada y la v1.10 como última release. **Se publicó
 sin volver a medir el equilibrio**, que Adam deja para más adelante.
+### En la nube, el lote 11: atacar corriendo (26/10)
+
+Adam, desde el móvil, con Claude Code en la nube (rama
+`claude/beautiful-maxwell-uijhtj`, puesta al día con `main`). Las hojas de
+ataque del lote 7 están dibujadas de pie: al atacar corriendo, las piernas se
+paraban un momento. Adam hizo las hojas nuevas con Claude en el chat (lote
+11). El zip, en la rama `zips-lotes`, se descomprimió en la raíz del repo; solo
+se commitean los PNG de `projecte/` (las vistas previas, `referencia/`,
+`herramienta/`, `LEEME.txt` y el prompt no). Primero, un plan corto que Adam
+aprobó; Godot 4.7.2 para Linux, el que ya estaba bajado en la sesión.
+
+- **Las hojas:** para los tres personajes, normal y evolucionado,
+  `*_8_direcciones*_correr_ataque.png`, de 6 x 8 fotogramas de 64x72: la
+  columna c es la c de andar (se comprobó comparándolas: solo cambian los
+  brazos, el arma y su estela). Y el ataque quieto del Mago rehecho, con los
+  mismos nombres y fotogramas (0,05 s): adelanta el bastón, se carga el
+  cristal, suelta la bola morada y vuelve.
+- **Cómo:** dos campos nuevos en `DatosPersonaje` (`hoja_correr_ataque` y
+  `hoja_correr_ataque_evolucion`), rellenos en los tres `.tres`;
+  `cambio_personaje.gd` los pasa al jugador con las otras hojas
+  (`poner_hojas`, la normal o la evolucionada). En `controlador_jugador.gd`,
+  la columna de las piernas se calcula siempre, y durante el ataque (4
+  fotogramas de `segundos_ataque`):
+  - andando, la hoja de atacar corriendo, en la fila hacia donde corre y en
+    la columna de las piernas
+  - quieto, la de atacar de siempre, en la fila del ataque
+  - al acabar, la de andar en la misma columna.
+- **Decisión (propuesta de Adam, aceptada):** corriendo, la fila es la de las
+  piernas, no la del enemigo más cercano: si no, el cuerpo giraría a mitad de
+  paso. El tajo del Espadachín (el cono y el daño) sigue yendo al enemigo.
+  Si se para o arranca a mitad del ataque, cambia de una hoja a la otra en
+  ese momento.
+- **Sin señales ni clases globales nuevas** y sin tocar `project.godot`: no
+  hace falta subir `EJECUTABLE_MINIMO`. No cambia el equilibrio.
+- **Pruebas:** import, `--quit-after` (solo el aviso conocido de la música
+  del menú) y la partida cargada en headless. Con ventana, un script temporal
+  (borrado) con los tres personajes, normal y evolucionado: corriendo abajo,
+  a la derecha y arriba a la izquierda, atacando a mitad, y quietos. Apuntaba
+  cada fotograma la hoja y la columna: ninguno con la columna distinta de la
+  de las piernas ni con otra fila, y al empezar y al acabar el ataque la
+  columna sigue igual (por ejemplo, C3 → 3 de andar). Quieto sale del 0 al 3
+  y vuelve al 0 de andar. Capturas de cada caso centradas en el personaje.
+- **Una partida del simulador** (media, en una copia aparte), sin errores:
+  victoria en 18:15. Al salir, solo el aviso conocido de los sonidos.
+- **Siguiente paso:** que Adam lo pruebe jugando (está en «Probar jugando» de
+  `requisitos_y_estado.md`) y escribir las novedades de la próxima versión
+  antes de subir su etiqueta.

@@ -104,6 +104,11 @@ dibujos (bitácora, sesión 18, «En casa, las mejoras C y F»), el lote 8 de
 dibujos («En casa, el lote 8») y el tajo del Espadachín al enemigo más
 cercano. Novedades en `documentacio/novedades/v1.10.txt`.
 
+**En `main` sin publicar** (26/10, en la nube): el lote 11, atacar corriendo
+sin que se paren las piernas y el ataque quieto del Mago rehecho (bitácora,
+sesión 18, «En la nube, el lote 11»). Sin novedades escritas aún para la
+próxima versión: escribirlas antes de subir su etiqueta.
+
 **Se publicó sin volver a medir el equilibrio** (Adam lo dejó para más
 adelante): el tiempo de golpe y la sacudida cambian un poco las partidas, y
 el Espadachín apunta solo (el bot ya apuntaba, así que debería moverse
@@ -136,6 +141,10 @@ en Godot):
 - **El Espadachín:** desde el 24/10 el cono va solo al enemigo más cercano;
   si ahora se nota útil, y si el robo de vida se nota (como mucho 1,5 por
   golpe; 2 con la evolución).
+- **Atacar corriendo** (lote 11): que se note que ataca sin que las piernas
+  se paren ni salten al empezar y al acabar, con los tres y con el arma
+  evolucionada; y el ataque quieto nuevo del Mago (adelanta el bastón y
+  suelta la bola).
 - **Las animaciones de ataque** de los tres personajes y las armas
   evolucionadas en el personaje.
 - **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la

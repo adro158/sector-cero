@@ -264,7 +264,17 @@ andar, una de atacar (4 columnas por las mismas 8 filas, normal y
 evolucionada, en su `DatosPersonaje`). Cuando el arma ataca
 (`arma_disparada`), `controlador_jugador.gd` cambia el sprite a esa hoja
 durante sus 4 fotogramas (0,05 s cada uno; el Segador, 0,06) y vuelve a la de
-andar; como la columna 0 es la de andar, no se nota el cambio. Solo
+andar; como la columna 0 es la de andar, no se nota el cambio. Esa hoja está
+dibujada de pie, así que desde el 26/10 (lote 11) solo sale quieto, hacia
+donde va el ataque. Andando sale otra, la de atacar corriendo
+(`hoja_correr_ataque` y `hoja_correr_ataque_evolucion` en `DatosPersonaje`,
+que `cambio_personaje.gd` pasa al jugador con las demás en `poner_hojas`):
+tiene las 6 columnas de andar, y la columna c es la c de andar con los brazos
+y el arma del golpe. El controlador la pone en la fila hacia donde corre y en
+la columna de las piernas, que siguen contando durante el ataque: las piernas
+no se paran y, al acabar, la hoja de andar sigue en la misma columna. Corriendo
+el cuerpo no gira hacia el enemigo (giraría a mitad de paso), pero el tajo del
+Espadachín sí va hacia él. Solo
 dispara la del personaje activo y se cambia con E (siguiente) o Q (anterior),
 con 10 s de espera. Los tres hacen un daño por segundo parecido; los diferencia
 dónde pegan. Cada uno tiene su vida (Espadachín 120, Segador 100, Mago 90): el
