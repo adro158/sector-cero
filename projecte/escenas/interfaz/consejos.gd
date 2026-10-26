@@ -1,9 +1,9 @@
 extends Label
 
-## Consejos en las primeras partidas: una línea pequeña encima de la del equipo,
-## una sola vez por partida cada uno, cuando pasa lo que explican (moverse, los
-## fragmentos, la adaptación del malware, la ulti, el cofre, la jaula y el
-## escudo). Quien no lee las reglas (el tribunal jugando un par de minutos) se
+## Consejos en las primeras partidas: una línea pequeña encima de la barra del
+## equipo, una sola vez por partida cada uno, cuando pasa lo que explican
+## (moverse, los fragmentos, la adaptación del malware, la ulti, el cofre, la
+## jaula y el escudo). Quien no lee las reglas (el tribunal jugando un par de minutos) se
 ## perdía el elemento diferencial (mejoras propuestas, jugabilidad 10).
 ##
 ## Salen en las PRIMERAS_PARTIDAS primeras partidas y con la opción
@@ -32,8 +32,8 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	offset_left = -560.0
 	offset_right = 560.0
-	# Encima de la línea del equipo (panel_equipo.gd), que está a -44.
-	offset_top = -78.0
+	# Encima de la barra del equipo (barra_equipo.gd), que empieza a -158.
+	offset_top = -186.0
 	horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modulate.a = 0.0

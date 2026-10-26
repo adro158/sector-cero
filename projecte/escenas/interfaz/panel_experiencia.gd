@@ -1,8 +1,11 @@
-extends PanelContainer
+extends Control
 
-## Nivel y experiencia, arriba a la izquierda del HUD. La barra se llena poco a
-## poco en lugar de saltar, y al subir de nivel destellan la barra y la
-## etiqueta del nivel, que además da un pequeño salto.
+## Nivel y experiencia, arriba a la izquierda del HUD: el marco del lote 9,
+## con el número del nivel en el cuadro de la izquierda y la barra a la
+## derecha, y «EXP 3 / 25» debajo. Se dibuja como la barra de los jefes
+## (barra_jefe.gd): el relleno se recorta según la experiencia. La barra se
+## llena poco a poco en lugar de saltar, y al subir de nivel destella en
+## blanco y el número da un pequeño salto.
 ##
 ## Al subir de nivel el juego ya está en pausa cuando llega el aviso (se pausa
 ## para elegir la mejora), así que sus Tween siguen en pausa
@@ -10,73 +13,81 @@ extends PanelContainer
 ##
 ## Sin class_name: el HUD lo carga con preload (ver embestida_horda.gd).
 
+const MARCO := preload("res://medios/interfaz/experiencia_marco.png")
+const RELLENO := preload("res://medios/interfaz/experiencia_relleno.png")
+## Dónde empieza el relleno dentro del marco.
+const ESQUINA_RELLENO := Vector2(30.0, 10.0)
 const DURACION_LLENADO := 0.2
 const DURACION_DESTELLO := 0.4
-## Lo que crece la etiqueta del nivel en el salto.
-const SALTO := 1.3
+## Lo que crece el número del nivel en el salto.
+const SALTO := 1.4
 
-var _etiqueta_nivel: Label
-var _barra: ProgressBar
-## El relleno de la barra: es lo que se pone blanco al destellar.
-var _relleno := StyleBoxFlat.new()
-var _etiqueta_experiencia: Label
+## Lo que se ve lleno de la barra, de 0 a 1. Lo mueve el Tween del llenado.
+var lleno := 0.0:
+	set(nuevo):
+		lleno = nuevo
+		queue_redraw()
+## De 0 a 1: cuánto blanco lleva encima por el destello.
+var destello := 0.0:
+	set(nuevo):
+		destello = nuevo
+		queue_redraw()
+## El tamaño del número, para el salto.
+var escala_nivel := 1.0:
+	set(nueva):
+		escala_nivel = nueva
+		queue_redraw()
 var _nivel := 1
+var _actual := 0
+var _necesaria := 0
 var _llenado: Tween
 
 
 func _ready() -> void:
 	position = Vector2(16, 16)
-	add_theme_stylebox_override("panel", EstiloInterfaz.caja(EstiloInterfaz.NEON, 10))
-	var caja := VBoxContainer.new()
-	add_child(caja)
-	_etiqueta_nivel = EstiloInterfaz.etiqueta("NIVEL 1", 20, EstiloInterfaz.NEON)
-	caja.add_child(_etiqueta_nivel)
-
-	_barra = ProgressBar.new()
-	_barra.custom_minimum_size = Vector2(240, 10)
-	_barra.show_percentage = false
-	# Sin escalones: con los de un punto, el llenado iría a saltos.
-	_barra.step = 0.0
-	var fondo := StyleBoxFlat.new()
-	fondo.bg_color = Color(0.1, 0.15, 0.2)
-	_relleno.bg_color = EstiloInterfaz.NEON
-	_barra.add_theme_stylebox_override("background", fondo)
-	_barra.add_theme_stylebox_override("fill", _relleno)
-	caja.add_child(_barra)
-
-	_etiqueta_experiencia = EstiloInterfaz.etiqueta("EXP 0 / 0", 12, EstiloInterfaz.TEXTO_SUAVE)
-	caja.add_child(_etiqueta_experiencia)
+	size = Vector2(MARCO.get_width(), 48)
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 
 
 func _al_cambiar_experiencia(actual: int, necesaria: int, nivel: int) -> void:
-	_etiqueta_nivel.text = "NIVEL %d" % nivel
-	_etiqueta_experiencia.text = "EXP %d / %d" % [actual, necesaria]
+	_actual = actual
+	_necesaria = necesaria
 	# Un llenado a medias se corta: el nuevo sale de donde se haya quedado.
 	if _llenado != null:
 		_llenado.kill()
 	if nivel > _nivel:
 		# Nivel nuevo: la barra empieza vacía y se llena con lo que sobró.
-		_barra.value = 0.0
+		lleno = 0.0
 		_destellar()
 	_nivel = nivel
-	_barra.max_value = necesaria
 	_llenado = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	_llenado.tween_property(_barra, "value", float(actual), DURACION_LLENADO)
+	_llenado.tween_property(self, "lleno", float(actual) / maxf(necesaria, 1.0), DURACION_LLENADO)
+	queue_redraw()
 
 
-## La barra y la etiqueta se ponen blancas y vuelven a su color, y la etiqueta
-## crece y vuelve a su tamaño desde su borde izquierdo, para no salirse del
-## panel.
+## La barra y el número se ponen blancos y vuelven a su color, y el número
+## crece y vuelve a su tamaño.
 func _destellar() -> void:
-	_etiqueta_nivel.pivot_offset = Vector2(0.0, _etiqueta_nivel.size.y / 2.0)
-	_etiqueta_nivel.add_theme_color_override("font_color", Color.WHITE)
-	_relleno.bg_color = Color.WHITE
-	var destello := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_parallel()
-	# La escala de salida va en from() y no en la etiqueta: la caja que la
-	# contiene le devuelve la escala a 1 si el texto cambia de largo (de
-	# "EXP 24 / 25" a "EXP 1 / 37"), antes de que el Tween empiece.
-	destello.tween_property(_etiqueta_nivel, "scale", Vector2.ONE, DURACION_DESTELLO) \
-		.from(Vector2(SALTO, SALTO)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	destello.tween_property(_etiqueta_nivel, "theme_override_colors/font_color", EstiloInterfaz.NEON, DURACION_DESTELLO)
-	destello.tween_property(_relleno, "bg_color", EstiloInterfaz.NEON, DURACION_DESTELLO)
+	var tween := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_parallel()
+	tween.tween_property(self, "escala_nivel", 1.0, DURACION_DESTELLO).from(SALTO).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "destello", 0.0, DURACION_DESTELLO).from(1.0)
+
+
+func _draw() -> void:
+	var color := EstiloInterfaz.NEON.lerp(Color.WHITE, destello)
+	draw_texture(MARCO, Vector2.ZERO, color)
+	var ancho := RELLENO.get_width() * lleno
+	draw_texture_rect_region(RELLENO, Rect2(ESQUINA_RELLENO, Vector2(ancho, RELLENO.get_height())), Rect2(0.0, 0.0, ancho, RELLENO.get_height()), color)
+
+	var fuente := get_theme_default_font()
+	# El número, centrado en el cuadro de 28x28; el salto crece desde su centro.
+	var tamano := EstiloInterfaz.tamano_texto(16)
+	draw_set_transform(Vector2(14.0, 14.0), 0.0, Vector2(escala_nivel, escala_nivel))
+	draw_string(fuente, Vector2(-14.0, tamano * 0.35), str(_nivel), HORIZONTAL_ALIGNMENT_CENTER, 28.0, tamano, color)
+	draw_set_transform(Vector2.ZERO)
+	var debajo := "NIVEL %d   ·   EXP %d / %d" % [_nivel, _actual, _necesaria]
+	var pequeno := EstiloInterfaz.tamano_texto(12)
+	draw_string_outline(fuente, Vector2(30.0, 28.0 + pequeno + 2.0), debajo, HORIZONTAL_ALIGNMENT_LEFT, -1, pequeno, 4, Color(0.02, 0.04, 0.07))
+	draw_string(fuente, Vector2(30.0, 28.0 + pequeno + 2.0), debajo, HORIZONTAL_ALIGNMENT_LEFT, -1, pequeno, EstiloInterfaz.TEXTO_SUAVE)

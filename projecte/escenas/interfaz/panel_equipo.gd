@@ -1,30 +1,22 @@
 extends Control
 
-## El equipo en el HUD. Abajo en el centro, siempre: el personaje activo, su
-## herramienta y a quién se pasa con Q y con E (o cuánto falta para poder
-## cambiar). A la derecha, al pulsar C: una ficha pequeña de cada personaje
-## con su vida, su herramienta, la resistencia del malware contra ella, la
-## carga de su ulti y si está jugando, listo o caído.
+## El panel del equipo, a la derecha, al pulsar C: una ficha pequeña de cada
+## personaje con su vida, su herramienta, la resistencia del malware contra
+## ella, la carga de su ulti y si está jugando, listo o caído. Lo de abajo en
+## el centro (quién juega, a quién se pasa y cuándo) lo lleva barra_equipo.gd;
+## hasta el 26/10 era una línea de texto de este script.
 ##
-## Solo escucha el bus: equipo_cambiado trae la vida de todos y
-## personaje_cambiado la espera hasta el siguiente cambio.
+## Solo escucha el bus: equipo_cambiado trae la vida de todos.
 
 const ANCHO_FICHA := 210.0
 
 var _estado: Array = []
 var _activo := 0
-var _espera := 0.0
 ## Carga de la ulti de cada personaje, de 0 a 1.
 var _ultis: Array = []
-var _linea: Label
 var _panel: PanelContainer
 var _fichas: Array = []
 var _resistencia: Node
-## Con el escudo de NÚCLEO CERO puesto, los personajes con anclas sin romper.
-var _anclas: Array = []
-## Si lo último que se tocó fue el mando: la línea de abajo enseña sus botones
-## en vez de las teclas.
-var _con_mando := false
 
 
 func _ready() -> void:
@@ -33,14 +25,6 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	_linea = EstiloInterfaz.etiqueta("", 16)
-	_linea.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_linea.offset_left = -620.0
-	_linea.offset_right = 620.0
-	_linea.offset_top = -44.0
-	_linea.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(_linea)
 
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(Color(EstiloInterfaz.NEON, 0.5), 10))
@@ -73,8 +57,6 @@ func _ready() -> void:
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
 	BusEventos.ulti_cambiada.connect(func(cargas, _activo): _ultis = cargas)
-	BusEventos.personaje_cambiado.connect(func(_actual, _arma, _siguiente, espera): _espera = espera)
-	BusEventos.anclas_pendientes.connect(func(personajes): _anclas = personajes)
 
 
 ## Una ficha: nombre y estado, barra de vida y una línea de datos.
@@ -106,53 +88,12 @@ func _unhandled_input(evento: InputEvent) -> void:
 		_panel.visible = not _panel.visible
 
 
-## Con qué se juega: el mando, o el teclado y el ratón. _input, y no
-## _unhandled_input, para enterarse aunque otro se quede el evento.
-func _input(evento: InputEvent) -> void:
-	if evento is InputEventJoypadButton or (evento is InputEventJoypadMotion and absf(evento.axis_value) > 0.5):
-		_con_mando = true
-	elif evento is InputEventKey or evento is InputEventMouseButton:
-		_con_mando = false
-
-
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _estado.is_empty():
 		return
-	# Cuenta atrás propia: se sabe cuánto faltaba al cambiar, y no avanza en
-	# pausa, como el juego.
-	if not get_tree().paused:
-		_espera = maxf(_espera - delta, 0.0)
-	_escribir_linea()
 	if _panel.visible:
 		for i in _fichas.size():
 			_escribir_ficha(_fichas[i], i)
-
-
-func _escribir_linea() -> void:
-	var actual: Dictionary = _estado[_activo]
-	var anterior := _vivo_desde(-1)
-	var siguiente := _vivo_desde(1)
-	var cambio := ""
-	if siguiente == _activo:
-		cambio = "último en pie"
-	elif _espera > 0.0:
-		cambio = "cambio en %d s" % ceili(_espera)
-	else:
-		cambio = "[%s] %s  ·  %s [%s]" % [_boton("Q", "LB"), _nombre(anterior), _nombre(siguiente), _boton("E", "RB")]
-	# Con el escudo de NÚCLEO CERO, de quién son las anclas que quedan: así se
-	# sabe a quién cambiar sin fiarse solo del color.
-	if not _anclas.is_empty():
-		var nombres := PackedStringArray()
-		for personaje in _anclas:
-			nombres.append(personaje.nombre.to_upper())
-		cambio = "ANCLAS: %s   %s" % [", ".join(nombres), cambio]
-	var ulti := "      [%s] ¡ULTI!" % _boton("R", "B") if _ulti(_activo) >= 1.0 else ""
-	# Lo que resiste el malware a su herramienta lo enseña el medidor, arriba a
-	# la derecha (medidor_resistencia.gd, lote 9); hasta el 26/10 iba aquí.
-	# Con el escudo, sin «[C] equipo»: si no, no cabe.
-	var equipo := "" if not _anclas.is_empty() else "      [%s] equipo" % _boton("C", "Select")
-	_linea.text = "%s · %s      %s%s%s" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, cambio, ulti, equipo]
-	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
 
 func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
@@ -180,23 +121,5 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	ficha.get_child(2).text = "%d / %d · %s · resiste %d %%" % [ceili(datos.vida), ceili(datos.maxima),datos.arma.nombre, roundi(resistencia * 100.0)]
 
 
-## El primer personaje vivo desde el activo, en el sentido del paso.
-func _vivo_desde(paso: int) -> int:
-	for salto in range(1, _estado.size()):
-		var otro := posmod(_activo + paso * salto, _estado.size())
-		if not _estado[otro].caido:
-			return otro
-	return _activo
-
-
 func _ulti(indice: int) -> float:
 	return _ultis[indice] if indice < _ultis.size() else 0.0
-
-
-## La tecla o, si se juega con mando, el botón.
-func _boton(tecla: String, boton: String) -> String:
-	return boton if _con_mando else tecla
-
-
-func _nombre(indice: int) -> String:
-	return _estado[indice].personaje.nombre

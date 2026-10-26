@@ -3,8 +3,8 @@ extends Control
 ## HUD de la partida: nivel y experiencia arriba a la izquierda
 ## (panel_experiencia.gd), reloj y cuenta atrás hasta el jefe (o el jefe
 ## final, en la fase 2) arriba en el centro, y la columna de mejoras elegidas a
-## la izquierda. La vida va en una barra sobre el propio personaje; el equipo
-## (abajo y con C) lo lleva panel_equipo.gd, y el negro entre fases,
+## la izquierda. La vida va en una barra sobre el propio personaje; el equipo,
+## abajo barra_equipo.gd y con C panel_equipo.gd, y el negro entre fases,
 ## pantalla_fase.gd.
 ##
 ## Solo escucha señales del BusEventos. Los niveles de cada mejora los anotan
@@ -13,6 +13,7 @@ extends Control
 const FichaEnemigo := preload("res://escenas/interfaz/ficha_enemigo.gd")
 const PanelRuleta := preload("res://escenas/interfaz/panel_ruleta.gd")
 const PanelEquipo := preload("res://escenas/interfaz/panel_equipo.gd")
+const BarraEquipo := preload("res://escenas/interfaz/barra_equipo.gd")
 const PanelCaida := preload("res://escenas/interfaz/panel_caida.gd")
 const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
@@ -20,6 +21,8 @@ const BarraJefe := preload("res://escenas/interfaz/barra_jefe.gd")
 const MedidorResistencia := preload("res://escenas/interfaz/medidor_resistencia.gd")
 const AvisosHud := preload("res://escenas/interfaz/avisos_hud.gd")
 const Consejos := preload("res://escenas/interfaz/consejos.gd")
+const MARCO_RELOJ := preload("res://medios/interfaz/reloj_marco.png")
+const Icono := AvisosHud.Icono
 
 var niveles_mejora := {}
 
@@ -34,7 +37,7 @@ var _evoluciones := 0
 ## La herramienta del personaje que se lleva: el aviso de la adaptación del
 ## malware solo sale si es contra ella.
 var _arma_activa: DatosArma
-var _avisos: Label
+var _avisos: PanelContainer
 
 
 func _ready() -> void:
@@ -62,7 +65,7 @@ func _ready() -> void:
 		move_child(get_child(de_la_escena + i), i)
 
 	# Los primeros hijos: así quedan por debajo de la pausa y las mejoras.
-	for panel in [PanelEquipo.new(), FichaEnemigo.new(), MedidorResistencia.new()]:
+	for panel in [PanelEquipo.new(), BarraEquipo.new(), FichaEnemigo.new(), MedidorResistencia.new()]:
 		add_child(panel)
 		move_child(panel, 0)
 	$PanelMejoras.niveles = niveles_mejora
@@ -75,14 +78,14 @@ func _ready() -> void:
 	var caida := PanelCaida.new()
 	add_child(caida)
 	move_child(caida, ruleta.get_index() + 1)
-	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3)))
-	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE: KERNEL PANIC!", EstiloInterfaz.DERROTA, true))
-	BusEventos.jefe_furia_cambiada.connect(func(furia): _avisar(["", "¡KERNEL PANIC SE ENFURECE!", "¡KERNEL PANIC ARDE DE FURIA!"][furia], EstiloInterfaz.DERROTA, true))
+	BusEventos.elite_aparecio.connect(func(descripcion): _avisar("ÉLITE: " + descripcion, Color(1.0, 0.85, 0.3), false, Icono.ELITE))
+	BusEventos.jefe_aparecio.connect(func(): _avisar("¡JEFE: KERNEL PANIC!", EstiloInterfaz.DERROTA, true, Icono.JEFE))
+	BusEventos.jefe_furia_cambiada.connect(func(furia): _avisar(["", "¡KERNEL PANIC SE ENFURECE!", "¡KERNEL PANIC ARDE DE FURIA!"][furia], EstiloInterfaz.DERROTA, true, Icono.JEFE))
 	BusEventos.fase_cambiada.connect(_al_cambiar_fase)
-	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA, true))
-	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA, true))
+	BusEventos.jefe_final_aparecio.connect(func(): _avisar("¡NÚCLEO CERO!", EstiloInterfaz.DERROTA, true, Icono.JEFE))
+	BusEventos.jefe_final_forma_cambiada.connect(func(forma): _avisar(["", "¡NÚCLEO ARMADO!", "¡AMALGAMA!"][forma], EstiloInterfaz.DERROTA, true, Icono.JEFE))
 	BusEventos.jefe_final_ataco.connect(_al_atacar_jefe_final)
-	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA))
+	BusEventos.arma_evolucionada.connect(func(arma): _avisar("EVOLUCIÓN: " + arma.nombre.to_upper(), EstiloInterfaz.VICTORIA, false, Icono.EVOLUCION))
 	BusEventos.personaje_cambiado.connect(func(_actual, arma, _siguiente, _espera): _arma_activa = arma)
 	BusEventos.malware_adaptado.connect(_al_adaptarse_malware)
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
@@ -93,21 +96,32 @@ func _ready() -> void:
 	add_child(PantallaFase.new())
 
 
+## El reloj, dentro de su marco de 140x44 (lote 9), y la cuenta atrás debajo.
 func _crear_reloj() -> void:
-	var caja := VBoxContainer.new()
+	var marco := TextureRect.new()
+	marco.texture = MARCO_RELOJ
+	marco.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	marco.modulate = Color(EstiloInterfaz.NEON, 0.8)
 	# Anclado al centro de arriba: los offsets son relativos a ese punto.
-	caja.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	caja.offset_left = -100.0
-	caja.offset_right = 100.0
-	caja.offset_top = 12.0
-	add_child(caja)
+	marco.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	marco.offset_left = -70.0
+	marco.offset_right = 70.0
+	marco.offset_top = 8.0
+	marco.offset_bottom = 52.0
+	add_child(marco)
 
+	# El reloj llena el marco y la cuenta atrás va justo debajo.
 	_etiqueta_tiempo = EstiloInterfaz.etiqueta("00:00", 30, EstiloInterfaz.TEXTO)
 	_etiqueta_tiempo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(_etiqueta_tiempo)
+	_etiqueta_tiempo.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_etiqueta_tiempo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	marco.add_child(_etiqueta_tiempo)
 	_etiqueta_jefe = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_etiqueta_jefe.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(_etiqueta_jefe)
+	_etiqueta_jefe.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_KEEP_SIZE)
+	_etiqueta_jefe.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_etiqueta_jefe.grow_vertical = Control.GROW_DIRECTION_END
+	marco.add_child(_etiqueta_jefe)
 
 
 ## Las dos se ven al llegar su jefe. La de Kernel Panic se quita con el negro
@@ -143,7 +157,7 @@ func _al_pasar_tiempo(segundos: float, duracion: float) -> void:
 func _al_cambiar_fase(fase: int) -> void:
 	_fase = fase
 	_etiqueta_jefe.remove_theme_color_override("font_color")
-	_avisar("¡FASE 2! EL SECTOR ESTÁ DAÑADO", EstiloInterfaz.DERROTA, true)
+	_avisar("¡FASE 2! EL SECTOR ESTÁ DAÑADO", EstiloInterfaz.DERROTA, true, Icono.FASE)
 
 
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
@@ -170,28 +184,28 @@ func _al_regalar_mejora(mejora: DatosMejora) -> void:
 ## resistente a la herramienta que llevas, se avisa de que conviene cambiar.
 func _al_adaptarse_malware(arma: DatosArma, resistencia: float) -> void:
 	if arma == _arma_activa:
-		_avisar("EL MALWARE SE ADAPTA A TU %s: %d %% · CAMBIA DE PERSONAJE" % [arma.nombre.to_upper(), roundi(resistencia * 100.0)], EstiloInterfaz.DERROTA)
+		_avisar("EL MALWARE SE ADAPTA A TU %s: %d %% · CAMBIA DE PERSONAJE" % [arma.nombre.to_upper(), roundi(resistencia * 100.0)], EstiloInterfaz.DERROTA, false, Icono.MALWARE)
 
 
 ## Al levantarse (o volver a cerrarse) el escudo de NÚCLEO CERO, qué hay que
-## hacer: es lo que más cuesta entender. A quién cambiar lo dice la línea de
-## abajo (panel_equipo.gd).
+## hacer: es lo que más cuesta entender. A quién cambiar lo dice la barra de
+## abajo (barra_equipo.gd).
 func _al_atacar_jefe_final(ataque: String) -> void:
 	if ataque == "escudo":
-		_avisar("ESCUDO: ROMPE CADA ANCLA CON SU PERSONAJE", EstiloInterfaz.NEON, true)
+		_avisar("ESCUDO: ROMPE CADA ANCLA CON SU PERSONAJE", EstiloInterfaz.NEON, true, Icono.ESCUDO)
 
 
 ## Matar un élite deja en el suelo un corazón y un cofre: se avisa para que se
 ## sepa que hay que ir a por ellos.
 func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 	if tipo == "elite":
-		_avisar("ÉLITE ELIMINADO: RECOGE EL CORAZÓN Y EL COFRE", EstiloInterfaz.VICTORIA)
+		_avisar("ÉLITE ELIMINADO: RECOGE EL CORAZÓN Y EL COFRE", EstiloInterfaz.VICTORIA, false, Icono.ELITE)
 
 
 ## Mensaje grande arriba en el centro, en la cola de avisos_hud.gd. Los urgentes
 ## (jefes, furias, fase 2) pasan delante.
-func _avisar(texto: String, color: Color, urgente := false) -> void:
-	_avisos.avisar(texto, color, urgente)
+func _avisar(texto: String, color: Color, urgente := false, icono := Icono.NINGUNO) -> void:
+	_avisos.avisar(texto, color, urgente, icono)
 
 
 static func _formato(segundos: float) -> String:
