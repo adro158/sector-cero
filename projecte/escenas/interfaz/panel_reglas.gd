@@ -29,6 +29,9 @@ const MEJORAS := "res://recursos/mejoras/datos/pool_mejoras.tres"
 const OLEADAS := "res://recursos/oleadas/datos/config_principal.tres"
 const HOJA_JEFE := "res://escenas/jugabilidad/enemigos/jefe_8_direcciones.png"
 const HOJA_JEFE_FINAL := "res://medios/sprites/jefe_final/jefe_final.png"
+const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
+## Un icono de 16x16 por apartado de «Cómo se juega», en su orden (lote 9).
+const ICONOS_COMO_SE_JUEGA := preload("res://medios/interfaz/reglas_iconos.png")
 
 const COMO_SE_JUEGA := [
 	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe: el sector queda dañado y empieza la fase 2. A los 15 minutos llega NÚCLEO CERO, el jefe final; derrótalo para ganar. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
@@ -40,7 +43,7 @@ const COMO_SE_JUEGA := [
 	["ULTI", "Cada personaje carga su ulti matando mientras juega: la barra amarilla bajo su vida. Llena, parpadea un rayo a su lado: pulsa R (B con mando) y la lanza. El Mago dispara un rayo morado enorme (apunta con el ratón y lanza con click), el Espadachín gira con sus hojas y al Segador le cae una tormenta de rayos."],
 	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
 	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
-	["CONTROLES", "Moverse: WASD, flechas, stick o cruceta · Personaje siguiente: E, Tab, Y o RB · Anterior: Q o LB · Ulti: R o B · Equipo: C o Select · Pausa: Esc, P o Start · Mejoras: click, 1, 2, 3 o A · Panel técnico: F3 · Menú de desarrollador: F1 (la partida deja de contar para el ranking)"],
+	["CONTROLES", "Con el teclado y el ratón o con el mando (en el móvil, con los botones de la pantalla):"],
 ]
 
 var _ventana: ColorRect
@@ -106,8 +109,17 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 func _como_se_juega() -> VBoxContainer:
 	var lista := _lista()
-	for apartado in COMO_SE_JUEGA:
-		lista.add_child(_fila(null, apartado[0], EstiloInterfaz.NEON, apartado[1]))
+	for i in COMO_SE_JUEGA.size():
+		var icono := _primer_fotograma(ICONOS_COMO_SE_JUEGA, COMO_SE_JUEGA.size(), 1)
+		icono.region.position.x = i * 16.0
+		lista.add_child(_fila(icono, COMO_SE_JUEGA[i][0], EstiloInterfaz.NEON, COMO_SE_JUEGA[i][1]))
+	# Los controles, con las teclas y los botones dibujados (hasta el 26/10, una
+	# línea de texto), metidos a la altura del texto.
+	var tabla := TeclasDibujadas.tabla_controles()
+	var sangria := MarginContainer.new()
+	sangria.add_theme_constant_override("margin_left", 62)
+	sangria.add_child(tabla)
+	lista.add_child(sangria)
 	return lista
 
 

@@ -9,10 +9,21 @@ extends CanvasLayer
 ## Joystick flotante en la mitad izquierda de la pantalla, botón de cambio de
 ## personaje abajo a la derecha, el de la ulti encima de él y el de pausa
 ## arriba a la derecha.
+##
+## Los botones y el joystick son dibujos del lote 9, en grises y teñidos (antes
+## eran círculos hechos por código): el botón, normal y pulsado, mide 96x96
+## (RADIO_BOTON) y la base del joystick 160x160 (RADIO_JOYSTICK).
 
+const BOTON := preload("res://medios/interfaz/tactil_boton.png")
+## Cambiar, ulti y pausa, de 48x48.
+const ICONOS := preload("res://medios/interfaz/tactil_iconos.png")
+const BASE := preload("res://medios/interfaz/tactil_joystick.png")
+const PALANCA := preload("res://medios/interfaz/tactil_palanca.png")
 const RADIO_JOYSTICK := 80.0
-const RADIO_BOTON := 46.0
+const RADIO_BOTON := 48.0
 const MARGEN := 80.0
+## Lo que se ve pulsado un botón después de tocarlo.
+const SEGUNDOS_PULSADO := 0.15
 
 var _dibujo: Control
 ## El dedo que maneja el joystick (-1 si no hay ninguno).
@@ -22,6 +33,8 @@ var _vector := Vector2.ZERO
 var _boton_cambiar := Vector2.ZERO
 var _boton_pausa := Vector2.ZERO
 var _boton_ulti := Vector2.ZERO
+## Lo que le queda a cada acción de verse pulsada.
+var _pulsado := {}
 
 
 func _ready() -> void:
@@ -35,6 +48,7 @@ func _ready() -> void:
 	_dibujo = Control.new()
 	_dibujo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_dibujo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dibujo.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_dibujo.draw.connect(_pintar)
 	add_child(_dibujo)
 
@@ -52,7 +66,9 @@ func _jugando() -> bool:
 	return not get_tree().paused and get_tree().get_first_node_in_group("jugador") != null
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	for accion in _pulsado:
+		_pulsado[accion] = maxf(_pulsado[accion] - delta, 0.0)
 	var pantalla := get_viewport().get_visible_rect().size
 	_boton_cambiar = pantalla - Vector2(MARGEN, MARGEN)
 	_boton_pausa = Vector2(pantalla.x - MARGEN, MARGEN)
@@ -113,6 +129,7 @@ func _fijar(accion: String, fuerza: float) -> void:
 
 ## Una pulsación completa de una acción, como si se tocara y soltara una tecla.
 func _pulsar(accion: String) -> void:
+	_pulsado[accion] = SEGUNDOS_PULSADO
 	for pulsada in [true, false]:
 		var evento := InputEventAction.new()
 		evento.action = accion
@@ -124,16 +141,17 @@ func _pintar() -> void:
 	var color := EstiloInterfaz.NEON
 	var base := _centro if _dedo != -1 else Vector2(MARGEN * 1.6, get_viewport().get_visible_rect().size.y - MARGEN * 1.6)
 	var palanca := base + _vector * RADIO_JOYSTICK
-	_dibujo.draw_arc(base, RADIO_JOYSTICK, 0.0, TAU, 48, Color(color, 0.35), 3.0)
-	_dibujo.draw_circle(palanca, 30.0, Color(color, 0.45 if _dedo != -1 else 0.2))
-	_boton(_boton_cambiar, "CAMBIAR", color)
-	_boton(_boton_pausa, "II", color)
-	_boton(_boton_ulti, "ULTI", Color(1.0, 0.8, 0.2))
+	_dibujo.draw_texture(BASE, base - BASE.get_size() / 2.0, Color(color, 0.6))
+	_dibujo.draw_texture(PALANCA, palanca - PALANCA.get_size() / 2.0, Color(color, 0.8 if _dedo != -1 else 0.4))
+	_boton(_boton_cambiar, "cambiar_personaje", 0, color)
+	_boton(_boton_ulti, "ulti", 1, Color(1.0, 0.8, 0.2))
+	_boton(_boton_pausa, "pausar", 2, color)
 
 
-func _boton(centro: Vector2, texto: String, color: Color) -> void:
-	_dibujo.draw_circle(centro, RADIO_BOTON, Color(color, 0.18))
-	_dibujo.draw_arc(centro, RADIO_BOTON, 0.0, TAU, 32, Color(color, 0.6), 3.0)
-	var fuente := ThemeDB.fallback_font
-	var medida := fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_CENTER, -1, 16)
-	_dibujo.draw_string(fuente, centro + Vector2(-medida.x / 2.0, 6.0), texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(color, 0.9))
+## El botón de una acción con su icono (el número en la tira de iconos), y
+## pulsado justo después de tocarlo.
+func _boton(centro: Vector2, accion: String, icono: int, color: Color) -> void:
+	var pulsado: bool = _pulsado.get(accion, 0.0) > 0.0
+	var esquina := centro - Vector2(RADIO_BOTON, RADIO_BOTON)
+	_dibujo.draw_texture_rect_region(BOTON, Rect2(esquina, Vector2(96.0, 96.0)), Rect2(96.0 if pulsado else 0.0, 0.0, 96.0, 96.0), Color(color, 0.85))
+	_dibujo.draw_texture_rect_region(ICONOS, Rect2(centro - Vector2(24.0, 24.0), Vector2(48.0, 48.0)), Rect2(icono * 48.0, 0.0, 48.0, 48.0), Color.WHITE if pulsado else color)

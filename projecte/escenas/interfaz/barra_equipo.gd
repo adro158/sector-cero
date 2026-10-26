@@ -18,6 +18,7 @@ const ESPERA := preload("res://medios/interfaz/equipo_espera.png")
 const VIDA_MARCO := preload("res://medios/interfaz/equipo_vida_marco.png")
 const VIDA_RELLENO := preload("res://medios/interfaz/equipo_vida_relleno.png")
 const ICONOS_AVISO := preload("res://medios/interfaz/aviso_iconos.png")
+const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
 ## El de las anclas en la tira de iconos de los avisos.
 const ICONO_ESCUDO := 4
 const COLOR_ULTI := Color(1.0, 0.8, 0.2)
@@ -97,15 +98,15 @@ func _draw() -> void:
 	var e := _vivo_desde(1)
 	for lado in [-1, 1, 0]:
 		var indice := posmod(_activo + lado, _estado.size())
-		var teclas := PackedStringArray()
+		var teclas: Array[String] = []
 		if indice != _activo and indice == q:
 			teclas.append(_boton("Q", "LB"))
 		if indice != _activo and indice == e:
 			teclas.append(_boton("E", "RB"))
-		_dibujar_ranura(indice, Vector2(size.x / 2.0 - LADO / 2.0 + lado * SEPARACION, 44.0 - (SUBE if lado == 0 else 0.0)), " ".join(teclas))
+		_dibujar_ranura(indice, Vector2(size.x / 2.0 - LADO / 2.0 + lado * SEPARACION, 44.0 - (SUBE if lado == 0 else 0.0)), teclas)
 
 
-func _dibujar_ranura(indice: int, esquina: Vector2, teclas: String) -> void:
+func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String]) -> void:
 	var datos: Dictionary = _estado[indice]
 	var personaje: DatosPersonaje = datos.personaje
 	var juega := indice == _activo
@@ -149,16 +150,18 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: String) -> void:
 		draw_rect(Rect2(esquina + Vector2(4.0, 4.0), Vector2(64.0, 64.0 * falta)), Color(0.0, 0.0, 0.0, 0.6))
 		draw_texture(ESPERA, esquina + Vector2(28.0, 18.0))
 		_texto(fuente, esquina + Vector2(0.0, 52.0), "%d s" % ceili(_espera), tamano, EstiloInterfaz.TEXTO)
-	elif teclas != "":
-		# La letra que lleva a él, en una pestaña arriba a la izquierda.
-		var caja := Rect2(esquina + Vector2(4.0, 4.0), Vector2(fuente.get_string_size(teclas, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano).x + 8.0, tamano + 4.0))
-		draw_rect(caja, Color(0.0, 0.0, 0.0, 0.75))
-		draw_string(fuente, caja.position + Vector2(4.0, tamano), teclas, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano, color.lightened(0.3))
+	else:
+		# Las teclas que llevan a él, dibujadas, arriba a la izquierda.
+		for k in teclas.size():
+			draw_texture_rect_region(TeclasDibujadas.TIRA, Rect2(esquina + Vector2(3.0 + k * 21.0, 3.0), Vector2(20.0, 20.0)), TeclasDibujadas.region(teclas[k]))
 	# Con el escudo, el candado en los que tienen anclas sin romper, parpadeando.
 	if personaje in _anclas and int(_tiempo * 3.0) % 2 == 0:
 		draw_texture_rect_region(ICONOS_AVISO, Rect2(esquina + Vector2(50.0, 6.0), Vector2(16.0, 16.0)), Rect2(ICONO_ESCUDO * 16.0, 0.0, 16.0, 16.0), personaje.color)
 	if juega and carga >= 1.0:
-		_texto(fuente, esquina + Vector2(0.0, LADO + 30.0), "[%s] ¡ULTI!" % _boton("R", "B"), tamano, COLOR_ULTI)
+		# La tecla dibujada y, a su derecha, el aviso.
+		var debajo_ulti := esquina + Vector2(2.0, LADO + 16.0)
+		draw_texture_rect_region(TeclasDibujadas.TIRA, Rect2(debajo_ulti, Vector2(20.0, 20.0)), TeclasDibujadas.region(_boton("R", "MandoB")))
+		_texto(fuente, debajo_ulti + Vector2(22.0, 15.0), "¡ULTI!", tamano, COLOR_ULTI, LADO - 24.0)
 
 
 ## La línea de encima: quién juega y con qué, y lo que hay que saber.
@@ -197,6 +200,7 @@ func _ulti(indice: int) -> float:
 	return _ultis[indice] if indice < _ultis.size() else 0.0
 
 
-## La tecla o, si se juega con mando, el botón.
+## La tecla o, si se juega con mando, el botón (con el nombre de la tira de
+## teclas_dibujadas.gd, que para las de una letra es la letra).
 func _boton(tecla: String, boton: String) -> String:
 	return boton if _con_mando else tecla

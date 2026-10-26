@@ -11,6 +11,12 @@ signal cerrado
 const Dificultad := preload("res://globales/dificultad.gd")
 ## Oro, plata y bronce en fila, de 16x16: los tres primeros puestos (lote 9).
 const MEDALLAS := preload("res://medios/interfaz/medallas_ranking.png")
+## Los mini retratos de 32x32 (lote 9), por el nombre que guarda el ranking.
+const MINI_RETRATOS := {
+	"Espadachín": preload("res://medios/interfaz/retrato_mini_espadachin.png"),
+	"Mago": preload("res://medios/interfaz/retrato_mini_mago.png"),
+	"Segador": preload("res://medios/interfaz/retrato_mini_segador.png"),
+}
 const COLUMNAS := ["#", "NOMBRE", "RESULTADO", "TIEMPO", "NIVEL", "ELIMINADOS", "PERSONAJE", "DIFICULTAD"]
 
 var _tabla: GridContainer
@@ -61,9 +67,10 @@ func abrir() -> void:
 		var tiempo := int(partida.tiempo)
 		_tabla.add_child(_puesto(i, color))
 		for texto in [partida.nombre, "Victoria" if partida.victoria else "Derrota",
-				"%02d:%02d" % [tiempo / 60, tiempo % 60], str(partida.nivel), str(partida.eliminados), partida.personaje,
-				Dificultad.DIFICULTADES[partida.get("dificultad", "media")].nombre]:
-			_tabla.add_child(EstiloInterfaz.etiqueta(texto, 16, color))
+				"%02d:%02d" % [tiempo / 60, tiempo % 60], str(partida.nivel), str(partida.eliminados)]:
+			_tabla.add_child(_celda(texto, color))
+		_tabla.add_child(_personaje(partida.personaje, color))
+		_tabla.add_child(_celda(Dificultad.DIFICULTADES[partida.get("dificultad", "media")].nombre, color))
 
 	visible = true
 	_volver.grab_focus()
@@ -72,7 +79,7 @@ func abrir() -> void:
 ## El puesto: una medalla para los tres primeros y el número para los demás.
 func _puesto(i: int, color: Color) -> Control:
 	if i >= 3:
-		return EstiloInterfaz.etiqueta(str(i + 1), 16, color)
+		return _celda(str(i + 1), color)
 	var medalla := AtlasTexture.new()
 	medalla.atlas = MEDALLAS
 	medalla.region = Rect2(i * 16.0, 0.0, 16.0, 16.0)
@@ -81,6 +88,29 @@ func _puesto(i: int, color: Color) -> Control:
 	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	icono.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 	return icono
+
+
+## Un texto de una fila, centrado en su altura: la fila es más alta que el
+## texto por el mini retrato.
+func _celda(texto: String, color: Color) -> Label:
+	var etiqueta := EstiloInterfaz.etiqueta(texto, 16, color)
+	etiqueta.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return etiqueta
+
+
+## El personaje con el que acabó: su mini retrato y su nombre.
+func _personaje(nombre: String, color: Color) -> HBoxContainer:
+	var fila := HBoxContainer.new()
+	fila.add_theme_constant_override("separation", 8)
+	if MINI_RETRATOS.has(nombre):
+		var retrato := TextureRect.new()
+		retrato.texture = MINI_RETRATOS[nombre]
+		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		fila.add_child(retrato)
+	var etiqueta := EstiloInterfaz.etiqueta(nombre, 16, color)
+	etiqueta.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	fila.add_child(etiqueta)
+	return fila
 
 
 func cerrar() -> void:
