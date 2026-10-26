@@ -35,8 +35,15 @@ const INTERRUPTOR := preload("res://medios/interfaz/interruptor.png")
 const AGARRE := preload("res://medios/interfaz/deslizador_agarre.png")
 ## Tres de 8x24: carril, agarre y agarre encima.
 const DESPLAZAMIENTO := preload("res://medios/interfaz/desplazamiento.png")
+## La fuente pixel art (lote 9): letras de 5x7 hechas de cuadrados, 11 píxeles
+## de alto con las tildes y los rabitos. Solo la llevan los textos grandes
+## (TAMANO_PIXEL o más: títulos, reloj, avisos): a 13 o 14 px los píxeles no
+## caen enteros y los párrafos de las reglas costaban de leer.
+const FUENTE_PIXEL := preload("res://medios/interfaz/sector_cero_pixel.ttf")
+const TAMANO_PIXEL := 20
 
 static var _tema: Theme
+static var _pixel: FontFile
 
 
 ## Tema para asignar al nodo raíz de cada pantalla: sus hijos lo heredan.
@@ -160,9 +167,32 @@ static func _trozo(tira: Texture2D, fotograma: int, lado: Vector2) -> AtlasTextu
 static func etiqueta(texto: String, tamano: int = 16, color: Color = TEXTO) -> Label:
 	var nueva := Label.new()
 	nueva.text = texto
-	nueva.add_theme_font_size_override("font_size", tamano_texto(tamano))
+	poner_letra(nueva, tamano)
 	nueva.add_theme_color_override("font_color", color)
 	return nueva
+
+
+## El tamaño de letra de un control y, si es de los grandes, la fuente pixel
+## art, con el tamaño en un múltiplo de 11 (22, 33, 44): así cada píxel de la
+## letra cae en 2, 3 o 4 píxeles enteros de la pantalla.
+static func poner_letra(control: Control, tamano: int) -> void:
+	var final := tamano_texto(tamano)
+	if final >= TAMANO_PIXEL:
+		control.add_theme_font_override("font", fuente_pixel())
+		final = maxi(2, roundi(final / 11.0)) * 11
+	control.add_theme_font_size_override("font_size", final)
+
+
+## La fuente pixel art, sin suavizar: si no, los bordes de los cuadrados salen
+## grises. Lo que no tenga (algún signo raro) lo pone la del sistema.
+static func fuente_pixel() -> FontFile:
+	if _pixel == null:
+		_pixel = FUENTE_PIXEL
+		_pixel.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+		_pixel.hinting = TextServer.HINTING_NONE
+		_pixel.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+		_pixel.fallbacks = [tema().default_font]
+	return _pixel
 
 
 ## El tamaño de letra que toca, con «Texto grande» o sin él. Todos los textos de

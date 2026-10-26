@@ -65,7 +65,7 @@ func _ready() -> void:
 	_icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_icono.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	fila.add_child(_icono)
-	_texto.add_theme_font_size_override("font_size", EstiloInterfaz.tamano_texto(24))
+	EstiloInterfaz.poner_letra(_texto, 24)
 	# Con contorno: la banda es medio transparente y debajo está la horda.
 	_texto.add_theme_constant_override("outline_size", 8)
 	_texto.add_theme_color_override("font_outline_color", Color(0.02, 0.04, 0.07))
