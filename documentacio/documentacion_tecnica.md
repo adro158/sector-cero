@@ -524,6 +524,19 @@ cruceta y Select), añadido por `teclas_antiguas.gd` sin tocar
 «Texto grande», todos los textos pasan por `EstiloInterfaz.tamano_texto` y
 salen un 25 % más grandes.
 
+**La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
+medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el
+malware a la herramienta que se lleva: un escudo, una barra que se llena al
+llegar al 50 % (el máximo) y el número. Los dibujos están en grises y se
+tiñen pasando el tono de cian a rojo (`Color.from_hsv`): mezclar los dos
+colores a medias daba un gris. La herramienta llega con `personaje_cambiado`
+y el latido del escudo con `malware_adaptado`; el valor se lee del nodo del
+grupo `resistencia_malware`, porque también baja y eso no tiene señal. Con
+pantalla táctil se aparta a la izquierda del botón de pausa. Sustituye al
+«(resiste N %)» de la línea de abajo. En la pantalla final, el título es un
+rótulo dibujado con el mismo glitch del logo (`logo_glitch.gd` acepta otra
+tira), y en el ranking los tres primeros llevan medalla.
+
 **Guardado y actualizaciones.** `GestorGuardado` guarda en un fichero de texto
 de Godot (`ConfigFile`) los récords, el ranking de las 10 mejores partidas y
 las opciones. Al arrancar y después cada 5 minutos, el `Actualizador` pregunta
@@ -634,8 +647,6 @@ alrededor de un 10 %.
 
 - Pixel art propio para los personajes y el jefe.
 - Más variedad de élites.
-- Un medidor de la resistencia del malware en el HUD (ya se avisa y se ve en
-  la línea de abajo, pero falta su dibujo).
 - Los dibujos que aún se hacen por código: paneles y botones, y una fuente
   pixel art propia.
 - Controles configurables y un ranking compartido en línea.

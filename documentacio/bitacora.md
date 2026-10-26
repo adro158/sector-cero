@@ -4150,3 +4150,47 @@ aprobó; Godot 4.7.2 para Linux, el que ya estaba bajado en la sesión.
 - **Siguiente paso:** que Adam lo pruebe jugando (está en «Probar jugando» de
   `requisitos_y_estado.md`) y escribir las novedades de la próxima versión
   antes de subir su etiqueta.
+
+### En la nube, el lote 9: lo que más luce (26/10)
+
+Seguido del lote 11, en la misma sesión desde el móvil. Adam: «quiero hacer
+lo de los dibujos». Del lote 9 (interfaz) eligió lo que más luce ante el
+tribunal, y que lo dibujara Claude aquí mismo con Python en vez de pasarle el
+prompt al chat: primero una vista previa (commit `docs`, en
+`documentacio/capturas/`), y con su «sí, me gustan», al juego.
+
+- **Los dibujos** (`medios/interfaz/`, Pillow, en la paleta de neón):
+  - los rótulos «SECTOR ASEGURADO» (verde) y «PROCESO ELIMINADO» (rojo), con
+    letra de píxeles de 5x7 y 4 fotogramas de glitch, como el logo
+  - las medallas de oro, plata y bronce del ranking, de 16x16
+  - el medidor: el escudo con el bicho (16x16), su latido (4 fotogramas) y
+    el marco y el relleno de la barra con una marca cada 10 %, en grises.
+- **El medidor** (`medidor_resistencia.gd`, hijo del HUD, sin `class_name`):
+  arriba a la derecha y al doble de tamaño. La herramienta llega con
+  `personaje_cambiado`, el latido con `malware_adaptado`, y el valor se lee
+  del grupo `resistencia_malware`, como el panel del equipo, porque también
+  baja y eso no tiene señal. Sustituye al «(resiste N %)» de la línea de
+  abajo. Sin señales nuevas en el bus.
+- **Problemas y solución:**
+  - abajo, encima del panel del equipo, pisaba los consejos de las primeras
+    partidas: se pasó arriba a la derecha, enfrente del panel del nivel
+  - en la web en el móvil chocaba con el botón de pausa táctil: con pantalla
+    táctil se aparta 140 px a la izquierda
+  - teñido mezclando cian y rojo, al 30 % salía un gris sucio: ahora se pasa
+    el tono (`Color.from_hsv`), de cian a rojo por el azul y el magenta.
+- **La pantalla final** usa `logo_glitch.gd` con el rótulo (ahora acepta otra
+  tira, la del logo por defecto). **El ranking** pone la medalla en lugar del
+  número en los tres primeros puestos.
+- **Sin `class_name` nuevos** ni cambios en `project.godot`: no hace falta
+  subir `EJECUTABLE_MINIMO`. No cambia el equilibrio.
+- **Pruebas:** import, `--quit-after` y la partida cargada en headless, sin
+  errores. Con ventana (`xvfb-run`, scripts temporales borrados), capturas
+  del medidor al 0, 30 y 50 % y del latido, de la pantalla final ganando y
+  perdiendo y del ranking con medallas.
+- **Uso de IA:** Claude dibujó los assets con un script de Python (no se
+  sube: los PNG son el resultado) y escribió el código; Adam eligió qué
+  hacer y dio el visto bueno a la vista previa.
+- **Siguiente paso:** probarlo jugando (en «Probar jugando» de
+  `requisitos_y_estado.md`), escribir las novedades de la próxima versión e
+  integrar en `main` lo de la nube (lotes 11 y 9) cuando Adam diga «ya he
+  acabado».

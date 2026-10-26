@@ -204,6 +204,15 @@ scripts no forman parte del repositorio.
   animado y el de inundación. Los dibujó Claude con un script de Python
   (numpy y Pillow). Con ellos vino el cambio probado de las barras, las
   partículas y la mecha, que sirvió de referencia.
+- **El final, el ranking y la resistencia** (`medios/interfaz/`,
+  26/10/2026, de la misma forma; lote 9): los rótulos «SECTOR ASEGURADO» y
+  «PROCESO ELIMINADO» de la pantalla final, con letra de píxeles y 4 fotogramas
+  de glitch como el logo; las medallas de oro, plata y bronce de los tres
+  primeros puestos del ranking (16x16), y el medidor de la resistencia del
+  malware: el escudo con el bicho (16x16) con su latido de 4 fotogramas, y
+  el marco y el relleno de la barra, con una marca cada 10 %, todo en grises
+  para teñirlo. Los dibujó Claude en la nube con un script de Python
+  (Pillow); Adam vio la vista previa antes de meterlos en el juego.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

@@ -106,7 +106,9 @@ cercano. Novedades en `documentacio/novedades/v1.10.txt`.
 
 **En `main` sin publicar** (26/10, en la nube): el lote 11, atacar corriendo
 sin que se paren las piernas y el ataque quieto del Mago rehecho (bitácora,
-sesión 18, «En la nube, el lote 11»). Sin novedades escritas aún para la
+sesión 18, «En la nube, el lote 11»), y el lote 9: el medidor de la
+resistencia arriba a la derecha, los rótulos de la pantalla final y las
+medallas del ranking («En la nube, el lote 9»). Sin novedades escritas aún para la
 próxima versión: escribirlas antes de subir su etiqueta.
 
 **Se publicó sin volver a medir el equilibrio** (Adam lo dejó para más
@@ -145,6 +147,10 @@ en Godot):
   se paren ni salten al empezar y al acabar, con los tres y con el arma
   evolucionada; y el ataque quieto nuevo del Mago (adelanta el bastón y
   suelta la bola).
+- **El medidor de la resistencia** (lote 9): que se lea de un vistazo
+  arriba a la derecha, que el color y el latido avisen al subir y que no
+  pise nada (con mando, con «Texto grande» y en la web en el móvil). Y los
+  rótulos del final y las medallas del ranking.
 - **Las animaciones de ataque** de los tres personajes y las armas
   evolucionadas en el personaje.
 - **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la
@@ -203,15 +209,17 @@ carpeta de datos del juego.
     dibujos, C entera y F sin dibujos, hechas):
     - **D. Lo visual por código, con assets:** lo de la partida está hecho
       (lote 8, 24/10). Queda lo de la interfaz (fuente pixel art, paneles y
-      botones, barra del equipo, HUD de arriba, teclas dibujadas) y el
-      medidor de la resistencia en el HUD (de la B, espera a tener dibujos).
+      botones, barra del equipo, HUD de arriba, teclas dibujadas). El
+      medidor de la resistencia (de la B) se hizo el 26/10 con el lote 9.
     - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
     - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar) y los
       iconos de los apartados de las reglas (dibujos).
     - **Los dibujos de D:** el prompt de los lotes 8 a 10 está al final de
       `prompt_assets.md`; Adam se lo pasa a Claude (chat). El 8 ya está en el
-      juego (24/10); faltan el 9 (interfaz) y el 10 (poses de Kernel Panic y
-      reposo de los personajes).
+      juego (24/10). Del 9 (interfaz), lo que más luce (el medidor, los
+      rótulos del final y las medallas) lo dibujó Claude en la nube el 26/10;
+      queda el resto del 9 y el 10 (poses de Kernel Panic y reposo de los
+      personajes).
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
     «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
     guía y se podrían sacar las furias a su script; y lo que eligió Claude en

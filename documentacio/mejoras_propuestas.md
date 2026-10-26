@@ -28,8 +28,9 @@ los textos de las reglas, el ranking que se perdía y su orden por dificultad
 de ventana, VERSIONES y el aviso de versiones donde no hacían nada, el aviso
 de la embestida, y el aviso y el sonido cuando el malware se adapta (con la
 señal `malware_adaptado` y lo que resiste en la línea de abajo). El
-indicador con medidor del HUD (interfaz 1) queda para cuando haya sus
-dibujos. Detalle en la bitácora, sesión 18.
+indicador con medidor del HUD (interfaz 1) se hizo el 26/10, en la nube, con
+los dibujos del lote 9 (`medidor_resistencia.gd`). Detalle en la bitácora,
+sesión 18.
 
 **Hecho el 24/10, en casa** (Adam: «empieza por la C y lo de la F»): todo el
 apartado C y lo del F que no pide dibujos ni reequilibrar. C: tiempo de golpe,
