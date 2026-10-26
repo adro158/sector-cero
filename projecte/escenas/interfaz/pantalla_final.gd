@@ -6,6 +6,10 @@ extends Control
 
 const MENU_PRINCIPAL := "res://escenas/menu_principal/menu_principal.tscn"
 const Dificultad := preload("res://globales/dificultad.gd")
+## El título, con el glitch del logo del menú (lote 9).
+const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
+const ROTULO_VICTORIA := preload("res://medios/interfaz/rotulo_victoria.png")
+const ROTULO_DERROTA := preload("res://medios/interfaz/rotulo_derrota.png")
 
 const NOMBRES_RECORD := {
 	"tiempo": "tiempo",
@@ -34,7 +38,8 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	var color := EstiloInterfaz.VICTORIA if victoria else EstiloInterfaz.DERROTA
 
 	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("SECTOR ASEGURADO" if victoria else "PROCESO ELIMINADO", 44, color)
+	var titulo := LogoGlitch.new()
+	titulo.tira = ROTULO_VICTORIA if victoria else ROTULO_DERROTA
 	var subtitulo := EstiloInterfaz.etiqueta(
 		"Has derrotado a NÚCLEO CERO. El sistema está limpio." if victoria
 		else "El malware se ha apoderado del sector de arranque.", 16, EstiloInterfaz.TEXTO_SUAVE)

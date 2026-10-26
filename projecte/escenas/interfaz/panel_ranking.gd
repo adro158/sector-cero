@@ -9,6 +9,8 @@ extends Control
 signal cerrado
 
 const Dificultad := preload("res://globales/dificultad.gd")
+## Oro, plata y bronce en fila, de 16x16: los tres primeros puestos (lote 9).
+const MEDALLAS := preload("res://medios/interfaz/medallas_ranking.png")
 const COLUMNAS := ["#", "NOMBRE", "RESULTADO", "TIEMPO", "NIVEL", "ELIMINADOS", "PERSONAJE", "DIFICULTAD"]
 
 var _tabla: GridContainer
@@ -57,13 +59,28 @@ func abrir() -> void:
 		var partida: Dictionary = partidas[i]
 		var color := EstiloInterfaz.VICTORIA if partida.victoria else EstiloInterfaz.TEXTO
 		var tiempo := int(partida.tiempo)
-		for texto in [str(i + 1), partida.nombre, "Victoria" if partida.victoria else "Derrota",
+		_tabla.add_child(_puesto(i, color))
+		for texto in [partida.nombre, "Victoria" if partida.victoria else "Derrota",
 				"%02d:%02d" % [tiempo / 60, tiempo % 60], str(partida.nivel), str(partida.eliminados), partida.personaje,
 				Dificultad.DIFICULTADES[partida.get("dificultad", "media")].nombre]:
 			_tabla.add_child(EstiloInterfaz.etiqueta(texto, 16, color))
 
 	visible = true
 	_volver.grab_focus()
+
+
+## El puesto: una medalla para los tres primeros y el número para los demás.
+func _puesto(i: int, color: Color) -> Control:
+	if i >= 3:
+		return EstiloInterfaz.etiqueta(str(i + 1), 16, color)
+	var medalla := AtlasTexture.new()
+	medalla.atlas = MEDALLAS
+	medalla.region = Rect2(i * 16.0, 0.0, 16.0, 16.0)
+	var icono := TextureRect.new()
+	icono.texture = medalla
+	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icono.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	return icono
 
 
 func cerrar() -> void:

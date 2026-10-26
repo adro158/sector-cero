@@ -147,15 +147,11 @@ func _escribir_linea() -> void:
 			nombres.append(personaje.nombre.to_upper())
 		cambio = "ANCLAS: %s   %s" % [", ".join(nombres), cambio]
 	var ulti := "      [%s] ¡ULTI!" % _boton("R", "B") if _ulti(_activo) >= 1.0 else ""
-	# Lo que resiste el malware a su herramienta, en cuanto pasa de cero: es lo
-	# que dice cuándo conviene cambiar.
-	var resiste := ""
-	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(actual.arma)
-	if resistencia > 0.0:
-		resiste = " (resiste %d %%)" % roundi(resistencia * 100.0)
+	# Lo que resiste el malware a su herramienta lo enseña el medidor, arriba a
+	# la derecha (medidor_resistencia.gd, lote 9); hasta el 26/10 iba aquí.
 	# Con el escudo, sin «[C] equipo»: si no, no cabe.
 	var equipo := "" if not _anclas.is_empty() else "      [%s] equipo" % _boton("C", "Select")
-	_linea.text = "%s · %s%s      %s%s%s" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, resiste, cambio, ulti, equipo]
+	_linea.text = "%s · %s      %s%s%s" % [actual.personaje.nombre.to_upper(), actual.arma.nombre, cambio, ulti, equipo]
 	_linea.add_theme_color_override("font_color", actual.personaje.color)
 
 
