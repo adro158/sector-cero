@@ -177,9 +177,13 @@ func _animar(direccion: Vector2, delta: float) -> void:
 				# Andando: la de atacar corriendo, en la columna de las piernas y
 				# en la fila hacia donde corre, para que el cuerpo no gire a mitad
 				# de paso. El tajo del Espadachín (aura_arma.gd) sigue yendo al
-				# enemigo más cercano.
-				_poner_hoja(_hoja_correr_ataque, FOTOGRAMAS_ANDAR)
-				$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
+				# enemigo más cercano. Su hoja es cuatro veces más ancha que la de
+				# andar: un juego de 6 pasos por fotograma del tajo (27/10; con una
+				# sola pose, la espada saltaba al final del golpe sin verse).
+				var fases: int = _hoja_correr_ataque.get_width() / _hoja_andar.get_width()
+				var fase := fotograma if fases == FOTOGRAMAS_ATAQUE else 0
+				_poner_hoja(_hoja_correr_ataque, FOTOGRAMAS_ANDAR * fases)
+				$Sprite.frame = (_fila * fases + fase) * FOTOGRAMAS_ANDAR + columna
 			else:
 				# Quieto: la de atacar, hacia donde va el ataque.
 				_poner_hoja(_hoja_ataque, FOTOGRAMAS_ATAQUE)
