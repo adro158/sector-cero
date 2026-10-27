@@ -4291,3 +4291,71 @@ capturas con ventana, vista previa en `documentacio/capturas/lote9/` y
   probar jugando la interfaz nueva (en «Probar jugando» de
   `requisitos_y_estado.md`), sobre todo con el mando, «Texto grande» y en el
   móvil.
+
+### En la nube, el sonido (27/10)
+
+Adam: «haz el sonido». Lo principal del apartado E de las mejoras propuestas,
+como se le dijo en el plan: el escudo de NÚCLEO CERO, las ultis y las
+evoluciones, y la música de la fase 2 y de NÚCLEO CERO. Adam escuchó una
+muestra con todo junto (un WAV que no se sube) y dio el sí.
+
+- **Los sonidos** (`generar_audio.gd`, sintetizados como todos):
+  - el escudo: el golpe bloqueado (un «tunk» de cuadrada grave), el ancla
+    rota (un crujido) y el escudo roto (un cristal)
+  - las ultis, a sus tiempos de `ultis.gd`: el rayo (una sierra que sube, con
+    sus tres golpes), el giro (un barrido por golpe) y la tormenta (un trueno
+    y los diez chasquidos de los mini rayos); y «ulti lista»
+  - las tres evoluciones, la base con algo más
+- **La música:**
+  - la de la fase 2, en do menor, con el bajo en sierra y algún paso que se
+    repite como un disco rayado (32 s)
+  - la de NÚCLEO CERO, en dos partes (48 s)
+  - la de Kernel Panic, alargada con una segunda parte (26 s)
+  - la victoria y la derrota acaban en un acorde de unos 3 s.
+- **Decisión: lo nuevo se genera al final del script.** Con la semilla fija,
+  todo lo que ya había sale idéntico: se comprobó con el md5 de cada WAV, y
+  solo cambian los que se querían cambiar. Las dos músicas nuevas van en
+  bucle (`edit/loop_mode=2` en su `.import`).
+- **Cómo suena:**
+  - Una señal nueva en el bus, `escudo_final(suceso)` («bloqueado»,
+    «ancla_rota», «roto»), apuntada en `GEMINI.md`. La emiten
+    `ancla_escudo.gd` y `escudo_jefe_final.gd`.
+  - `gestor_audio.gd`: cada ulti suena con el suyo; «ulti lista» suena cuando
+    la carga del que juega pasa a llena (recuerda la anterior para que suene
+    una vez); NÚCLEO CERO usa los sonidos de las ultis a 0,8 de tono (así se
+    oye que te las roba); y la fase 2 y NÚCLEO CERO ponen su música.
+  - Las evoluciones, con el campo `sonido` de sus `.tres`.
+- **Pruebas:**
+  - import (sin errores), `--quit-after` y la partida cargada en headless
+  - un script temporal (borrado) que emite cada señal y mira qué reproductor
+    suena: todas con el suyo, y la música cambia en la fase 2 y con NÚCLEO
+    CERO.
+
+  Sin escucharlo jugando: no hay audio en la nube (está en «Probar jugando»).
+- **Lo de los jefes quedó sin hacer** (puntos 8 y 9 de
+  `requisitos_y_estado.md`): Adam lo dejó para casa, porque además de
+  programarlo hay que medir el equilibrio y probarlo.
+
+#### Estado al cerrar la tarde y siguiente paso
+
+Todo lo de la nube del 26 y el 27/10 está commiteado en la rama
+`claude/beautiful-maxwell-uijhtj`:
+- el lote 11
+- el lote 9 entero (y el lanzador)
+- el lote 10
+- el sonido.
+
+**Falta llevarlo a `main`.** Desde la v1.10 no se ha publicado nada: las
+novedades de la próxima versión están sin escribir.
+
+Para la próxima sesión, en casa:
+1. Fusionar la rama de la nube en `main` y validar (headless y con ventana).
+2. Jugar la lista de «Probar jugando»: la interfaz nueva con mando y con
+   «Texto grande», el reposo, las poses y el sonido.
+3. Medir el equilibrio con 100 partidas por dificultad (lo pendiente desde
+   la v1.10, más los 0,24 s del pisotón).
+4. Si Adam quiere, los jefes (puntos 8 y 9), y volver a medir.
+5. Escribir las novedades y publicar.
+
+El prompt para empezar en casa se le dio a Adam en el chat. Dice lo mismo
+que esta lista.

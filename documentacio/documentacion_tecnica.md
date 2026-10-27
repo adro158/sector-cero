@@ -406,8 +406,9 @@ de su vida (`revivir_caidos`, desde el 23/10: el bot los perdía contra Kernel
 Panic y caía al empezar la fase 2) y llega `fase_cambiada(2)`: la arena pone el
 suelo dañado (el mismo shader con otras texturas y dos efectos nuevos,
 chispazos y humo, que con sus valores por defecto no cambian nada: lo
-comprobamos comparando el suelo normal píxel a píxel), el audio baja el tono
-de la música y el HUD avisa. Mientras está el jefe, el reloj se para en las
+comprobamos comparando el suelo normal píxel a píxel), el audio pone la
+música de la fase 2 (desde el 27/10; antes, la de la partida más grave) y el
+HUD avisa. Mientras está el jefe, el reloj se para en las
 10:00 y la fase 2 sigue desde ahí: así dura siempre lo mismo (5 minutos, en el
 `.tres` de las oleadas) y el tiempo de una partida siempre crece con lo que se
 avanza, que es lo que comparan el ranking y los récords. Como las victorias
@@ -595,8 +596,15 @@ mano). El icono del `.exe` en el explorador solo cambia con un ejecutable
 nuevo.
 
 **Audio.** Todos los sonidos los genera un script que suma ondas simples, como
-los chips de sonido antiguos: 17 efectos y 3 músicas. `GestorAudio` escucha el
-bus y decide qué suena.
+los chips de sonido antiguos: 27 efectos y 5 músicas. `GestorAudio` escucha el
+bus y decide qué suena. Desde el 27/10 cada ulti tiene su sonido, hecho a los
+tiempos de `ultis.gd` (los tres golpes del rayo, un barrido por golpe del
+giro, los diez chasquidos de la tormenta), y NÚCLEO CERO usa los mismos más
+graves, para que se oiga que los roba; el escudo suena al bloquear un golpe,
+al romper un ancla y al estallar (la señal `escudo_final`); las evoluciones
+suenan distinto de su herramienta base, y la fase 2 y NÚCLEO CERO tienen su
+música. Lo nuevo se genera al final del script: con la semilla fija, todos
+los sonidos que ya había salen idénticos.
 
 ## 4. Problemas y cómo los resolvimos
 

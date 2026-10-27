@@ -115,6 +115,9 @@ móvil, mini retratos, la fuente pixel art en los textos grandes y el
 lanzador) y el lote 10 (reposo de los personajes y poses de Kernel Panic).
 Sin novedades escritas aún para la próxima versión: escribirlas antes de
 subir su etiqueta. El lanzador nuevo llega con su `.pck` al publicar.
+También el sonido del 27/10 (escudo, ultis, evoluciones y músicas nuevas).
+**Lo de los jefes (puntos 8 y 9) quedó sin hacer:** Adam lo dejó para casa,
+porque además de programarlo hay que medir el equilibrio y probarlo.
 
 **Se publicó sin volver a medir el equilibrio** (Adam lo dejó para más
 adelante): el tiempo de golpe y la sacudida cambian un poco las partidas, y
@@ -164,6 +167,11 @@ en Godot):
   joystick nuevos. Y el lanzador: la barra al descargar una versión.
 - **El reposo y las poses** (lote 10): quietos, que respiren sin saltos al
   pararse; Kernel Panic cargando antes de cada ataque y el pisotón.
+- **El sonido nuevo** (27/10, generado en la nube sin poder escucharlo
+  jugando): el volumen de cada efecto al lado de los de siempre (sobre todo
+  el «tunk» del ancla bloqueada, que puede repetirse mucho, y la tormenta),
+  la música de la fase 2 y la de NÚCLEO CERO, y que al morir y ganar el
+  acorde final no tape la pantalla final.
 - **Las animaciones de ataque** de los tres personajes y las armas
   evolucionadas en el personaje.
 - **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la
@@ -223,7 +231,10 @@ carpeta de datos del juego.
     - **D. Lo visual por código, con assets:** hecha entera. La partida, el
       24/10 (lote 8); la interfaz y el lanzador, el 26 y el 27/10 (lote 9),
       y el reposo y las poses de Kernel Panic, el 27/10 (lote 10).
-    - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
+    - **E. Sonido y música:** lo principal, hecho el 27/10 (el escudo de
+      NÚCLEO CERO, las ultis, las evoluciones y las músicas de la fase 2 y
+      del jefe final). Queda lo opcional de la lista (avisos de los ataques
+      de los jefes, poca vida, recoger cosas, menús, cámara lenta).
     - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar). Los
       iconos de las reglas se hicieron con el lote 9.
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,

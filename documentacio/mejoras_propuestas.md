@@ -129,6 +129,11 @@ solo va en los textos de 20 px o más. Detalle en la bitácora, sesión 18.
 
 ### E. Sonido y música (se pueden seguir sintetizando por código)
 
+Hecho el 27/10, en la nube: el escudo de NÚCLEO CERO (sonido 2), las ultis y
+las evoluciones (sonido 3), la música de la fase 2 y la de NÚCLEO CERO, la
+del jefe alargada y la victoria y la derrota más largas (sonido 4). Queda lo
+demás de la lista. Detalle en la bitácora, sesión 18.
+
 - Sonidos del escudo de NÚCLEO CERO: golpe bloqueado, ancla rota y escudo
   roto (sonido 2).
 - Sonido propio para las ultis y las herramientas evolucionadas (sonido 3).
