@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, golpe, escudo y evolución sobre el personaje, destello al recoger experiencia, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.10 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.11 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.10 publicada el 24/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.11 publicada el 27/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -96,7 +96,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 Puesto al día el 23/10 (sesión 18). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.10** (24/10): instaladores de Windows y
+**Publicado:** la última es la **v1.11** (27/10: movimiento fluido, atacar
+corriendo y el bastón del Mago; antes, la v1.10 del 24/10): instaladores de Windows y
 de Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego
 suelto (decisión de Adam, sesión 18), y la web. Lleva NÚCLEO CERO a 0,5 en
 media (100 partidas por dificultad: 78 / 49 / 13), las mejoras C y F sin
@@ -130,7 +131,7 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
 
 ### Probar jugando (Adam)
 
-El simulador no juzga sensaciones ni sonido. Con la v1.10 (o `main` abierto
+El simulador no juzga sensaciones ni sonido. Con la v1.11 (o `main` abierto
 en Godot):
 
 - **El Espadachín:** desde el 24/10 el cono va solo al enemigo más cercano;
@@ -149,7 +150,7 @@ en Godot):
 - **El aviso de que el malware se adapta** a tu herramienta, y cómo suena
   todo (pisotón, ráfaga, furias, escudo).
 - **El lanzador se actualiza solo:** uno instalado con una versión anterior
-  tiene que pasar a la v1.10 sin hacer nada.
+  tiene que pasar a la v1.11 sin hacer nada.
 - **Correr** (en `main`, 24/10): si el personaje ya se ve fluido en la
   pantalla de 239 Hz, y si atacar corriendo (lote 11) y el bastón del Mago se
   ven bien.

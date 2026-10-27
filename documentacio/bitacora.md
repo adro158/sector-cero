@@ -4166,3 +4166,12 @@ sin resultados.
   temporal que corre y ataca con los tres y mira la hoja y la columna en
   cada paso (siempre la de atacar corriendo en la columna de las piernas, y
   la de ataque al pararse); y una partida entera del simulador sin errores.
+- **Publicada la v1.11:** `main` y la etiqueta subidas; la Action acabó bien,
+  con los dos instaladores, los cuatro `.pck` y `version.json` (1.11,
+  ejecutable mínimo 0.2), y la v1.11 como última release. Novedades en
+  `documentacio/novedades/v1.11.txt`. Sin medir el equilibrio (pendiente,
+  como en la v1.10).
+- **Pendiente de este chat:** medir el equilibrio con el simulador, cerrar
+  la sesión 18 con las horas, los lotes 9 y 10 de dibujos y probar jugando
+  lo nuevo (correr fluido, el tajo al más cercano, la caída, atacar
+  corriendo).
