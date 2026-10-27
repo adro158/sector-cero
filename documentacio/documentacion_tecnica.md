@@ -266,8 +266,13 @@ evolucionada, en su `DatosPersonaje`). Cuando el arma ataca
 durante sus 4 fotogramas (0,05 s cada uno; el Segador, 0,06) y vuelve a la de
 andar; como la columna 0 es la de andar, no se nota el cambio. Solo si está
 quieto: están dibujadas de pie y, al correr, paraban las piernas en cada
-golpe (desde el 24/10; las hojas de atacar corriendo están pedidas en el
-lote 11 de `prompt_assets.md`).
+golpe. Andando, desde el 27/10 (lote 11), sale la hoja de **atacar
+corriendo** (`hoja_correr_ataque` y `hoja_correr_ataque_evolucion` en
+`DatosPersonaje`): 6 columnas que son los mismos pasos de la de andar con los
+brazos y el arma del golpe, y se pone en la misma fila y columna que las
+piernas, que siguen contando. Por eso, corriendo, la fila es la de hacia
+donde corre y no la del tajo del Espadachín: el cuerpo giraría a mitad de
+paso.
 
 **El movimiento fluido** (24/10). La física va a 60 pasos por segundo y la
 pantalla de Adam, a 239 Hz: el jugador avanzaba cada 4 fotogramas mientras la

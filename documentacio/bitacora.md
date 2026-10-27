@@ -4136,3 +4136,33 @@ el arma».
     ve por su efecto.
 - **Pruebas:** import, `--quit-after` y el recorrido en headless; la medida
   con ventana, con y sin interpolación.
+
+### En casa, el lote 11 y la v1.11 (27/10)
+
+Adam: «todo lo que está hecho en la nube mira que esté bien puesto en el
+GitHub, súbelo al main, mira si quedó algo pendiente en este chat y haz la
+nueva release». Antes había pedido medir el equilibrio con 20 partidas por
+dificultad, pero lo paró enseguida («ahora no quiero que midas»): se cortó
+sin resultados.
+
+- **Lo de la nube, en GitHub:**
+  - La rama de Claude Code en la nube (`claude/beautiful-maxwell-uijhtj`) no
+    tiene nada que no esté en `main`.
+  - `demo-movil` (2 commits del 01/10) es la demo del móvil, que ya está en
+    `main` por otro camino (`control_tactil.gd` y la web). No se trae.
+  - En `zips-lotes` había llegado el **zip del lote 11**, hecho con Claude
+    chat con el prompt de `prompt_assets.md`. Se integró sin el plan previo
+    que pedía su prompt, porque Adam pidió subirlo todo y publicar.
+- **Lote 11:** las seis hojas de atacar corriendo (6x8 de 64x72, los mismos
+  pasos de andar con los brazos y el arma del golpe) y el ataque quieto del
+  Mago rehecho (adelanta el bastón y suelta la bola). Dos campos nuevos en
+  `DatosPersonaje` y, en `controlador_jugador.gd`, andando la hoja de atacar
+  corriendo en la misma fila y columna que las piernas; quieto, la de
+  siempre. Corriendo, la fila es la de las piernas y no la del tajo del
+  Espadachín, o el cuerpo giraría a mitad de paso (el prompt pedía
+  proponerlo).
+- **Pruebas** (Adam estaba jugando: nada con ventana, todo en headless, sin
+  ventanas y con prioridad baja): import y `--quit-after`; un script
+  temporal que corre y ataca con los tres y mira la hoja y la columna en
+  cada paso (siempre la de atacar corriendo en la columna de las piernas, y
+  la de ataque al pararse); y una partida entera del simulador sin errores.
