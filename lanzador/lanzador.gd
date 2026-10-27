@@ -13,6 +13,10 @@ const IconoLinux := preload("res://icono_linux.gd")
 ## Arriba, de lado a lado: el logo, los tres personajes y NÚCLEO CERO al fondo.
 const CABECERA := preload("res://cabecera.png")
 const ALTO_CABECERA := 260
+## Debajo de la cabecera, el suelo de placa base del juego, oscurecido (lote 9).
+const FONDO := preload("res://fondo.png")
+## Lo que dura cada fotograma del icono de descargando.
+const SEGUNDOS_ICONO := 0.15
 const AJUSTES := "user://lanzador.cfg"
 
 ## Las versiones del desplegable, en el mismo orden: diccionarios de release
@@ -22,7 +26,12 @@ var _biblioteca: Node
 var _versiones: OptionButton
 var _novedades: Label
 var _estado: Label
+var _barra: TextureProgressBar
 var _jugar: Button
+## La versión que se está descargando en el desplegable (-1: ninguna), para
+## animar su icono.
+var _descargando := -1
+var _tiempo := 0.0
 ## El proceso del juego abierto, para saber cuándo se cierra.
 var _partida := -1
 var _vigilar: Timer
@@ -30,9 +39,11 @@ var _vigilar: Timer
 
 func _ready() -> void:
 	theme = Estilo.tema()
+	# Sin suavizar: los paneles, los botones y la letra son de pixel art.
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_biblioteca = Biblioteca.new()
 	add_child(_biblioteca)
-	_biblioteca.progreso.connect(func(fraccion): _estado.text = "Descargando...  %d %%" % roundi(fraccion * 100.0))
+	_biblioteca.progreso.connect(_al_progresar)
 	_vigilar = Timer.new()
 	_vigilar.wait_time = 0.5
 	_vigilar.timeout.connect(_comprobar_partida)
@@ -48,6 +59,12 @@ func _construir() -> void:
 	fondo.color = Color(0.02, 0.04, 0.07)
 	fondo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(fondo)
+	var placa := TextureRect.new()
+	placa.texture = FONDO
+	placa.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	placa.set_anchors_preset(Control.PRESET_FULL_RECT)
+	placa.offset_top = ALTO_CABECERA
+	add_child(placa)
 
 	var margen := MarginContainer.new()
 	margen.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -94,11 +111,21 @@ func _construir() -> void:
 	_estado.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	# Los textos largos bajan de línea en vez de echar JUGAR de la ventana.
 	_estado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pie.add_child(_estado)
+	# El estado y, debajo, la barra de la descarga, que solo se ve mientras.
+	var estado := VBoxContainer.new()
+	estado.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	estado.alignment = BoxContainer.ALIGNMENT_CENTER
+	estado.add_child(_estado)
+	_barra = Estilo.barra_descarga()
+	_barra.visible = false
+	estado.add_child(_barra)
+	pie.add_child(estado)
 	_jugar = Button.new()
 	_jugar.text = "JUGAR"
 	_jugar.custom_minimum_size = Vector2(220, 56)
-	_jugar.add_theme_font_size_override("font_size", 24)
+	# La letra del juego, a 33: cada píxel de la letra, en 3 de la pantalla.
+	_jugar.add_theme_font_override("font", Estilo.fuente_pixel())
+	_jugar.add_theme_font_size_override("font_size", 33)
 	_jugar.pressed.connect(_pulsar_jugar)
 	pie.add_child(_jugar)
 	columna.add_child(pie)
@@ -125,6 +152,7 @@ func _cargar_versiones() -> void:
 	var indice := 0
 	for i in _releases.size():
 		_versiones.add_item(_nombre(i))
+		_poner_icono(i)
 		if _releases[i].tag_name == elegida:
 			indice = i
 	_versiones.select(indice)
@@ -136,6 +164,25 @@ func _nombre(indice: int) -> String:
 	var version: String = _releases[indice].tag_name
 	var texto := version + ("  (la última)" if indice == 0 else "")
 	return texto if _biblioteca.descargada(version) else texto + "  · descargar"
+
+
+## El icono de una versión: descargada o por descargar (mientras se descarga,
+## lo anima _process).
+func _poner_icono(indice: int) -> void:
+	var cual := Estilo.Icono.DESCARGADA if _biblioteca.descargada(_releases[indice].tag_name) else Estilo.Icono.POR_DESCARGAR
+	_versiones.set_item_icon(indice, Estilo.icono(cual))
+
+
+func _al_progresar(fraccion: float) -> void:
+	_estado.text = "Descargando...  %d %%" % roundi(fraccion * 100.0)
+	_barra.value = fraccion
+
+
+func _process(delta: float) -> void:
+	if _descargando < 0:
+		return
+	_tiempo += delta
+	_versiones.set_item_icon(_descargando, Estilo.icono(Estilo.Icono.DESCARGANDO, int(_tiempo / SEGUNDOS_ICONO) % 4))
 
 
 func _al_elegir(indice: int) -> void:
@@ -154,9 +201,15 @@ func _al_elegir(indice: int) -> void:
 	# Una descarga cada vez: mientras, no se puede cambiar de versión ni jugar.
 	_jugar.disabled = true
 	_versiones.disabled = true
+	_descargando = indice
+	_barra.value = 0.0
+	_barra.visible = true
 	var bien: bool = await _biblioteca.descargar(release)
+	_descargando = -1
+	_barra.visible = false
 	_versiones.disabled = false
 	_versiones.set_item_text(indice, _nombre(indice))
+	_poner_icono(indice)
 	if bien:
 		_listo()
 	else:
