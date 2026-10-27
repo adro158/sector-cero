@@ -4359,3 +4359,39 @@ Para la próxima sesión, en casa:
 
 El prompt para empezar en casa se le dio a Adam en el chat. Dice lo mismo
 que esta lista.
+
+### En la nube, el tajo del Espadachín corriendo y su robo de vida (27/10)
+
+Adam, jugando: «cuando está corriendo y dando espadazos la animación es muy
+rara… también hay que reducir el robo de vida porque llega un momento que se
+cura demasiado».
+
+- **La causa del tajo raro:** la hoja de atacar corriendo del lote 11 tenía
+  la misma pose en sus 6 columnas (la espada ya al final del tajo, con la
+  estela). Corriendo, la espada saltaba a esa pose 0,2 s y volvía: no se veía
+  el golpe.
+- **El arreglo:** una hoja de 24 columnas por fila, con los 4 fotogramas del
+  tajo de la hoja de atacar quieto (atrás, cruza con la estela y vuelve)
+  sobre cada uno de los 6 pasos.
+  - Se hizo con los scripts del lote 7: `mascaras.py`, ahora para cualquier
+    columna, y `ataques.py`, con el arma separada en cada paso.
+  - `controlador_jugador.gd` lo detecta por el ancho: si la hoja de atacar
+    corriendo es cuatro veces la de andar, coge el juego de pasos del
+    fotograma del ataque, en la columna de las piernas.
+  - El Mago y el Segador, con una sola pose, siguen igual.
+  - Su ataque pasa de 0,05 a 0,07 s por fotograma, para que se vea.
+  - Probado en una partida corriendo en círculo: el registro de fotogramas
+    da el tajo en orden (0, 1, 2, 3) mientras las piernas avanzan.
+- **El robo de vida:** el tope de cada golpe, a la mitad. El Firewall pasa de
+  1,5 a 0,75 (como mucho, unos 1,25 de vida por segundo) y el Firewall
+  perimetral de 2 a 1. El porcentaje del daño no cambia. Hasta ahora, con las
+  mejoras de cadencia, al final de la partida curaba demasiado.
+- **Medido con el simulador** (media, 8 partidas, semillas 1 a 8, antes y
+  después en dos copias aparte): 6/8 victorias antes y 5/8 después.
+  - Con 8 partidas, una de diferencia está dentro del azar (±2-3).
+  - En las mismas partidas, el bot llega con menos vida (por ejemplo, 137/145
+    en vez de 145/145 a los 12 minutos).
+  - Va en la línea de lo que se quería; la medida buena, con 100 por
+    dificultad, sigue pendiente en casa.
+  - En la nube, 8 partidas por versión, en cuatro procesos a la vez, tardaron
+    casi 2 horas.

@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("1_personaje")
 nombre = "Espadachín"
-descripcion = "Firewall: cada 0,6 s da un tajo en cono hacia el malware más cercano, que hace más daño cuanto más pegado está el malware (el triple de cerca que en el filo). Es el mejor cuando te rodea la horda, sobre todo bits corruptos, aunque lo que queda detrás del tajo no lo toca. Roba vida: cada golpe le cura un 10 % del daño que hace (hasta 1,5 de vida). Evoluciona a Firewall perimetral con Heurística agresiva ×3: llega más lejos, pega igual cerca que lejos y roba más."
+descripcion = "Firewall: cada 0,6 s da un tajo en cono hacia el malware más cercano, que hace más daño cuanto más pegado está el malware (el triple de cerca que en el filo). Es el mejor cuando te rodea la horda, sobre todo bits corruptos, aunque lo que queda detrás del tajo no lo toca. Roba vida: cada golpe le cura un 10 % del daño que hace (hasta 0,75 de vida). Evoluciona a Firewall perimetral con Heurística agresiva ×3: llega más lejos, pega igual cerca que lejos y roba más."
 hoja = ExtResource("2_hoja")
 hoja_evolucion = ExtResource("5_hoja_evolucion")
 hoja_ataque = ExtResource("6_ataque")

@@ -86,9 +86,10 @@ func _atacar(arma: DatosArma) -> void:
 			var golpes: float = alcanzados if cono == null else cono.golpes
 			_resistencia_malware.registrar_dano(arma, golpes * dano_final)
 			if arma.robo_vida > 0.0 and golpes > 0.0:
-				# El Firewall cura así, con la horda encima, unos 2,5 de vida por
-				# segundo. El tope era 3 hasta el 22/10: quieto en el minuto
-				# 8:30, Adam casi no perdía vida.
+				# El Firewall cura así, con la horda encima, como mucho 1,25 de
+				# vida por segundo (0,75 por golpe, cada 0,6 s). El tope era 3
+				# hasta el 22/10 y 1,5 hasta el 27/10: en las partidas largas,
+				# con las mejoras de cadencia, Adam se curaba demasiado.
 				var robado := minf(golpes * dano_final * arma.robo_vida, arma.robo_maximo)
 				_salud.curar(robado / _salud.vida_maxima)
 		DatosArma.Tipo.PROYECTIL:

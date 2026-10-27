@@ -149,8 +149,9 @@ El simulador no juzga sensaciones ni sonido. Con la v1.10 (o `main` abierto
 en Godot):
 
 - **El Espadachín:** desde el 24/10 el cono va solo al enemigo más cercano;
-  si ahora se nota útil, y si el robo de vida se nota (como mucho 1,5 por
-  golpe; 2 con la evolución).
+  si ahora se nota útil. Desde el 27/10, que al atacar corriendo se vea el
+  tajo entero, y que el robo de vida (ahora como mucho 0,75 por golpe; 1 con
+  la evolución) cure lo justo en las partidas largas.
 - **Atacar corriendo** (lote 11): que se note que ataca sin que las piernas
   se paren ni salten al empezar y al acabar, con los tres y con el arma
   evolucionada; y el ataque quieto nuevo del Mago (adelanta el bastón y
