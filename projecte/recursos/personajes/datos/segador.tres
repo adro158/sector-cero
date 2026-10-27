@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=10 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://bjsr00ce3d6ak" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones.png" id="2_hoja"]
@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_evolucion_ataque.png" id="7_ataque_evolucion"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_correr_ataque.png" id="8_correr_ataque"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_evolucion_correr_ataque.png" id="9_correr_ataque_evolucion"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_reposo.png" id="10_reposo"]
+[ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/segador_ciber_8_direcciones_evolucion_reposo.png" id="11_reposo_evolucion"]
 
 [resource]
 script = ExtResource("1_personaje")
@@ -20,6 +22,8 @@ hoja_ataque = ExtResource("6_ataque")
 hoja_ataque_evolucion = ExtResource("7_ataque_evolucion")
 hoja_correr_ataque = ExtResource("8_correr_ataque")
 hoja_correr_ataque_evolucion = ExtResource("9_correr_ataque_evolucion")
+hoja_reposo = ExtResource("10_reposo")
+hoja_reposo_evolucion = ExtResource("11_reposo_evolucion")
 segundos_ataque = 0.06
 arma = ExtResource("3_arma")
 vida_maxima = 100.0

@@ -35,6 +35,7 @@ const FOTOGRAMAS_ANDAR := 12
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 const DibujoJefeFinal := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
+const PosesJefe := preload("res://escenas/jugabilidad/enemigos/poses_jefe.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -97,6 +98,8 @@ var _estado := Estado.PERSEGUIR
 var _tiempo_estado := 0.0
 var _direccion := Vector2.DOWN
 var _tiempo_andando := 0.0
+## En el pisotón, cuándo pisó (-1: aún no): se queda ATERRIZAJE más, cayendo.
+var _pisado_en := -1.0
 var _hasta_invocar := 0.0
 var _hasta_pisoton := 0.0
 var _hasta_rafaga := 0.0
@@ -253,8 +256,11 @@ func _physics_process(delta: float) -> void:
 				_hasta_invocar = intervalo_invocacion
 				_cambiar_estado(Estado.PERSEGUIR)
 		Estado.PISOTON:
-			# Quieto mientras la jaula avisa; al pisar, sigue con la jaula puesta.
-			if not _jaula.avisando():
+			# Quieto mientras la jaula avisa; al pisar, cae (lote 10) y sigue
+			# con la jaula puesta.
+			if not _jaula.avisando() and _pisado_en < 0.0:
+				_pisado_en = _tiempo_estado
+			if _pisado_en >= 0.0 and _tiempo_estado - _pisado_en >= PosesJefe.ATERRIZAJE:
 				_hasta_pisoton = intervalo_pisoton
 				_cambiar_estado(Estado.PERSEGUIR)
 		Estado.RAFAGA:
@@ -323,6 +329,7 @@ func _enfurecer(furia: int) -> void:
 func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
+	_pisado_en = -1.0
 	_sprite.modulate = color_aviso if nuevo == Estado.AVISO else Color.WHITE
 	# Para borrar el círculo de la invocación al terminarla.
 	queue_redraw()
@@ -336,7 +343,15 @@ func _animar(delta: float) -> void:
 	elif _estado == Estado.EMBESTIDA:
 		_tiempo_andando += delta * velocidad_embestida / velocidad
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
-	_sprite.frame = Direcciones8.fila(_direccion) * FOTOGRAMAS_ANDAR + columna
+	# Cargando un ataque o pisando, sus poses (poses_jefe.gd); si no, andando.
+	var fila := Direcciones8.fila(_direccion)
+	if _estado == Estado.AVISO or _estado == Estado.INVOCAR or _estado == Estado.RAFAGA:
+		PosesJefe.cargar(_sprite, fila, _tiempo_estado)
+	elif _estado == Estado.PISOTON:
+		var desde_que_piso := _tiempo_estado - _pisado_en if _pisado_en >= 0.0 else -1.0
+		PosesJefe.pisoton(_sprite, fila, _tiempo_estado, _jaula.DURA_AVISO, desde_que_piso)
+	else:
+		PosesJefe.andar(_sprite, fila, columna)
 	if _aura.visible:
 		_tiempo_rabia += delta
 		_aura.frame = int(_tiempo_rabia / SEGUNDOS_POR_FOTOGRAMA_RABIA) % FOTOGRAMAS_RABIA

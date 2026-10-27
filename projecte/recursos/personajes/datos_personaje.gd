@@ -24,6 +24,11 @@ extends Resource
 ## corriendo mientras ataca (la de atacar está dibujada de pie).
 @export var hoja_correr_ataque: Texture2D
 @export var hoja_correr_ataque_evolucion: Texture2D
+## Quieto (lote 10): 4 columnas por las mismas 8 filas, en bucle. La columna 0
+## es la 0 de andar; en las otras respira, la capa ondea, los ojos brillan y
+## el arma late.
+@export var hoja_reposo: Texture2D
+@export var hoja_reposo_evolucion: Texture2D
 ## Lo que dura cada fotograma del ataque.
 @export var segundos_ataque: float = 0.05
 ## Retrato de 64x64 para el panel del equipo y la ventana de caída. Se enseña a

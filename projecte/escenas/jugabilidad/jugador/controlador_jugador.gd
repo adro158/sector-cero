@@ -22,6 +22,8 @@ const FOTOGRAMAS_ANDAR := 6
 ## de andar cada vez que el arma ataca (arma_disparada), si está quieto.
 ## Andando sale la de atacar corriendo, que tiene las 6 columnas de andar.
 const FOTOGRAMAS_ATAQUE := 4
+const FOTOGRAMAS_REPOSO := 4
+const SEGUNDOS_REPOSO := 0.15
 ## La sacudida de la cámara: los píxeles que se mueve como mucho y lo que se
 ## apaga por segundo. Un golpe de fuerza 6 mueve la cámara 6 px y dura 0,25 s.
 const SACUDIDA_MAXIMA := 16.0
@@ -37,6 +39,9 @@ var _efecto_golpe: Tween
 var _hoja_andar: Texture2D
 var _hoja_ataque: Texture2D
 var _hoja_correr_ataque: Texture2D
+var _hoja_reposo: Texture2D
+## Lo que lleva quieto, para el reposo.
+var _tiempo_quieto := 0.0
 var _segundos_ataque := 0.05
 ## Segundos desde que empezó el ataque que se está dibujando (-1: ninguno).
 var _tiempo_ataque := -1.0
@@ -66,10 +71,11 @@ func _ready() -> void:
 
 
 ## Las hojas de andar, de atacar y de atacar corriendo del personaje que entra.
-func poner_hojas(andar: Texture2D, ataque: Texture2D, correr_ataque: Texture2D, segundos: float) -> void:
+func poner_hojas(andar: Texture2D, ataque: Texture2D, correr_ataque: Texture2D, reposo: Texture2D, segundos: float) -> void:
 	_hoja_andar = andar
 	_hoja_ataque = ataque
 	_hoja_correr_ataque = correr_ataque
+	_hoja_reposo = reposo
 	_segundos_ataque = segundos
 	_tiempo_ataque = -1.0
 	_poner_hoja(andar, FOTOGRAMAS_ANDAR)
@@ -149,7 +155,9 @@ func _animar(direccion: Vector2, delta: float) -> void:
 	if direccion == Vector2.ZERO:
 		# Quieto: primer fotograma, mirando hacia donde iba.
 		_tiempo_andando = 0.0
+		_tiempo_quieto += delta
 	else:
+		_tiempo_quieto = 0.0
 		_fila = Direcciones8.fila(direccion)
 		# Con la mejora de velocidad el cuerpo va más deprisa, y en el aura
 		# lenta o contra una pared, más despacio: si las piernas fueran siempre
@@ -178,6 +186,11 @@ func _animar(direccion: Vector2, delta: float) -> void:
 				$Sprite.frame = _fila_ataque * FOTOGRAMAS_ATAQUE + fotograma
 			return
 		_tiempo_ataque = -1.0
+	# Quieto: el reposo, que empieza por el fotograma 0 de andar.
+	if direccion == Vector2.ZERO and _hoja_reposo != null:
+		_poner_hoja(_hoja_reposo, FOTOGRAMAS_REPOSO)
+		$Sprite.frame = _fila * FOTOGRAMAS_REPOSO + int(_tiempo_quieto / SEGUNDOS_REPOSO) % FOTOGRAMAS_REPOSO
+		return
 	if _hoja_andar != null:
 		_poner_hoja(_hoja_andar, FOTOGRAMAS_ANDAR)
 	$Sprite.frame = _fila * FOTOGRAMAS_ANDAR + columna
