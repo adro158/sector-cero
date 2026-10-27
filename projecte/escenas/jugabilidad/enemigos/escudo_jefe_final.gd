@@ -124,6 +124,7 @@ func _physics_process(delta: float) -> void:
 		quitar()
 		_rotura = ROTURA
 		roto.emit()
+		BusEventos.escudo_final.emit("roto")
 	elif rotas > 0:
 		# Cada una que se rompe vuelve a dar todo el tiempo para la siguiente.
 		if rotas > _rotas:

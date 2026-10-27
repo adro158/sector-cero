@@ -83,6 +83,9 @@ signal jefe_final_ataco(ataque: String)
 ## tienen anclas sin romper; vacío al quitarse. Llega cuando cambia, para que el
 ## HUD diga a quién hay que cambiar.
 signal anclas_pendientes(personajes: Array)
+## Lo que pasa con el escudo del jefe final, para el sonido: "bloqueado" (un
+## golpe con la herramienta de otro personaje), "ancla_rota" o "roto".
+signal escudo_final(suceso: String)
 ## Al caer los tres personajes o al derrotar al jefe final. Claves de
 ## estadisticas: victoria (bool), tiempo (float, en segundos), nivel (int),
 ## eliminados (int), personaje (String), trucos (bool), dificultad (String),

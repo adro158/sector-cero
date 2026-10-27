@@ -84,6 +84,7 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 		if _segundos - _ultimo_cero > ESPERA_CERO:
 			_ultimo_cero = _segundos
 			enemigo_danado.emit(numero_en, 0.0, 1.0)
+			BusEventos.escudo_final.emit("bloqueado")
 		return 0
 	# La resistencia es del malware, que se adapta a tu herramienta; el escudo
 	# no. Las armas mandan el daño ya rebajado y aquí se deshace: si solo
@@ -97,6 +98,7 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 	if _vida <= 0.0:
 		_activa = false
 		_rota = true
+		BusEventos.escudo_final.emit("ancla_rota")
 	return 1
 
 

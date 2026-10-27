@@ -17,16 +17,20 @@ const EFECTOS := [
 	"muerte", "gema", "subir_nivel", "elegir", "dano", "victoria", "derrota",
 	"pausa", "clic", "cambio", "evolucion", "explosion", "firewall", "ping",
 	"escaner", "alarma_jefe", "alarma_elite",
+	# Del 27/10: el escudo de NÚCLEO CERO, las ultis y las evoluciones.
+	"ancla_bloqueada", "ancla_rota", "escudo_roto", "ulti_rayo", "ulti_giro",
+	"ulti_tormenta", "ulti_lista", "firewall_perimetral", "analisis_heuristico",
+	"ping_inundacion",
 ]
 
 ## Cada ataque de los jefes suena con uno de los efectos que ya hay, y con
 ## qué tono. Los del jefe final (el rayo, el torbellino y la tormenta), como
-## las armas o las ultis de las que salen; el pisotón y la ráfaga son del
-## jefe del minuto 10.
+## las ultis que roba a los personajes, más graves: así se oye que te las
+## roba. El pisotón y la ráfaga son del jefe del minuto 10.
 const SONIDO_ATAQUE := {
-	"rayo": ["escaner", 0.6],
-	"torbellino": ["firewall", 0.7],
-	"tormenta": ["explosion", 1.2],
+	"rayo": ["ulti_rayo", 0.8],
+	"torbellino": ["ulti_giro", 0.8],
+	"tormenta": ["ulti_tormenta", 0.8],
 	"invocar": ["alarma_elite", 0.7],
 	"hielo": ["ping", 0.6],
 	"escudo": ["evolucion", 0.6],
@@ -48,6 +52,9 @@ var _pista_actual := ""
 var _personaje_anterior: DatosPersonaje
 ## La herramienta que se lleva: la adaptación del malware suena si es a ella.
 var _arma_activa: DatosArma
+## La carga de la ulti de cada personaje la última vez: «ulti lista» suena
+## solo al llenarse la del que juega.
+var _cargas_ulti: Array = []
 ## El bus de la música y el número de su filtro de paso bajo (-1 si no hay).
 var _bus_musica := -1
 var _filtro := -1
@@ -91,13 +98,15 @@ func _ready() -> void:
 	BusEventos.jefe_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.elite_exploto.connect(func(_posicion): sonar("explosion"))
 	BusEventos.transicion_fase.connect(_al_empezar_transicion)
-	# La fase 2 suena con la música de la partida, pero más grave.
-	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_partida", 0.85))
+	# La fase 2 tiene su música desde el 27/10 (antes, la de la partida más grave).
+	BusEventos.fase_cambiada.connect(func(_fase): _poner_musica("musica_fase2"))
 	BusEventos.jefe_final_aparecio.connect(_al_aparecer_jefe_final)
 	BusEventos.jefe_final_forma_cambiada.connect(_al_endurecerse_jefe)
 	BusEventos.jefe_final_ataco.connect(func(ataque): sonar(SONIDO_ATAQUE[ataque][0], SONIDO_ATAQUE[ataque][1]))
 	BusEventos.arma_evolucionada.connect(func(_arma): sonar("evolucion"))
 	BusEventos.ulti_lanzada.connect(_al_lanzar_ulti)
+	BusEventos.ulti_cambiada.connect(_al_cargar_ulti)
+	BusEventos.escudo_final.connect(func(suceso): sonar({"bloqueado": "ancla_bloqueada", "ancla_rota": "ancla_rota", "roto": "escudo_roto"}[suceso]))
 	BusEventos.juego_pausado.connect(_al_pausar)
 	BusEventos.partida_terminada.connect(_al_terminar)
 	# La música, amortiguada mientras se elige. Si hay varias subidas de nivel
@@ -159,6 +168,7 @@ func _amortiguar(encendido: bool) -> void:
 
 func _al_cambiar_escena() -> void:
 	_personaje_anterior = null
+	_cargas_ulti = []
 	_amortiguar(false)
 	var escena := get_tree().current_scene
 	if escena != null and MUSICA_POR_ESCENA.has(escena.scene_file_path):
@@ -187,9 +197,16 @@ func _al_cambiar_personaje(actual: DatosPersonaje, arma: DatosArma, _siguiente: 
 	_arma_activa = arma
 
 
-func _al_lanzar_ulti(_personaje: DatosPersonaje) -> void:
-	sonar("evolucion")
-	sonar("explosion", 0.8)
+## Cada ulti con su sonido (rayo, giro o tormenta), hecho a su medida.
+func _al_lanzar_ulti(personaje: DatosPersonaje) -> void:
+	sonar("ulti_" + personaje.ulti)
+
+
+func _al_cargar_ulti(cargas: Array, activo: int) -> void:
+	var antes: float = _cargas_ulti[activo] if activo < _cargas_ulti.size() else 1.0
+	if antes < 1.0 and cargas[activo] >= 1.0:
+		sonar("ulti_lista")
+	_cargas_ulti = cargas.duplicate()
 
 
 func _al_aparecer_jefe() -> void:
@@ -197,10 +214,10 @@ func _al_aparecer_jefe() -> void:
 	_poner_musica("musica_jefe")
 
 
-## La música del jefe, algo más rápida.
+## La suya desde el 27/10 (antes, la del jefe algo más rápida).
 func _al_aparecer_jefe_final() -> void:
 	sonar("alarma_jefe")
-	_poner_musica("musica_jefe", 1.1)
+	_poner_musica("musica_jefe_final")
 
 
 ## Lo mismo cuando el jefe final cambia de forma y cuando el del minuto 10

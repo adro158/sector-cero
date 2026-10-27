@@ -104,6 +104,7 @@ signal jefe_final_vida_cambiada(actual: float, maxima: float)
 signal jefe_final_forma_cambiada(forma: int)
 signal jefe_final_ataco(ataque: String)
 signal anclas_pendientes(personajes: Array)
+signal escudo_final(suceso: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 ```
