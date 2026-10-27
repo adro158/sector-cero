@@ -98,6 +98,10 @@ casi no se ve al jugar: solo en el panel técnico (F3).
 
 ### D. Lo visual hecho por código que quedaría mejor con assets
 
+Hecha entera: la partida el 24/10 (lote 8), la interfaz y el lanzador el 26
+y el 27/10 (lote 9) y lo más grande el 27/10 (lote 10). La fuente pixel art
+solo va en los textos de 20 px o más. Detalle en la bitácora, sesión 18.
+
 - **En la partida** (hecho el 24/10, lote 8):
   - partículas con textura en vez de cuadrados (visual 5)
   - animación al caer un personaje y al perder (visual 2)

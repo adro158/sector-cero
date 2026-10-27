@@ -4194,3 +4194,100 @@ prompt al chat: primero una vista previa (commit `docs`, en
   `requisitos_y_estado.md`), escribir las novedades de la próxima versión e
   integrar en `main` lo de la nube (lotes 11 y 9) cuando Adam diga «ya he
   acabado».
+
+### En la nube, el resto del lote 9 y el lote 10 (26 y 27/10)
+
+Adam: «integra lo que quede de los lotes, también lo del sonido y por último
+lo de los jefes». Plan corto aprobado («empieza»): el lote 9 en cuatro tandas
+y el lanzador, el lote 10, el sonido y los jefes, por ese orden. Sin
+subagentes: cada tanda necesitaba la vista previa y el sí de Adam, y casi
+todas tocan los mismos ficheros de la interfaz. Cada tanda: dibujos con un
+script de Python en la carpeta temporal (no se suben), metidos en el juego,
+capturas con ventana, vista previa en `documentacio/capturas/lote9/` y
+`lote10/`, y commit con su sí.
+
+- **9a. Barra del equipo y HUD de arriba.** La línea de texto de abajo pasa a
+  ser `barra_equipo.gd`: el que juega en medio, más arriba; a los lados, el
+  anterior y el siguiente en ese orden fijo, con la tecla que lleva a cada
+  uno (Q y E van al primero vivo en ese sentido, que puede ser el del otro
+  lado si uno ha caído). Vida debajo, carga de la ulti alrededor (8
+  fotogramas y 4 en bucle al estar lista), oscurecido de arriba abajo con un
+  reloj mientras no se puede cambiar, «CAÍDO» en gris y, con el escudo, el
+  candado en los que tienen anclas. `panel_equipo.gd` se queda con las
+  fichas de la C. La experiencia (`panel_experiencia.gd`) se dibuja como la
+  barra del jefe; el reloj y las mejoras, con marco (las mejoras parpadean al
+  subir); los avisos (`avisos_hud.gd`, ahora un PanelContainer) van sobre una
+  banda de 9 trozos teñida y con un icono. Los consejos suben para no pisar
+  la barra.
+- **9b. Paneles y botones.** `EstiloInterfaz.caja()` y los botones pasan de
+  StyleBoxFlat a StyleBoxTexture de 9 trozos en grises, teñidos con
+  `modulate_color`: siguen valiendo los colores de cada sitio. Un color medio
+  transparente se oscurece en vez de transparentarse (si no, se veía a
+  través el fondo del panel). Cinco estados de botón; el foco va encima, con
+  escuadras y 3 px por fuera, y ya no se confunde con el ratón encima.
+  Pestañas, interruptores, deslizador, barras de desplazamiento, LineEdit y
+  ayudas con el mismo estilo; la tarjeta de evolución late con
+  `modulate_color`.
+  - Problema: la barra de desplazamiento medía 0 de ancho. El mínimo de un
+    StyleBoxTexture sale de sus márgenes de contenido, que estaban a 0: a 4.
+  - Problema: con el interruptor al doble, cada fila de las opciones crecía
+    20 px y la ventana no cabía. Un botón mide lo que el mayor de sus
+    estilos, también el de desactivado: al interruptor, todos vacíos y el
+    foco sin margen.
+  - Decisión: las raíces del menú, del HUD, del F1 y del aviso de
+    actualización dibujan sin suavizar (`texture_filter`). Cambiarlo en
+    `project.godot` habría obligado a subir `EJECUTABLE_MINIMO`.
+- **9c. Teclas, reglas, móvil y ranking.** `teclas_dibujadas.gd`: la tira de
+  33 teclas y botones del mando y la tabla de controles de las reglas, que
+  era una línea larguísima. La barra del equipo enseña Q, E y R dibujadas (o
+  LB, RB y B con el mando). Un icono por apartado de «Cómo se juega», el mini
+  retrato en el ranking y los controles táctiles dibujados (con el pulsado
+  un momento al tocar).
+- **9d. La fuente pixel art.** Letras de 5x7 a mano, pasadas a .ttf con
+  fontTools (un cuadrado de 100 unidades por píxel, 11 píxeles de alto con
+  tildes y rabitos). **Decisión (con el visto bueno de Adam):** solo en los
+  textos de 20 px o más (títulos, reloj, avisos), con el tamaño en un
+  múltiplo de 11 para que cada píxel caiga entero. A 13 o 14 px los píxeles
+  no caen enteros y los párrafos de las reglas costaban de leer. La I va con
+  remates anchos: estrecha, «SUBIDA DE NIVEL» se leía «SUBI DA DE NI VEL».
+- **El lanzador.** El fondo es el suelo de placa base del juego, capturado
+  de su shader sin el filtro CRT y oscurecido. Panel, botones y fuente
+  copiados (es otro proyecto), la versión de encima del desplegable marcada,
+  un icono por versión (animado al descargar) y una barra de descarga de 9
+  trozos: a 400 px fija echaba JUGAR de la ventana. Llega a los jugadores con
+  el `.pck` del lanzador.
+- **Lote 10.** El reposo de los personajes sale del fotograma 0 de andar:
+  respiran, el bajo de la capa ondea, los ojos y lo que brilla del arma
+  laten. El arma se separa con las máscaras del lote 7 y no se mueve; se
+  mueven los píxeles del cuerpo que no tapa.
+  - Problema: reconstruir el cuerpo detrás del arma (como en las hojas de
+    ataque) colaba trozos del arma evolucionada. Se quitó la reconstrucción.
+  - Problema: los «ojos» cogían también los circuitos de la capucha y el
+    collar. Ahora solo cuentan las manchas pequeñas de la cara.
+
+  Kernel Panic no tiene bastón (lleva dos chips flotando), así que sus poses
+  son de cuerpo entero con el mismo dibujo:
+  - cargar: se yergue con un aura morada; para el aviso de la embestida, la
+    invocación y la ráfaga
+  - pisotón: se agacha, salta mientras la jaula avisa y cae con polvo con la
+    onda.
+
+  Van en `poses_jefe.gd`, para no engordar más `jefe.gd`. Tras pisar, el
+  jefe se queda 0,24 s quieto cayendo: se mide con el simulador junto a lo de
+  los jefes.
+- **Sin señales ni `class_name` nuevos** y sin tocar ningún `project.godot`:
+  no hace falta subir `EJECUTABLE_MINIMO` (la caché de clases sigue en 129
+  líneas).
+- **Pruebas:** en cada tanda, import (dos veces: la primera da errores de
+  preload hasta que se importan las imágenes nuevas), `--quit-after` (solo
+  el aviso conocido de la música) y la partida cargada en headless. Con
+  ventana, scripts temporales (borrados) que fuerzan los estados: la barra
+  con cargas, espera, caído y anclas; los avisos largos; el menú y sus
+  ventanas; el ranking con partidas de prueba solo en memoria; los
+  controles táctiles forzados; el lanzador con versiones de prueba; el
+  reposo cada 0,15 s; y Kernel Panic aparecido a la fuerza, cargando y
+  pisando.
+- **Siguiente paso:** el sonido y los jefes (mismo plan). Adam tiene que
+  probar jugando la interfaz nueva (en «Probar jugando» de
+  `requisitos_y_estado.md`), sobre todo con el mando, «Texto grande» y en el
+  móvil.

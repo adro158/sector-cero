@@ -213,6 +213,31 @@ scripts no forman parte del repositorio.
   el marco y el relleno de la barra, con una marca cada 10 %, todo en grises
   para teñirlo. Los dibujó Claude en la nube con un script de Python
   (Pillow); Adam vio la vista previa antes de meterlos en el juego.
+- **El resto de la interfaz** (`medios/interfaz/`, 26-27/10/2026, de la
+  misma forma; lote 9, en cuatro tandas con su vista previa):
+  - 9a: la ranura del equipo con la carga de la ulti y el reloj de espera,
+    los marcos de la experiencia, del reloj y de las mejoras, y la banda de
+    los avisos con cinco iconos
+  - 9b: el panel y los botones de 9 trozos (cinco estados), las pestañas,
+    el interruptor, el agarre del deslizador y la barra de desplazamiento
+  - 9c: 33 teclas y botones del mando de 20x20, los diez iconos de «Cómo se
+    juega», los botones y el joystick del móvil y los mini retratos del
+    ranking (recortados de la cabeza de cada personaje)
+  - 9d: la fuente «Sector Cero Pixel» (`sector_cero_pixel.ttf`): letras de
+    5x7 dibujadas a mano y pasadas a .ttf con fontTools.
+  Los dibujó Claude en la nube con scripts de Python (numpy, Pillow y
+  fontTools).
+- **El lanzador** (`lanzador/`, 27/10/2026, lote 9): el fondo es el suelo
+  de placa base del juego, capturado de su shader y oscurecido; los iconos
+  de versión y la barra de descarga, de la misma forma. Lleva copias del
+  panel, los botones y la fuente.
+- **Reposo y poses de Kernel Panic** (27/10/2026, de la misma forma; lote
+  10): el reposo de los tres personajes, normal y evolucionado
+  (`escenas/jugabilidad/jugador/*_reposo.png`, 4 x 8 de 64x72), hecho a
+  partir del fotograma de andar (respira, la capa ondea, los ojos y el arma
+  brillan), y las poses de cargar y del pisotón de Kernel Panic
+  (`medios/sprites/jefe/jefe_cargar.png` y `jefe_pisoton.png`), a partir de
+  su hoja de andar, estirando, aplastando y moviendo el mismo dibujo.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

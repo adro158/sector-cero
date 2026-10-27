@@ -537,6 +537,34 @@ pantalla táctil se aparta a la izquierda del botón de pausa. Sustituye al
 rótulo dibujado con el mismo glitch del logo (`logo_glitch.gd` acepta otra
 tira), y en el ranking los tres primeros llevan medalla.
 
+**La interfaz de pixel art** (26 y 27/10, lote 9). Abajo en el centro, la
+barra del equipo (`barra_equipo.gd`) con los tres retratos: el que juega en
+medio y, a los lados, el anterior y el siguiente con la tecla que lleva a
+cada uno; la vida, la carga de la ulti alrededor y la espera del cambio. El
+panel de la C se queda en `panel_equipo.gd`. Arriba, la experiencia, el
+reloj y las mejoras con marcos dibujados, y los avisos sobre una banda de 9
+trozos con un icono. Los paneles y los botones de todo el juego son
+`StyleBoxTexture` de 9 trozos en grises, teñidos con `modulate_color`
+(`EstiloInterfaz.caja` y `boton_estilo`): así siguen valiendo los colores de
+cada sitio. El foco del mando se dibuja encima del botón, con escuadras, y se
+distingue del ratón encima. Las raíces de las pantallas dibujan sin suavizar
+(`texture_filter`), sin tocar `project.godot`. Las teclas y los botones del
+mando son una tira (`teclas_dibujadas.gd`), que usan la barra del equipo y la
+tabla de controles de las reglas. La fuente «Sector Cero Pixel» es un .ttf
+de cuadrados de 100 unidades y 11 píxeles de alto: `EstiloInterfaz.poner_letra`
+la pone en los textos de 20 px o más, con el tamaño en un múltiplo de 11
+(22, 33, 44) para que cada píxel caiga entero; los pequeños siguen con la
+monoespaciada porque a 13 o 14 px no se leen bien. El lanzador lleva copias
+del panel, los botones y la fuente (es otro proyecto), el suelo de placa
+base de fondo y una barra de descarga de 9 trozos.
+
+**El reposo y las poses** (27/10, lote 10). Quieto, el jugador pasa a la
+hoja de reposo (`hoja_reposo` en `DatosPersonaje`), cuyo fotograma 0 es el 0
+de andar. Kernel Panic cambia de hoja según lo que hace (`poses_jefe.gd`):
+cargando al avisar la embestida, al invocar y antes de la ráfaga, y el
+pisotón sincronizado con el aviso de la jaula; al pisar se queda 0,24 s
+quieto mientras cae.
+
 **Guardado y actualizaciones.** `GestorGuardado` guarda en un fichero de texto
 de Godot (`ConfigFile`) los récords, el ranking de las 10 mejores partidas y
 las opciones. Al arrancar y después cada 5 minutos, el `Actualizador` pregunta
@@ -647,6 +675,6 @@ alrededor de un 10 %.
 
 - Pixel art propio para los personajes y el jefe.
 - Más variedad de élites.
-- Los dibujos que aún se hacen por código: paneles y botones, y una fuente
-  pixel art propia.
+- La fuente pixel art también en los textos pequeños (ahora solo va en los
+  de 20 px o más: a 13 o 14 px no se lee bien).
 - Controles configurables y un ranking compartido en línea.

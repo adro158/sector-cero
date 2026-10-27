@@ -108,8 +108,13 @@ cercano. Novedades en `documentacio/novedades/v1.10.txt`.
 sin que se paren las piernas y el ataque quieto del Mago rehecho (bitácora,
 sesión 18, «En la nube, el lote 11»), y el lote 9: el medidor de la
 resistencia arriba a la derecha, los rótulos de la pantalla final y las
-medallas del ranking («En la nube, el lote 9»). Sin novedades escritas aún para la
-próxima versión: escribirlas antes de subir su etiqueta.
+medallas del ranking («En la nube, el lote 9»). El 26 y el 27/10, el resto
+del lote 9 (barra del equipo, HUD de arriba, avisos con banda, paneles y
+botones de 9 trozos, teclas dibujadas, iconos de las reglas, controles del
+móvil, mini retratos, la fuente pixel art en los textos grandes y el
+lanzador) y el lote 10 (reposo de los personajes y poses de Kernel Panic).
+Sin novedades escritas aún para la próxima versión: escribirlas antes de
+subir su etiqueta. El lanzador nuevo llega con su `.pck` al publicar.
 
 **Se publicó sin volver a medir el equilibrio** (Adam lo dejó para más
 adelante): el tiempo de golpe y la sacudida cambian un poco las partidas, y
@@ -151,6 +156,14 @@ en Godot):
   arriba a la derecha, que el color y el latido avisen al subir y que no
   pise nada (con mando, con «Texto grande» y en la web en el móvil). Y los
   rótulos del final y las medallas del ranking.
+- **La interfaz nueva** (lote 9): la barra del equipo abajo (se entiende a
+  quién pasas, la espera, la ulti), los botones con ratón y con mando (el
+  foco se distingue del ratón encima), las opciones, las reglas con la
+  tabla de controles y que todo se lea bien sin suavizar; con «Texto
+  grande», que nada se salga. En la web desde el móvil, los botones y el
+  joystick nuevos. Y el lanzador: la barra al descargar una versión.
+- **El reposo y las poses** (lote 10): quietos, que respiren sin saltos al
+  pararse; Kernel Panic cargando antes de cada ataque y el pisotón.
 - **Las animaciones de ataque** de los tres personajes y las armas
   evolucionadas en el personaje.
 - **Kernel Panic** (F1 → JEFE YA): la jaula, la ráfaga, el aviso de la
@@ -207,19 +220,12 @@ carpeta de datos del juego.
    hace, volver a equilibrar (punto 7).
 10. **Mejoras propuestas, lo que queda** de `mejoras_propuestas.md` (A, B sin
     dibujos, C entera y F sin dibujos, hechas):
-    - **D. Lo visual por código, con assets:** lo de la partida está hecho
-      (lote 8, 24/10). Queda lo de la interfaz (fuente pixel art, paneles y
-      botones, barra del equipo, HUD de arriba, teclas dibujadas). El
-      medidor de la resistencia (de la B) se hizo el 26/10 con el lote 9.
+    - **D. Lo visual por código, con assets:** hecha entera. La partida, el
+      24/10 (lote 8); la interfaz y el lanzador, el 26 y el 27/10 (lote 9),
+      y el reposo y las poses de Kernel Panic, el 27/10 (lote 10).
     - **E. Sonido y música** de la fase 2, de NÚCLEO CERO y de su escudo.
-    - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar) y los
-      iconos de los apartados de las reglas (dibujos).
-    - **Los dibujos de D:** el prompt de los lotes 8 a 10 está al final de
-      `prompt_assets.md`; Adam se lo pasa a Claude (chat). El 8 ya está en el
-      juego (24/10). Del 9 (interfaz), lo que más luce (el medidor, los
-      rótulos del final y las medallas) lo dibujó Claude en la nube el 26/10;
-      queda el resto del 9 y el 10 (poses de Kernel Panic y reposo de los
-      personajes).
+    - **F, lo que queda:** el Popup de la fase 2 (dibujo y reequilibrar). Los
+      iconos de las reglas se hicieron con el lote 9.
 11. **Lo que quedó por decidir de la sesión 17** (bitácora, sesión 17,
     «Siguiente paso», punto 5): `jefe.gd` pasa de las ~200 líneas de la
     guía y se podrían sacar las furias a su script; y lo que eligió Claude en
