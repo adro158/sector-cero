@@ -3226,10 +3226,12 @@ Por orden. Lo que dice «con Adam» se le pregunta antes.
 
 ---
 
-## Sesión 18 — 22/10/2026, jueves (instituto, en curso)
+## Sesión 18 — 22/10/2026, jueves (instituto), a 27/10/2026 (casa)
 
-**Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
-Claude Code)
+**Duración:** 4 h (2 h el 22/10 y 2 h el 27/10; las apuntó Adam) · **Fitas:**
+5 y 6 · **Participantes:** Adam (con Claude Code)
+
+**Horas acumuladas:** 36 h de las 60 sugeridas (60 %)
 
 **Se apunta como la sesión de clase del jueves 22/10** (decisión de Adam).
 Lo de abajo se hizo antes, desde el ordenador de casa (con la RTX 5070); en
@@ -4175,3 +4177,22 @@ sin resultados.
   la sesión 18 con las horas, los lotes 9 y 10 de dibujos y probar jugando
   lo nuevo (correr fluido, el tajo al más cercano, la caída, atacar
   corriendo).
+
+### Estado al cerrar la sesión 18 (27/10)
+
+Cerrada por Adam el 27/10 («déjalo cerrado por hoy»). Publicada la **v1.11**
+y todo subido a `main`. Desde la v1.9 han entrado: NÚCLEO CERO más fácil en
+media, las mejoras C y F, los lotes 8 y 11 de dibujos, el tajo del Espadachín
+al enemigo más cercano y el movimiento fluido en pantallas de más de 60 Hz.
+
+**Siguiente paso, por prioridad:**
+1. **Medir el equilibrio** con el simulador (Adam: «ya lo haremos»): 20 o
+   100 partidas por dificultad, en casa. Desde la última medida (78 / 49 /
+   13) han cambiado el tiempo de golpe, la sacudida, el tajo del Espadachín
+   y el bot del simulador.
+2. **Probar jugando** lo nuevo: correr fluido, atacar corriendo y el bastón
+   del Mago, el tajo al más cercano y la caída antes del panel.
+3. **La entrega:** el vídeo, ensayar la defensa y probar el instalador en un
+   ordenador limpio.
+4. **Los lotes 9 (interfaz) y 10** (poses de Kernel Panic y reposo de los
+   personajes) de `prompt_assets.md`, si Adam los pide.

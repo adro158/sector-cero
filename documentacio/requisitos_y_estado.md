@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 24/10/2026** contra la bitácora (hasta la sesión 18) y
+**Estado verificado el 27/10/2026** contra la bitácora (hasta la sesión 18) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -93,7 +93,7 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-Puesto al día el 23/10 (sesión 18). Lo hecho está en la bitácora, en la sesión
+Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
 **Publicado:** la última es la **v1.11** (27/10: movimiento fluido, atacar
@@ -126,8 +126,6 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
    coincida con la clase de la ventana (`xprop WM_CLASS` en X11).
 4. **Acordar con Alan** qué parte de la entrega asume (vídeo, presentación,
    pruebas).
-5. **Cerrar la sesión 18** en la bitácora con la duración de toda la sesión
-   y las horas acumuladas.
 
 ### Probar jugando (Adam)
 
