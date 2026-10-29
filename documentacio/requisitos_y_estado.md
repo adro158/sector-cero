@@ -231,8 +231,10 @@ carpeta de datos del juego.
    Con 20 partidas por dificultad (en el instituto): **11 / 7 / 1** (objetivo
    15-16 / 8-10 / 2). Fácil y media perdían por tiempo contra la amalgama:
    su vida bajó en fácil de 0,42 a 0,32 y en media de 0,5 a 0,45, **sin
-   volver a medir** (Adam no quiso más simulaciones). Falta comprobarlo
-   (punto 7). Publicado en la v1.12.
+   volver a medir** (Adam no quiso más simulaciones). Publicado en la v1.12.
+   Por la tarde, medida a medias (se cortó al cerrar la VM): fácil 9/11,
+   media 3/12, difícil 0/9; media sigue perdiendo contra la amalgama. Falta
+   la medida completa (punto 7).
 10. **Mejoras propuestas, lo que queda** de `mejoras_propuestas.md` (A, B sin
     dibujos, C entera y F sin dibujos, hechas):
     - **D. Lo visual por código, con assets:** hecha entera. La partida, el

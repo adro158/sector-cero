@@ -4585,3 +4585,51 @@ por apuntar
 - **Cuando haya tiempo, en casa:** medir el equilibrio con el simulador.
 - **La entrega:** el vídeo, ensayar la defensa y probar el instalador en un
   ordenador limpio.
+
+### Por la tarde (instituto, chat nuevo): probar la v1.12
+
+- **Al empezar:** `main` igual que GitHub (`8f6cd86`), Alan sin nada nuevo,
+  v1.12 publicada. Era la VM del instituto (VirtualBox Graphics Adapter), no
+  casa: los FPS no valen y no se midió el rendimiento.
+- **Headless:** import limpio y `--quit-after` solo con el aviso conocido de
+  la música. Una partida del simulador desde el minuto 15, sin errores de
+  script, victoria. Al salir, el simulador deja «33 ObjectDB instances
+  leaked» y «10 resources still in use»: la v1.11 da lo mismo (27 y 11) con
+  la misma partida, así que es cómo cierra el simulador a media partida, no
+  algo nuevo.
+- **Con ventana en la VM** (Mesa SVGA3D, `--fixed-fps 60`): un script
+  temporal que hereda del simulador y guarda el viewport en fotogramas
+  fijos (`capturas=...`), fuera del repo. Se ven bien el guardaespaldas de
+  Kernel Panic al bajar de la mitad, el escudo de NÚCLEO CERO con sus
+  anclas, la amalgama con dos ataques a la vez (torbellino y hielo), la
+  ruleta y el HUD del lote 9.
+- **Dos detalles vistos en las capturas** (no se han tocado, que decida
+  Adam):
+  - si cae un personaje y solo queda uno, la ventana «Elige quién sigue»
+    sale igual con una sola opción (es así desde la sesión 9)
+  - con dos élites explosivos juntos, sus rótulos («EXPLOSIVO») se pisan
+- **Simulador, 20 partidas por dificultad, a medias:** se lanzaron las 60
+  en 12 procesos (los 12 núcleos de la VM), pero Adam cerraba la VM a las
+  19:20 y se cortaron. Resultado parcial, con los dos cambios de vida de
+  NÚCLEO CERO de esta mañana (0,32 en fácil y 0,45 en media):
+  - fácil **9 / 11** (las 2 derrotas, en la amalgama)
+  - media **3 / 12** (6 derrotas en la amalgama, 2 con Kernel Panic, 1 con
+    el rootkit gigante)
+  - difícil **0 / 9**
+
+  No se puede comparar del todo con el 11 / 7 / 1 de la mañana (faltan
+  partidas de cada tramo de semillas), pero fácil sube claramente y media
+  sigue perdiendo sobre todo contra la amalgama. Falta la medida completa.
+- **Subagentes para el simulador:** Adam preguntó si irían más rápido. No:
+  lo que limita es la CPU; con 12 procesos ya va uno por núcleo.
+- **Duración de la sesión:** por apuntar (tampoco consta la de la mañana).
+
+### Siguiente paso (al cerrar la tarde)
+
+- **Simulador completo**, mejor en casa con más tiempo: 20 por dificultad
+  (o 100 para calibrar). Si media sigue baja, bajar algo más la vida de la
+  amalgama en media.
+- **Probar jugando la v1.12** (lista en «Probar jugando» de
+  `requisitos_y_estado.md`) y decidir los dos detalles de arriba.
+- **La entrega:** vídeo, ensayo de la defensa e instalador en un ordenador
+  limpio.

@@ -153,14 +153,13 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       del minuto 10 (pisotón con jaula, ráfaga y rabia), anclas del escudo
       por personaje, efectos de las herramientas y de la partida, élites
       animados con sus afijos, logo, retratos, iconos y cabecera del
-      lanzador. En la rama `claude/beautiful-maxwell-uijhtj`: falta
-      integrarla en `main` y probarlo jugando
+      lanzador. Integrado en `main` y publicado; falta probarlo jugando
 - [x] `armas_evolucionadas.zip` (22/10, en la nube): el arma evolucionada se
       ve en el personaje
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
-      v0.2, 01/10, a la v1.9, 23/10, publicadas; desde la v1.5, con el
+      v0.2, 01/10, a la v1.12, 29/10, publicadas; desde la v1.5, con el
       lanzador y su instalador de Windows; falta probarlas en un
       ordenador sin Godot)
 
