@@ -93,8 +93,8 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10 con lo
-de la nube (sus horas, sin apuntar). Lo hecho está en la bitácora, en la sesión
+Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
+cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
 **Publicado:** la última es la **v1.12** (29/10: los jefes más duros, y lo de la nube del 26 al 29/10: el lote 9 de la interfaz, el lote 10, el sonido nuevo y el tajo corriendo; novedades en `documentacio/novedades/v1.12.txt`). Antes, la **v1.11** (27/10: movimiento fluido, atacar

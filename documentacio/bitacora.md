@@ -4531,7 +4531,9 @@ sesiones (26, 27 y 29/10), 6 h. Acumuladas: **42 h** de las 60 sugeridas
 ## Sesión 19 — 29/10/2026 (instituto)
 
 **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
-por apuntar
+2 h (toda la sesión, mañana y tarde; las apuntó Adam)
+
+**Horas acumuladas:** 38 h de las 60 sugeridas (63 %)
 
 ### Qué se ha hecho
 
@@ -4622,7 +4624,7 @@ por apuntar
   sigue perdiendo sobre todo contra la amalgama. Falta la medida completa.
 - **Subagentes para el simulador:** Adam preguntó si irían más rápido. No:
   lo que limita es la CPU; con 12 procesos ya va uno por núcleo.
-- **Duración de la sesión:** por apuntar (tampoco consta la de la mañana).
+- **Duración:** incluida en las 2 h de la sesión 19 (arriba).
 
 ### Siguiente paso (al cerrar la tarde)
 
