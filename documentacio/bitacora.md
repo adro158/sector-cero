@@ -4531,7 +4531,7 @@ sesiones (26, 27 y 29/10), 6 h. Acumuladas: **42 h** de las 60 sugeridas
 ## Sesión 19 — 29/10/2026 (instituto)
 
 **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
-2 h (toda la sesión, mañana y tarde; las apuntó Adam)
+2 h (toda la sesión, mañana, tarde y el rato de la noche en casa; las apuntó Adam)
 
 **Horas acumuladas:** 44 h de las 60 sugeridas (73 %). Corregido el 29/10 por
 la noche, con el sí de Adam: ponía 38 h, sin las 6 h de la nube (36 + 6 + 2).
@@ -4688,4 +4688,5 @@ apuntado»).
 - **Pedido para después del F3:** opciones nuevas en Opciones (ver
   `requisitos_y_estado.md`, «Lo que queda por hacer»). Antes de
   programarlas, un plan corto, sobre todo de «Reducir destellos».
-- **Horas de esta sesión de la noche:** por apuntar.
+- **Duración:** incluida en las 2 h de la sesión 19 (Adam: «ha sido poco»).
+  Las acumuladas siguen en 44 h de 60.
