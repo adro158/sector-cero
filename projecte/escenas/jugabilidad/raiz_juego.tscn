@@ -134,7 +134,7 @@ script = ExtResource("13_numeros")
 [node name="CapaDepuracion" type="CanvasLayer" parent="."]
 layer = 100
 
-[node name="PanelDepuracion" type="Label" parent="CapaDepuracion"]
+[node name="PanelDepuracion" type="Control" parent="CapaDepuracion"]
 script = ExtResource("12_depuracion")
 
 
