@@ -8,7 +8,9 @@ extends Node2D
 ##
 ## Persigue al jugador despacio y hace daño por contacto. Cada cierto tiempo se
 ## tiñe de rojo como aviso y embiste en línea recta hacia donde estaba el
-## jugador: se puede esquivar si se reacciona al aviso. Y cada intervalo de
+## jugador: se puede esquivar si se reacciona al aviso. Con menos de la mitad
+## de vida encadena tres embestidas, y al bajar de la mitad llama una vez a un
+## rootkit explosivo de guardaespaldas. Y cada intervalo de
 ## invocación se para, late en morado mientras dibuja un círculo de runas en el
 ## suelo y saca un anillo de horda a su alrededor:
 ## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
@@ -49,6 +51,10 @@ const PosesJefe := preload("res://escenas/jugabilidad/enemigos/poses_jefe.gd")
 @export var velocidad_embestida: float = 480.0
 @export var dano_embestida: float = 40.0
 @export var color_aviso: Color = Color(1.0, 0.3, 0.3, 1.0)
+## Con menos de la mitad de vida embiste tres veces seguidas (sesión 16): la
+## segunda y la tercera, con un aviso más corto, apuntando de nuevo.
+@export var embestidas_herido: int = 3
+@export var aviso_encadenado: float = 0.4
 
 @export_group("Invocación")
 @export var intervalo_invocacion: float = 15.0
@@ -92,6 +98,10 @@ const SEGUNDOS_POR_FOTOGRAMA_RABIA := 0.1
 ## que se cierra a 140 px de radio (radio_invocacion).
 const INVOCACION := preload("res://medios/sprites/efectos/invocacion_kernel_panic.png")
 const FOTOGRAMAS_INVOCACION := 8
+## El guardaespaldas: un rootkit élite explosivo, una vez, al bajar de la mitad
+## de la vida (como el que invoca NÚCLEO CERO).
+const EXPLOSIVO := preload("res://recursos/enemigos/afijos/explosivo.tres")
+const DISTANCIA_GUARDAESPALDAS := 120.0
 
 var _activo := false
 var _estado := Estado.PERSEGUIR
@@ -106,6 +116,10 @@ var _hasta_rafaga := 0.0
 ## Las ráfagas que lleva disparadas la de ahora y las que le tocan (1 o 2).
 var _rafagas_hechas := 0
 var _rafagas_toca := 1
+## Lo mismo con las embestidas: las que lleva y las que le tocan (1 o 3).
+var _embestidas_hechas := 0
+var _embestidas_toca := 1
+var _guardaespaldas_llamado := false
 ## 0 sin furia; 1 y 2 al bajar de cada umbral.
 var _furia := 0
 var _tiempo_rabia := 0.0
@@ -143,6 +157,7 @@ func aparecer(posicion: Vector2) -> void:
 	_hasta_pisoton = primer_pisoton
 	_hasta_rafaga = primera_rafaga
 	_furia = 0
+	_guardaespaldas_llamado = false
 	_aura.visible = false
 	# No recibe daño ni ataca hasta que acaba de aparecer.
 	_activo = false
@@ -234,18 +249,22 @@ func _physics_process(delta: float) -> void:
 				_rafagas_toca = 2 if _salud.vida() < _salud.vida_maxima / 2.0 else 1
 				_cambiar_estado(Estado.RAFAGA)
 			elif _tiempo_estado >= intervalo_embestida / _ritmo():
+				_embestidas_hechas = 0
+				_embestidas_toca = embestidas_herido if _salud.vida() < _salud.vida_maxima / 2.0 else 1
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
 			# Quieto y mirando al jugador: la embestida irá hacia donde esté
 			# cuando acabe el aviso, no hacia donde vaya después.
 			_direccion = hacia_jugador
 			queue_redraw()
-			if _tiempo_estado >= duracion_aviso:
+			if _tiempo_estado >= _duracion_aviso():
 				_cambiar_estado(Estado.EMBESTIDA)
 		Estado.EMBESTIDA:
 			global_position += _direccion * velocidad_embestida * delta
 			if _tiempo_estado >= duracion_embestida:
-				_cambiar_estado(Estado.PERSEGUIR)
+				_embestidas_hechas += 1
+				# Herido, encadena otra: vuelve a avisar (más corto) y a apuntar.
+				_cambiar_estado(Estado.AVISO if _embestidas_hechas < _embestidas_toca else Estado.PERSEGUIR)
 		Estado.INVOCAR:
 			# Quieto, latiendo en morado mientras se dibuja el círculo.
 			var latido := 0.5 + 0.5 * sin(_tiempo_estado * 20.0)
@@ -303,6 +322,22 @@ func _ritmo() -> float:
 	return RITMO_FURIA[_furia]
 
 
+## El aviso de la primera embestida y, en las encadenadas, uno más corto.
+func _duracion_aviso() -> float:
+	return duracion_aviso if _embestidas_hechas == 0 else aviso_encadenado
+
+
+## Al bajar de la mitad de la vida, una vez: un rootkit explosivo a su lado,
+## si hay algún élite libre.
+func _llamar_guardaespaldas() -> void:
+	_guardaespaldas_llamado = true
+	for elite in get_tree().get_nodes_in_group("elites"):
+		if not elite.activo():
+			var afijos: Array[DatosAfijoElite] = [EXPLOSIVO]
+			elite.aparecer(global_position + Vector2.from_angle(randf() * TAU) * DISTANCIA_GUARDAESPALDAS, afijos)
+			return
+
+
 ## Avisa a la barra del HUD (también al reiniciar la vida en aparecer()) y
 ## mira si ha bajado de algún umbral de furia.
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
@@ -315,6 +350,8 @@ func _al_cambiar_vida(actual: float, maxima: float) -> void:
 			furia += 1
 	if furia > _furia:
 		_enfurecer(furia)
+	if not _guardaespaldas_llamado and actual < maxima / 2.0:
+		_llamar_guardaespaldas()
 
 
 func _enfurecer(furia: int) -> void:
