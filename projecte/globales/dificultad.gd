@@ -29,6 +29,12 @@ extends RefCounted
 ## personaje entero), no de vida: con un solo multiplicador, bajarla para él
 ## ablandaba también la horda.
 ##
+## 29/10 (sesión 19): NÚCLEO CERO con un 50 % más de vida y los jefes más
+## duros. Con 20 partidas (en el instituto) quedó en 11 / 7 / 1: fácil y
+## media perdían sobre todo por tiempo contra la amalgama. Su vida en fácil
+## pasó de 0,42 a 0,32 y en media de 0,5 a 0,45, sin volver a medir (Adam no
+## quiso más simulaciones): falta comprobarlo.
+##
 ## Vuelto a equilibrar el 23/10 (en la nube), tras el cono del Espadachín, las
 ## furias de Kernel Panic y los caídos que vuelven en la fase 2: con 20
 ## partidas salía 18 / 6 / 0. Se subió la vida de NÚCLEO CERO en fácil (0,4 a
@@ -53,11 +59,11 @@ extends RefCounted
 
 const DIFICULTADES := {
 	"facil": {
-		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe": 0.65, "vida_jefe_final": 0.42, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
+		"nombre": "FÁCIL", "vida": 0.65, "vida_jefe": 0.65, "vida_jefe_final": 0.32, "vida_anclas": 0.65, "dano": 0.6, "huye": 1.0,
 		"explicacion": "El malware tiene menos vida, hace menos daño y huye cuando llega el jefe.",
 	},
 	"media": {
-		"nombre": "MEDIA", "vida": 0.7, "vida_jefe": 0.7, "vida_jefe_final": 0.5, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
+		"nombre": "MEDIA", "vida": 0.7, "vida_jefe": 0.7, "vida_jefe_final": 0.45, "vida_anclas": 0.7, "dano": 0.85, "huye": 0.5,
 		"explicacion": "La partida como la hemos equilibrado. La mitad de la horda huye cuando llega el jefe.",
 	},
 	"dificil": {
