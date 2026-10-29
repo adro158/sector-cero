@@ -274,7 +274,11 @@ y el arma del golpe. El controlador la pone en la fila hacia donde corre y en
 la columna de las piernas, que siguen contando durante el ataque: las piernas
 no se paran y, al acabar, la hoja de andar sigue en la misma columna. Corriendo
 el cuerpo no gira hacia el enemigo (giraría a mitad de paso), pero el tajo del
-Espadachín sí va hacia él. Solo
+Espadachín sí va hacia él. La del
+Espadachín, desde el 27/10, es cuatro veces más ancha: un juego de 6 pasos
+por cada fotograma del tajo, para que corriendo se vea el golpe entero (con
+una sola pose, la espada saltaba al final); el controlador lo sabe por el
+ancho de la hoja. Solo
 dispara la del personaje activo y se cambia con E (siguiente) o Q (anterior),
 con 10 s de espera. Los tres hacen un daño por segundo parecido; los diferencia
 dónde pegan. Cada uno tiene su vida (Espadachín 120, Segador 100, Mago 90): el
@@ -285,6 +289,18 @@ deshace (la caída, más arriba) y se elige quién sigue (`personaje_caido` y
 `personaje_elegido`), y entra con 2 s sin recibir daño; la partida se pierde
 al caer los tres. Con C se ve la vida de
 todos.
+
+**El movimiento fluido** (24/10). La física va a 60 pasos por segundo y la
+pantalla de Adam, a 239 Hz: el jugador avanzaba cada 4 fotogramas mientras la
+cámara, con su suavizado, se movía en todos, y el personaje bailaba sobre el
+fondo. `raiz_juego.gd` activa al empezar la partida la **interpolación de
+física** de Godot solo para el jugador y sus hijos (y pone la cámara a seguirle
+en la física): Godot lo dibuja entre un paso y el siguiente. Lo demás no se
+interpola porque se mueve también fuera de la física (tweens, partículas, la
+interfaz) o reordena las instancias de sus MultiMesh, y daría tirones o
+estelas. Medido con ventana corriendo: la barra de vida del personaje
+oscilaba 7 px en pantalla y ahora se queda quieta. Se activa por código, no en
+`project.godot`, para que llegue con el `.pck`, y se quita al salir.
 
 **Las ultis.** Cada personaje carga la suya matando mientras juega (180
 enemigos; un élite cuenta por 10) y la lanza con R: el Mago, un rayo morado

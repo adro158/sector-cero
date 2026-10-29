@@ -3226,10 +3226,12 @@ Por orden. Lo que dice «con Adam» se le pregunta antes.
 
 ---
 
-## Sesión 18 — 22/10/2026, jueves (instituto, en curso)
+## Sesión 18 — 22/10/2026, jueves (instituto), a 27/10/2026 (casa)
 
-**Duración:** por apuntar · **Fitas:** 5 y 6 · **Participantes:** Adam (con
-Claude Code)
+**Duración:** 4 h (2 h el 22/10 y 2 h el 27/10; las apuntó Adam) · **Fitas:**
+5 y 6 · **Participantes:** Adam (con Claude Code)
+
+**Horas acumuladas:** 36 h de las 60 sugeridas (60 %)
 
 **Se apunta como la sesión de clase del jueves 22/10** (decisión de Adam).
 Lo de abajo se hizo antes, desde el ordenador de casa (con la RTX 5070); en
@@ -4103,6 +4105,107 @@ los restos del zip del lote 8, que no se suben (siguen en la rama
 los dos instaladores, los cuatro `.pck` y `version.json` (1.10, ejecutable
 mínimo 0.2), la web desplegada y la v1.10 como última release. **Se publicó
 sin volver a medir el equilibrio**, que Adam deja para más adelante.
+
+### En casa, correr fluido (24/10)
+
+Adam: «cuando estoy corriendo con los personajes la animación se ve como
+lagueada» y «quiero que el mago cuando tire las bolas haga la animación con
+el arma».
+
+- **Dos causas:**
+  - Su pantalla va a **239 Hz** y la física a 60. El jugador avanzaba cada 4
+    fotogramas mientras la cámara (con suavizado) se movía en todos, así que
+    el personaje bailaba sobre el fondo. Medido con ventana, corriendo: la
+    barra de vida oscilaba entre los píxeles 644 y 651 de la pantalla.
+  - Las hojas de ataque del lote 7 están **dibujadas de pie**. Al correr,
+    cada ataque paraba las piernas 0,2 s (con el Espadachín, un tercio del
+    tiempo). Y la del Mago apenas cambia: solo brilla el cristal.
+  - No se pueden juntar las piernas de andar con la parte de arriba de
+    atacar: medido en las hojas, al andar se mueve todo el cuerpo.
+- **Decisiones de Adam** (ventana de preguntas): interpolación y que el
+  ataque no pare las piernas; el Mago, con hojas nuevas pedidas a Claude
+  chat (lote 11 de `prompt_assets.md`: atacar corriendo, los tres
+  personajes, y el ataque del Mago con el bastón).
+- **Hecho:**
+  - **Interpolación de física** solo para el jugador y sus hijos
+    (`raiz_juego.gd`), comprobada antes en la documentación de Godot y con la
+    API de 4.7.2. Lo demás no se interpola: se mueve también fuera de la
+    física o reordena sus MultiMesh. La cámara pasa a seguirle en la física
+    (si no, Godot la cambia solo y avisa). Por código, para que llegue con el
+    `.pck`, y se quita al salir de la partida. Con ella, la barra se queda en
+    el mismo píxel los 60 fotogramas.
+  - **El ataque solo sale quieto** (`controlador_jugador.gd`); corriendo se
+    ve por su efecto.
+- **Pruebas:** import, `--quit-after` y el recorrido en headless; la medida
+  con ventana, con y sin interpolación.
+
+### En casa, el lote 11 y la v1.11 (27/10)
+
+Adam: «todo lo que está hecho en la nube mira que esté bien puesto en el
+GitHub, súbelo al main, mira si quedó algo pendiente en este chat y haz la
+nueva release». Antes había pedido medir el equilibrio con 20 partidas por
+dificultad, pero lo paró enseguida («ahora no quiero que midas»): se cortó
+sin resultados.
+
+- **Lo de la nube, en GitHub:**
+  - La rama de Claude Code en la nube (`claude/beautiful-maxwell-uijhtj`) no
+    tiene nada que no esté en `main`.
+  - `demo-movil` (2 commits del 01/10) es la demo del móvil, que ya está en
+    `main` por otro camino (`control_tactil.gd` y la web). No se trae.
+  - En `zips-lotes` había llegado el **zip del lote 11**, hecho con Claude
+    chat con el prompt de `prompt_assets.md`. Se integró sin el plan previo
+    que pedía su prompt, porque Adam pidió subirlo todo y publicar.
+- **Lote 11:** las seis hojas de atacar corriendo (6x8 de 64x72, los mismos
+  pasos de andar con los brazos y el arma del golpe) y el ataque quieto del
+  Mago rehecho (adelanta el bastón y suelta la bola). Dos campos nuevos en
+  `DatosPersonaje` y, en `controlador_jugador.gd`, andando la hoja de atacar
+  corriendo en la misma fila y columna que las piernas; quieto, la de
+  siempre. Corriendo, la fila es la de las piernas y no la del tajo del
+  Espadachín, o el cuerpo giraría a mitad de paso (el prompt pedía
+  proponerlo).
+- **Pruebas** (Adam estaba jugando: nada con ventana, todo en headless, sin
+  ventanas y con prioridad baja): import y `--quit-after`; un script
+  temporal que corre y ataca con los tres y mira la hoja y la columna en
+  cada paso (siempre la de atacar corriendo en la columna de las piernas, y
+  la de ataque al pararse); y una partida entera del simulador sin errores.
+- **Publicada la v1.11:** `main` y la etiqueta subidas; la Action acabó bien,
+  con los dos instaladores, los cuatro `.pck` y `version.json` (1.11,
+  ejecutable mínimo 0.2), y la v1.11 como última release. Novedades en
+  `documentacio/novedades/v1.11.txt`. Sin medir el equilibrio (pendiente,
+  como en la v1.10).
+- **Pendiente de este chat:** medir el equilibrio con el simulador, cerrar
+  la sesión 18 con las horas, los lotes 9 y 10 de dibujos y probar jugando
+  lo nuevo (correr fluido, el tajo al más cercano, la caída, atacar
+  corriendo).
+
+### Estado al cerrar la sesión 18 (27/10)
+
+Cerrada por Adam el 27/10 («déjalo cerrado por hoy»). Publicada la **v1.11**
+y todo subido a `main`. Desde la v1.9 han entrado: NÚCLEO CERO más fácil en
+media, las mejoras C y F, los lotes 8 y 11 de dibujos, el tajo del Espadachín
+al enemigo más cercano y el movimiento fluido en pantallas de más de 60 Hz.
+
+**Siguiente paso, por prioridad:**
+1. **Medir el equilibrio** con el simulador (Adam: «ya lo haremos»): 20 o
+   100 partidas por dificultad, en casa. Desde la última medida (78 / 49 /
+   13) han cambiado el tiempo de golpe, la sacudida, el tajo del Espadachín
+   y el bot del simulador.
+2. **Probar jugando** lo nuevo: correr fluido, atacar corriendo y el bastón
+   del Mago, el tajo al más cercano y la caída antes del panel.
+3. **La entrega:** el vídeo, ensayar la defensa y probar el instalador en un
+   ordenador limpio.
+4. **Los lotes 9 (interfaz) y 10** (poses de Kernel Panic y reposo de los
+   personajes) de `prompt_assets.md`, si Adam los pide.
+
+### La nube, en paralelo (del 26 al 29/10): lo que no llegó a la v1.11
+
+Mientras en casa se cerraba la sesión 18, Adam siguió desde el móvil con
+Claude Code en la nube (rama `claude/beautiful-maxwell-uijhtj`), con la orden
+de no subir nada hasta decir «ya he acabado». Por eso, el 27/10 de madrugada
+el Claude de casa vio esa rama sin nada nuevo y volvió a meter el lote 11
+desde su zip. Lo de la nube se subió el 29/10 y se fusionó con `main` (ver
+«La fusión con main», al final). Las entradas de abajo cuentan lo de la nube
+por orden.
 ### En la nube, el lote 11: atacar corriendo (26/10)
 
 Adam, desde el móvil, con Claude Code en la nube (rama
@@ -4395,3 +4498,28 @@ cura demasiado».
     dificultad, sigue pendiente en casa.
   - En la nube, 8 partidas por versión, en cuatro procesos a la vez, tardaron
     casi 2 horas.
+
+### La fusión con main (29/10)
+
+Adam: «ya he acabado, déjalo listo, que ahora utilizaré el Claude del
+insti». Al ir a subir, `main` tenía 8 commits que la rama de la nube no
+tenía: correr fluido (la interpolación de física del jugador, del 24/10), el
+mismo lote 11 metido en casa, la v1.11 y el cierre de la sesión 18. Se
+fusionó `main` en la rama de la nube (con un commit de fusión, sin reescribir
+nada):
+- **El código:** los choques eran el mismo lote 11 hecho dos veces. Se queda
+  la versión de la nube, que tiene lo mismo más el reposo (lote 10) y el
+  tajo del Espadachín de 24 columnas. Solo se resolvieron los bloques en
+  conflicto, así que lo que `main` cambió fuera de ellos entra tal cual: la
+  interpolación de `raiz_juego.gd`, sin tocar.
+- **Los documentos:** se juntan los dos lados. En la bitácora, primero lo de
+  casa (hasta el cierre de la sesión 18) y después lo de la nube.
+- **Validado** después de fusionar: import (dos veces), `--quit-after` (solo
+  el aviso conocido de la música), la partida cargada, la caché de clases en
+  129 líneas y, con ventana, el tajo corriendo con la interpolación de `main`
+  ya dentro (sale en orden, como antes). Sin pasar el simulador: cada partida
+  tarda casi media hora en la nube. Pasarla en casa.
+- **La v1.11 no lleva nada de la nube** (lotes 9 y 10, sonido, tajo
+  corriendo, robo de vida): irá en la próxima versión, con sus novedades.
+- **Horas:** las de la nube (26 al 29/10) quedan por apuntar; Adam las dirá.
+

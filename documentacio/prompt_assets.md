@@ -302,3 +302,56 @@ caída del personaje) y apunte en creditos.md que los hiciste tú, con IA.
 
 Empieza por el lote 8. Antes, dime en dos líneas qué vas a dibujar.
 ```
+
+## Lote 11: atacar corriendo y el bastón del Mago (24/10/2026, sesión 18)
+
+Adam: al correr, el personaje se veía a tirones, y el Mago casi no se ve
+atacar. Las hojas de ataque del lote 7 están dibujadas de pie: al correr, el
+ataque paraba las piernas. Desde el 24/10 solo salen con el personaje quieto
+(bitácora, sesión 18, «En casa, correr fluido»). Este lote es para que
+también se vea el ataque corriendo. Se pega en el mismo chat de los lotes
+anteriores; si es uno nuevo, antes se pega el prompt de arriba entero,
+quitando su último párrafo.
+
+```text
+Lote 11: atacar corriendo, y el ataque del Mago con el bastón. Mismo estilo y
+método que los lotes anteriores (Python, numpy y Pillow, píxel a píxel; PNG
+transparente). Todo en projecte/escenas/jugabilidad/jugador/, junto a las
+hojas que ya hay. Te paso, de cada personaje, la hoja de andar, la de andar
+con el arma evolucionada y sus dos hojas de ataque del lote 7 (6x8 y 4x8
+fotogramas de 64x72, una fila por dirección).
+
+El problema: las hojas de ataque están dibujadas de pie. Al correr, el juego
+cambiaba un momento a ellas y las piernas se paraban. Ahora solo salen
+quieto, y corriendo no se ve que ataca.
+
+1. ATACAR CORRIENDO, los tres personajes, normal y con el arma evolucionada
+   (6 hojas: *_8_direcciones_correr_ataque.png y
+   *_8_direcciones_evolucion_correr_ataque.png). Cada hoja, 6 columnas x 8
+   filas de 64x72: la columna c es el fotograma c de su hoja de andar
+   (mismas piernas, capa, cuerpo, posición y sombra, píxel a píxel), pero con
+   los brazos y el arma en el momento del golpe, como el fotograma más fuerte
+   de su ataque del lote 7. El juego la pone en lugar de la de andar los 0,2 s
+   del ataque, en la misma columna en la que iban las piernas, así que las
+   piernas siguen corriendo. Lo único que puede cambiar respecto a andar son
+   los brazos, el arma y su brillo.
+2. MAGO, ataque quieto, normal y evolucionado (rehacer
+   antivirus_8_direcciones_ataque.png y _evolucion_ataque.png, 4x8 de 64x72,
+   a 0,05 s): ahora solo brilla el cristal y no se nota. Que adelante el
+   bastón hacia donde mira, que el cristal se cargue y suelte la bola morada
+   (#BF73FF) y que vuelva. El fotograma 0 igual que su postura de andar
+   (columna 0), para que no salte. Y en su hoja de atacar corriendo (punto
+   1), el bastón adelantado con el cristal encendido.
+
+En el zip, como siempre: los PNG en su ruta, una vista previa x2 de cada hoja
+al lado de su hoja de andar, GIFs de cada personaje corriendo y atacando (6
+pasos a 0,13 s, atacando cada 0,6 s el Espadachín, 0,9 s el Mago y 2,5 s el
+Segador), LEEME.txt y PROMPT_CLAUDE_CODE.md: que pida un plan corto antes de
+programar y espere mi sí, siga el CLAUDE.md, añada las hojas nuevas a los
+DatosPersonaje (hoja_correr_ataque y hoja_correr_ataque_evolucion), haga que
+controlador_jugador.gd las use al atacar andando (misma columna que las
+piernas), valide en headless y con capturas, y apunte en creditos.md que los
+hiciste tú, con IA.
+
+Antes de dibujar, dime en dos líneas qué vas a hacer.
+```

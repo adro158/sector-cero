@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 24/10/2026** contra la bitácora (hasta la sesión 18) y
+**Estado verificado el 27/10/2026** contra la bitácora (hasta la sesión 18) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, golpe, escudo y evolución sobre el personaje, destello al recoger experiencia, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.10 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.11 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.10 publicada el 24/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.11 publicada el 27/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -93,10 +93,12 @@ cualquier fragmento del código. Todo está preparado en `presentacion.md`.
 
 ## Lo que queda por hacer, en orden de prioridad
 
-Puesto al día el 23/10 (sesión 18). Lo hecho está en la bitácora, en la sesión
+Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10 con lo
+de la nube (sus horas, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.10** (24/10): instaladores de Windows y
+**Publicado:** la última es la **v1.11** (27/10: movimiento fluido, atacar
+corriendo y el bastón del Mago; antes, la v1.10 del 24/10): instaladores de Windows y
 de Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego
 suelto (decisión de Adam, sesión 18), y la web. Lleva NÚCLEO CERO a 0,5 en
 media (100 partidas por dificultad: 78 / 49 / 13), las mejoras C y F sin
@@ -104,20 +106,23 @@ dibujos (bitácora, sesión 18, «En casa, las mejoras C y F»), el lote 8 de
 dibujos («En casa, el lote 8») y el tajo del Espadachín al enemigo más
 cercano. Novedades en `documentacio/novedades/v1.10.txt`.
 
-**En `main` sin publicar** (26/10, en la nube): el lote 11, atacar corriendo
-sin que se paren las piernas y el ataque quieto del Mago rehecho (bitácora,
-sesión 18, «En la nube, el lote 11»), y el lote 9: el medidor de la
-resistencia arriba a la derecha, los rótulos de la pantalla final y las
-medallas del ranking («En la nube, el lote 9»). El 26 y el 27/10, el resto
-del lote 9 (barra del equipo, HUD de arriba, avisos con banda, paneles y
-botones de 9 trozos, teclas dibujadas, iconos de las reglas, controles del
-móvil, mini retratos, la fuente pixel art en los textos grandes y el
-lanzador) y el lote 10 (reposo de los personajes y poses de Kernel Panic).
-Sin novedades escritas aún para la próxima versión: escribirlas antes de
-subir su etiqueta. El lanzador nuevo llega con su `.pck` al publicar.
-También el sonido del 27/10 (escudo, ultis, evoluciones y músicas nuevas).
-**Lo de los jefes (puntos 8 y 9) quedó sin hacer:** Adam lo dejó para casa,
-porque además de programarlo hay que medir el equilibrio y probarlo.
+**En `main` sin publicar** (de la nube, del 26 al 29/10, fusionado con
+`main` el 29/10; bitácora, sesión 18, desde «La nube, en paralelo»):
+- el lote 9 entero: el medidor de la resistencia, los rótulos del final, las
+  medallas, la barra del equipo, el HUD de arriba, los avisos con banda, los
+  paneles y botones de 9 trozos, las teclas dibujadas, los iconos de las
+  reglas, los controles del móvil, los mini retratos, la fuente pixel art en
+  los textos grandes y el lanzador (que llega con su `.pck`)
+- el lote 10: el reposo de los personajes y las poses de Kernel Panic
+- el sonido: el escudo, las ultis, las evoluciones y las músicas nuevas
+- el tajo del Espadachín corriendo (hoja de 24 columnas) y su robo de vida a
+  la mitad.
+
+El lote 11 ya salió en la v1.11; en la fusión se quedó la versión de la nube,
+que es la misma más el reposo y el tajo nuevo. Sin novedades escritas aún
+para la próxima versión: escribirlas antes de subir su etiqueta. **Lo de los
+jefes (puntos 8 y 9) quedó sin hacer:** Adam lo dejó para casa, porque además
+de programarlo hay que medir el equilibrio y probarlo.
 
 **Se publicó sin volver a medir el equilibrio** (Adam lo dejó para más
 adelante): el tiempo de golpe y la sacudida cambian un poco las partidas, y
@@ -140,12 +145,10 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
    coincida con la clase de la ventana (`xprop WM_CLASS` en X11).
 4. **Acordar con Alan** qué parte de la entrega asume (vídeo, presentación,
    pruebas).
-5. **Cerrar la sesión 18** en la bitácora con la duración de toda la sesión
-   y las horas acumuladas.
 
 ### Probar jugando (Adam)
 
-El simulador no juzga sensaciones ni sonido. Con la v1.10 (o `main` abierto
+El simulador no juzga sensaciones ni sonido. Con la v1.11 (o `main` abierto
 en Godot):
 
 - **El Espadachín:** desde el 24/10 el cono va solo al enemigo más cercano;
@@ -186,7 +189,10 @@ en Godot):
 - **El aviso de que el malware se adapta** a tu herramienta, y cómo suena
   todo (pisotón, ráfaga, furias, escudo).
 - **El lanzador se actualiza solo:** uno instalado con una versión anterior
-  tiene que pasar a la v1.10 sin hacer nada.
+  tiene que pasar a la v1.11 sin hacer nada.
+- **Correr** (en `main`, 24/10): si el personaje ya se ve fluido en la
+  pantalla de 239 Hz, y si atacar corriendo (lote 11) y el bastón del Mago se
+  ven bien.
 - **Los efectos del lote 8:** si la caída antes del panel (0,64 s)
   y la derrota antes de la pantalla final (0,96 s) se sienten bien o se hacen
   largas; si el golpe rojo tapa demasiado al personaje; la mira del Mago y el

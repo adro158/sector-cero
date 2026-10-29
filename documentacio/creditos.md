@@ -28,6 +28,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Efectos de subir de nivel, cambio de personaje, curarse y muerte de la horda | Hechos con IA (Claude) | Ver más abajo |
 | Rootkit animado y efectos de los afijos de los élites | Hechos con IA (Claude) | Ver más abajo |
 | Logo, retratos de los personajes, iconos de los afijos y cabecera del lanzador | Hechos con IA (Claude) | Ver más abajo |
+| Hojas de atacar corriendo de los tres personajes y ataque del Mago con el bastón | Hechas con IA (Claude, con un script de Python) | Ver más abajo |
 | Efectos de la partida (caída, derrota, golpe, escudo, evolución, partícula, muerte del élite, mecha, invocación, barras de vida, mira del Mago, Ping y fragmentos animados) | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
@@ -157,6 +158,9 @@ scripts no forman parte del repositorio.
   ataque quieto del Mago rehecho, con los mismos nombres y fotogramas
   (adelanta el bastón, se carga el cristal y suelta la bola morada). Los
   dibujó Claude con un script de Python (numpy, scipy y Pillow).
+  El 27/10, la del Espadachín se rehízo con 24 columnas (los 4 fotogramas
+  del tajo sobre cada paso), en la nube con los scripts del lote 7: con una
+  sola pose, corriendo no se veía el golpe.
 - **Anclas del escudo por personaje** (`medios/sprites/jefe_final/`,
   21/10/2026, de la misma forma; lote 2): las mismas anclas y cadenas del
   escudo de NÚCLEO CERO, una por personaje, con su color y su emblema en el

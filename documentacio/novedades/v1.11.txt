@@ -1,0 +1,3 @@
+- Los personajes se mueven fluidos en pantallas de más de 60 Hz: antes iban a saltitos sobre el fondo.
+- Atacar corriendo: las piernas ya no se paran en cada golpe. Los tres personajes atacan mientras corren, con el arma en movimiento.
+- El Mago ataca con el bastón: lo adelanta, el cristal se carga y suelta la bola.
