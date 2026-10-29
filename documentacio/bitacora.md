@@ -4533,7 +4533,8 @@ sesiones (26, 27 y 29/10), 6 h. Acumuladas: **42 h** de las 60 sugeridas
 **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
 2 h (toda la sesión, mañana y tarde; las apuntó Adam)
 
-**Horas acumuladas:** 38 h de las 60 sugeridas (63 %)
+**Horas acumuladas:** 44 h de las 60 sugeridas (73 %). Corregido el 29/10 por
+la noche, con el sí de Adam: ponía 38 h, sin las 6 h de la nube (36 + 6 + 2).
 
 ### Qué se ha hecho
 
@@ -4635,3 +4636,56 @@ sesiones (26, 27 y 29/10), 6 h. Acumuladas: **42 h** de las 60 sugeridas
   `requisitos_y_estado.md`) y decidir los dos detalles de arriba.
 - **La entrega:** vídeo, ensayo de la defensa e instalador en un ordenador
   limpio.
+
+### En casa, por la noche (29/10): el panel técnico (F3), a medias
+
+Adam trajo las piezas del F3, hechas con Claude chat (zip en `zips-lotes`).
+Con ultracode activado. Adam lo dejó a medias por falta de tiempo («déjalo
+apuntado»).
+
+- **Al empezar:** `main` iba 39 commits por detrás de GitHub (la nube y la
+  sesión 19). Avance rápido, sin conflictos. Las horas de la sesión 19 no
+  cuadraban (ponía 38 h; son 44): corregidas con el sí de Adam.
+- **Plan aprobado** (ventana de preguntas):
+  - `panel_depuracion.gd` pasa de `Label` a `Control`, con los datos, las
+    señales y las muestras de las gráficas
+  - el dibujo, en `dibujo_panel_tecnico.gd` (nuevo, `preload`, sin
+    `class_name`), con funciones estáticas
+  - el máximo de la resistencia se lee del nodo, y el icono y el color de
+    cada herramienta salen de los datos (los personajes y las evoluciones
+    del pool de mejoras), no escritos a mano.
+- **Hecho y commiteado:** las piezas (`assets`) y el panel. Funciona:
+  validado en headless (import, `--quit-after` y la partida cargada) y con
+  capturas con ventana. Al empezar sale «ninguna todavía»; tras dos minutos
+  a x4 se ven los escalones de las resistencias del Firewall y del Ping; el
+  aviso parpadea al 45 %; en una subida de nivel la gráfica no avanza y el
+  piloto sigue latiendo. Siguen siendo 16 clases globales.
+- **Descubierto:** en el ordenador de Adam el juego va a **1000-2500 fps**
+  aunque el vsync está activado (`window_get_vsync_mode` = 1) y la pantalla
+  es de 240 Hz. Seguramente lo fuerza el driver de NVIDIA con OpenGL.
+  - Por eso la escala de la gráfica de los fps, que Adam eligió como «la de
+    la pantalla» porque Claude le dijo mal que el juego iba a 240, no
+    sirve. **Nueva decisión de Adam:** que se ajuste sola (lo más alto del
+    último minuto, redondeado hacia arriba a un múltiplo de 60, mínimo 60).
+- **Revisión con 5 subagentes** (4 revisores por áreas y 1 verificador).
+  Confirmados, **por arreglar:**
+  1. Los nombres de las evoluciones («Análisis heurístico», «Firewall
+     perimetral», «Ping de inundación») no caben ni a 9 px en el hueco de
+     88 px: salen recortados. Dar más ancho al nombre (por ejemplo `ANCHO`
+     288 y la barra 24 px más a la derecha) o un nombre corto.
+  2. Los fps se escriben con decimal («1188.0»): volver a `%d`.
+  3. El aviso del 80 % compara en coma flotante exacta: con la secuencia
+     +0,1 +0,1 −0,05 +0,1 +0,1 +0,1 −0,05 se llega a 0,39999… («40%» en
+     pantalla) y no sale. Comparar con un margen o con el número redondeado.
+  4. Las muestras van con el `delta` escalado: con la velocidad x4 del F1
+     las muestras salen 4 veces más seguidas, y el piloto y el aviso laten
+     más rápido. Decidir si se cuentan en tiempo real.
+  5. El panel es algo más alto que antes (unos 400 px sin resistencias y
+     440 con tres); cabe, pero comprobarlo con «Texto grande» y en la web.
+- **Falta además:** la escala de los fps que se ajusta sola, la captura con
+  dos herramientas con resistencia a la vez, y la documentación (créditos,
+  documentación técnica, `presentacion.md` y el estado).
+- **Pedido para después del F3:** opciones nuevas en Opciones (ver
+  `requisitos_y_estado.md`, «Lo que queda por hacer»). Antes de
+  programarlas, un plan corto, sobre todo de «Reducir destellos».
+- **Horas de esta sesión de la noche:** por apuntar.
