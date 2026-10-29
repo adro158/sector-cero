@@ -4523,3 +4523,65 @@ nada):
   corriendo, robo de vida): irá en la próxima versión, con sus novedades.
 - **Horas:** las de la nube (26 al 29/10) quedan por apuntar; Adam las dirá.
 
+
+**Horas de la nube (26 al 29/10):** 2 h por sesión, según Adam: tres
+sesiones (26, 27 y 29/10), 6 h. Acumuladas: **42 h** de las 60 sugeridas
+(70 %).
+
+## Sesión 19 — 29/10/2026 (instituto)
+
+**Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
+por apuntar
+
+### Qué se ha hecho
+
+- **«Es un día nuevo»:** `main` estaba en la fusión de la nube (`5fac5e2`).
+  Alan no había subido nada. Validado en headless: import del juego y del
+  lanzador, `--quit-after` y la partida cargada hasta NÚCLEO CERO. Sale un
+  aviso nuevo, «Camera2D overridden to physics process mode», que viene de la
+  interpolación de física del 24/10 y no es un error.
+- **Los puntos 8 y 9 de `requisitos_y_estado.md`** (Adam: «haz lo de los
+  puntos 8 y 9, cuando acabes publica la nueva versión»):
+  - **Kernel Panic** (`jefe.gd`): con menos de la mitad de vida, tres
+    embestidas seguidas (`embestidas_herido`, `aviso_encadenado` de 0,4 s,
+    que vuelve a apuntar); al bajar de la mitad, un rootkit explosivo de
+    guardaespaldas, una vez (`_llamar_guardaespaldas`, como el que invoca
+    NÚCLEO CERO).
+  - **NÚCLEO CERO** (`jefe_final.gd` y `.tscn`):
+    - vida de 12000 a 18000
+    - pausas de 2, 1,4 y 0,9 s
+    - `ESCUDO_CADA` por forma: nunca, 45 s y 25 s
+    - al llegar, `invocar` y `tormenta` enseguida (`AL_LLEGAR`, el primero a
+      los 0,5 s)
+    - en la amalgama, dos ataques distintos a la vez: un segundo nodo
+      `Ataques2` con el mismo `ataques_jefe_final.gd`, porque ese script lleva
+      un ataque cada vez y así no hubo que cambiarlo. El bot del simulador
+      mira también `Ataques2` para salir del torbellino.
+  - Reglas (`panel_reglas.gd`) al día y novedades de la v1.12.
+- **Probado con un script temporal:**
+  - el guardaespaldas sale al quitarle el 55 % (élites activos de 0 a 1)
+  - las tres embestidas (1/3, 2/3 y 3/3)
+  - NÚCLEO CERO empieza por `invocar`
+  - vida 9000 en media
+  - escudo a 45 s en la forma 2 y a 25 s en la 3
+  - en la amalgama, siempre dos ataques distintos (hielo + torbellino, rayo +
+    invocar...)
+- **Simulador**, 20 partidas por dificultad, en una copia aparte (`git
+  worktree`, 12 procesos a la vez, unos 25 minutos): **11 / 7 / 1** (objetivo
+  15-16 / 8-10 / 2). En fácil, casi todas las derrotas son por tiempo contra
+  la amalgama: el bot no la mata en los 240 s que tiene.
+- **Adam no quiso más simulaciones** («tardas mucho tiempo»). Se bajó la vida
+  de NÚCLEO CERO en fácil (0,42 a 0,32) y en media (0,5 a 0,45) sin volver a
+  medir. Apuntado en `dificultad.gd` y en `requisitos_y_estado.md` (punto 9):
+  falta comprobarlo.
+- **Publicada la v1.12.** Lleva lo de la nube del 26 al 29/10 (el lote 9 de
+  la interfaz, el lote 10, el sonido nuevo, el tajo corriendo y el robo de
+  vida a la mitad) y los jefes de hoy.
+
+### Siguiente paso
+
+- **Probar jugando la v1.12:** los jefes nuevos y todo lo de la nube (la
+  lista, en «Probar jugando» de `requisitos_y_estado.md`).
+- **Cuando haya tiempo, en casa:** medir el equilibrio con el simulador.
+- **La entrega:** el vídeo, ensayar la defensa y probar el instalador en un
+  ordenador limpio.

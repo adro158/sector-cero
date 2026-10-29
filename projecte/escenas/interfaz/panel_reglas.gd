@@ -160,21 +160,21 @@ func _enemigos() -> VBoxContainer:
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "KERNEL PANIC (jefe)", EstiloInterfaz.DERROTA,
 		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil huye toda y en media, la mitad). Mientras está, el reloj se para. El Ping y el Escáner le pegan sin acercarse."))
 	for ataque in [
-		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho."],
+		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Con menos de la mitad de vida embiste tres veces seguidas, apuntándote cada vez."],
 		["efectos/invocacion_kernel_panic.png", 8, 6, "ANILLO DE MALWARE", "Cada 15 s se para, late en morado y dibuja un círculo de runas en el suelo; al cerrarse, saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda."],
 		["jefe/jefe_rafaga.png", 4, 0, "RÁFAGA DE DATOS", "Cada 9 s late en morado y dispara datos en círculo: pasa por los huecos. Con menos de la mitad de vida, dispara dos."],
 		["jefe/jefe_jaula.png", 4, 0, "PISOTÓN Y JAULA", "Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s nadie cruza la jaula, y si estabas dentro te quedas encerrado con él."],
-		["jefe/jefe_furia.png", 8, 3, "FURIAS", "Al bajarle al 66 % y al 33 % de vida se enfurece: va más rápido, pega más, ataca más seguido y saca más malware. En la última furia, arde."],
+		["jefe/jefe_furia.png", 8, 3, "FURIAS", "Al bajarle al 66 % y al 33 % de vida se enfurece: va más rápido, pega más, ataca más seguido y saca más malware. En la última furia, arde. Al bajarle de la mitad, llama a un rootkit explosivo de guardaespaldas."],
 		["jefe/jefe_muerte.png", 12, 5, "AL DERROTARLO", "Empieza la fase 2, y los personajes que habían caído vuelven con la mitad de su vida."],
 	]:
 		lista.add_child(_ataque(ataque))
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE_FINAL), 6, 3), "NÚCLEO CERO (jefe final)", EstiloInterfaz.DERROTA,
-		"Llega a los 15 minutos, al acabar la fase 2: derrótalo para ganar. Tiene tres formas: al bajarle al 66 % y al 33 % de vida se transforma y cuesta más matarlo (recibe menos daño y ataca más deprisa)."))
+		"Llega a los 15 minutos, al acabar la fase 2, abriendo portales y lanzando la tormenta: derrótalo para ganar. Tiene tres formas: al bajarle al 66 % y al 33 % de vida se transforma y cuesta más matarlo (recibe menos daño y ataca más deprisa). En la última ataca con dos cosas a la vez."))
 	for ataque in [
 		["jefe_final/jefe_final_aviso_diana.png", 4, 0, "TUS ATAQUES", "Usa los ataques de tus personajes: el rayo, el torbellino y la tormenta. Avisan antes de caer."],
 		["jefe_final/jefe_final_portal.png", 8, 3, "PORTALES", "Abre portales de los que sale malware."],
 		["jefe_final/jefe_final_hielo.png", 8, 4, "HIELO", "Deja zonas de hielo que te ralentizan mientras estás dentro."],
-		["jefe_final/jefe_final_escudo.png", 4, 0, "ESCUDO", "Al cambiar de forma se encierra en un escudo que no deja pasar el daño. Rompe las cuatro anclas y se quedará aturdido, recibiendo más daño. En su última forma vuelve a encerrarse cada 35 s."],
+		["jefe_final/jefe_final_escudo.png", 4, 0, "ESCUDO", "Al cambiar de forma se encierra en un escudo que no deja pasar el daño. Rompe las cuatro anclas y se quedará aturdido, recibiendo más daño. Vuelve a encerrarse cada 45 s en su segunda forma y cada 25 s en la última."],
 		["jefe_final/jefe_final_ancla_mago.png", 5, 0, "ANCLAS", "Cada ancla es de un personaje (su color y su nombre, abajo) y solo la rompe su herramienta: ve cambiando, que con el escudo puesto se cambia sin espera. Si pasan 30 s sin que rompas ninguna, las rotas se vuelven a cerrar."],
 	]:
 		lista.add_child(_ataque(ataque))

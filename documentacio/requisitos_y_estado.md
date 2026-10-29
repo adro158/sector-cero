@@ -4,7 +4,7 @@ Resumen en castellano de lo que pide el profesor, contrastado con lo que hay hec
 El texto original, que es la fuente de verdad, está en `enunciat.md`; la plantilla
 del primer informe, en `primer_seguiment.md`.
 
-**Estado verificado el 27/10/2026** contra la bitácora (hasta la sesión 18) y
+**Estado verificado el 29/10/2026** contra la bitácora (hasta la sesión 19) y
 contra el código del repositorio. Se actualiza al cerrar cada sesión, junto con
 la bitácora y las casillas de `planificacion.md`.
 
@@ -42,7 +42,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | 10 | Feedback en las acciones importantes | Hecho | Números de daño, partículas, destello del enemigo golpeado, golpe, escudo y evolución sobre el personaje, destello al recoger experiencia, parpadeo del troyano antes de embestir, tinte y sacudida de cámara, sonidos y avisos |
 | 11 | Código estructurado | Hecho | Bus de eventos, recursos `.tres`, una responsabilidad por script. Los más largos pasan de las ~200 líneas orientativas, contando comentarios: `gestor_enemigos.gd` (388; la embestida y el volteo van aparte), `jefe_final.gd` (302; los ataques, el escudo, las anclas, el hielo y el dibujo van en sus scripts) y `ataques_jefe_final.gd` (257); se ha quitado el código muerto |
 | 12 | Git con evolución real | Hecho | Más de 80 commits progresivos con la convención `tipo(ámbito)` |
-| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.11 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
+| 13 | Build ejecutable sin abrir el editor | Casi | Releases v0.2 a v1.12 publicadas por la GitHub Action (desde la v1.5, con el lanzador y su instalador; desde la v1.8, solo con el lanzador), también en la web; las anteriores se republicaron el 14 y el 15/10 con el menú VERSIONES (INSTALAR descarga sin cambiar de versión; CAMBIAR pasa a ella). Desde el juego se actualiza y se cambia a cualquier versión. Falta probarlas en un ordenador limpio |
 
 ## Factor diferencial (al menos uno)
 
@@ -60,7 +60,7 @@ es **Sector Cero**, un survivors-like 2D en Godot 4.7.2.
 | # | Entregable | Estado | Qué falta |
 |---|---|---|---|
 | 1 | Repositorio Git con historial | Hecho | Seguir subiendo al cerrar cada sesión |
-| 2 | Build ejecutable | Casi | v1.11 publicada el 27/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
+| 2 | Build ejecutable | Casi | v1.12 publicada el 29/10, también en la web, con el lanzador y su instalador. Falta probarla en un ordenador limpio |
 | 3 | `README.md` | Hecho | Portada para el profesor (la entrega es el enlace de GitHub): qué es, cómo jugar, capturas, resumen de la evolución, autores y uso de la IA. Lo de Git pasó a `flujo_de_trabajo.md` |
 | 4 | Documentación técnica (3-5 págs.) | Hecho | `documentacion_tecnica.md`, reescrita el 02/10 en unas 2100 palabras. La evolución desde cero, con capturas reales de cada versión, está en `historia_del_proyecto.md` |
 | 5 | Manual de usuario (1 pág.) | Hecho | `manual_usuario.md`, reducido a una página |
@@ -97,7 +97,7 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10 con lo
 de la nube (sus horas, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.11** (27/10: movimiento fluido, atacar
+**Publicado:** la última es la **v1.12** (29/10: los jefes más duros, y lo de la nube del 26 al 29/10: el lote 9 de la interfaz, el lote 10, el sonido nuevo y el tajo corriendo; novedades en `documentacio/novedades/v1.12.txt`). Antes, la **v1.11** (27/10: movimiento fluido, atacar
 corriendo y el bastón del Mago; antes, la v1.10 del 24/10): instaladores de Windows y
 de Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego
 suelto (decisión de Adam, sesión 18), y la web. Lleva NÚCLEO CERO a 0,5 en
@@ -106,7 +106,7 @@ dibujos (bitácora, sesión 18, «En casa, las mejoras C y F»), el lote 8 de
 dibujos («En casa, el lote 8») y el tajo del Espadachín al enemigo más
 cercano. Novedades en `documentacio/novedades/v1.10.txt`.
 
-**En `main` sin publicar** (de la nube, del 26 al 29/10, fusionado con
+**Publicado en la v1.12** (de la nube, del 26 al 29/10, fusionado con
 `main` el 29/10; bitácora, sesión 18, desde «La nube, en paralelo»):
 - el lote 9 entero: el medidor de la resistencia, los rótulos del final, las
   medallas, la barra del equipo, el HUD de arriba, los avisos con banda, los
@@ -217,22 +217,22 @@ carpeta de datos del juego.
 
 ### Opcional (Adam decide si se hace)
 
-8. **Kernel Panic, lo que falta** (pedido el 20/10, sesión 16; Adam lo dejó
-   para otro día):
-   - **Embestida triple** (por debajo del 50 %): tres seguidas, cada una con
-     su aviso rojo corto.
-   - **Guardaespaldas:** una vez, al bajar del 50 %, llama a un rootkit élite
-     explosivo.
-9. **NÚCLEO CERO, lo que falta** (también del 20/10):
-   - el escudo también cada 45 s en la forma 2 y cada 25 s en la 3 (ahora,
-     cada 35 s en la amalgama)
-   - un 50 % más de vida, y pausa entre ataques de 2, 1,4 y 0,9 s (ahora 2,5,
-     1,8 y 1,2)
-   - presión al llegar: portales y tormenta enseguida, y en la forma 3 dos
-     ataques a la vez
+8. **Hecho el 29/10 (sesión 19): Kernel Panic, lo que faltaba.** Con menos
+   de la mitad de vida encadena tres embestidas (la 2.ª y la 3.ª con un aviso
+   de 0,4 s); al bajar de la mitad llama una vez a un rootkit explosivo de
+   guardaespaldas. Publicado en la v1.12; falta probarlo jugando.
+9. **Hecho el 29/10 (sesión 19): NÚCLEO CERO, lo que faltaba.**
+   - vida de 12000 a 18000
+   - pausas de 2, 1,4 y 0,9 s
+   - el escudo cada 45 s en la forma 2 y cada 25 s en la 3
+   - al llegar, portales y tormenta enseguida
+   - en la amalgama, dos ataques distintos a la vez (`Ataques2`)
 
-   Ojo: el equilibrio de ahora cuenta con el NÚCLEO CERO de ahora. Si se
-   hace, volver a equilibrar (punto 7).
+   Con 20 partidas por dificultad (en el instituto): **11 / 7 / 1** (objetivo
+   15-16 / 8-10 / 2). Fácil y media perdían por tiempo contra la amalgama:
+   su vida bajó en fácil de 0,42 a 0,32 y en media de 0,5 a 0,45, **sin
+   volver a medir** (Adam no quiso más simulaciones). Falta comprobarlo
+   (punto 7). Publicado en la v1.12.
 10. **Mejoras propuestas, lo que queda** de `mejoras_propuestas.md` (A, B sin
     dibujos, C entera y F sin dibujos, hechas):
     - **D. Lo visual por código, con assets:** hecha entera. La partida, el

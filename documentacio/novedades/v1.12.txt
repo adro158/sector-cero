@@ -1,0 +1,9 @@
+- Kernel Panic, más duro: con menos de la mitad de vida embiste tres veces seguidas, y al bajar de la mitad llama a un rootkit explosivo de guardaespaldas.
+- NÚCLEO CERO, más duro: más vida, menos respiro entre ataques, abre portales y lanza la tormenta nada más llegar, levanta el escudo también en su segunda forma y, en la última, ataca con dos cosas a la vez.
+- Interfaz nueva de pixel art: paneles y botones, una fuente propia en los títulos, el reloj y los avisos, la barra del equipo con retratos, el HUD de arriba, las teclas y los botones dibujados, iconos en las reglas y controles nuevos en el móvil.
+- Un medidor arriba a la derecha enseña cuánto se ha adaptado el malware a tu herramienta.
+- La pantalla final y el ranking, con rótulos y medallas.
+- Los personajes respiran cuando están quietos, y Kernel Panic carga cada ataque con su pose.
+- Sonidos nuevos para el escudo de NÚCLEO CERO, las ultis y las evoluciones, y música propia para la fase 2 y para NÚCLEO CERO.
+- El Espadachín da el tajo entero también corriendo, y roba la mitad de vida que antes.
+- El lanzador, con paneles y botones de pixel art y una barra al descargar cada versión.
