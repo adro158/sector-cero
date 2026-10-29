@@ -22,7 +22,7 @@ vframes = 3
 
 [node name="Salud" type="Node" parent="."]
 script = ExtResource("3_salud")
-vida_maxima = 12000.0
+vida_maxima = 18000.0
 invulnerabilidad = 0.0
 
 [node name="Escudo" type="Node2D" parent="."]
@@ -49,6 +49,12 @@ texture_filter = 1
 script = ExtResource("7_ancla")
 
 [node name="Ataques" type="Node2D" parent="."]
+top_level = true
+z_index = 3
+texture_filter = 1
+script = ExtResource("5_ataques")
+
+[node name="Ataques2" type="Node2D" parent="."]
 top_level = true
 z_index = 3
 texture_filter = 1

@@ -352,9 +352,14 @@ func _mover_bot() -> void:
 		Input.action_press("mover_arriba", -direccion.y)
 
 
-## El ataque que está haciendo el jefe final ("" si ninguno o si no está).
+## El ataque que está haciendo el jefe final ("" si ninguno o si no está). En
+## la amalgama hace dos a la vez (Ataques2): si uno es el torbellino, ese,
+## que es del que hay que salir.
 func _ataque_del_jefe_final(jefe_final: Node2D) -> String:
-	return jefe_final.get_node("Ataques")._ataque if jefe_final.activo() else ""
+	if not jefe_final.activo():
+		return ""
+	var segundo: String = jefe_final.get_node("Ataques2")._ataque
+	return "torbellino" if segundo == "torbellino" else jefe_final.get_node("Ataques")._ataque
 
 
 ## A dónde ir con un jefe en juego: el jefe o, si el jefe final está dentro

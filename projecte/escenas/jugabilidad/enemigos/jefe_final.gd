@@ -26,7 +26,8 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 
 ## Una entrada por forma: 0 rootkit gigante, 1 núcleo armado y 2 amalgama.
 const DANO_RECIBIDO: Array[float] = [1.0, 0.75, 0.6]
-const PAUSA_ATAQUES: Array[float] = [2.5, 1.8, 1.2]
+## Hasta el 29/10 (sesión 19) eran 2,5, 1,8 y 1,2; la vida, 12000.
+const PAUSA_ATAQUES: Array[float] = [2.0, 1.4, 0.9]
 const VELOCIDAD: Array[float] = [60.0, 75.0, 90.0]
 const FOTOGRAMAS_POR_SEGUNDO: Array[float] = [8.0, 10.0, 12.0]
 const ATAQUES := [
@@ -46,8 +47,13 @@ const MUERTE := 0.96
 ## Tras romperle el escudo: segundos y daño que recibe de más.
 const ATURDIDO := 2.0
 const DANO_ATURDIDO := 1.5
-## En la amalgama vuelve a levantar el escudo cada tanto.
-const ESCUDO_CADA := 35.0
+## Cada cuánto vuelve a levantar el escudo, por forma (0: nunca). Hasta el
+## 29/10, solo en la amalgama y cada 35 s.
+const ESCUDO_CADA: Array[float] = [0.0, 45.0, 25.0]
+## Al llegar, estos ataques enseguida y en este orden: presión desde el
+## principio.
+const AL_LLEGAR := ["invocar", "tormenta"]
+const PRIMER_ATAQUE := 0.5
 ## Se acerca hasta esta distancia del jugador y ahí se queda.
 const DISTANCIA := 220.0
 
@@ -66,12 +72,17 @@ var _segundos := 0.0
 var _hasta_atacar := 0.0
 var _hasta_escudo := 0.0
 var _ultimo_ataque := ""
+## Los de AL_LLEGAR que aún no ha lanzado.
+var _por_lanzar: Array = []
 var _jugador: Node2D
 var _salud_jugador: Salud
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
 @onready var _ataques: Node2D = $Ataques
+## En la amalgama ataca con dos cosas a la vez: el segundo lo lleva otro
+## nodo con el mismo script, que no se pisa con el primero.
+@onready var _ataques_2: Node2D = $Ataques2
 @onready var _escudo: Node2D = $Escudo
 
 
@@ -91,7 +102,8 @@ func aparecer(posicion: Vector2) -> void:
 	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe_final"))
 	_forma = 0
 	_cambiar_estado(Estado.LUCHANDO)
-	_hasta_atacar = PAUSA_ATAQUES[0]
+	_hasta_atacar = PRIMER_ATAQUE
+	_por_lanzar = AL_LLEGAR.duplicate()
 	visible = true
 	_sprite.visible = true
 	BusEventos.jefe_final_aparecio.emit()
@@ -194,7 +206,7 @@ func _physics_process(delta: float) -> void:
 				_cambiar_estado(Estado.LUCHANDO)
 				_hasta_atacar = PAUSA_ATAQUES[_forma]
 				_escudo.levantar()
-				_hasta_escudo = ESCUDO_CADA
+				_hasta_escudo = ESCUDO_CADA[_forma]
 		Estado.ATURDIDO:
 			if _tiempo_estado >= ATURDIDO:
 				_cambiar_estado(Estado.LUCHANDO)
@@ -214,7 +226,7 @@ func _physics_process(delta: float) -> void:
 ## Se mueve entre ataque y ataque (atacando y con el escudo, quieto) y, cuando
 ## toca, lanza el siguiente.
 func _luchar(delta: float) -> void:
-	if _ataques.ocupado():
+	if _ataques.ocupado() or _ataques_2.ocupado():
 		return
 	# Con el escudo está anclado: ni se mueve ni se recoloca, y el tiempo hasta
 	# el siguiente escudo no corre.
@@ -226,20 +238,28 @@ func _luchar(delta: float) -> void:
 			global_position = _jugador.global_position + hacia_jugador * 0.6
 		elif hacia_jugador.length() > DISTANCIA:
 			global_position += hacia_jugador.normalized() * VELOCIDAD[_forma] * delta
-		if _forma == 2:
+		if ESCUDO_CADA[_forma] > 0.0:
 			_hasta_escudo -= delta
 			if _hasta_escudo <= 0.0:
 				_escudo.levantar()
-				_hasta_escudo = ESCUDO_CADA
+				_hasta_escudo = ESCUDO_CADA[_forma]
 	_hasta_atacar -= delta
 	if _hasta_atacar <= 0.0:
 		_hasta_atacar = PAUSA_ATAQUES[_forma]
-		_ataques.lanzar(_elegir_ataque(), _forma)
+		var primero := _elegir_ataque()
+		_ataques.lanzar(primero, _forma)
+		# En la amalgama, otro distinto a la vez (los de llegada van de uno en uno).
+		if _forma == 2:
+			_ataques_2.lanzar(_elegir_ataque([primero]), _forma)
 
 
-## Uno al azar de los de su forma, sin repetir el anterior.
-func _elegir_ataque() -> String:
-	var posibles: Array = ATAQUES[_forma].filter(func(ataque): return ataque != _ultimo_ataque)
+## Los de llegada, en su orden; después, uno al azar de los de su forma, sin
+## repetir el anterior ni los de evitar.
+func _elegir_ataque(evitar: Array = []) -> String:
+	if not _por_lanzar.is_empty():
+		_ultimo_ataque = _por_lanzar.pop_front()
+		return _ultimo_ataque
+	var posibles: Array = ATAQUES[_forma].filter(func(ataque): return ataque != _ultimo_ataque and ataque not in evitar)
 	_ultimo_ataque = posibles.pick_random()
 	return _ultimo_ataque
 
@@ -249,6 +269,7 @@ func _elegir_ataque() -> String:
 ## uno nuevo.
 func _transformar() -> void:
 	_ataques.cortar()
+	_ataques_2.cortar()
 	_escudo.quitar()
 	_cambiar_estado(Estado.TRANSFORMANDO)
 	_forma_cambiada = false
@@ -257,6 +278,7 @@ func _transformar() -> void:
 
 func _al_romper_escudo() -> void:
 	_ataques.cortar()
+	_ataques_2.cortar()
 	_cambiar_estado(Estado.ATURDIDO)
 
 
@@ -291,6 +313,7 @@ func _draw() -> void:
 func _al_morir() -> void:
 	# Se cierran también los portales: que no salga más horda.
 	_ataques.quitar()
+	_ataques_2.quitar()
 	_escudo.quitar()
 	_cambiar_estado(Estado.MURIENDO)
 	# Ya está ganada: mientras se rompe, un golpe de la horda que queda no
