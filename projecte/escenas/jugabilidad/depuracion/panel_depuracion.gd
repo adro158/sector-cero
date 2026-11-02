@@ -34,9 +34,6 @@ var _desde_resistencia := 0.0
 var _segundos := 0.0
 ## Por herramienta (DatosArma): [icono de su mejora, color de su personaje].
 var _herramientas := {}
-## El máximo de la gráfica de los fps: el refresco de la pantalla, que es lo
-## más que se dibuja (240 en la de Adam, 60 en una normal).
-var _fps_maximo := 60.0
 ## El alto que ocupó el último dibujo: el panel mide lo que mide su contenido.
 var _alto := 400.0
 var _resistencia_malware: Node
@@ -63,11 +60,13 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(Dibujo.ANCHO, _alto)
 
 	_fps.resize(MUESTRAS)
-	_fps_maximo = maxf(roundf(DisplayServer.screen_get_refresh_rate()), 60.0)
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
 	_conocer_herramientas()
 
 	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
+	# El golpe, de su señal y no restando vidas: al cambiar a un personaje con
+	# menos vida, la vida baja sin que nadie haya pegado.
+	BusEventos.jugador_danado.connect(func(cantidad): _ultimo_golpe = cantidad)
 	BusEventos.experiencia_ganada.connect(func(cantidad): _experiencia += cantidad)
 	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	BusEventos.enemigo_muerto.connect(func(_posicion, _tipo): _muertos += 1)
@@ -97,9 +96,14 @@ func _unhandled_input(evento: InputEvent) -> void:
 ## Las gráficas se llenan aunque el panel esté cerrado: al abrirlo ya se ve
 ## lo que ha pasado. En pausa no avanzan.
 func _process(delta: float) -> void:
-	_segundos += delta
+	# delta va escalado con Engine.time_scale (la velocidad x4 del F1 y el
+	# frenazo del tiempo de golpe). Los fps, el piloto y el aviso van en
+	# segundos reales; las resistencias, en tiempo de partida, porque el
+	# malware se analiza cada 20 s de partida.
+	var real := delta / Engine.time_scale
+	_segundos += real
 	if not get_tree().paused:
-		_desde_fps += delta
+		_desde_fps += real
 		if _desde_fps >= CADA_FPS:
 			_desde_fps -= CADA_FPS
 			_meter(_fps, Engine.get_frames_per_second())
@@ -135,14 +139,15 @@ func _draw() -> void:
 	var y := Dibujo.marco(self, size.y, _segundos)
 	y = Dibujo.cabecera(self, y, Dibujo.Icono.SISTEMA, "SISTEMA")
 	y = Dibujo.fila(self, y, Dibujo.Icono.TIEMPO, "tiempo", "%02d:%02d" % [int(_tiempo) / 60, int(_tiempo) % 60])
-	y = Dibujo.fila(self, y, Dibujo.Icono.FPS, "fps", str(Engine.get_frames_per_second()))
-	y = Dibujo.grafica(self, y, [[_fps, Dibujo.COLOR]], _fps_maximo, str(int(_fps_maximo)))
+	y = Dibujo.fila(self, y, Dibujo.Icono.FPS, "fps", "%d" % Engine.get_frames_per_second())
+	var fps_maximo := _escala_fps()
+	y = Dibujo.grafica(self, y, [[_fps, Dibujo.COLOR]], fps_maximo, str(fps_maximo))
 
 	y = Dibujo.cabecera(self, y, Dibujo.Icono.ANTIVIRUS, "ANTIVIRUS")
 	y = Dibujo.fila_vida(self, y, _vida, _vida_maxima)
 	y = Dibujo.fila(self, y, Dibujo.Icono.NIVEL, "nivel", str(_nivel))
 	y = Dibujo.fila(self, y, Dibujo.Icono.EXPERIENCIA, "experiencia", str(_experiencia))
-	y = Dibujo.fila(self, y, Dibujo.Icono.GOLPE, "último golpe", "-%.0f" % _ultimo_golpe)
+	y = Dibujo.fila(self, y, Dibujo.Icono.GOLPE, "último golpe", "-%.0f" % _ultimo_golpe if _ultimo_golpe > 0.0 else "-")
 
 	y = Dibujo.cabecera(self, y, Dibujo.Icono.HORDA, "HORDA")
 	y = Dibujo.fila(self, y, Dibujo.Icono.EN_PANTALLA, "en pantalla", str(_enemigos_vivos()))
@@ -163,6 +168,18 @@ func _draw() -> void:
 	_alto = y + 6.0
 
 
+## El tope de la gráfica de los fps: lo más alto del último minuto, redondeado
+## hacia arriba a un múltiplo de 60 (como mínimo, 60). No vale el refresco de
+## la pantalla: con el driver de NVIDIA el juego va a 1000-2500 fps aunque el
+## vsync esté activado (bitácora, sesión 19). Con 5 fps de margen: a 60 Hz a
+## veces se mide 61, y la escala saltaría a 120 con la línea a media altura.
+func _escala_fps() -> int:
+	var mas_alto := 0.0
+	for muestra in _fps:
+		mas_alto = maxf(mas_alto, muestra)
+	return maxi(ceili((mas_alto - 5.0) / 60.0) * 60, 60)
+
+
 func _herramienta(arma: DatosArma) -> Array:
 	return _herramientas.get(arma, [null, Dibujo.COLOR])
 
@@ -175,7 +192,5 @@ func _enemigos_vivos() -> int:
 
 
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
-	if _vida_maxima > 0.0 and actual < _vida:
-		_ultimo_golpe = _vida - actual
 	_vida = actual
 	_vida_maxima = maxima

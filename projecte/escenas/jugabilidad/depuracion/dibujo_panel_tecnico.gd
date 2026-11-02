@@ -21,17 +21,18 @@ const GRAFICA := preload("res://medios/interfaz/tecnico_grafica.png")
 const LED := preload("res://medios/interfaz/tecnico_led.png")
 ## El orden de la tira de iconos.
 enum Icono { SISTEMA, ANTIVIRUS, HORDA, RESISTENCIA, TIEMPO, FPS, VIDA, NIVEL, EXPERIENCIA, GOLPE, EN_PANTALLA, ELIMINADOS }
-const ANCHO := 264.0
+const ANCHO := 292.0
 const LINEA := 18.0
 const LETRA := 14
 ## Por dónde va cada columna de una fila: el nombre, la barra y el valor (o
 ## el valor, si no hay barra).
 const X_NOMBRE := 32.0
-const X_BARRA := 122.0
-const X_VALOR_BARRA := 192.0
+const X_BARRA := 150.0
+const X_VALOR_BARRA := 220.0
 const X_VALOR := 150.0
-## Lo que cabe del nombre antes de la barra.
-const ANCHO_NOMBRE := 88.0
+## Lo que cabe del nombre antes de la barra: los nombres de las evoluciones
+## («Análisis heurístico», «Firewall perimetral») miden 115 px a 11 px.
+const ANCHO_NOMBRE := 116.0
 ## Con una resistencia a partir de esta parte del máximo, el aviso.
 const AVISO_DESDE := 0.8
 
@@ -108,7 +109,9 @@ static func fila_resistencia(lienzo: Control, y: float, herramienta: Array, nomb
 	_texto(lienzo, Vector2(X_NOMBRE, y + 13.0), nombre, COLOR, ANCHO_NOMBRE)
 	_barra(lienzo, Vector2(X_BARRA, y + 5.0), valor / maximo, herramienta[1])
 	_texto(lienzo, Vector2(X_VALOR_BARRA, y + 13.0), "%2d%%" % roundi(valor * 100.0), Color.WHITE)
-	if valor >= maximo * AVISO_DESDE:
+	# Con el número redondeado, el mismo que se lee: sumando y restando décimas
+	# se llega a 0,39999... y comparado tal cual el aviso no saldría con un 40 %.
+	if roundi(valor * 100.0) >= roundi(maximo * AVISO_DESDE * 100.0):
 		var encendido := int(segundos / 0.25) % 2
 		lienzo.draw_texture_rect_region(AVISO, Rect2(ANCHO - 26.0, y + 3.0, 12.0, 12.0), Rect2(encendido * 12.0, 0.0, 12.0, 12.0), EstiloInterfaz.DERROTA)
 	return y + LINEA

@@ -33,9 +33,10 @@ cambias de personaje**.
    CRT).
 2. Empezar partida. Moverse entre la horda; enseñar los números de daño.
 3. Subir de nivel y elegir mejora con las teclas 1-2-3.
-4. Pulsar **F3**: el panel técnico enseña la resistencia del malware subiendo.
-   Cuando los números salgan rojos, cambiar de personaje con **Q** y ver que
-   vuelven a salir blancos.
+4. Pulsar **F3**: el panel técnico enseña la resistencia del malware subiendo
+   a escalones en la gráfica, una línea por herramienta. Cuando parpadee el
+   aviso (80 % del máximo) o los números salgan rojos, cambiar de personaje
+   con **Q** y ver que vuelven a salir blancos.
 5. Esperar al primer élite (1:30): leer sus afijos sobre la cabeza, pinchar en
    él para ver su ficha y matarlo para enseñar la recompensa.
 6. Pausa con Esc y volver al menú. Enseñar que el récord se ha guardado y el

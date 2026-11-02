@@ -242,6 +242,12 @@ scripts no forman parte del repositorio.
   brillan), y las poses de cargar y del pisotón de Kernel Panic
   (`medios/sprites/jefe/jefe_cargar.png` y `jefe_pisoton.png`), a partir de
   su hoja de andar, estirando, aplastando y moviendo el mismo dibujo.
+- **El panel técnico (F3)** (`medios/interfaz/tecnico_*.png`, 29/10/2026):
+  el marco de terminal con su barra de título, la cabecera de sección, la
+  tira de 12 iconos de 16x16, la barra de 10 casillas y su relleno, el aviso
+  que parpadea, el fondo con rejilla de las gráficas y el piloto de 4
+  fotogramas, todo en grises para teñirlo. Los dibujó Claude en el chat
+  (claude.ai) y Adam los trajo en un zip (rama `zips-lotes`).
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

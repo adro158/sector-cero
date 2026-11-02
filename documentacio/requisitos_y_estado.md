@@ -129,12 +129,11 @@ adelante): el tiempo de golpe y la sacudida cambian un poco las partidas, y
 el Espadachín apunta solo (el bot ya apuntaba, así que debería moverse
 poco). Falta medirlo con 100 partidas por dificultad (punto 7).
 
-### A medias (29/10 por la noche)
+### Siguiente
 
-- **El panel técnico (F3) con sprites:** hecho y commiteado, falta
-  rematarlo. Los arreglos de la revisión, la escala de los fps que se
-  ajusta sola, una captura con dos resistencias y la documentación (lista
-  en la bitácora, sesión 19, «En casa, por la noche»). Las vistas previas y
+- **El panel técnico (F3) con sprites:** rematado el 02/11 (sesión 20),
+  sin publicar todavía. Falta verlo en casa, con la GPU de verdad: que la
+  escala de los fps se ajuste bien a 1000-2500 fps. Las vistas previas y
   la referencia del zip siguen sin commitear en la carpeta del repo de casa;
   también están en el zip de la rama `zips-lotes`.
 - **Opciones nuevas** (pedidas por Adam, para después del F3; primero un
@@ -146,6 +145,7 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
     frenazo del tiempo de golpe
   - números de daño: todos, solo los rojos (los de la resistencia) o ninguno
   - volumen general, y silencio al cambiar de ventana.
+
 ### Para la entrega
 
 1. **Vídeo demostrativo** (2-4 min).
