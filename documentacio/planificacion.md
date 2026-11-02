@@ -158,6 +158,10 @@ Aquí vive el elemento diferencial, que vale 15 puntos.
       ve en el personaje
 - [x] Testeo sistemático y registro de resultados (bitácora y documentación
       técnica)
+- [x] Panel técnico (F3) con sprites y gráficas (29/10 y 02/11) y opciones
+      nuevas en tres pestañas: límite y contador de fps, reducir destellos,
+      números de daño, volumen general y silencio al cambiar de ventana
+      (02/11). Falta probarlo en casa con la GPU de verdad
 - [ ] Build final exportado y probado en una máquina limpia (releases de la
       v0.2, 01/10, a la v1.12, 29/10, publicadas; desde la v1.5, con el
       lanzador y su instalador de Windows; falta probarlas en un
