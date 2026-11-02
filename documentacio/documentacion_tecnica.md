@@ -554,6 +554,19 @@ cruceta y Select), añadido por `teclas_antiguas.gd` sin tocar
 «Texto grande», todos los textos pasan por `EstiloInterfaz.tamano_texto` y
 salen un 25 % más grandes.
 
+**Las opciones de la sesión 20** (02/11), en tres pestañas (`panel_opciones.gd`).
+Todas se guardan en `GestorGuardado` y las lee quien las necesita, sin que nadie
+las llame. El límite de fps es `Engine.max_fps`; «la pantalla» es la frecuencia
+del monitor y no el vsync, porque con el driver de NVIDIA el vsync no frenaba.
+No se aplica sin pantalla (el simulador va a toda velocidad) ni en la web.
+«Reducir destellos» multiplica por 0,3 el blanco de los golpes (el shader de la
+horda y `sprite_destello.gd`) y el glitch, y quita el tiempo de golpe; el
+simulador la fuerza a «no», para que las partidas con semilla sigan saliendo
+iguales. «Solo los rojos» deja los números de los golpes a herramientas con
+resistencia, los que avisan de que toca cambiar de personaje. El silencio al
+cambiar de ventana calla el bus `Master` en `GestorAudio`, con la misma
+notificación con la que la partida se pausa sola.
+
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el
 malware a la herramienta que se lleva: un escudo, una barra que se llena al

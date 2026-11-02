@@ -131,8 +131,13 @@ teclas o, si juegas con mando, sus botones.
   abandonar la partida, que no cuenta para el ranking).
 - **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de
   cada una. Si tu partida entra, al acabar te pide un nombre.
-- **Opciones:** volumen, pantalla completa, filtro CRT, sacudir la cámara,
-  vibración del mando, consejos y texto grande (un 25 % más). Se guardan
-  solas.
+- **Opciones**, en tres pestañas. Se guardan solas.
+  - **Sonido:** volumen general, de la música y de los efectos, y silencio
+    al cambiar de ventana.
+  - **Pantalla:** pantalla completa, filtro CRT, límite de fps (la pantalla,
+    60, 144 o sin límite) y contador de fps.
+  - **Accesibilidad:** texto grande (un 25 % más), reducir destellos (golpes
+    menos blancos, sin frenazos y menos glitch), sacudir la cámara, vibración
+    del mando, números de daño (todos, solo los rojos o ninguno) y consejos.
 - **Resultados:** tiempo, nivel, malware eliminado y dificultad, dónde
   caíste, qué parte del daño hizo cada personaje y si has batido un récord.

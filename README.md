@@ -99,8 +99,8 @@ personaje.
   partidas en fácil, 4-5 en media y 1 en difícil.
 - **Ranking** con las diez mejores partidas y la dificultad de cada una.
 - **Accesible y con mando:** consejos en las primeras partidas, mando completo
-  con vibración, y opciones para quitar la sacudida de la cámara y agrandar el
-  texto.
+  con vibración, y opciones para quitar la sacudida de la cámara, agrandar el
+  texto, reducir los destellos y elegir qué números de daño salen.
 
 El manual completo está en el [manual de usuario](documentacio/manual_usuario.md).
 

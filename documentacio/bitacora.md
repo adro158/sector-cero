@@ -4740,8 +4740,60 @@ por apuntar
   «Texto grande» y con la x4 desde el fotograma 400.
 - **Sin probar:** la escala con 1000-2500 fps, que solo se ve en casa.
 
+### Las opciones nuevas
+
+- **Plan** (Adam eligió en la ventana de preguntas, todo lo recomendado):
+  - pestañas Sonido, Pantalla y Accesibilidad, porque 14 filas no cabían en
+    720 px
+  - «Reducir destellos» suaviza y no quita: los golpes se tienen que seguir
+    notando
+  - el silencio, como casilla encendida
+  - el contador, arriba a la derecha
+- **Descubierto al planearlo:** el CRT no parpadea (es estático), así que en
+  «Reducir destellos» no hay nada suyo que tocar.
+- **Hecho:**
+  - `gestor_guardado.gd`: seis claves nuevas, el volumen del bus `Master` y
+    `_limitar_fps`. «La pantalla» es `Engine.max_fps` a la frecuencia del
+    monitor (si no la sabe, 60), no el vsync, que en casa no frena. No se
+    aplica en headless ni en la web. `destellos()` da 0,3 o 1.
+  - `panel_opciones.gd`: `TabContainer` con `use_hidden_tabs_for_min_size`,
+    para que la ventana no cambie de tamaño al cambiar de pestaña. Las de
+    varios valores, con un botón que pasa al siguiente («<  60  >»), sin
+    lista desplegable, que con el mando es más fácil. Al abrir, el foco va a
+    las pestañas.
+  - `gestor_audio.gd`: `_notification` calla y descalla el bus `Master`.
+  - `pool_numeros_flotantes.gd`: filtra al crear cada número.
+  - `contador_fps.gd` (nuevo, `preload`, sin `class_name`).
+  - Destellos:
+    - el blanco de la horda (`gestor_enemigos.gd`) y de élites y jefes
+      (`sprite_destello.gd`), por `destellos()`
+    - el glitch, con un uniform nuevo, `intensidad_glitch`
+      (`horda.gdshader`)
+    - el tiempo de golpe no se congela con la opción
+  - **El simulador fuerza «Reducir destellos» a no**, en memoria: sin tiempo
+    de golpe las partidas con semilla cambiarían. `medir_rendimiento.gd`
+    quita el límite de fps al empezar.
+- **Probado:**
+  - headless: import, `--quit-after` y la partida del minuto 15 con el mismo
+    resultado de siempre (428 eliminados); siguen 16 clases
+  - con ventana, un script temporal que abre el menú y las opciones (con y
+    sin «Texto grande»): las tres pestañas miden igual; el botón del límite
+    da la vuelta (60, 144, 0 y la pantalla) y cambia `Engine.max_fps`; el
+    silencio calla al perder el foco, vuelve al recuperarlo y no calla con
+    la casilla apagada
+  - una partida con las tres opciones en memoria: el contador sale debajo
+    del medidor, solo salen los números teñidos y el shader de la horda
+    compila
+  - el fichero de opciones del jugador quedó igual (copia y comparación del
+    hash)
+- **Sin probar:** «la pantalla» a 240 Hz con la GPU de casa, y el efecto del
+  destello reducido jugando (en una captura no se ve).
+- **No hay que subir `EJECUTABLE_MINIMO`:** ni `project.godot` ni
+  `class_name` nuevos.
+
 ### Siguiente paso
 
-- En casa: abrir el F3 y mirar la gráfica de los fps.
-- Plan corto de las opciones nuevas (`requisitos_y_estado.md`).
+- En casa: el F3 (la gráfica de los fps) y las opciones (límite «la
+  pantalla» a 240, contador, destellos reducidos jugando).
+- Publicar una versión con el F3 y las opciones, con sus novedades.
 - La entrega: vídeo, defensa e instalador en un ordenador limpio.

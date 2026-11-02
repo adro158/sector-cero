@@ -136,15 +136,25 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
   escala de los fps se ajuste bien a 1000-2500 fps. Las vistas previas y
   la referencia del zip siguen sin commitear en la carpeta del repo de casa;
   también están en el zip de la rama `zips-lotes`.
-- **Opciones nuevas** (pedidas por Adam, para después del F3; primero un
-  plan corto):
-  - límite de fps: la pantalla (por defecto), 60, 144 o sin límite; nunca en
-    el simulador, que va sin pantalla y lo más rápido que puede
-  - contador de fps en una esquina
-  - reducir destellos: los destellos blancos, el parpadeo del CRT y el
-    frenazo del tiempo de golpe
-  - números de daño: todos, solo los rojos (los de la resistencia) o ninguno
-  - volumen general, y silencio al cambiar de ventana.
+- **Opciones nuevas: hechas el 02/11 (sesión 20)**, sin publicar. Límite y
+  contador de fps, reducir destellos, números de daño, volumen general y
+  silencio al cambiar de ventana. Falta en casa: que «la pantalla» deje el
+  juego a 240 fps en el monitor de Adam y que el contador lo enseñe. Lo
+  decidido:
+  - la ventana, en pestañas: Sonido, Pantalla y Accesibilidad (el
+    `TabContainer` del lote 9, como las reglas); las de varios valores, con
+    un botón que cambia al pulsarlo
+  - «la pantalla» es `Engine.max_fps` a la frecuencia del monitor, no el
+    vsync (en casa no frena); no se aplica en headless ni sale en la web
+  - reducir destellos *suaviza*: el blanco de los golpes al 30 %, sin tiempo
+    de golpe y el glitch de la horda más suave. El CRT no parpadea: no se
+    toca
+  - «solo rojos»: los golpes a una herramienta con resistencia
+  - el silencio al cambiar de ventana, como casilla encendida por defecto
+  - el contador de fps, arriba a la derecha, debajo del medidor de la
+    resistencia
+  - sin cambios en `project.godot` ni `class_name` nuevos: no hay que subir
+    `EJECUTABLE_MINIMO`
 
 ### Para la entrega
 
