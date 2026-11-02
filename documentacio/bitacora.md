@@ -4797,5 +4797,7 @@ apuntado»).
 
 - En casa: el F3 (la gráfica de los fps) y las opciones (límite «la
   pantalla» a 240, contador, destellos reducidos jugando).
-- Publicar una versión con el F3 y las opciones, con sus novedades.
+- Publicar la v1.13 con el F3 y las opciones, con sus novedades
+  (`documentacio/novedades/v1.13.txt`). **Decisión de Adam:** primero
+  probarlo en casa y después publicar.
 - La entrega: vídeo, defensa e instalador en un ordenador limpio.
