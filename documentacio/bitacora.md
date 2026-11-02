@@ -4690,3 +4690,58 @@ apuntado»).
   programarlas, un plan corto, sobre todo de «Reducir destellos».
 - **Duración:** incluida en las 2 h de la sesión 19 (Adam: «ha sido poco»).
   Las acumuladas siguen en 44 h de 60.
+
+## Sesión 20 — 02/11/2026 (instituto)
+
+**Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
+por apuntar
+
+### Qué se ha hecho
+
+- **«Estoy en el insti»:** `main` iba 4 commits por detrás (el F3 de casa).
+  Alan no había subido nada. Validado en headless: import, `--quit-after` y
+  una partida del simulador desde el minuto 15.
+- **El panel técnico (F3), rematado.** Los cinco puntos de la revisión:
+  1. Los nombres de las evoluciones: medidos con la fuente del panel,
+     «Análisis heurístico» y «Firewall perimetral» ocupan 115 px a 11 px.
+     El panel pasa de 264 a 292 px de ancho y la barra y su valor, 28 px a
+     la derecha; el nombre tiene 116 px y cabe entero a 11 px.
+  2. Los fps, sin decimal (`%d`).
+  3. El aviso compara el número redondeado, el mismo que se lee: con la
+     secuencia de la revisión (0,39999…) sale al 40 %.
+  4. `delta` va escalado con `Engine.time_scale` (la x4 del F1 y el frenazo
+     del tiempo de golpe). Ahora los fps, el piloto y el aviso van en
+     segundos reales (`delta / Engine.time_scale`) y las resistencias en
+     tiempo de partida, porque el malware se analiza cada 20 s de partida.
+  5. Con «Texto grande» no pisa nada: el panel usa tamaños fijos y la barra
+     del equipo, que sí crece, queda a su izquierda. En la web es el mismo
+     tamaño de pantalla (1280x720 escalado).
+- **La escala de los fps se ajusta sola** (decisión de Adam del 29/10): lo
+  más alto del último minuto, hacia arriba a un múltiplo de 60, mínimo 60.
+  Con 5 fps de margen, que no estaba en lo decidido: a 60 Hz a veces se mide
+  61 y la escala saltaba a 120 con la línea a media altura (se vio en la
+  captura).
+- **Un fallo más, visto en las capturas:** «último golpe» contaba como golpe
+  el cambio a un personaje con menos vida (del Espadachín, 120, al Mago, 90:
+  «-30» sin que nadie pegara). Ahora sale de `jugador_danado`, que ya trae el
+  daño de verdad; sin golpes, «-».
+- **Documentación:** el panel en `documentacion_tecnica.md` (tras el F1), sus
+  piezas en `creditos.md` y el paso del F3 en `presentacion.md`.
+
+### Métodos de test
+
+- Headless: import, `--quit-after` y una partida entera del simulador con el
+  panel abierto (mismo resultado que sin él: victoria, 428 eliminados). Siguen
+  16 clases globales.
+- Con ventana en la VM, un script temporal (fuera del repo) que hereda del
+  simulador, abre el F3 y guarda el viewport: una partida del minuto 15 con
+  dos resistencias reales (Firewall perimetral 30 % y Análisis heurístico
+  5 %), y otra con las resistencias puestas a mano (la del 0,39999…), con
+  «Texto grande» y con la x4 desde el fotograma 400.
+- **Sin probar:** la escala con 1000-2500 fps, que solo se ve en casa.
+
+### Siguiente paso
+
+- En casa: abrir el F3 y mirar la gráfica de los fps.
+- Plan corto de las opciones nuevas (`requisitos_y_estado.md`).
+- La entrega: vídeo, defensa e instalador en un ordenador limpio.
