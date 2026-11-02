@@ -4694,7 +4694,9 @@ apuntado»).
 ## Sesión 20 — 02/11/2026 (instituto)
 
 **Fitas:** 5 y 6 · **Participantes:** Adam (con Claude Code) · **Duración:**
-por apuntar
+2 h (las apuntó Adam)
+
+**Horas acumuladas:** 46 h de las 60 sugeridas (77 %)
 
 ### Qué se ha hecho
 
