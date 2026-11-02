@@ -35,6 +35,9 @@ uniform float fotogramas_por_segundo = 8.0;
 // para con la pausa: la horda seguiría andando en el sitio mientras se elige
 // una mejora.
 uniform float tiempo = 0.0;
+// Cuánto saltan y se separan los colores en el glitch: 1 normal, menos con la
+// opción «Reducir destellos».
+uniform float intensidad_glitch = 1.0;
 
 // Un varying es un valor que vertex() calcula y fragment() recibe. Aquí son
 // cosas de cada enemigo entero (su golpe, su glitch, su fotograma), así que
@@ -58,7 +61,7 @@ void vertex() {
 	desvanecido = INSTANCE_CUSTOM.a;
 	float tirada = azar(float(INSTANCE_ID) * 7.31 + floor(TIME * TIRADAS_POR_SEGUNDO));
 	glitch = step(1.0 - PROBABILIDAD, tirada);
-	VERTEX.x += glitch * (tirada - 0.5) * 2.0 * SALTO;
+	VERTEX.x += glitch * (tirada - 0.5) * 2.0 * SALTO * intensidad_glitch;
 	// Todos cambian de fotograma al mismo ritmo, pero cada uno empieza en uno
 	// distinto (el desfase): así no se mueven todos a la vez. El desfase lo
 	// manda el gestor con cada enemigo y no sale de INSTANCE_ID, que es su
@@ -80,7 +83,7 @@ void fragment() {
 	vec4 color = texture(TEXTURE, uv) * color_vertice;
 	if (glitch > 0.5) {
 		// Rojo y azul se leen un poco desplazados: los colores se separan.
-		vec2 separacion = vec2(TEXTURE_PIXEL_SIZE.x * 1.5, 0.0);
+		vec2 separacion = vec2(TEXTURE_PIXEL_SIZE.x * 1.5 * intensidad_glitch, 0.0);
 		color.r = texture(TEXTURE, uv + separacion).r;
 		color.b = texture(TEXTURE, uv - separacion).b;
 	}

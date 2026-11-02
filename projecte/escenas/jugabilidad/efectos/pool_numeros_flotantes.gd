@@ -60,6 +60,15 @@ func _al_danar_enemigo(posicion: Vector2, cantidad: float, resistencia: float) -
 	# decenas de enemigos a la vez, el tope evita llenar la pantalla de texto.
 	if _activos >= MAXIMO_NUMEROS:
 		return
+	# La opción se mira en cada golpe: se puede cambiar desde la pausa.
+	match GestorGuardado.opcion("numeros_dano"):
+		"ninguno":
+			return
+		"rojos":
+			# Solo los golpes a una herramienta a la que el malware resiste:
+			# los que avisan de que toca cambiar de personaje.
+			if resistencia <= 0.0:
+				return
 
 	_posiciones[_activos] = posicion + Vector2(_azar.randf_range(-SEPARACION, SEPARACION), 0.0)
 	_cantidades[_activos] = cantidad

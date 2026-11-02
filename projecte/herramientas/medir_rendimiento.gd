@@ -33,6 +33,9 @@ func _initialize() -> void:
 
 
 func _medir() -> void:
+	# Sin el «Límite de fps» de las opciones, que GestorGuardado pone al
+	# arrancar: aquí se quiere ver todo el margen.
+	Engine.max_fps = 0
 	var juego: Node = load("res://escenas/juego.tscn").instantiate()
 	root.add_child(juego)
 	await physics_frame

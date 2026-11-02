@@ -45,4 +45,5 @@ func _process(delta: float) -> void:
 	# Como en la horda: blanco al recibir el golpe y vuelve a su color en
 	# DURACION. Con el juego en pausa se queda como esté.
 	_restante = maxf(_restante - delta, 0.0)
-	material.set_shader_parameter("destello", _restante / DURACION * intensidad)
+	# GestorGuardado.destellos(): más suave con «Reducir destellos» (opciones).
+	material.set_shader_parameter("destello", _restante / DURACION * intensidad * GestorGuardado.destellos())

@@ -35,6 +35,10 @@ func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
 
 
 func _congelar(segundos: float) -> void:
+	# Con «Reducir destellos» (opciones) no hay frenazo: también es un golpe a
+	# la vista.
+	if GestorGuardado.opcion("reducir_destellos"):
+		return
 	if _pendientes == 0:
 		_escala_normal = Engine.time_scale
 	_pendientes += 1

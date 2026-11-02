@@ -405,6 +405,10 @@ func _volcar_al_multimesh(delta: float) -> void:
 	# El reloj de la animación avanza con el juego: con la pausa se para.
 	_tiempo_animacion += delta
 	_horda.material.set_shader_parameter("tiempo", _tiempo_animacion)
+	# «Reducir destellos» (opciones) suaviza el blanco de los golpes y el
+	# glitch. Cada vez: se puede cambiar desde la pausa.
+	var destellos: float = GestorGuardado.destellos()
+	_horda.material.set_shader_parameter("intensidad_glitch", destellos)
 
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	# La horizontal es -1 en los que se dan la vuelta para mirar al jugador.
@@ -418,7 +422,7 @@ func _volcar_al_multimesh(delta: float) -> void:
 		var desfase := fmod(_ids[i] * 0.37, 1.0)
 		# El cuarto, cuánto se ha desvanecido huyendo.
 		var desvanecido := 1.0 - _huida / DURACION_HUIDA if _huyendo(i) else 0.0
-		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO, aviso, desfase, desvanecido))
+		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO * destellos, aviso, desfase, desvanecido))
 
 	multimesh.visible_instance_count = _vivos
 

@@ -132,6 +132,9 @@ func _empezar_partida() -> void:
 	_partida += 1
 	# En memoria y sin guardar en el fichero, que es el del jugador.
 	root.get_node("GestorGuardado")._fichero.set_value("opciones", "dificultad", _dificultad)
+	# Sin tocar el tiempo de golpe: con «Reducir destellos» no lo hay y las
+	# partidas ya no serían las mismas de siempre.
+	root.get_node("GestorGuardado")._fichero.set_value("opciones", "reducir_destellos", false)
 	# Semilla fija por partida: la misma partida se repite igual tras un cambio,
 	# así se puede comparar el antes y el después.
 	seed(1000 + _partida)

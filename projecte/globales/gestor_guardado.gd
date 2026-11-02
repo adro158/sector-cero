@@ -11,12 +11,33 @@ extends Node
 signal opcion_cambiada(clave: String, valor: Variant)
 
 const RUTA := "user://sector_cero.cfg"
+## En "limite_fps": tantos como el refresco del monitor. No vale el vsync: con
+## el driver de NVIDIA el juego pasa de 1000 fps aunque esté activado
+## (bitácora, sesión 19).
+const LIMITE_PANTALLA := -1
+## Con «Reducir destellos», los destellos blancos y el glitch de la horda se
+## multiplican por esto: se siguen notando los golpes, sin el fogonazo.
+const DESTELLO_REDUCIDO := 0.3
 
 const OPCIONES_POR_DEFECTO := {
+	"volumen_general": 1.0,
 	"volumen_musica": 0.6,
 	"volumen_efectos": 0.8,
+	# Callarse al cambiar de ventana (gestor_audio.gd, _notification).
+	"silenciar_sin_foco": true,
 	"pantalla_completa": false,
 	"crt": true,
+	# Fotogramas por segundo como mucho: LIMITE_PANTALLA (los del monitor), 60,
+	# 144 o 0 (sin límite).
+	"limite_fps": LIMITE_PANTALLA,
+	# El contador de fps en la partida (escenas/interfaz/contador_fps.gd).
+	"contador_fps": false,
+	# Accesibilidad: el blanco de los golpes más suave, sin tiempo de golpe y
+	# el glitch de la horda más flojo (DESTELLO_REDUCIDO).
+	"reducir_destellos": false,
+	# Los números de daño: "todos", "rojos" (solo los golpes a una herramienta
+	# a la que el malware resiste) o "ninguno".
+	"numeros_dano": "todos",
 	# Accesibilidad: la sacudida de la cámara y la vibración del mando
 	# (controlador_jugador.gd, sacudir) se pueden quitar.
 	"sacudir_camara": true,
@@ -156,6 +177,10 @@ func _al_terminar_partida(estadisticas: Dictionary) -> void:
 
 func _aplicar(clave: String, valor: Variant) -> void:
 	match clave:
+		"volumen_general":
+			AudioServer.set_bus_volume_linear(AudioServer.get_bus_index("Master"), valor)
+		"limite_fps":
+			_limitar_fps(valor)
 		"volumen_musica":
 			AudioServer.set_bus_volume_linear(AudioServer.get_bus_index("Musica"), valor)
 		"volumen_efectos":
@@ -163,3 +188,21 @@ func _aplicar(clave: String, valor: Variant) -> void:
 		"pantalla_completa":
 			get_window().mode = Window.MODE_FULLSCREEN if valor else Window.MODE_WINDOWED
 		# El filtro CRT lo aplica su propia capa al recibir opcion_cambiada.
+
+
+## Sin pantalla (el simulador) no se limita: va lo más rápido que puede. En la
+## web tampoco, porque el navegador ya dibuja al ritmo del monitor.
+func _limitar_fps(limite: int) -> void:
+	if DisplayServer.get_name() == "headless" or OS.has_feature("web"):
+		return
+	if limite == LIMITE_PANTALLA:
+		# Si el sistema no sabe el refresco, devuelve -1: entonces, 60.
+		limite = roundi(DisplayServer.screen_get_refresh_rate())
+		if limite <= 0:
+			limite = 60
+	Engine.max_fps = limite
+
+
+## Lo que valen los destellos con la opción de reducirlos: 1 sin ella.
+func destellos() -> float:
+	return DESTELLO_REDUCIDO if opcion("reducir_destellos") else 1.0

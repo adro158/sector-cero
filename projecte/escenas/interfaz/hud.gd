@@ -19,6 +19,7 @@ const PanelExperiencia := preload("res://escenas/interfaz/panel_experiencia.gd")
 const PantallaFase := preload("res://escenas/interfaz/pantalla_fase.gd")
 const BarraJefe := preload("res://escenas/interfaz/barra_jefe.gd")
 const MedidorResistencia := preload("res://escenas/interfaz/medidor_resistencia.gd")
+const ContadorFps := preload("res://escenas/interfaz/contador_fps.gd")
 const AvisosHud := preload("res://escenas/interfaz/avisos_hud.gd")
 const Consejos := preload("res://escenas/interfaz/consejos.gd")
 const MARCO_RELOJ := preload("res://medios/interfaz/reloj_marco.png")
@@ -67,7 +68,7 @@ func _ready() -> void:
 		move_child(get_child(de_la_escena + i), i)
 
 	# Los primeros hijos: así quedan por debajo de la pausa y las mejoras.
-	for panel in [PanelEquipo.new(), BarraEquipo.new(), FichaEnemigo.new(), MedidorResistencia.new()]:
+	for panel in [PanelEquipo.new(), BarraEquipo.new(), FichaEnemigo.new(), MedidorResistencia.new(), ContadorFps.new()]:
 		add_child(panel)
 		move_child(panel, 0)
 	$PanelMejoras.niveles = niveles_mejora

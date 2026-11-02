@@ -248,6 +248,17 @@ func _al_terminar(estadisticas: Dictionary) -> void:
 
 
 func _al_cambiar_opcion(clave: String, _valor: Variant) -> void:
-	# Al mover el volumen de los efectos se oye uno, para saber cómo queda.
-	if clave == "volumen_efectos":
+	# Al mover el volumen de los efectos o el general se oye uno, para saber
+	# cómo queda.
+	if clave == "volumen_efectos" or clave == "volumen_general":
 		sonar("gema")
+
+
+## Al cambiar de ventana (o de pestaña en la web), silencio, si la opción está
+## puesta; al volver, el sonido. Se calla el bus Master, que lleva la música y
+## los efectos: el volumen de cada uno no se toca.
+func _notification(que: int) -> void:
+	if que == NOTIFICATION_APPLICATION_FOCUS_OUT and GestorGuardado.opcion("silenciar_sin_foco"):
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), true)
+	elif que == NOTIFICATION_APPLICATION_FOCUS_IN:
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), false)
