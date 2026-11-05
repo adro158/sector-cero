@@ -1,0 +1,4 @@
+- Opciones nuevas, ahora en tres pestañas (Sonido, Pantalla y Accesibilidad): volumen general, silencio al cambiar de ventana, límite de fps (la pantalla, 60, 144 o sin límite), contador de fps, reducir destellos y qué números de daño salen (todos, solo los rojos o ninguno).
+- El panel técnico (F3), rehecho como una terminal: gráficas de los fps y de la resistencia del malware a cada herramienta, y un aviso que parpadea cuando toca cambiar de personaje.
+- Si cae un personaje y solo queda uno, sigue él sin preguntar.
+- Con dos élites juntos, sus nombres ya no se pisan.
