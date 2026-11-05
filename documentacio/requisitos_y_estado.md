@@ -158,6 +158,10 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
 
 ### Para la entrega
 
+**Decisión de Adam (05/11):** el vídeo y el ensayo de la defensa son lo
+último de todo, cuando el juego esté acabado: si aún cambia, habría que
+rehacerlos.
+
 1. **Vídeo demostrativo** (2-4 min).
 2. **Ensayar la defensa** con `presentacion.md`, que ya tiene el guion y las
    preguntas probables. Repasar que cuente lo nuevo (Kernel Panic, NÚCLEO

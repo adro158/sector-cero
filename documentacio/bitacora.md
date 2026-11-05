@@ -4801,3 +4801,50 @@ apuntado»).
   (`documentacio/novedades/v1.13.txt`). **Decisión de Adam:** primero
   probarlo en casa y después publicar.
 - La entrega: vídeo, defensa e instalador en un ordenador limpio.
+
+## Sesión 21 — 05/11/2026 (instituto)
+
+**Fitas:** 5 · **Participantes:** Adam (con Claude Code) · **Duración:** por
+apuntar
+
+### Qué se ha hecho
+
+- **«Estoy en clase»:** `main` igual que el lunes (`3bbbfa3`); Alan sin nada
+  nuevo y la v1.13 sin probar en casa todavía. Validado en headless.
+- **Decisión de Adam:** el vídeo y el ensayo de la defensa son lo último de
+  todo, con el juego acabado; si el juego aún cambia, habría que rehacerlos.
+  Apuntado en `requisitos_y_estado.md`.
+- **Los dos detalles de la prueba de la v1.12** (sesión 19, por la tarde):
+  1. **Un solo superviviente:** `panel_caida.gd` ya no enseña la ventana
+     «Elige quién sigue» con una sola opción: contesta él con
+     `personaje_elegido` (diferido, para que el sonido y la barra del equipo
+     reciban antes `personaje_caido`). La jugabilidad ya ignoraba un
+     segundo `personaje_elegido` (`_eligiendo`), así que no choca con el del
+     simulador.
+     - **Visto al probarlo:** la ventana solo se cerraba al pulsarla. En el
+       simulador elige el bot por el bus y se quedaba abierta la de la caída
+       anterior. Ahora se cierra con cualquier `personaje_elegido`.
+     - Apuntado en `GEMINI.md` (el contrato de `personaje_caido`).
+  2. **Los rótulos de dos élites juntos:** solo escribe su nombre el más
+     cerca del jugador (`_nombre_tapado` en `enemigo_elite.gd`, con el ancho
+     de los dos textos y `ALTO_NOMBRES`, 50 px en vertical). El otro sigue
+     con su barra y sus iconos de afijo. `vivo()` es nuevo: sin contar la
+     muerte ni el aviso de la explosión, en los que ya no lleva nombre.
+
+### Métodos de test
+
+- Headless: import, `--quit-after` y las partidas del simulador desde el
+  minuto 10 y el 15, con el mismo resultado que antes (derrota con 22
+  eliminados y victoria con 428). La del minuto 10 pasa por el camino nuevo:
+  cae el Espadachín, luego el Segador, y sigue el Mago sin ventana. Siguen
+  16 clases.
+- Con ventana en la VM: la captura de Kernel Panic del 29/10 (misma
+  semilla, fotograma 2400) ya no tiene ventana; y tres élites explosivos
+  puestos a mano, dos casi en el mismo sitio: se lee un solo «EXPLOSIVO».
+- El fichero de opciones del jugador quedó igual (hash).
+
+### Siguiente paso
+
+- En casa: probar la v1.13 (F3 y opciones) y publicarla.
+- Simulador completo, 20 partidas por dificultad.
+- Al final de todo: vídeo y ensayo de la defensa.
