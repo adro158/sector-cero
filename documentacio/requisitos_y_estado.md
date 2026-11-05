@@ -237,10 +237,11 @@ Hecho en local:
 - la bitácora por sesión en `documentacio/bitacora/`
 
 Detalle en la bitácora (sesión 21, «El repositorio para dos Claude Code»).
-Subido y fusionado con la v1.15 (05/11). Falta, con el sí de Adam:
-- borrar `feature/alan-arena-hud`
-- proteger `main`
-- que Alan cree su `CLAUDE.local.md` y rellene su ficha
+Subido y fusionado con la v1.15 (05/11). Con el sí de Adam, borrada
+`feature/alan-arena-hud` (no tenía nada que no estuviera en `main`) y
+`main` protegida: solo con PR y la comprobación en verde
+(`flujo_de_trabajo.md`). Falta que Alan cree su `CLAUDE.local.md` y rellene
+su ficha.
 
 ### Para la entrega
 

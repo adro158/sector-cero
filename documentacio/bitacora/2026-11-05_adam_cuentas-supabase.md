@@ -82,8 +82,11 @@ sesión 21).
 
 ## Estado al cerrar
 
-v1.15 publicada, con las cuentas funcionando para todos. Pendiente de Adam:
-borrar `feature/alan-arena-hud`, proteger `main` y apuntar las horas.
+v1.15 publicada, con las cuentas funcionando para todos. Después, con el sí
+de Adam: borrada `feature/alan-arena-hud` (sin nada fuera de `main`) y
+`main` protegida en GitHub (solo con PR y la comprobación `comprobar` en
+verde, también para administradores; sin aprobaciones obligatorias). Este
+apunte entró ya con un PR. Pendiente de Adam: apuntar las horas.
 
 ## Siguiente paso: pantalla final y ranking más visuales (para la nube)
 
