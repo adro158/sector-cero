@@ -1,0 +1,55 @@
+# Comprueba cada Pull Request (y cada cambio en main): que el proyecto importa,
+# arranca y juega sin errores de script. Lo mismo que /validar, pero en Linux.
+# Con esta comprobación en rojo, el PR no se fusiona (CLAUDE.md, «Trabajo en
+# equipo»). Desde el 05/11/2026, cuando Adam y Alan pasan a trabajar en ramas.
+name: Comprobar
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  GODOT: Godot_v4.7.2-stable_linux.x86_64
+  URL_GODOT: https://github.com/godotengine/godot/releases/download/4.7.2-stable
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Godot 4.7.2
+        run: |
+          wget -q "$URL_GODOT/$GODOT.zip"
+          unzip -q "$GODOT.zip"
+          chmod +x "$GODOT"
+
+      - name: Importar el proyecto
+        run: ./$GODOT --headless --path projecte --import 2>&1 | tee importar.log
+
+      - name: Arrancar el menú
+        run: ./$GODOT --headless --path projecte --quit-after 120 2>&1 | tee arrancar.log
+
+      # Cargan la partida entera (el menú no carga sus scripts). Los resultados
+      # se enseñan, pero no se comparan con los de Windows: en Linux el mismo
+      # código da otros números.
+      - name: Jugar dos partidas del simulador
+        run: |
+          for minuto in 10 15; do
+            ./$GODOT --headless --fixed-fps 60 --path projecte \
+              --script res://herramientas/simular_partidas.gd -- partidas=1 minuto=$minuto 2>&1 | tee partida_$minuto.log
+          done
+
+      - name: Buscar errores
+        run: |
+          if grep -E "SCRIPT ERROR|Parse Error|Failed to load script|Compile Error" *.log; then
+            echo "::error::Hay errores de script (arriba, en qué fichero)"
+            exit 1
+          fi
+          for minuto in 10 15; do
+            grep -q "^RESULTADO" partida_$minuto.log || { echo "::error::La partida del minuto $minuto no ha terminado"; exit 1; }
+          done
+          grep -h "^RESULTADO" partida_*.log

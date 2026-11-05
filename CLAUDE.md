@@ -1,337 +1,191 @@
-# Sector Cero — instrucciones para Claude
+# Sector Cero — instrucciones para Claude Code
 
-@GEMINI.md
+Este repositorio lo trabajan **dos personas, Adam y Alan, cada una con su
+Claude Code**. Lo de aquí vale para los dos.
 
-Lo de arriba es el contexto compartido con Alan: qué es el juego, reparto de
-ficheros, BusEventos, grupos, MultiMesh, idioma y estilo. Lo que sigue son normas
-solo para Claude. Quien trabaja contigo es Adam.
+@documentacio/equipo/contexto.md
+
+Lo de arriba es el juego por dentro: arquitectura, BusEventos, grupos,
+MultiMesh, idioma y estilo. Lo que sigue es cómo se trabaja.
+
+## Con quién trabajas
+
+En cada ordenador hay un `CLAUDE.local.md` (no se sube a GitHub) con una línea
+que dice quién es la persona y carga su ficha:
+
+```
+Soy Adam. @documentacio/equipo/adam.md
+```
+
+La ficha (`documentacio/equipo/adam.md` o `alan.md`) dice sus máquinas, de qué
+sistemas es dueño y sus costumbres. **Si no hay `CLAUDE.local.md`, pregunta si
+eres de Adam o de Alan y créalo** (en la raíz del repo) antes de nada.
+
+## Trabajo en equipo (desde el 05/11/2026)
+
+Todo el detalle, en `documentacio/flujo_de_trabajo.md`. Lo esencial:
+
+- **`main` siempre funciona y nadie sube a ella directamente.** Cada tarea va
+  en su rama, con el nombre de quien la hace: `adam/cuentas`, `alan/red-lobby`.
+  Entra en `main` con un **Pull Request**.
+- **Cada PR lo comprueba una GitHub Action** (`.github/workflows/comprobar.yml`):
+  import en headless, arranque y una partida del simulador. Con la comprobación
+  en rojo no se fusiona.
+- **El PR lo mira el otro** (o su Claude, con `/code-review`) antes de
+  fusionar. Lo fusiona quien lo abrió.
+- **Cada sistema tiene dueño** (`documentacio/equipo/reparto.md`). No se
+  editan ficheros de un sistema ajeno: se pide con una issue o un comentario.
+- **Ficheros de paso**: `projecte/project.godot`, `escenas/juego.tscn`,
+  `escenas/jugabilidad/raiz_juego.tscn` y `globales/bus_eventos.gd` los toca
+  todo el mundo y se fusionan mal. Los cambios en ellos van en **un PR
+  pequeño y aparte**, que se fusiona antes que el resto.
+- **Primero el contrato**: si una tarea necesita señales nuevas en el bus, se
+  añaden (y se apuntan en `contexto.md`) en ese PR pequeño. Así cada uno
+  programa contra ellas sin esperar al otro.
+- **Las tareas son issues de GitHub**, asignadas a quien las hace. Al empezar,
+  mira `gh issue list` y `gh pr list` para saber qué hay en marcha.
+- **Bitácora: un fichero por sesión** en `documentacio/bitacora/`
+  (`AAAA-MM-DD_persona_tema.md`). `documentacio/bitacora.md` es la historia
+  hasta la sesión 21 y ya no se toca.
+
+## Comandos del equipo (skills de `.claude/skills/`)
+
+- `/dia-nuevo` — al empezar: ponerse al día con `main`, PRs, issues y la
+  bitácora, validar y dar el informe de arranque.
+- `/validar` — las comprobaciones en headless de siempre.
+- `/cerrar` — al acabar: bitácora de la sesión, commit, push de la rama y su PR.
+- `/publicar` — subir una versión (solo quien la ficha del equipo diga).
+
+Las frases de cada persona («es un día nuevo», «ya he acabado»...) llaman a
+estos comandos; están en su ficha.
 
 ## Al empezar cada sesión
 
-Adam trabaja desde dos sitios (instituto y casa) y cada chat nuevo empieza sin
-memoria. Todo el contexto vive en este repositorio: léelo entero antes de nada.
+Cada chat nuevo empieza sin memoria: todo el contexto vive en el repositorio.
+Antes de nada (o con `/dia-nuevo`):
 
-1. Leer `documentacio/bitacora.md` entera: decisiones con su porqué, problemas
-   resueltos, métodos de test y en qué punto se quedó.
-2. Leer `documentacio/requisitos_y_estado.md`: qué pide el profesor, qué está
-   hecho, qué falta y las decisiones vigentes. El texto original del enunciado
-   está en `documentacio/enunciat.md` (fuente de verdad) y la plantilla del primer
-   informe en `documentacio/primer_seguiment.md`: leerlos cuando la tarea toque
-   requisitos, entregables o el informe.
-3. Leer `documentacio/planificacion.md` (reparto de fitas y casillas).
-4. Contrastarlo todo con `git log --graph --oneline --all` y `git status`. Si hay
-   commits que la bitácora no recoge, decírselo a Adam.
-5. Convención de commits y flujo de Git: `documentacio/flujo_de_trabajo.md`
-   (estaba en el `README.md` hasta el 02/10/2026; el README es ahora la portada
-   para el profesor).
-
-Después, si Adam no ha pedido otra cosa concreta, darle un informe corto de
-arranque: qué piden, qué está hecho, qué falta (por prioridad), el siguiente
-paso y cualquier discrepancia entre bitácora, planificación y Git.
+1. Las últimas entradas de `documentacio/bitacora/` y, si hace falta historia,
+   `documentacio/bitacora.md`.
+2. `documentacio/requisitos_y_estado.md`: qué pide el profesor, qué está hecho
+   y qué falta. El enunciado original es `documentacio/enunciat.md` (fuente de
+   verdad); no se edita nunca.
+3. `documentacio/planificacion.md` y `documentacio/equipo/reparto.md`.
+4. `git fetch --prune`, `git log --oneline origin/main -10`, `gh pr list` y
+   `gh issue list`.
 
 Ignorar `projecte/.godot/`: es caché regenerable.
-
-## Frases clave de Adam
-
-Estas frases son órdenes completas: Adam no tiene que explicar nada más.
-
-### "Es un día nuevo" (o "empezamos", "nueva sesión")
-
-Bajar lo de Adam y lo de Alan y ponerse al día:
-
-1. `git status`: si hay cambios sin commitear, avisar a Adam antes de seguir.
-2. `git switch main`, `git pull origin main` (lo de Adam, por si trabajó en el otro
-   sitio) y `git fetch origin`.
-3. Mirar qué ha subido Alan: `git log main..origin/feature/alan-arena-hud --stat`.
-4. Fusionar su rama en `main`: `git merge origin/feature/alan-arena-hud`. Si hay
-   conflictos, en los ficheros de Adam (`juego.tscn`, `project.godot`, y en general
-   todo lo que no sea el audio) se queda la versión de `main`: los cambios ahí
-   son reescrituras no intencionadas de Godot. En los de Alan se queda la suya.
-5. Validar en headless (ver "Entorno y validación"). Si lo de Alan rompe algo,
-   **no se sube**: se avisa a Adam para que Alan lo arregle en su rama.
-6. No hacer push en este paso: lo fusionado subirá con el cierre de la sesión.
-7. Seguir con la lectura de arriba y dar el informe de arranque, incluyendo qué
-   ha aportado Alan.
-
-### "Estoy en casa" (o "mira lo que hay y pruébalo")
-
-Probar el juego en el ordenador de casa, que tiene GPU de verdad:
-
-1. Hacer lo de "Es un día nuevo": bajar `main` y lo de Alan, validar en
-   headless y leer la bitácora y `requisitos_y_estado.md`.
-2. Darle a Adam un resumen corto: qué está hecho, qué falta y qué hay que
-   probar (la lista está en «Probar jugando...», entre lo que queda por hacer de
-   `requisitos_y_estado.md`).
-3. Probar lo que se pueda sin Adam, con ventana:
-   - arrancar el juego y hacer capturas de lo que haya cambiado
-   - pasar el simulador y `herramientas/medir_rendimiento.gd`
-4. Lo que hay que jugar a mano (sensaciones, el menú F1, el menú de versiones
-   desde una release descargada), dárselo a Adam como una lista corta paso a
-   paso, y apuntar lo que diga en la bitácora.
-5. Si sale algún fallo, arreglarlo antes que nada nuevo, salvo que Adam diga
-   otra cosa.
-
-### "Ya he acabado" (o "no me queda más tiempo de clase", "cierra la sesión")
-
-Dejar todo guardado y **subido a GitHub, sin preguntar**:
-
-1. Hacer todo lo de "Al cerrar cada sesión" (bitácora, planificación,
-   `requisitos_y_estado.md`).
-2. `git status` y commit **solo de los ficheros de Adam**, con la convención del
-   `flujo_de_trabajo.md`. Si Godot ha reescrito ficheros de Alan, no se
-   commitean: avisar.
-3. `git push origin main`. Esta frase autoriza ese push.
-4. Comprobar con `git status` y `git log` que no queda nada sin subir, y decírselo
-   a Adam en una línea.
-
-**Nunca**, al cerrar: tocar ni commitear ficheros de Alan, hacer push a
-`feature/alan-arena-hud` ni fusionarla. Lo de Alan solo se baja al empezar.
-
-## Propiedad de ficheros: precisiones a GEMINI.md
-
-Desde el 01/10/2026 todo `projecte/` es de Adam, también el audio
-(`globales/gestor_audio.gd` y `medios/audio/`), que pasó de Alan a Adam porque
-estaba sin empezar y es un requisito mínimo. Lo que lleve Alan a partir de
-ahora está pendiente de acordar.
-
-- En `documentacio/`, Alan tiene `assets.md` y `propuesta.md`. `enunciat.md` es
-  el texto del profesor y no se edita. Todo lo demás es de Adam: `bitacora.md`,
-  `planificacion.md`, `requisitos_y_estado.md`, `primer_seguiment.md`, los
-  entregables (`documentacion_tecnica.md`, `manual_usuario.md`, `creditos.md`,
-  el informe del seguimiento, el guion de la presentación) y `capturas/`.
-- Al cambiar o quitar una señal del bus, actualizar la lista de `GEMINI.md`.
-- Nunca editar ficheros de Alan. Si algo suyo debe cambiar, decírselo a Adam para
-  que se lo pida.
 
 ## Prioridad
 
 Desde el 01/10/2026 están hechos los requisitos mínimos, el MVP y las
-ampliaciones (jefe, élites, evoluciones, mapa infinito). No añadir más
-contenido sin que Adam lo pida: el tiempo que queda es para la entrega (vídeo,
-release, defensa), pulir y corregir lo que salga al probar.
+ampliaciones (jefe, élites, evoluciones, mapa infinito). Lo que se añade ahora
+lo piden Adam o Alan; el vídeo y el ensayo de la defensa van al final de todo,
+con el juego acabado (decisión de Adam, 05/11).
 
-## Estilo, además de lo de GEMINI.md
+## Estilo, además de lo de contexto.md
 
-Adam defiende el código ante un tribunal que puede pedirle explicar o modificar
-cualquier línea. Ante la duda, la versión más fácil de explicar.
+Adam y Alan defienden el código ante un tribunal que puede pedirles explicar o
+modificar cualquier línea. Ante la duda, la versión más fácil de explicar.
 
 ## Entorno y validación
 
-Adam trabaja desde dos máquinas. Si no sabes en cuál estás, pregúntaselo antes
-de lanzar Godot.
+Las rutas de cada máquina están en la ficha de cada persona. Si no sabes en cuál
+estás, pregúntalo antes de lanzar Godot.
 
-- **Instituto:** VM de VirtualBox con GPU virtualizada (OpenGL 4.1 por Mesa
-  SVGA3D). Los FPS medidos allí no son fiables: nunca rediseñar por rendimiento
-  con esos números. El clon está en la carpeta de trabajo de la sesión.
-- **Casa:** Windows 11 con una NVIDIA GeForce RTX 5070 (GPU real: aquí sí se
-  puede medir el rendimiento). El clon está en
-  `C:\Users\Adam\Desktop\proyecto\sector-cero`. `git` no está en el PATH: se usa
-  el de GitHub Desktop,
-  `C:\Users\Adam\AppData\Local\GitHubDesktop\app-3.6.6\resources\app\git\cmd\git.exe`
-  (la carpeta `app-3.6.6` cambia al actualizarse GitHub Desktop).
-- **Nube** (Claude Code en claude.ai/code, sesión 17): un contenedor Linux sin
-  ordenador encendido, que trabaja en su propia rama (`claude/...`), no en
-  `main`. Godot no viene instalado: se baja el de Linux de la release oficial
-  de 4.7.2 a la carpeta temporal de la sesión. Headless igual que en casa;
-  con ventana, `xvfb-run` y `--rendering-driver opengl3` (GPU por software:
-  vale para capturas y compila los shaders, no para medir FPS). Sin audio. En
-  las pruebas con ventana, esperar fotogramas de física con `--fixed-fps 60`,
-  no segundos reales, porque va más lento que el reloj. Lo hecho allí se
-  integra en `main` desde el ordenador (bitácora, sesión 17).
-- Godot, en las dos: `C:\Users\Adam\Desktop\Godot_v4.7.2-stable_win64.exe` (no
-  está en el PATH).
+- Godot 4.7.2 (no está en el PATH: la ruta, en la ficha).
 - En PowerShell, los argumentos con comas van entre comillas
   (`'capturas=60,150'`); si no, PowerShell los parte en varios.
 - Comprobar la API de Godot 4.7.2 antes de usarla.
-- Nada se da por bueno sin ejecutarlo en headless:
+- Nada se da por bueno sin ejecutarlo en headless (`/validar`):
   1. `--headless --path projecte --import` → errores de análisis
   2. `--headless --path projecte --quit-after N` → errores en ejecución. Solo
      carga el menú: para los scripts de la partida, cargar también
-     `escenas/juego.tscn` con un script temporal (paso 3). Así salieron dos
-     errores de tipos que el import no ve (bitácora, sesión 17)
+     `escenas/juego.tscn` (por ejemplo, una partida del simulador)
   3. Instrumentación temporal (autoload que escucha el bus, o script
-     `extends SceneTree` con `_initialize()`), borrada antes del commit
+     `extends SceneTree` con `_initialize()`), fuera del repo o borrada antes
+     del commit
 - Si falla por una clase global nueva o por rutas antiguas: reimportar; si no
   basta, borrar `projecte/.godot/`.
 - Aviso conocido y aceptado: al cerrar Godot con la música sonando sale
   `ObjectDB instances were leaked` y `resources still in use`
-  (AudioStreamPlaybackWAV). Es del motor: aparece con cualquier sonido que no
-  haya terminado, aunque se pare justo antes de salir, y desaparece si la
-  música se para unos fotogramas antes con audio real. No afecta al jugador.
-  Cualquier otro error al salir sí hay que investigarlo.
+  (AudioStreamPlaybackWAV). Es del motor y no afecta al jugador. Cualquier otro
+  error al salir sí hay que investigarlo.
 - Los shaders no se compilan en headless: cualquier cambio de shader se
-  comprueba con ventana (en casa) y con una captura del viewport.
+  comprueba con ventana y con una captura del viewport.
 - Las partidas simuladas, las pruebas y las capturas desconectan
   `GestorGuardado` del bus (diferido, porque en `_initialize` los autoloads aún
-  no han hecho su `_ready`) para no ensuciar los récords del jugador.
-- Rendimiento: `projecte/herramientas/medir_rendimiento.gd`, con ventana.
+  no han hecho su `_ready`) para no ensuciar los récords del jugador. Si una
+  prueba cambia opciones o cuentas, copia antes los ficheros de `user://` y los
+  deja como estaban.
+- Rendimiento: `projecte/herramientas/medir_rendimiento.gd`, con ventana y en
+  una máquina con GPU de verdad.
+- Las cuentas (Supabase) se prueban contra un servidor local que imita su API,
+  con el argumento `supabase=http://localhost:...` (solo en depuración).
 
 ## Versiones y actualizaciones
 
-- Una release se publica subiendo una etiqueta (`git tag v0.3` y
-  `git push origin v0.3`): la GitHub Action
+- Una release se publica subiendo una etiqueta (`git tag v1.15` y
+  `git push origin v1.15`) **desde `main`**: la GitHub Action
   `.github/workflows/publicar_release.yml` exporta y la publica. Subir etiquetas
-  es publicar: solo cuando Adam lo pida.
+  es publicar: solo cuando lo pida quien publica (ficha del equipo), con `/publicar`.
+- Antes de la etiqueta, escribir `documentacio/novedades/<versión>.txt`: es lo
+  que enseña el lanzador.
 - En el código, `Version.ACTUAL` y `config/version` de `project.godot` valen
   `"desarrollo"`: la Action los sustituye por la etiqueta. No cambiarlos a mano.
 - `Actualizador` tiene que ser el primer autoload y no puede nombrar la clase
-  `Version` (la cargaría antes de aplicar la actualización). Por lo mismo, un
-  cambio en `actualizador.gd` solo llega con un ejecutable nuevo. Eso **no**
-  obliga a subir `EJECUTABLE_MINIMO`: solo hay que subirlo si el contenido
-  nuevo no puede funcionar con el actualizador viejo. Error del 06/10: se subió
-  a 0.6 sin hacer falta y los ejecutables v0.5 solo podían abrir la página de
-  GitHub; en la v0.7 volvió a 0.2. El contenido solo usa del `Actualizador` lo
-  que existe desde la v0.2 (estado, progreso, version_nueva, texto(), buscar(),
-  actualizar(), sus constantes y estado_cambiado). El aviso
-  (`aviso_actualizacion.gd`) y el instalador del juego completo
-  (`instalador_juego.gd`) se cargan con el contenido y sí se actualizan.
-- Si una versión necesita de verdad un ejecutable nuevo, el botón ACTUALIZAR
-  descarga el `.zip` de la release, cambia el ejecutable y reinicia
-  (`instalador_juego.gd`); solo si falla abre la página de GitHub.
-- La versión web (GitHub Pages) la publica la misma Action con cada etiqueta.
-  En la web no hay actualizador ni botón SALIR, y `ControlTactil` pinta el
-  joystick y los botones si hay pantalla táctil. Para probarla en local hay que
-  servir la carpeta exportada por HTTP (no vale abrir el `index.html`) y usar el
-  navegador con un tamaño de móvil, que emula el táctil.
+  `Version`. Un cambio en `actualizador.gd` solo llega con un ejecutable nuevo,
+  pero eso **no** obliga a subir `EJECUTABLE_MINIMO`: solo hay que subirlo si el
+  contenido nuevo no puede funcionar con el actualizador viejo (error del 06/10,
+  bitácora).
 - Si un cambio toca `project.godot` (autoloads, input, ventana) o añade un
   `class_name`, subir `EJECUTABLE_MINIMO` en `globales/version.gd` a la versión
   que se va a publicar: el `.pck` de actualización no lleva esas cosas. Salvo
-  que el contenido sepa arreglárselas con el `project.godot` viejo: las teclas
-  Q y E de la v0.7 y la R de la v0.8 se añaden al empezar la partida si
-  faltan (`escenas/jugabilidad/jugador/teclas_antiguas.gd`). Un
-  script auxiliar nuevo que no necesite ser global se carga con `preload` y
-  sin `class_name` (como `embestida_horda.gd`), y así no hace falta subirlo.
-  Se comprueba en `.godot/global_script_class_cache.cfg`: el número de clases
-  no debe cambiar.
-- Probado de punta a punta con un servidor local que imita la API de GitHub
-  (bitácora, sesión 6).
-- Tras cualquier cambio de balance, medirlo con el simulador de partidas
+  que el contenido sepa arreglárselas: las teclas que faltan se añaden al
+  empezar (`teclas_antiguas.gd`), y los scripts nuevos que no necesitan ser
+  globales se cargan con `preload` y sin `class_name`, o los crea `Transicion`
+  al arrancar (como `entrada.gd` y `cuenta.gd`). Se comprueba en
+  `.godot/global_script_class_cache.cfg`: el número de clases no debe cambiar
+  (16 el 05/11).
+- **Desde la v1.5, el lanzador** (`lanzador/`, otro proyecto de Godot): el
+  instalador de Windows pone el lanzador y el juego sin contenido; al elegir una
+  versión, el lanzador baja su `.pck` y lo copia como `juego/SectorCero.pck`.
+  Abierto desde el lanzador (`--desde-lanzador`), el juego no busca
+  actualizaciones ni enseña ACTUALIZAR ni VERSIONES. Las versiones antiguas no
+  se recompilan: todas son de Godot 4.7.2. El zip del lanzador de Linux no puede
+  acabar en `_linux.zip`. Desde la v1.8 no se publica el juego suelto.
+- Tras cualquier cambio de balance, medirlo con el simulador
   (`projecte/herramientas/simular_partidas.gd`, instrucciones en su cabecera).
-  Las semillas son fijas: el mismo comando da las mismas partidas, así que se
-  puede comparar el antes y el después. Vuelve a cargar `juego.tscn` en cada
-  partida: si se sigue cambiando código mientras corre, medir en una copia
-  aparte (`git worktree add <carpeta> <commit>`).
+  Las semillas son fijas: el mismo comando da las mismas partidas. Si se sigue
+  cambiando código mientras corre, medir en una copia aparte
+  (`git worktree add <carpeta> <commit>`).
 - Build: `--headless --path projecte --export-release "Windows Desktop"
-  ../build/windows/SectorCero.exe` (igual con "Linux"). La exportación funciona
-  en headless aunque el driver gráfico de la VM esté caído.
-- Menú VERSIONES (decisión de Adam, 13 y 14/10): INSTALAR solo descarga la
-  versión a la biblioteca (`user://versiones/<v>/`), sin cambiar de versión;
-  CAMBIAR es lo único que pasa a otra y reinicia. Tiene que funcionar igual
-  desde todas las versiones publicadas: si cambian `panel_versiones.gd` o
-  `instalador_juego.gd`, las releases anteriores se vuelven a publicar con
-  `projecte/herramientas/recompilar_version.sh` (solo esos dos scripts y el
-  botón del menú), subiendo los `.zip` de uno en uno (`gh release upload
-  --clobber` borra el viejo antes de subir el nuevo) y, en la última, también
-  los `.pck`. Se prueba con su modo `prueba` y un servidor local que imita la
-  API de GitHub (bitácora, sesión 12).
-- **Desde la v1.5, el lanzador** (decisión de Adam, sesiones 15 y 16;
-  bitácora, sesión 16). Es otro proyecto de Godot, en `lanzador/`.
-  - **Cómo abre las versiones:** el instalador de Windows
-    (`lanzador/instalador.iss`, lo hace la Action) pone el lanzador y el
-    juego sin contenido (`juego/`). Al elegir una versión, el lanzador baja
-    su `.pck` y lo copia como `juego/SectorCero.pck`: Godot abre solo el
-    `.pck` que se llama como el ejecutable. `--main-pack` no sirve en los
-    ejecutables exportados.
-  - **Las versiones antiguas no se recompilan:** todas son de Godot 4.7.2. Si
-    algún día se cambia de versión de Godot, el contenido antiguo dejaría de
-    abrirse con el motor nuevo.
-  - **Abierto desde el lanzador** (`--desde-lanzador`), el juego no busca
-    actualizaciones ni enseña ACTUALIZAR ni VERSIONES.
-  - **El lanzador se actualiza solo** con `lanzador_<plataforma>.pck`, que
-    publica la Action.
-  - **Las novedades** que enseña salen de `documentacio/novedades/<versión>.txt`:
-    escribir el de cada versión antes de subir su etiqueta.
-  - **El zip del lanzador de Linux** no puede acabar en `_linux.zip`: los
-    juegos antiguos lo cogerían para su ACTUALIZAR.
-  - **Desde la v1.8 no se publica el juego suelto** (decisión de Adam, sesión
-    18): la release lleva los dos instaladores, los `.pck` del juego y del
-    lanzador y `version.json`, y no los `SectorCero_vX_<plataforma>.zip`. El
-    juego solo se juega con el lanzador (y la web, que se deja). Por eso, si
-    algún día hace falta subir `EJECUTABLE_MINIMO`, los juegos sueltos
-    antiguos ya no encuentran el `.zip` para cambiar su ejecutable y abren la
-    página de GitHub. La Action comprueba al final que se ha subido cada
-    fichero (en la v1.7 faltó `lanzador_linux.pck` sin dar error).
+  ../build/windows/SectorCero.exe` (igual con "Linux").
 
-## Git
+## Al cerrar cada sesión (`/cerrar`)
 
-- Adam trabaja directamente en `main`. Alan, en su rama fija
-  `feature/alan-arena-hud`. No se crean ramas por tarea.
-- Al empezar la sesión ("es un día nuevo"), fusionar `origin/feature/alan-arena-hud`
-  en `main` y validar en headless, como se detalla en "Frases clave de Adam".
-- Commitear solo ficheros de Adam. Si `git status` muestra ficheros de Alan
-  modificados sin que se hayan tocado (Godot los reescribe al abrir), avisar a
-  Adam en vez de commitearlos.
-- El único push permitido es `git push origin main`, y solo cuando Adam cierra la
-  sesión con "ya he acabado" o equivalente, o lo pide expresamente. Sin push, lo
-  hecho aquí no llega al otro sitio (instituto o casa). Nunca se hace push a
-  `feature/alan-arena-hud`.
-
-## Al cerrar cada sesión
-
-Entrada nueva en `bitacora.md` con el formato de las anteriores: qué se ha hecho,
-decisiones técnicas y por qué, cambios de rumbo, problemas y solución, uso de IA,
-métodos de test, estado al cerrar y siguiente paso. Preguntar a Adam las horas de
-la sesión y actualizar las acumuladas.
-
-Además, para que el siguiente chat no pierda nada:
-
-- Marcar las casillas que toquen en `planificacion.md`.
-- Actualizar `requisitos_y_estado.md`: estados, lista de pendientes y decisiones
-  vigentes si ha cambiado alguna.
-- Todo decidido en la conversación con su porqué tiene que quedar escrito en la
-  bitácora: lo que solo está en el chat se pierde al abrir uno nuevo.
-
-Después, commit y push a `main`, como indica "Ya he acabado" en "Frases clave de
-Adam".
-
-## Proyecto: Sector Cero
-
-Videojuego en Godot con pixel art, hecho junto a un compañero. El repo es
-"sector-cero" en GitHub. Trabajamos desde el insti (VM) y desde casa, así que
-deja todo bien explicado en commits y notas para que cualquiera retome el
-trabajo solo con el repo. Respóndeme en castellano y en tono informal. Si te
-pido algo corto, que sea corto.
+- Un fichero nuevo en `documentacio/bitacora/` con: qué se ha hecho,
+  decisiones técnicas y por qué, cambios de rumbo, problemas y solución, uso de
+  IA, métodos de test, estado al cerrar, siguiente paso y las horas (preguntar a
+  la persona; las acumuladas, sumando las de la última entrada).
+- Marcar lo que toque en `planificacion.md` y poner al día
+  `requisitos_y_estado.md` (en la misma rama).
+- Todo lo decidido en la conversación, con su porqué, tiene que quedar escrito:
+  lo que solo está en el chat se pierde al abrir uno nuevo.
+- Commit en la rama de la tarea, `git push -u origin <rama>` y el PR abierto o
+  puesto al día (`gh pr create` / `gh pr view`). No se fusiona sin la
+  comprobación en verde.
 
 ## Cuándo usar subagentes (decídelo tú)
 
 Antes de empezar cualquier tarea, valora en una frase si compensa repartirla.
 Los subagentes gastan mucho límite de uso, así que por defecto NO los uses.
 
-NO uses subagentes cuando:
-- La tarea toca un solo archivo, un solo script o un solo asset.
-- Es un cambio pequeño, un bug concreto o una pregunta.
-- Las partes dependen unas de otras (el resultado de una condiciona la
-  siguiente).
-- Hay que tocar el mismo archivo desde varios sitios (escena .tscn,
-  project.godot, etc.).
+NO uses subagentes cuando la tarea toca un solo archivo o sistema, es un cambio
+pequeño, las partes dependen unas de otras o hay que tocar el mismo archivo
+desde varios sitios (escena .tscn, project.godot...).
 
-SÍ usa subagentes cuando se cumplan las dos cosas:
-- La tarea tiene 3 o más partes independientes entre sí.
-- Cada parte es lo bastante grande como para que repartirlas ahorre tiempo
-  real.
-
-Ejemplos que sí compensan:
-- Varios scripts o sistemas sin relación (inventario, enemigos, menú...).
-- Un lote de assets del mismo tipo (por ejemplo, varios personajes o
-  tilesets).
-- Buscar por todo el repo dónde se usa algo, usando un subagente de
-  exploración para no llenar tu contexto.
-- Revisar el código por áreas en paralelo.
-
-Cómo hacerlo bien:
-1. Plan breve primero: qué partes hay y cuáles van en paralelo.
-2. Cada subagente recibe un encargo autocontenido: qué hacer, en qué
-   archivos, qué devolver. No heredan tu contexto.
-3. Nunca dos subagentes editando el mismo archivo.
-4. Al terminar, revisa tú el resultado y unifica estilo y nombres.
-5. Resumen final en pocas líneas: qué se hizo y qué queda pendiente.
-6. Si dudas entre usarlos o no, no los uses y pregúntame.
-
-## Si eres Claude Code (programación)
-
-- Respeta la estructura de carpetas y las convenciones de nombres de GDScript
-  que ya tiene el repo.
-- Commits claros y pequeños.
-- Antes de repartir trabajo entre subagentes, asegúrate de que el proyecto
-  compila/abre en Godot sin errores.
-- Un subagente por sistema o carpeta, nunca varios en la misma escena.
+SÍ, cuando la tarea tiene 3 o más partes independientes y lo bastante grandes,
+para buscar por todo el repo sin llenar el contexto o para revisar el código
+por áreas en paralelo. Cada subagente recibe un encargo autocontenido; nunca
+dos editando el mismo archivo; al terminar, revisa tú el resultado. Si dudas,
+no los uses y pregunta.

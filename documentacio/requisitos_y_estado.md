@@ -97,7 +97,10 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.14** (05/11: el mando en toda la
+**Publicado:** la última es la **v1.15** (05/11: las cuentas de jugador con
+Supabase, el ranking que se guarda solo con cuenta y las listas
+desplegables en las opciones; novedades en
+`documentacio/novedades/v1.15.txt`). Antes, la **v1.14** (05/11: el mando en toda la
 interfaz, F11, los límites de fps de verdad, el F3 a la izquierda en
 pestañas y el equipo más pequeño; novedades en
 `documentacio/novedades/v1.14.txt`). Antes, la **v1.13** (05/11: el F3 rehecho, las
@@ -191,12 +194,53 @@ Adam se refería al panel de la C, pero la barra así le gustó y se queda: el
 panel de la C también se achicó (retratos a 32 px, unos 245 × 165 en vez de
 300 × 240). Todo publicado en la v1.14.
 
-### Alan con Claude Pro (pendiente, cuando Adam lo pida)
+### Cuentas de jugador con Supabase (hecho y publicado en la v1.15)
 
-Alan se compra Claude Pro. Cuando todo esté hecho y subido, Adam pedirá
-ordenar el repositorio para que los dos trabajen por separado en el mismo
-GitHub (reparto de ficheros, ramas, instrucciones para su Claude). No
-empezar hasta que lo pida.
+Adam y Alan quieren que cada jugador tenga cuenta (usuario y contraseña) con
+todas sus partidas, pensando en logros y un pase de batalla más adelante.
+Plan completo, con el SQL y los pasos, en `documentacio/plan_cuentas.md`:
+- al abrir el juego, la bienvenida (entrar, crear cuenta o JUGAR SIN
+  CUENTA)
+- la sesión recordada
+- en la cuenta: las partidas, los récords (calculados en el servidor), las
+  opciones y un inventario vacío para las skins
+- con cuenta, la pantalla final guarda la partida en el ranking con su
+  nombre, sin preguntarlo
+
+Activado el 05/11: Adam creó el proyecto `sector-cero` y Claude, con el
+conector de Supabase, ejecutó el SQL con los permisos justos. Probado con
+SQL (16 comprobaciones de seguridad) y por Adam desde el juego (cuentas
+`adam` y `alan`, con sus partidas subidas). Detalle en la bitácora
+(`bitacora/2026-11-05_adam_cuentas-supabase.md`).
+
+Falta: responder las preguntas abiertas del plan (ranking mundial, quién lo
+lleva) y, **antes de la defensa, entrar al panel de Supabase**: un proyecto
+gratis se pausa tras 7 días sin uso.
+
+### Pantalla final y ranking más visuales (a medias, para la nube)
+
+Adam (05/11): que los datos de la pantalla final y las tablas del ranking
+sean más bonitos y visuales, con assets nuevos si hace falta. Empezado y
+dejado a medias en el instituto (solo capturas del estado actual y el
+diseño, sin código). Lo sigue el Claude Code de la nube con el encargo de
+la bitácora (`bitacora/2026-11-05_adam_cuentas-supabase.md`, «Siguiente
+paso»).
+
+### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
+
+Hecho en local:
+- `CLAUDE.md` común
+- las fichas en `documentacio/equipo/`
+- skills `/dia-nuevo`, `/validar`, `/cerrar` y `/publicar`
+- la Action `comprobar.yml`
+- ramas y Pull Requests para los dos
+- la bitácora por sesión en `documentacio/bitacora/`
+
+Detalle en la bitácora (sesión 21, «El repositorio para dos Claude Code»).
+Subido y fusionado con la v1.15 (05/11). Falta, con el sí de Adam:
+- borrar `feature/alan-arena-hud`
+- proteger `main`
+- que Alan cree su `CLAUDE.local.md` y rellene su ficha
 
 ### Para la entrega
 

@@ -8,6 +8,10 @@ porqué, problemas encontrados, soluciones aplicadas y uso de IA.
 
 Se actualiza al terminar cada sesión de trabajo, antes de hacer el commit.
 
+> **Desde el 06/11/2026 ya no se escribe aquí:** cada sesión va en su propio
+> fichero en `bitacora/` (ver `bitacora/README.md`), para que Adam y Alan
+> puedan escribirla a la vez. Esto es la historia de las sesiones 1 a 21.
+
 ---
 
 ## Sesión 1 — 18/09/2026
@@ -5016,3 +5020,191 @@ unos 260 de ancho.
   `documentacio/novedades/v1.14.txt`. Sin subir `EJECUTABLE_MINIMO`
   (`project.godot` igual y 16 clases).
 - **Duración de la sesión:** por apuntar.
+
+### Plan de cuentas de jugador (Supabase)
+
+- **Lo que quieren Adam y Alan:** iniciar sesión con usuario y contraseña
+  para que se guarde el registro de cada persona y sus partidas. Más
+  adelante, logros y un pase de batalla con skins, sin concretar.
+- **Recomendación: Supabase**, que ya estaba apuntado para el ranking
+  mundial. Se usa con `HTTPRequest`, sin librerías; las tablas son SQL y se
+  explican bien; la seguridad va con reglas por filas (RLS).
+- **Comprobado en la web (05/11):**
+  - la clave que va en el juego ahora es la publicable (`sb_publishable_…`)
+  - `anon` y `service_role` se retiran a finales de 2026
+  - los proyectos gratis se pausan a los 7 días sin actividad: hay que
+    mirarlo antes de la defensa
+- **Escrito `documentacio/plan_cuentas.md`:**
+  - decisiones propuestas: entrar es opcional (invitado); sin email
+    (inventado a partir del usuario); las partidas con trucos no se suben;
+    las partidas se pueden leer y solo se añaden las tuyas
+  - los pasos para que Adam cree el proyecto y el SQL completo (perfiles,
+    partidas, RLS y el trigger que crea el perfil)
+  - cómo sería en el juego: `cuenta.gd` y `panel_cuenta.gd`, la cola sin
+    conexión y la señal `sesion_cambiada`
+  - fases, riesgos, qué contar al tribunal y tres preguntas abiertas
+- **Sin empezar:** falta que lo revisen Adam y Alan y que Adam cree el
+  proyecto (Claude no puede crear cuentas).
+
+### Las cuentas, programadas (sin subir a GitHub)
+
+Adam: «quiero que lo implementes, de momento no lo subas al github». Hecho
+con las decisiones propuestas en el plan: entrar es opcional (invitado) y no
+hay ranking mundial todavía. El proyecto de Supabase aún no existe: `URL` y
+`CLAVE` de `cuenta.gd` van vacías, y así el juego dice que las cuentas no
+están activadas y todo sigue como antes.
+
+- **Hecho:**
+  - `globales/cuenta.gd` (nuevo, sin `class_name`; lo crea `Transicion`):
+    - crear cuenta, entrar, salir y renovar la sesión al arrancar
+    - la contraseña nunca se guarda: solo el token de renovación, en
+      `user://cuenta.cfg`
+    - al recibir `partida_terminada` (sin trucos), la partida va a una cola y
+      se sube; sin conexión espera y se sube al arrancar, al entrar o en la
+      siguiente partida; cada partida lleva el id de su cuenta
+    - `mis_partidas()` para la ventana
+    - los errores de Supabase, en castellano
+    - el argumento `supabase=<url>` para probarlo con un servidor local
+  - `escenas/interfaz/panel_cuenta.gd` (nuevo): el formulario (usuario,
+    contraseña oculta, ENTRAR, CREAR CUENTA) o, con cuenta, el nombre, las
+    últimas partidas y SALIR DE LA CUENTA
+  - en el menú, el botón CUENTA y una línea con «Juegas como invitado» o el
+    nombre de la cuenta
+  - la señal nueva `sesion_cambiada` (en `GEMINI.md`)
+- **Probado:**
+  - un servidor local en PowerShell (`HttpListener`) que imita la API de
+    Supabase que usa el juego, con la regla de las partidas propias
+  - un script con 18 comprobaciones, todas bien:
+    - datos que no valen
+    - crear, y crear otra vez con otras mayúsculas («Ese usuario ya existe»)
+    - la contraseña no queda en el fichero
+    - subir: la partida con trucos no sube
+    - mis partidas
+    - salir y entrar con la contraseña mala y con la buena
+    - sin conexión, a la cola y guardada
+    - al volver la conexión se sube
+    - al arrancar de nuevo recuerda la cuenta
+  - capturas de la ventana sin activar, con la cuenta y del menú
+  - headless y las partidas del minuto 10 y 15 iguales; 16 clases; no hace
+    falta subir `EJECUTABLE_MINIMO`
+  - los ficheros de la VM quedaron como estaban
+- **Falta:** el proyecto de Supabase de verdad (lo crea Adam) y probarlo
+  contra él; sobre todo que acepte el dominio inventado del email.
+
+### Las cuentas para todos: bienvenida, opciones y revisión
+
+Adam: «que cuando abras el juego te salga lo típico de registrarse o iniciar
+sesión», y que en la cuenta se guarde todo de esa persona, para las skins.
+
+- **Decisiones de Adam** (ventana de preguntas, todo lo recomendado):
+  - la bienvenida al abrir, con JUGAR SIN CUENTA (sin internet o con el
+    proyecto pausado se juega igual)
+  - la sesión se recuerda siempre
+  - se guardan también los récords, las opciones y un inventario para las
+    skins
+- **Hecho:**
+  - **SQL nuevo** (en `plan_cuentas.md`):
+    - la vista `estadisticas` (récords calculados de las partidas, para
+      que no se contradigan)
+    - la tabla `opciones`, con reglas de leer, crear y cambiar solo las
+      propias
+    - la tabla `inventario`, sin regla para añadir: las skins solo las
+      podrá dar el servidor
+  - **`cuenta.gd`:**
+    - `mis_estadisticas()`
+    - `pedir()` público, que renueva la sesión si va a caducar
+    - una sola renovación a la vez (cada token de renovación vale una vez)
+    - al arrancar con sesión, siempre se renueva
+  - **`cuenta_opciones.gd` (nuevo):**
+    - al entrar baja las opciones de la cuenta, o sube las de este
+      ordenador si no tiene
+    - cada cambio se sube a los 2 s
+    - no viajan pantalla completa, límite de fps ni aviso de versiones,
+      que son del ordenador
+  - **`panel_cuenta.gd`:** el modo bienvenida (título, JUGAR SIN CUENTA, se
+    cierra al entrar) y la línea de récords
+  - **`menu_principal.gd`:** abre la bienvenida una vez al arrancar si no
+    hay sesión
+- **Fallos vistos al probar:**
+  - si acababa una partida mientras se subía otra, la nueva esperaba al
+    siguiente aviso
+  - al arrancar, la sesión solo se renovaba si había algo en la cola
+- **Revisión con agentes** (workflow; 2 revisores, de seguridad y de
+  lógica, y un escéptico por hallazgo): 15 hallazgos, **10 confirmados y
+  arreglados**:
+  - **SQL:**
+    - topes de tamaño en partidas y opciones (si no, se podían llenar
+      los 500 MB gratis)
+    - el trigger exige que el email salga del nombre
+    - `unique (usuario, jugada)`
+  - **`cuenta.gd`:**
+    - solo un 400 o 401 al renovar cierra la sesión (un 503 o un 429
+      ya no te echan)
+    - una renovación que vuelve después de salir no te vuelve a meter
+    - un 409 al subir es «ya estaba», sin duplicar
+    - los 5xx al entrar ya no dicen «ese usuario ya existe»
+    - `supabase=` solo en depuración
+  - **Opciones:** se bajan otra vez si fallaron, y no se suben hasta
+    haberlas bajado.
+  - **Menú:** el selector de dificultad y la ventana de opciones siguen a
+    las opciones bajadas.
+  - **Bienvenida:** al cerrarla, el foco va a JUGAR.
+  - **Enter:** dos Enter ya no mandan dos peticiones.
+  - **Descartados** por el escéptico: el dominio del email (con la
+    confirmación apagada no se manda ningún correo); las partidas
+    falsificables (ya apuntado para las skins); la cola bloqueada por una
+    partida rechazada; y las corrutinas tras liberar el menú (Godot las
+    corta solo).
+- **Visto al probar el `unique`:** la hora de la partida tenía solo
+  segundos, y dos acabadas en el mismo segundo se tomaban por la misma. Ahora
+  va con la fracción de segundo (`_ahora()`).
+- **Probado:** el servidor falso ampliado (estadísticas, opciones, 409, el
+  trigger y un modo «caído» con 503) y **26 comprobaciones, todas bien**.
+  Además:
+  - captura de la bienvenida al abrir el menú
+  - headless y las partidas del minuto 10 y 15 iguales; 16 clases
+  - los ficheros de la VM, intactos
+- **Sin subir a GitHub** (Adam). Falta el proyecto de Supabase de verdad.
+- **Pedido para después:** el plan para que Adam y Alan trabajen cada uno
+  con su Claude Code (Alan deja Gemini). Contado en el chat; falta que Adam
+  decida y aplicarlo.
+
+### El repositorio para dos Claude Code
+
+Adam: Alan deja Gemini y pasa a Claude Code, y para lo que venga (como el
+multijugador) quieren trabajar cada uno con el suyo «sin pisarnos y ser más
+eficientes».
+
+- **El problema:** el repo estaba pensado para una persona con Claude
+  (Adam) y otra con Gemini. `CLAUDE.md` hablaba siempre de Adam (sus frases,
+  sus máquinas, «el único push es a `main`»), y el contexto del juego estaba
+  en `GEMINI.md`.
+- **Decisiones de Adam** (ventana de preguntas, todo lo recomendado):
+  - los dos con ramas por tarea y Pull Requests (nadie sube a `main`)
+  - la bitácora en un fichero por sesión
+  - borrar la rama `feature/alan-arena-hud`
+- **Hecho:**
+  - **Contexto:** `GEMINI.md` pasa a `documentacio/equipo/contexto.md`
+    (con `git mv`, guarda su historia), sin la parte de ramas fijas.
+  - **`CLAUDE.md`:** común para los dos. Trabajo en equipo, comandos,
+    entorno, validación, versiones y cierre.
+  - **Fichas de cada persona:** `documentacio/equipo/adam.md` (sus
+    máquinas, sus frases y que él publica) y `alan.md` (con lo que tiene que
+    rellenar).
+  - **Reparto:** `documentacio/equipo/reparto.md`, quién es dueño de cada
+    sistema, los ficheros de paso y el ejemplo del multijugador.
+  - **Quién eres:** `CLAUDE.local.md` en cada ordenador (en `.gitignore`)
+    dice quién es y carga su ficha.
+  - **Skills del repo** (`.claude/skills/`): `/dia-nuevo`, `/validar`,
+    `/cerrar` y `/publicar`. Las frases clave de cada uno las llaman.
+  - **La Action `comprobar.yml`:** en cada PR y en `main`, importa,
+    arranca y juega dos partidas del simulador en Linux. Sale en rojo con
+    cualquier error de script.
+  - **Flujo:** `flujo_de_trabajo.md` con ramas, PR, issues y reglas.
+  - **Bitácora:** `documentacio/bitacora/` con su README. Este fichero
+    queda como historia hasta aquí.
+- **Falta (en GitHub, con el sí de Adam):**
+  - subir la rama y abrir el PR
+  - borrar `feature/alan-arena-hud`
+  - proteger `main` para que solo entre por PR con la comprobación en verde
+  - Alan, la primera vez: crear su `CLAUDE.local.md` y rellenar su ficha

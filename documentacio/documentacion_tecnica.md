@@ -590,6 +590,26 @@ que su conexión se borre sola con la pantalla. La ruleta y la pantalla final
 pasaron de mirar teclas sueltas a `ui_accept` y `ui_cancel`, LB y RB cambian de
 pestaña en las opciones, y arriba y abajo desplazan las reglas.
 
+**Cuentas de jugador con Supabase** (05/11; plan y SQL en `plan_cuentas.md`).
+Una arquitectura cliente-servidor sin servidor propio: Supabase pone la base de
+datos (Postgres) y la autenticación. `globales/cuenta.gd` (lo crea `Transicion`)
+habla con su API por HTTP (`HTTPRequest`, sin librerías): crea la cuenta, entra,
+renueva la sesión con el token de renovación (la contraseña nunca se guarda) y,
+al recibir `partida_terminada`, sube la partida. Sin conexión, la partida espera
+en una cola en `user://cuenta.cfg` y se sube al volver. La clave del juego es la
+publicable de Supabase, que está hecha para ir en el cliente: la seguridad está
+en las reglas por filas (RLS) del SQL, que solo dejan añadir partidas a la
+cuenta propia y no dejan cambiarlas. Al abrir el juego sale una bienvenida para
+entrar o crear la cuenta, con JUGAR SIN CUENTA: sin cuenta se juega como
+invitado, con los récords de siempre. En la cuenta también van los récords (una
+vista del SQL que los calcula de las partidas, para que nunca se contradigan),
+las opciones (`cuenta_opciones.gd`: al entrar se bajan, y cada cambio se sube a
+los 2 s, menos las que son del ordenador) y un inventario vacío para las skins,
+sin regla para añadir: las skins solo las podrá dar el servidor. Si dos
+peticiones necesitan renovar la sesión a la vez, la segunda espera a la
+primera, porque cada token de renovación vale una vez. Se probó contra un
+servidor local en PowerShell que imita su API, también las reglas de lo propio.
+
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el
 malware a la herramienta que se lleva: un escudo, una barra que se llena al

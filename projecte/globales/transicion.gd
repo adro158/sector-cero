@@ -9,6 +9,7 @@ extends CanvasLayer
 
 const IconoLinux := preload("res://globales/icono_linux.gd")
 const Entrada := preload("res://globales/entrada.gd")
+const Cuenta := preload("res://globales/cuenta.gd")
 const DURACION := 0.25
 
 var _velo: ColorRect
@@ -30,6 +31,8 @@ func _ready() -> void:
 	# El mando en los menús y F11 (entrada.gd). Aquí, y no como autoload nuevo,
 	# porque project.godot no llega con el .pck de actualización.
 	add_child(Entrada.new())
+	# Las cuentas de jugador (cuenta.gd), por lo mismo.
+	add_child(Cuenta.new())
 
 	# El juego también se abre con un fundido desde negro.
 	create_tween().tween_property(_velo, "modulate:a", 0.0, DURACION * 2.0)

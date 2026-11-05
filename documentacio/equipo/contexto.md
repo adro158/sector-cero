@@ -1,7 +1,8 @@
 # Contexto del proyecto — Sector Cero
 
-Este fichero describe el proyecto para un asistente de IA. Si usas Gemini CLI se
-carga solo; si usas Gemini web, pega su contenido al empezar la conversación.
+Qué es el juego y cómo está hecho por dentro, para Adam, Alan y sus Claude
+Code (lo carga `CLAUDE.md`). Hasta el 05/11/2026 era `GEMINI.md`, cuando
+Alan usaba Gemini.
 
 ## Qué es
 
@@ -34,30 +35,22 @@ tipografía monoespaciada.
 
 ## Reparto de trabajo
 
-Son dos personas y **cada una tiene sus ficheros**.
-
-**Adam** — todo `projecte/`: jugabilidad (jugador, enemigos, élites, jefe,
-armas, experiencia, oleadas), interfaz y menús, persistencia, audio, arena,
-efectos y arte.
-
-**Alan** — sin ficheros en `projecte/` desde el 01/10/2026. Lo que lleve a
-partir de ahora está pendiente de acordar.
+Son dos personas, y **cada sistema tiene un dueño**: la tabla de quién lleva
+qué está en `documentacio/equipo/reparto.md`. Se trabaja en ramas y con Pull
+Requests (`documentacio/flujo_de_trabajo.md`).
 
 Historia del reparto: hasta el 30/09/2026 Alan llevaba la interfaz, la
 persistencia, la arena, el arte y el audio; ese día la interfaz, la
 persistencia, la arena y el arte pasaron a Adam, y el 01/10/2026 también el
 audio, que estaba sin empezar y es un requisito mínimo. Lo que Alan hizo (la
 primera arena, el shader de la rejilla, el primer HUD, el módulo RAM) sigue
-siendo suyo en el historial de Git.
-
-### Ficheros de Alan
-
-- `documentacio/assets.md` y `documentacio/propuesta.md`
+siendo suyo en el historial de Git. El 05/11/2026 Alan pasa a Claude Code y
+se reparte el trabajo nuevo por sistemas (reparto.md).
 
 ### Regla dura
 
-**No editar ficheros del otro.** Si algo del otro necesita cambiar, se pide, no
-se toca.
+**No editar los ficheros de un sistema que no es tuyo.** Si algo del otro
+necesita cambiar, se pide (una issue o un comentario en su PR), no se toca.
 
 Motivo: los ficheros `.tscn` de Godot se fusionan muy mal en Git. Nunca se edita
 la misma escena a la vez.
@@ -108,6 +101,7 @@ signal escudo_final(suceso: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 signal dispositivo_cambiado(con_mando: bool)
+signal sesion_cambiada(nombre: String)
 ```
 
 La interfaz **escucha** casi todas y **emite** tres: `mejora_seleccionada`
@@ -183,7 +177,11 @@ Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 **El audio** (`GestorAudio`) no lo llama nadie: escucha el bus y los cambios de
 escena y decide qué suena. **La persistencia** (`GestorGuardado`) escucha
 `partida_terminada` para los récords, guarda las opciones y el ranking (las 10
-mejores partidas con nombre, que se escribe en la pantalla final).
+mejores partidas con nombre, que se escribe en la pantalla final). **Las
+cuentas** (`globales/cuenta.gd`, desde el 05/11; lo crea `Transicion`)
+también escuchan `partida_terminada` y suben la partida a Supabase si se ha
+entrado en una cuenta; avisan con `sesion_cambiada`. Plan y SQL en
+`documentacio/plan_cuentas.md`.
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
@@ -274,15 +272,7 @@ Excepciones:
 
 ## Flujo de trabajo
 
-Convención de commits y ramas: está en `documentacio/flujo_de_trabajo.md`.
-
-Resumen: `tipo(ámbito): descripción en imperativo`. Hay dos ramas fijas que no
-se borran: Adam trabaja en `main`, que siempre tiene que poder ejecutarse, y
-Alan trabaja siempre en `feature/alan-arena-hud`. No se crean ramas por tarea.
-
-- Al empezar la clase, Alan trae lo último de Adam a su rama:
-  `git switch feature/alan-arena-hud`, `git pull`, `git merge origin/main`.
-- Al terminar la clase, commit solo de sus propios ficheros y `git push`. Antes,
-  revisar `git status`: si Godot ha reescrito algún fichero de Adam al abrir el
-  proyecto, se descarta con `git restore <fichero>`.
-- Adam fusiona la rama de Alan en `main` al empezar cada clase.
+Convención de commits, ramas y Pull Requests: está en
+`documentacio/flujo_de_trabajo.md`. Resumen: `tipo(ámbito): descripción en
+imperativo`; cada tarea en su rama (`adam/...`, `alan/...`), que entra en
+`main` con un Pull Request que la Action comprueba sola.
