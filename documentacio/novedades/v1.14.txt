@@ -1,0 +1,6 @@
+- Mando 100 % compatible: A acepta y B vuelve en todos los menús (ya se pueden elegir las mejoras con el mando), LB y RB cambian de pestaña en las opciones, y todos los textos enseñan los botones del mando en cuanto lo coges.
+- F11 pone y quita la pantalla completa.
+- Límite de fps de verdad: la pantalla, 30, 60, 120, 144, 165, 180, 200, 240 o ilimitado.
+- El panel técnico (F3), a la izquierda y en pestañas que se cambian con F4: malware (cuándo analiza y a qué herramienta se adaptará), rendimiento, horda y antivirus.
+- La barra del equipo de abajo y el panel de la C, más pequeños.
+- En las reglas, las flechas, la cruceta o el stick desplazan el texto.

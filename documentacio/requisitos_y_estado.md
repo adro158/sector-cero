@@ -97,7 +97,10 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.13** (05/11: el F3 rehecho, las
+**Publicado:** la última es la **v1.14** (05/11: el mando en toda la
+interfaz, F11, los límites de fps de verdad, el F3 a la izquierda en
+pestañas y el equipo más pequeño; novedades en
+`documentacio/novedades/v1.14.txt`). Antes, la **v1.13** (05/11: el F3 rehecho, las
 opciones nuevas en pestañas, sin ventana con un solo superviviente y los
 nombres de los élites sin pisarse; novedades en
 `documentacio/novedades/v1.13.txt`). Antes, la **v1.12** (29/10: los jefes más duros, y lo de la nube del 26 al 29/10: el lote 9 de la interfaz, el lote 10, el sonido nuevo y el tajo corriendo; novedades en `documentacio/novedades/v1.12.txt`). Antes, la **v1.11** (27/10: movimiento fluido, atacar
@@ -182,9 +185,11 @@ panel del equipo (C), que sale a la derecha. Decidido:
 
 ### La barra del equipo, más pequeña (hecho el 05/11, sin publicar)
 
-Adam: se veía muy grande. Decidido (ventana de preguntas): la barra de abajo
-(no el panel de la C), a la mitad. Pasa de 640 × 158 px a 520 × 96; los
-consejos bajan con ella.
+Adam: se veía muy grande. Decidido (ventana de preguntas): la barra de abajo,
+a la mitad. Pasa de 640 × 158 px a 520 × 96; los consejos bajan con ella.
+Adam se refería al panel de la C, pero la barra así le gustó y se queda: el
+panel de la C también se achicó (retratos a 32 px, unos 245 × 165 en vez de
+300 × 240). Todo publicado en la v1.14.
 
 ### Alan con Claude Pro (pendiente, cuando Adam lo pida)
 

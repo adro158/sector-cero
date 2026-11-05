@@ -4997,3 +4997,22 @@ unos 260 de ancho.
 - **Pendiente para más adelante** (Adam, 05/11): Alan se compra Claude Pro.
   Cuando todo esté hecho y subido, Adam pedirá ordenar el repositorio para
   que los dos trabajen por separado en el mismo GitHub. No antes.
+
+### El panel de la C y la v1.14
+
+- **Malentendido:** Adam se refería al panel de la C, no a la barra. Pero la
+  barra así le gustó («este como lo has dejado me gusta»): se queda.
+- **El panel de la C, más pequeño** (`panel_equipo.gd`):
+  - retratos a 32 px (la mitad justa de su dibujo, píxeles enteros)
+  - fichas de 170 px y letra de 10 a 12, en tres líneas: nombre y estado; la
+    vida y la ulti; la herramienta y su resistencia
+  - margen de 6
+  - pasa de unos 300 × 240 a unos 245 × 165 px
+- **Probado:** las partidas del minuto 10 y 15 iguales; con ventana, el panel
+  abierto con tres resistencias (todo se lee, también «Análisis heurístico ·
+  resiste 25 %»).
+- **Publicada la v1.14** (Adam: «haz la 1.14»): el mando, F11, los límites de
+  fps, el F3 nuevo, la barra y el panel de la C. Novedades en
+  `documentacio/novedades/v1.14.txt`. Sin subir `EJECUTABLE_MINIMO`
+  (`project.godot` igual y 16 clases).
+- **Duración de la sesión:** por apuntar.
