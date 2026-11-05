@@ -4969,3 +4969,31 @@ panel del equipo (C), que sale a la derecha a media altura.
   - Visto al probar: en «se adaptará a» el nombre largo se montaba sobre el
     rótulo; ahora se encoge.
 - **Sin probar:** jugando en casa.
+
+### La barra del equipo, a la mitad
+
+Adam: «lo del equipo se ve muy grande, que ocupe menos pantalla». La barra
+de abajo medía 640 × 158 px (un 22 % del alto) y las ranuras solo usaban
+unos 260 de ancho.
+
+- **Decisiones de Adam** (ventana de preguntas): la barra de abajo, no el
+  panel de la C, y a la mitad. Se le explicó que a ½ el pixel art queda con
+  los píxeles enteros y a ¾ no.
+- **Hecho** (`barra_equipo.gd`):
+  - las ranuras, los retratos, la carga de la ulti, la sombra de la espera
+    y la vida se dibujan con `draw_set_transform` a `ESCALA` (0,5), con las
+    medidas del dibujo de 72 px como antes
+  - las teclas, los textos, el reloj de la espera y el candado de las
+    anclas siguen a su tamaño, para que se lean
+  - Q y E pasan por fuera de su ranura, en su lado
+  - mide 520 × 96
+  - los consejos (`consejos.gd`) bajan de -186 a -124, con el mismo hueco
+    sobre la barra que antes
+- **Probado:** headless y las partidas del minuto 10 y 15 iguales. Con
+  ventana:
+  - la barra normal, con Q y E fuera y con dos caídos («CAÍDO»)
+  - con la ulti lista y la espera de cambio, forzadas por el bus: «R
+    ¡ULTI!» debajo del que juega y el reloj con «7 s» en los lados
+- **Pendiente para más adelante** (Adam, 05/11): Alan se compra Claude Pro.
+  Cuando todo esté hecho y subido, Adam pedirá ordenar el repositorio para
+  que los dos trabajen por separado en el mismo GitHub. No antes.

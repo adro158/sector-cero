@@ -180,6 +180,19 @@ panel del equipo (C), que sale a la derecha. Decidido:
 - hecho, con sus assets (bitácora, sesión 21, «El F3 nuevo»); falta verlo
   en casa y publicarlo
 
+### La barra del equipo, más pequeña (hecho el 05/11, sin publicar)
+
+Adam: se veía muy grande. Decidido (ventana de preguntas): la barra de abajo
+(no el panel de la C), a la mitad. Pasa de 640 × 158 px a 520 × 96; los
+consejos bajan con ella.
+
+### Alan con Claude Pro (pendiente, cuando Adam lo pida)
+
+Alan se compra Claude Pro. Cuando todo esté hecho y subido, Adam pedirá
+ordenar el repositorio para que los dos trabajen por separado en el mismo
+GitHub (reparto de ficheros, ramas, instrucciones para su Claude). No
+empezar hasta que lo pida.
+
 ### Para la entrega
 
 **Decisión de Adam (05/11):** el vídeo y el ensayo de la defensa son lo
