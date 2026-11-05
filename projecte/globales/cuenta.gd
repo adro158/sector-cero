@@ -17,8 +17,8 @@ extends Node
 ## El proyecto de Supabase: su URL y la clave publicable (sb_publishable_...),
 ## que está hecha para ir dentro del juego; lo que protege los datos son las
 ## reglas por filas del SQL. Vacías, las cuentas no están activadas.
-const URL := ""
-const CLAVE := ""
+const URL := "https://ounawnkngqsgozvadufe.supabase.co"
+const CLAVE := "sb_publishable_6tlMdkAvdfybL33FjGwoVw_iu0Pece4"
 ## Supabase pide un email: se inventa a partir del usuario. No se manda ningún
 ## correo, porque la confirmación está apagada en el proyecto.
 const DOMINIO := "@sectorcero.app"
@@ -75,6 +75,9 @@ func _ready() -> void:
 ## Con una sesión guardada: se renueva (así se sabe que sigue valiendo y se
 ## bajan las opciones de la cuenta) y se sube lo que quedara en la cola.
 func _arrancar() -> void:
+	# El simulador quita el servidor antes de que llegue aquí.
+	if not activada():
+		return
 	if await _renovar():
 		subir_pendientes()
 

@@ -11,6 +11,7 @@ const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 const ROTULO_VICTORIA := preload("res://medios/interfaz/rotulo_victoria.png")
 const ROTULO_DERROTA := preload("res://medios/interfaz/rotulo_derrota.png")
 const Entrada := preload("res://globales/entrada.gd")
+const Cuenta := preload("res://globales/cuenta.gd")
 
 const NOMBRES_RECORD := {
 	"tiempo": "tiempo",
@@ -85,8 +86,15 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		latido.tween_property(record, "modulate:a", 1.0, 0.5)
 
 	_estadisticas = estadisticas
+	# Con cuenta ya se sabe el nombre: se guarda solo (decisión de Adam,
+	# 05/11). Al invitado se le sigue preguntando.
 	if GestorGuardado.entra_en_ranking(estadisticas):
-		caja.add_child(_crear_fila_nombre())
+		var cuenta := _nombre_de_la_cuenta()
+		if cuenta.is_empty():
+			caja.add_child(_crear_fila_nombre())
+		else:
+			var puesto := GestorGuardado.anadir_al_ranking(estadisticas, cuenta)
+			caja.add_child(EstiloInterfaz.etiqueta("Guardado en el ranking como %s: puesto %d" % [cuenta, puesto], 16, EstiloInterfaz.VICTORIA))
 
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -157,6 +165,13 @@ func _resumen_equipo(equipo: Array) -> HBoxContainer:
 		columna.add_child(cifra)
 		fila.add_child(columna)
 	return fila
+
+
+## Vacío si se juega como invitado.
+func _nombre_de_la_cuenta() -> String:
+	if Cuenta.actual == null:
+		return ""
+	return Cuenta.actual.nombre
 
 
 ## La partida entra en el top 10: se pide un nombre para el ranking. Enter en

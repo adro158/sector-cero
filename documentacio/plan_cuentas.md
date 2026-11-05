@@ -2,12 +2,29 @@
 
 Propuesta del 05/11/2026 (sesión 21).
 
-**Estado (05/11, por la tarde): programado y probado contra un servidor
-local que imita a Supabase, sin subir a GitHub.** Para que funcione de
-verdad falta el paso 1: Adam crea el proyecto, pega el SQL y pone la URL y la
-clave publicable en `URL` y `CLAVE` de `projecte/globales/cuenta.gd`.
-Mientras estén vacías, el juego dice que las cuentas no están activadas y se
-juega como invitado, como siempre.
+**Estado (05/11, por la noche): activado.** Adam creó el proyecto
+`sector-cero` (organización `Sector Cero`, plan gratis, región eu-west-3) y
+apagó «Confirm email». Claude, con el conector de Supabase, ejecutó el SQL de
+abajo, dejó los permisos justos y puso la URL y la clave publicable en `URL` y
+`CLAVE` de `projecte/globales/cuenta.gd`. Los avisos de seguridad y
+rendimiento de Supabase, a cero.
+
+Probado contra el Supabase de verdad con SQL, simulando dos jugadores dentro
+de una transacción que se deshace (no se crea ninguna cuenta), con 16
+comprobaciones en verde:
+- el trigger crea el perfil y rechaza un email que no sale del nombre
+- nombre repetido con otras mayúsculas, rechazado
+- cada uno sube sus partidas pero no las de otro, y no las puede cambiar ni
+  borrar
+- la partida repetida y los textos enormes, rechazados
+- las opciones: cada uno ve y cambia solo las suyas
+- nadie se puede dar una skin
+- las estadísticas salen bien
+- sin cuenta se leen las partidas, pero no se sube nada ni se ven opciones
+- borrar una cuenta borra todo lo suyo
+
+Desde el juego, probado por Adam creando las cuentas `adam` y `alan`
+(abajo).
 
 **Decisiones de Adam (05/11):**
 - **Al abrir el juego sale la bienvenida** (entrar o crear cuenta), con
@@ -21,6 +38,14 @@ juega como invitado, como siempre.
     versiones, que son de cada ordenador
   - un inventario vacío, preparado para las skins
 - Sin ranking mundial todavía.
+- **Con cuenta, el ranking no pide el nombre** (05/11, tras probarlo): la
+  partida se guarda sola con el de la cuenta. Al invitado se le sigue
+  preguntando.
+- El simulador aparta la cuenta (solo en memoria): con una sesión iniciada en
+  el ordenador, las partidas simuladas no se suben ni entran en el ranking.
+
+**Primeras cuentas (05/11):** `adam` y `alan`, creadas por Adam desde el
+juego: Supabase acepta el email `@sectorcero.app` y las partidas suben.
 
 ## Qué queremos
 
@@ -57,9 +82,11 @@ Godot): no hace falta ninguna librería ni plugin.
 | ¿Quién ve las partidas? | **Todo el mundo puede leerlas; cada uno solo añade las suyas** | Hace falta para el ranking mundial y no hay nada privado en una partida |
 | ¿Récords y ranking locales? | **Se quedan** como están | El invitado los sigue teniendo |
 
-## Paso 1: crear el proyecto de Supabase (lo hace Adam, unos 15 minutos)
+## Paso 1: crear el proyecto de Supabase (hecho el 05/11)
 
-Claude no puede crear cuentas: este paso es de Adam.
+Claude no puede crear cuentas: la cuenta, la organización y el proyecto los
+crea Adam. Con el conector de Supabase de Claude conectado, los pasos 4 y 5
+los puede hacer Claude (así se hizo el 05/11).
 
 1. Entrar en [supabase.com](https://supabase.com) y crear una cuenta (se
    puede con la de GitHub).
@@ -181,6 +208,22 @@ create table public.inventario (
 alter table public.inventario enable row level security;
 create policy "leer mi inventario" on public.inventario for select
   to authenticated using (usuario = (select auth.uid()));
+
+-- Permisos. Son dos candados: el permiso dice qué se puede hacer con la
+-- tabla y la regla RLS, con qué filas. Supabase da todos los permisos a anon
+-- (sin cuenta) y authenticated (con cuenta), TRUNCATE incluido, que se salta
+-- el RLS: se quitan todos y se dan solo los que usa el juego.
+revoke all on public.perfiles, public.partidas, public.estadisticas, public.opciones, public.inventario from anon, authenticated;
+grant select on public.perfiles, public.partidas, public.estadisticas to anon, authenticated;
+grant insert on public.partidas to authenticated;
+grant select, insert, update on public.opciones to authenticated;
+grant select on public.inventario to authenticated;
+-- La función del perfil solo la usa el trigger: nadie la puede llamar.
+revoke execute on function public.crear_perfil() from public, anon, authenticated;
+-- La que crea «Enable automatic RLS» al hacer el proyecto, lo mismo (aviso
+-- de seguridad de Supabase del 05/11). En un proyecto sin esa casilla no
+-- existe: quitar esta línea.
+revoke execute on function public.rls_auto_enable() from public, anon, authenticated;
 ```
 
 ## Paso 3: en el juego (lo hace Claude)

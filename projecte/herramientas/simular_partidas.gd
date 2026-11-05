@@ -111,6 +111,7 @@ func _initialize() -> void:
 	# conectado al bus.
 	var guardado := root.get_node("GestorGuardado")
 	_bus.partida_terminada.disconnect.call_deferred(guardado._al_terminar_partida)
+	_apartar_cuenta.call_deferred()
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
 	# La ruleta del cofre no se elige: se acepta el premio que ha tocado.
 	_bus.ruleta_abierta.connect(func(_opciones, premio): _elegir.call_deferred(premio))
@@ -126,6 +127,20 @@ func _initialize() -> void:
 	# Diferido: GestorGuardado lee su fichero en su _ready y borraría la
 	# dificultad puesta antes.
 	_empezar_partida.call_deferred()
+
+
+## Lo mismo con la cuenta, si en este ordenador hay una sesión iniciada: sin
+## servidor, no renueva la sesión ni baja las opciones de la cuenta (cambiarían
+## la partida), la partida no se sube y la pantalla final la trata como de un
+## invitado (con cuenta, se guardaría sola en el ranking). Solo en memoria: el
+## fichero de la sesión no se toca. Va antes que el _arrancar de la cuenta,
+## que también es diferido. load() y no preload(): con --script los autoloads
+## aún no están compilados.
+func _apartar_cuenta() -> void:
+	var cuenta: Node = load("res://globales/cuenta.gd").actual
+	_bus.partida_terminada.disconnect(cuenta._al_terminar_partida)
+	cuenta._url = ""
+	cuenta.nombre = ""
 
 
 func _empezar_partida() -> void:
