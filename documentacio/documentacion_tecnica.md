@@ -327,18 +327,26 @@ eso la partida en la que se abre no cuenta para los récords ni el ranking. Vive
 en la escena de la partida, como el panel técnico (F3), y usa la jugabilidad
 directamente.
 
-**El panel técnico (F3).** Enseña por dentro lo que el jugador solo intuye:
-los fps, la vida, el último golpe, los enemigos en pantalla y, sobre todo, la
-resistencia del malware a cada herramienta, con una barra del color de su
-personaje, un aviso que parpadea al llegar al 80 % del máximo y una gráfica
-de los dos últimos minutos donde se ven los escalones de cada análisis (cada
-20 s). Se dibuja con sprites (`dibujo_panel_tecnico.gd`, funciones estáticas
-que reciben el panel como lienzo) y se alimenta del bus; lo que no viaja por
-el bus (enemigos vivos, resistencias) lo lee de los grupos. Los fps se
-cuentan en segundos reales y las resistencias en tiempo de partida, para que
-la velocidad x4 del F1 no los confunda. La escala de los fps se ajusta sola a
-lo más alto del último minuto: no vale la del monitor, porque con el driver de
-NVIDIA el juego pasa de 1000 fps aunque el vsync esté activado.
+**El panel técnico (F3).** Enseña por dentro lo que el jugador solo intuye,
+en cuatro pestañas que se cambian con F4 (desde el 05/11; antes, todo junto
+con gráficas, abajo a la derecha, donde chocaba con el panel del equipo):
+- **Malware:** la resistencia a cada herramienta, con una barra del color de
+  su personaje y un aviso que parpadea al llegar al 80 % del máximo, y lo que
+  está midiendo para el próximo análisis: cuánto falta, a cuál se adaptará
+  (`mas_usada()`, la misma cuenta que hace al analizar) y el daño por segundo
+  de cada herramienta en el ciclo.
+- **Rendimiento:** fps, física, llamadas de dibujo y nodos frente a enemigos
+  vivos (de `Performance`): con cientos de enemigos, las llamadas y los nodos
+  apenas suben, porque la horda es un MultiMesh por tipo.
+- **Horda:** los vivos de cada tipo, con su dibujo; cuánta vida de más tienen
+  (nivel, minuto y dificultad) y cuándo llegan el próximo élite y el jefe.
+- **Antivirus:** vida, nivel, último golpe y lo que suman las mejoras (daño,
+  cadencia y alcance de `GestorArmas`).
+
+Va a la izquierda, junto a la columna de mejoras. Se dibuja con sprites
+(`dibujo_panel_tecnico.gd`, funciones estáticas que reciben el panel como
+lienzo) y se alimenta del bus; lo que no viaja por el bus lo lee de los
+nodos, con funciones de solo lectura que no cambian cómo se juega.
 
 Al saltar a un minuto, el jugador llega con el nivel y las mejoras que tendría
 si hubiera jugado hasta ahí (se puede desmarcar). Las cifras de cada minuto,

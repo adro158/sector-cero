@@ -159,6 +159,27 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
   - sin cambios en `project.godot` ni `class_name` nuevos: no hay que subir
     `EJECUTABLE_MINIMO`
 
+### F3 nuevo (decidido y hecho el 05/11, sin publicar)
+
+Adam: el F3 de la v1.13 es muy grande y abajo a la derecha choca con el
+panel del equipo (C), que sale a la derecha. Decidido:
+- **a la izquierda**, junto a la columna de mejoras (x≈80, y≈104), sin bajar
+  de y≈520, donde empiezan los consejos
+- **sin gráficas** (ocupan mucho)
+- **en pestañas**: F3 abre y cierra, F4 cambia de sección
+- **secciones:**
+  - **Malware:** una barra por herramienta, cuenta atrás al próximo
+    análisis, a cuál se adaptará y daño por segundo de cada una
+  - **Rendimiento:** fps, llamadas de dibujo, nodos frente a enemigos
+    vivos y ms de física
+  - **Horda:** vivos por tipo con su icono, escala de vida y cuánto falta
+    para el próximo élite y el jefe
+  - **Antivirus:** vida, nivel, último golpe y multiplicadores de las
+    mejoras
+- quitar «experiencia» y «eliminados»
+- hecho, con sus assets (bitácora, sesión 21, «El F3 nuevo»); falta verlo
+  en casa y publicarlo
+
 ### Para la entrega
 
 **Decisión de Adam (05/11):** el vídeo y el ensayo de la defensa son lo

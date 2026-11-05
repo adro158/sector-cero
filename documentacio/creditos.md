@@ -245,9 +245,17 @@ scripts no forman parte del repositorio.
 - **El panel técnico (F3)** (`medios/interfaz/tecnico_*.png`, 29/10/2026):
   el marco de terminal con su barra de título, la cabecera de sección, la
   tira de 12 iconos de 16x16, la barra de 10 casillas y su relleno, el aviso
-  que parpadea, el fondo con rejilla de las gráficas y el piloto de 4
-  fotogramas, todo en grises para teñirlo. Los dibujó Claude en el chat
-  (claude.ai) y Adam los trajo en un zip (rama `zips-lotes`).
+  que parpadea y el piloto de 4 fotogramas, todo en grises para teñirlo. Los
+  dibujó Claude en el chat (claude.ai) y Adam los trajo en un zip (rama
+  `zips-lotes`). El fondo con rejilla de las gráficas se quitó el 05/11, con
+  las gráficas.
+- **El panel técnico en pestañas** (05/11/2026): las pestañas abierta y
+  cerrada (`tecnico_pestanas.png`), una segunda tira de 11 iconos de 16x16
+  (`tecnico_iconos2.png`: llamadas de dibujo, nodos, física, próximo
+  análisis, a cuál se adaptará, daño por segundo, escala de vida, élite,
+  jefe, daño y cadencia) y la tecla F4, al final de `teclas.png` (la F3 con un
+  4). Los dibujó Claude con un script de Godot (la API `Image`, mapas de
+  caracteres en cuatro grises) y Adam vio la vista previa.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

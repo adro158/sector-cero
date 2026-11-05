@@ -4918,3 +4918,54 @@ seguían enseñando las teclas.
 - **Sin probar:** con un mando de verdad, y el límite a 240 en casa.
 - **No hace falta subir `EJECUTABLE_MINIMO`:** `project.godot` igual y 16
   clases.
+
+### El F3 nuevo
+
+Adam: el F3 de la v1.13 es muy grande y, abajo a la derecha, choca con el
+panel del equipo (C), que sale a la derecha a media altura.
+
+- **Dónde:** se miró qué ocupa cada zona del HUD. La derecha tiene el
+  medidor, el contador, la ficha del enemigo y el panel del equipo; abajo,
+  la barra del equipo y los consejos (desde y=534); arriba al centro, el
+  reloj, la barra del jefe y los avisos. Lo único libre es la izquierda, al
+  lado de la columna de mejoras (x 16, y 104).
+- **Decisiones de Adam** (ventana de preguntas):
+  - a la izquierda
+  - las cuatro secciones propuestas, **sin gráficas** («ocupa mucho»)
+  - en pestañas, con F4
+- **Assets** (Godot, porque en la VM no hay Python): un script temporal
+  dibuja con la API `Image` desde mapas de caracteres en cuatro grises,
+  como los iconos de antes. Hizo:
+  - `tecnico_pestanas.png`
+  - `tecnico_iconos2.png`, con 11 iconos
+  - la F4, que es la F3 con un «4» en las mismas columnas que el «3», sacado
+    píxel a píxel; va al final de `teclas.png` para no mover las demás
+
+  Se le mandó a Adam la vista previa teñida. `tecnico_grafica.png` se
+  borró: ya no la usa nada.
+- **Hecho:**
+  - `panel_depuracion.gd` reescrito: arriba a la izquierda (80, 104) y
+    cuatro pestañas.
+    - Malware: próximo análisis, a cuál se adaptará, las resistencias y el
+      daño por segundo del ciclo.
+    - Rendimiento: fps, física, llamadas de dibujo, nodos y enemigos vivos.
+    - Horda: vivos por tipo con su dibujo, vida de más, próximo élite y
+      jefe.
+    - Antivirus: vida, nivel, último golpe, daño, cadencia (al revés, como
+      velocidad) y alcance.
+  - `dibujo_panel_tecnico.gd`: sin gráficas, con pestañas, la segunda tira
+    y el valor de cada fila pegado a la derecha (si no cabe, más pequeño).
+  - Funciones de solo lectura nuevas: `dano_ciclo`, `tiempo_ciclo`,
+    `falta_analisis` y `mas_usada` en `resistencia_malware.gd` (`_analizar`
+    usa `mas_usada`, la misma cuenta que antes), y `falta_elite` en
+    `director_oleadas.gd`.
+  - La F4 también en la tabla de controles de las reglas.
+- **Probado:**
+  - Headless: import y las partidas del minuto 10 y 15 dan lo mismo de
+    siempre (el análisis no ha cambiado); siguen 16 clases.
+  - Con ventana, las cuatro pestañas en la partida del minuto 15, también
+    con cuatro resistencias puestas a mano: llega a y≈330, no pisa la
+    columna de mejoras ni nada del HUD.
+  - Visto al probar: en «se adaptará a» el nombre largo se montaba sobre el
+    rótulo; ahora se encoge.
+- **Sin probar:** jugando en casa.
