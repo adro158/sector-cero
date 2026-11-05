@@ -1,0 +1,4 @@
+- Cuentas de jugador: al abrir el juego puedes entrar o crear una cuenta con usuario y contraseña (o jugar sin cuenta, como siempre). La sesión se recuerda.
+- Con cuenta, tus partidas, tus récords y tus opciones se guardan en internet y te siguen a cualquier ordenador. El botón CUENTA del menú enseña tus récords y tus últimas partidas.
+- Con cuenta, al acabar una partida que entra en el ranking ya no se pide el nombre: se guarda sola con el tuyo.
+- En las opciones, el límite de fps y los números de daño se eligen en una lista desplegable.
