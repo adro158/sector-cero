@@ -132,6 +132,14 @@ pisarse.
 Si `main` avanza mientras tu rama está abierta, tráetelo:
 `git switch <rama>` y `git merge main`.
 
+**`main` está protegida en GitHub** (desde el 05/11, con el sí de Adam): no
+se puede subir a ella ni con permisos de administrador, solo entrar con un
+PR, y el PR no se puede fusionar sin la comprobación `comprobar` en verde.
+No pide aprobaciones: la revisión del otro (paso 5) es un acuerdo, para que
+uno pueda fusionar cuando el otro no esté. Las etiquetas de las versiones
+(`/publicar`) y la rama `gh-pages` no están protegidas: publicar sigue igual.
+Se cambia en GitHub, Settings → Branches.
+
 Las tareas se apuntan como **issues** de GitHub, asignadas a quien las hace.
 
 ## Las reglas que importan

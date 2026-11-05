@@ -237,10 +237,11 @@ Hecho en local:
 - la bitácora por sesión en `documentacio/bitacora/`
 
 Detalle en la bitácora (sesión 21, «El repositorio para dos Claude Code»).
-Subido y fusionado con la v1.15 (05/11). Falta, con el sí de Adam:
-- borrar `feature/alan-arena-hud`
-- proteger `main`
-- que Alan cree su `CLAUDE.local.md` y rellene su ficha
+Subido y fusionado con la v1.15 (05/11). Con el sí de Adam, borrada
+`feature/alan-arena-hud` (no tenía nada que no estuviera en `main`) y
+`main` protegida: solo con PR y la comprobación en verde
+(`flujo_de_trabajo.md`). Falta que Alan cree su `CLAUDE.local.md` y rellene
+su ficha.
 
 ### Para la entrega
 
@@ -324,6 +325,14 @@ carpeta de datos del juego.
 
 ### Pendiente técnico
 
+- **Por revisar (Adam, 05/11): «Texto grande» en plena partida cierra el
+  juego.** En la v1.15 (o antes), al encender la opción desde el menú de
+  pausa, el juego se cierra y vuelve a salir el lanzador (el selector de
+  versión): parece un cierre del juego, no un error de la opción. Sin
+  mirar todavía. Para empezar: reproducirlo con Godot abierto y ver la
+  salida; mirar qué hace cada pantalla al recibir
+  `opcion_cambiada("texto_grande")` con el juego en pausa, y el log del
+  juego en la carpeta de datos (`logs/godot.log`).
 6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
    mejoras por minuto): se midieron antes de cambiar las dificultades.
 7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el
