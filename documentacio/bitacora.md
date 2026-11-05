@@ -4804,8 +4804,10 @@ apuntado»).
 
 ## Sesión 21 — 05/11/2026 (instituto)
 
-**Fitas:** 5 · **Participantes:** Adam (con Claude Code) · **Duración:** por
-apuntar
+**Fitas:** 5 · **Participantes:** Adam (con Claude Code) · **Duración:** 2 h
+(las apuntó Adam)
+
+**Horas acumuladas:** 48 h de las 60 sugeridas (80 %)
 
 ### Qué se ha hecho
 
