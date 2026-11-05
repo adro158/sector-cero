@@ -8,6 +8,7 @@ extends CanvasLayer
 ## pantalla que se ve y su script llega con el .pck de actualización.
 
 const IconoLinux := preload("res://globales/icono_linux.gd")
+const Entrada := preload("res://globales/entrada.gd")
 const DURACION := 0.25
 
 var _velo: ColorRect
@@ -25,6 +26,10 @@ func _ready() -> void:
 	_velo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_velo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_velo)
+
+	# El mando en los menús y F11 (entrada.gd). Aquí, y no como autoload nuevo,
+	# porque project.godot no llega con el .pck de actualización.
+	add_child(Entrada.new())
 
 	# El juego también se abre con un fundido desde negro.
 	create_tween().tween_property(_velo, "modulate:a", 0.0, DURACION * 2.0)

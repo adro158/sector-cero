@@ -26,7 +26,8 @@ func _ready() -> void:
 
 	var caja := VBoxContainer.new()
 	var titulo := EstiloInterfaz.etiqueta("PAUSA", 40, EstiloInterfaz.NEON)
-	var ayuda := EstiloInterfaz.etiqueta("Esc o P para continuar", 14, EstiloInterfaz.TEXTO_SUAVE)
+	var ayuda := EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE),
+		"Esc o P para continuar", "Start o B para continuar")
 	for etiqueta in [titulo, ayuda]:
 		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caja.add_child(etiqueta)
@@ -86,7 +87,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 			_no.pressed.emit()
 			get_viewport().set_input_as_handled()
 		return
-	if evento.is_action_pressed("pausar"):
+	# Con la pausa abierta, B (ui_cancel) también vuelve a la partida, como en
+	# cualquier menú. Sin la pausa no: B es la ulti.
+	if evento.is_action_pressed("pausar") or (_en_pausa and evento.is_action_pressed("ui_cancel")):
 		_alternar_pausa()
 		get_viewport().set_input_as_handled()
 

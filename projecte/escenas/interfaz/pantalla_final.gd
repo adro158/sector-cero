@@ -10,6 +10,7 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 const ROTULO_VICTORIA := preload("res://medios/interfaz/rotulo_victoria.png")
 const ROTULO_DERROTA := preload("res://medios/interfaz/rotulo_derrota.png")
+const Entrada := preload("res://globales/entrada.gd")
 
 const NOMBRES_RECORD := {
 	"tiempo": "tiempo",
@@ -21,6 +22,7 @@ var _ventana: ColorRect
 var _estadisticas: Dictionary
 var _fila_nombre: HBoxContainer
 var _nombre: LineEdit
+var _guardar: Button
 var _boton_reintentar: Button
 
 
@@ -89,9 +91,9 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 16)
-	_boton_reintentar = EstiloInterfaz.boton("REINTENTAR  [Enter]", _reintentar, 220)
+	_boton_reintentar = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _reintentar, 220), "REINTENTAR  [Enter]", "REINTENTAR") as Button
 	botones.add_child(_boton_reintentar)
-	botones.add_child(EstiloInterfaz.boton("MENÚ  [Esc]", _ir_al_menu, 220))
+	botones.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _ir_al_menu, 220), "MENÚ  [Esc]", "MENÚ  [B]"))
 	caja.add_child(botones)
 
 	for hijo in caja.get_children():
@@ -104,7 +106,11 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	# Fundido de entrada: la pantalla aparece poco a poco en lugar de golpe.
 	_ventana.modulate.a = 0.0
 	create_tween().tween_property(_ventana, "modulate:a", 1.0, 0.6)
-	if _nombre != null:
+	# Con el mando no se puede escribir: el foco va a GUARDAR, que lo guarda
+	# como «Anónimo».
+	if _nombre != null and Entrada.con_mando:
+		_guardar.grab_focus()
+	elif _nombre != null:
 		_nombre.grab_focus()
 	else:
 		_boton_reintentar.grab_focus()
@@ -166,7 +172,8 @@ func _crear_fila_nombre() -> HBoxContainer:
 	_nombre.custom_minimum_size = Vector2(200, 0)
 	_nombre.text_submitted.connect(func(_texto): _guardar_en_ranking())
 	_fila_nombre.add_child(_nombre)
-	_fila_nombre.add_child(EstiloInterfaz.boton("GUARDAR", _guardar_en_ranking, 130))
+	_guardar = EstiloInterfaz.boton("GUARDAR", _guardar_en_ranking, 130)
+	_fila_nombre.add_child(_guardar)
 	return _fila_nombre
 
 
@@ -184,12 +191,13 @@ func _guardar_en_ranking() -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if _ventana == null or not evento is InputEventKey or not evento.pressed:
+	if _ventana == null:
 		return
-	if evento.keycode == KEY_ENTER or evento.keycode == KEY_KP_ENTER:
-		_reintentar()
-	elif evento.keycode == KEY_ESCAPE:
+	# ui_cancel: Esc y, desde el 05/11, B del mando (entrada.gd).
+	if evento.is_action_pressed("ui_cancel"):
 		_ir_al_menu()
+	elif evento is InputEventKey and evento.pressed and (evento.keycode == KEY_ENTER or evento.keycode == KEY_KP_ENTER):
+		_reintentar()
 
 
 func _reintentar() -> void:

@@ -27,8 +27,8 @@ const OPCIONES_POR_DEFECTO := {
 	"silenciar_sin_foco": true,
 	"pantalla_completa": false,
 	"crt": true,
-	# Fotogramas por segundo como mucho: LIMITE_PANTALLA (los del monitor), 60,
-	# 144 o 0 (sin límite).
+	# Fotogramas por segundo como mucho: LIMITE_PANTALLA (los del monitor, con
+	# vsync), uno de la lista de panel_opciones.gd (30 a 240) o 0 (ilimitado).
 	"limite_fps": LIMITE_PANTALLA,
 	# El contador de fps en la partida (escenas/interfaz/contador_fps.gd).
 	"contador_fps": false,
@@ -192,10 +192,16 @@ func _aplicar(clave: String, valor: Variant) -> void:
 
 ## Sin pantalla (el simulador) no se limita: va lo más rápido que puede. En la
 ## web tampoco, porque el navegador ya dibuja al ritmo del monitor.
+##
+## Con «la pantalla», el vsync y, por si el driver no lo respeta, el tope a su
+## refresco. Con un número o ilimitado, sin vsync: si no, en un monitor de
+## 60 Hz el juego se quedaba en 60 aunque se eligiera 144 (05/11).
 func _limitar_fps(limite: int) -> void:
 	if DisplayServer.get_name() == "headless" or OS.has_feature("web"):
 		return
-	if limite == LIMITE_PANTALLA:
+	var vsync := limite == LIMITE_PANTALLA
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if vsync else DisplayServer.VSYNC_DISABLED)
+	if vsync:
 		# Si el sistema no sabe el refresco, devuelve -1: entonces, 60.
 		limite = roundi(DisplayServer.screen_get_refresh_rate())
 		if limite <= 0:

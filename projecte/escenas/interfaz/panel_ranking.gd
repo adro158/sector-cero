@@ -41,7 +41,7 @@ func _ready() -> void:
 	centro.add_child(_tabla)
 	caja.add_child(centro)
 
-	_volver = EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
+	_volver = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]") as Button
 	_volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_volver)
 

@@ -32,6 +32,8 @@ const HOJA_JEFE_FINAL := "res://medios/sprites/jefe_final/jefe_final.png"
 const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
 ## Un icono de 16x16 por apartado de «Cómo se juega», en su orden (lote 9).
 const ICONOS_COMO_SE_JUEGA := preload("res://medios/interfaz/reglas_iconos.png")
+## Píxeles por segundo que se desplaza la pestaña con arriba y abajo.
+const VELOCIDAD_LECTURA := 600.0
 
 const COMO_SE_JUEGA := [
 	["OBJETIVO", "Eres un proceso antivirus. Aguanta 10 minutos contra el malware y derrota al jefe: el sector queda dañado y empieza la fase 2. A los 15 minutos llega NÚCLEO CERO, el jefe final; derrótalo para ganar. Si la integridad de tu personaje (la barra sobre él) llega a cero, cae y eliges quién sigue; pierdes cuando caen los tres."],
@@ -39,7 +41,7 @@ const COMO_SE_JUEGA := [
 	["SOLO TE MUEVES", "Tu herramienta ataca sola cada poco tiempo. Tu decisión es dónde colocarte: deja que el malware entre en tu alcance sin que te rodee."],
 	["EXPERIENCIA", "El malware suelta fragmentos de datos al morir: amarillos, naranjas o magentas según lo que valen. Acércate para recogerlos; a los 30 s parpadean y se pierden. Al subir de nivel el juego se pausa y eliges una de tres mejoras. Los enemigos ganan vida con cada nivel que subes y, desde el minuto 3, con cada minuto que pasa."],
 	["EL MALWARE SE ADAPTA", "Cada 20 s gana resistencia (hasta un 50 %) contra la herramienta que más daño le ha hecho y la pierde poco a poco contra las demás. Lo verás porque tus números de daño y el anillo de tu herramienta se vuelven rojos."],
-	["CAMBIA DE PERSONAJE", "Con E (o Tab) pasas al siguiente personaje y con Q vuelves al anterior. Cada uno lleva otra herramienta, contra la que el malware aún no se ha protegido, y su propia vida: los que esperan se curan poco a poco. Después hay que esperar 10 s para volver a cambiar. Con C ves cómo está cada uno."],
+	["CAMBIA DE PERSONAJE", "Con E (o Tab; RB o Y con mando) pasas al siguiente personaje y con Q (LB) vuelves al anterior. Cada uno lleva otra herramienta, contra la que el malware aún no se ha protegido, y su propia vida: los que esperan se curan poco a poco. Después hay que esperar 10 s para volver a cambiar. Con C (Select) ves cómo está cada uno."],
 	["ULTI", "Cada personaje carga su ulti matando mientras juega: la barra amarilla bajo su vida. Llena, parpadea un rayo a su lado: pulsa R (B con mando) y la lanza. El Mago dispara un rayo morado enorme (apunta con el ratón y lanza con click), el Espadachín gira con sus hojas y al Segador le cae una tormenta de rayos."],
 	["PREMIO DE LOS ÉLITES", "Al morir, un élite deja en el suelo un corazón, que cura la mitad de la vida, y un cofre. Al recoger el cofre gira una ruleta con las mejoras y te llevas la que toque."],
 	["FICHA DEL ENEMIGO", "Haz click en un enemigo para ver arriba a la derecha su vida, el daño que hace y cuánto resiste a tu herramienta. Click derecho para cerrarla."],
@@ -68,10 +70,12 @@ func _ready() -> void:
 	_pestanas.add_child(_pestana("Enemigos", _enemigos()))
 	caja.add_child(_pestanas)
 
-	var ayuda := EstiloInterfaz.etiqueta("Pestañas: click o flechas izquierda y derecha · Rueda o flechas arriba y abajo para leer", 13, EstiloInterfaz.TEXTO_SUAVE)
+	var ayuda := EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 13, EstiloInterfaz.TEXTO_SUAVE),
+		"Pestañas: click o flechas izquierda y derecha · Rueda o flechas arriba y abajo para leer",
+		"Pestañas: cruceta izquierda y derecha · Stick o cruceta arriba y abajo para leer") as Label
 	ayuda.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(ayuda)
-	var volver := EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
+	var volver := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]")
 	volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(volver)
 
@@ -89,6 +93,21 @@ func abrir() -> void:
 func cerrar() -> void:
 	visible = false
 	cerrado.emit()
+
+
+## Arriba y abajo (flechas, cruceta o stick) desplazan la pestaña abierta, y
+## no mueven el foco: si no, se iba de las pestañas y no se podía leer.
+func _input(evento: InputEvent) -> void:
+	if visible and (evento.is_action("ui_up") or evento.is_action("ui_down")):
+		get_viewport().set_input_as_handled()
+
+
+## Mientras se mantiene, a VELOCIDAD_LECTURA píxeles por segundo.
+func _process(delta: float) -> void:
+	if not visible:
+		return
+	var desplazable: ScrollContainer = _pestanas.get_current_tab_control()
+	desplazable.scroll_vertical += roundi(Input.get_axis("ui_up", "ui_down") * VELOCIDAD_LECTURA * delta)
 
 
 func _unhandled_input(evento: InputEvent) -> void:

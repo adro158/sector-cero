@@ -1,7 +1,8 @@
 extends Control
 
 ## Panel de subida de nivel: tres tarjetas con icono, nombre, nivel y
-## descripción. Se elige con click o con las teclas 1, 2 y 3. La tarjeta de una
+## descripción. Se elige con click, con las teclas 1, 2 y 3 o con el mando (la
+## cruceta mueve el foco y A elige; hasta el 05/11, A no hacía nada). La tarjeta de una
 ## evolución es de su personaje: de su color, con él dibujado con el arma nueva
 ## y con el borde latiendo, para que se note que no es una mejora más.
 ##
@@ -40,7 +41,8 @@ func _ready() -> void:
 	var titulo := EstiloInterfaz.etiqueta("SUBIDA DE NIVEL", 36, EstiloInterfaz.NEON)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(titulo)
-	var ayuda := EstiloInterfaz.etiqueta("Elige una mejora: click o teclas 1, 2 y 3", 14, EstiloInterfaz.TEXTO_SUAVE)
+	var ayuda := EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE),
+		"Elige una mejora: click o teclas 1, 2 y 3", "Elige una mejora: cruceta o stick y A") as Label
 	ayuda.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(ayuda)
 

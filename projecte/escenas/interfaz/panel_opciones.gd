@@ -5,7 +5,8 @@ extends Control
 ## cambiar de ventana), Pantalla (pantalla completa, CRT, límite y contador de
 ## fps, aviso de versiones) y Accesibilidad (texto grande, destellos, cámara,
 ## vibración, números de daño y consejos). Desde el 02/11 van en pestañas
-## porque en una lista ya no cabían en 720 px.
+## porque en una lista ya no cabían en 720 px. Con el mando, LB y RB cambian
+## de pestaña (05/11).
 ## La usan el menú principal y el menú de pausa. Cada cambio se guarda en el
 ## momento a través de GestorGuardado, que también lo aplica.
 
@@ -45,8 +46,12 @@ func _ready() -> void:
 	_casilla(pantalla, "Filtro CRT", "crt")
 	# En la web manda el navegador: el límite no haría nada.
 	if not OS.has_feature("web"):
-		_selector(pantalla, "Límite de fps", "limite_fps",
-			[GestorGuardado.LIMITE_PANTALLA, 60, 144, 0], ["la pantalla", "60", "144", "sin límite"])
+		var limites := [GestorGuardado.LIMITE_PANTALLA, 30, 60, 120, 144, 165, 180, 200, 240, 0]
+		var nombres := ["la pantalla"]
+		for limite in limites.slice(1, -1):
+			nombres.append(str(limite))
+		nombres.append("ilimitado")
+		_selector(pantalla, "Límite de fps", "limite_fps", limites, nombres)
 	_casilla(pantalla, "Contador de fps", "contador_fps")
 	# Desde el lanzador y en la web el juego no busca versiones: la casilla no
 	# haría nada.
@@ -62,7 +67,7 @@ func _ready() -> void:
 		["todos", "rojos", "ninguno"], ["todos", "solo los rojos", "ninguno"])
 	_casilla(accesibilidad, "Consejos (primeras partidas)", "consejos")
 
-	var volver := EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
+	var volver := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]")
 	caja.add_child(volver)
 
 	_ventana = EstiloInterfaz.ventana_centrada(caja)
@@ -87,6 +92,18 @@ func _unhandled_input(evento: InputEvent) -> void:
 	if visible and evento.is_action_pressed("ui_cancel"):
 		cerrar()
 		# Que no llegue al menú de debajo, que con Esc saldría o quitaría la pausa.
+		get_viewport().set_input_as_handled()
+
+
+## LB y RB cambian de pestaña estés donde estés: dentro de una, izquierda y
+## derecha mueven los deslizadores y los selectores.
+func _input(evento: InputEvent) -> void:
+	if not visible or not evento is InputEventJoypadButton or not evento.pressed:
+		return
+	var paso: int = {JOY_BUTTON_LEFT_SHOULDER: -1, JOY_BUTTON_RIGHT_SHOULDER: 1}.get(evento.button_index, 0)
+	if paso != 0:
+		_pestanas.current_tab = posmod(_pestanas.current_tab + paso, _pestanas.get_tab_count())
+		_pestanas.get_tab_bar().grab_focus()
 		get_viewport().set_input_as_handled()
 
 
@@ -120,12 +137,18 @@ func _casilla(rejilla: GridContainer, texto: String, clave: String) -> void:
 	# Solo el interruptor, sin estirarse a lo ancho de la columna.
 	casilla.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	casilla.toggled.connect(func(activa: bool): GestorGuardado.cambiar_opcion(clave, activa))
+	# Si la opción cambia por otro lado (F11, entrada.gd), el interruptor la
+	# sigue, sin volver a guardarla.
+	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
+		if cambiada == clave:
+			casilla.set_pressed_no_signal(valor))
 	rejilla.add_child(casilla)
 
 
-## Una opción de varios valores: un botón con el que tiene, y al pulsarlo pasa
-## al siguiente (después del último, vuelve al primero). Sirve igual con el
-## ratón que con el mando, sin lista desplegable.
+## Una opción de varios valores: un botón con el que tiene. Al pulsarlo o con
+## derecha pasa al siguiente y con izquierda, al anterior (dando la vuelta en
+## los extremos). Sirve igual con el ratón, el teclado y el mando, sin lista
+## desplegable.
 func _selector(rejilla: GridContainer, texto: String, clave: String, valores: Array, nombres: Array) -> void:
 	rejilla.add_child(EstiloInterfaz.etiqueta(texto, 18))
 	var boton := Button.new()
@@ -133,9 +156,17 @@ func _selector(rejilla: GridContainer, texto: String, clave: String, valores: Ar
 	var escribir := func():
 		# maxi: si el fichero trae un valor que ya no existe, se ve el primero.
 		boton.text = "<  %s  >" % nombres[maxi(valores.find(GestorGuardado.opcion(clave)), 0)]
-	escribir.call()
-	boton.pressed.connect(func():
-		var siguiente: int = (valores.find(GestorGuardado.opcion(clave)) + 1) % valores.size()
+	var mover := func(paso: int):
+		var siguiente := posmod(valores.find(GestorGuardado.opcion(clave)) + paso, valores.size())
 		GestorGuardado.cambiar_opcion(clave, valores[siguiente])
-		escribir.call())
+		escribir.call()
+	escribir.call()
+	boton.pressed.connect(mover.bind(1))
+	boton.gui_input.connect(func(evento: InputEvent):
+		if evento.is_action_pressed("ui_right"):
+			mover.call(1)
+			boton.accept_event()
+		elif evento.is_action_pressed("ui_left"):
+			mover.call(-1)
+			boton.accept_event())
 	rejilla.add_child(boton)

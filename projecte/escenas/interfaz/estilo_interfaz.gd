@@ -40,6 +40,7 @@ const DESPLAZAMIENTO := preload("res://medios/interfaz/desplazamiento.png")
 ## (TAMANO_PIXEL o más: títulos, reloj, avisos): a 13 o 14 px los píxeles no
 ## caen enteros y los párrafos de las reglas costaban de leer.
 const FUENTE_PIXEL := preload("res://medios/interfaz/sector_cero_pixel.ttf")
+const TextoMando := preload("res://escenas/interfaz/texto_mando.gd")
 const TAMANO_PIXEL := 20
 
 static var _tema: Theme
@@ -162,6 +163,17 @@ static func _trozo(tira: Texture2D, fotograma: int, lado: Vector2) -> AtlasTextu
 	trozo.atlas = tira
 	trozo.region = Rect2(Vector2(fotograma * lado.x, 0.0), lado)
 	return trozo
+
+
+## Un Label o un Button con un texto para el teclado y otro para el mando
+## (texto_mando.gd): enseña el que toca y cambia al coger el otro. Devuelve el
+## mismo control, para escribirlo en una línea.
+static func segun_mando(control: Control, teclado: String, mando: String) -> Control:
+	var cambio := TextoMando.new()
+	cambio.teclado = teclado
+	cambio.mando = mando
+	control.add_child(cambio)
+	return control
 
 
 static func etiqueta(texto: String, tamano: int = 16, color: Color = TEXTO) -> Label:

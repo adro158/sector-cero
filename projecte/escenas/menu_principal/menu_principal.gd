@@ -60,7 +60,9 @@ func _ready() -> void:
 	var botones := HBoxContainer.new()
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 14)
-	var jugar := EstiloInterfaz.boton("JUGAR  [Enter]", _jugar, 180)
+	# Con el mando, A pulsa el botón con el foco y B no sale del juego: los
+	# botones van sin tecla.
+	var jugar := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _jugar, 180), "JUGAR  [Enter]", "JUGAR") as Button
 	_jugar_boton = jugar
 	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 160)
 	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 160)
@@ -69,7 +71,7 @@ func _ready() -> void:
 		botones.add_child(boton)
 	# En el navegador no se puede cerrar el juego.
 	if not OS.has_feature("web"):
-		botones.add_child(EstiloInterfaz.boton("SALIR  [Esc]", get_tree().quit, 160))
+		botones.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", get_tree().quit, 160), "SALIR  [Esc]", "SALIR"))
 	caja.add_child(botones)
 	_crear_version(caja)
 

@@ -1,8 +1,9 @@
 extends Control
 
 ## Ruleta del cofre de los élites. Primero el cofre se abre en grande y después
-## gira la ruleta hasta la mejora que ha tocado. Se acepta con click, Enter o
-## espacio, y entonces avisa con mejora_seleccionada, como el panel de mejoras.
+## gira la ruleta hasta la mejora que ha tocado. Se acepta con click, Enter,
+## espacio o A, y entonces avisa con mejora_seleccionada, como el panel de
+## mejoras.
 ##
 ## El premio llega ya sorteado (ruleta_abierta): el giro solo lo enseña. Como
 ## en el panel de mejoras, la pausa la pone y la quita la jugabilidad.
@@ -89,7 +90,8 @@ func _crear_textos() -> void:
 
 	_nombre = EstiloInterfaz.etiqueta("", 26, EstiloInterfaz.NEON)
 	_descripcion = EstiloInterfaz.etiqueta("", 16)
-	_ayuda = EstiloInterfaz.etiqueta("Click, Enter o espacio para aceptar", 14, EstiloInterfaz.TEXTO_SUAVE)
+	_ayuda = EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE),
+		"Click, Enter o espacio para aceptar", "A para aceptar") as Label
 	_descripcion.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	for etiqueta in [_nombre, _descripcion, _ayuda]:
 		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -162,10 +164,9 @@ func _process(delta: float) -> void:
 		_iconos[i].position = Vector2.from_angle(angulo) * RADIO_ICONOS * ESCALA
 
 
+## ui_accept es Enter, espacio y, desde el 05/11, A del mando (entrada.gd).
 func _unhandled_input(evento: InputEvent) -> void:
-	if not _parada or not evento is InputEventKey or not evento.pressed or evento.echo:
-		return
-	if evento.keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
+	if _parada and evento.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		_aceptar()
 

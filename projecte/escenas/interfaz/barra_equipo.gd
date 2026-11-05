@@ -19,6 +19,7 @@ const VIDA_MARCO := preload("res://medios/interfaz/equipo_vida_marco.png")
 const VIDA_RELLENO := preload("res://medios/interfaz/equipo_vida_relleno.png")
 const ICONOS_AVISO := preload("res://medios/interfaz/aviso_iconos.png")
 const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
+const Entrada := preload("res://globales/entrada.gd")
 ## El de las anclas en la tira de iconos de los avisos.
 const ICONO_ESCUDO := 4
 const COLOR_ULTI := Color(1.0, 0.8, 0.2)
@@ -37,7 +38,6 @@ var _espera := 0.0
 var _espera_total := 1.0
 var _ultis: Array = []
 var _anclas: Array = []
-var _con_mando := false
 var _tiempo := 0.0
 
 
@@ -67,15 +67,6 @@ func _al_cambiar_personaje(_actual, _arma, _siguiente, espera: float) -> void:
 	_espera = espera
 	if espera > 0.0:
 		_espera_total = espera
-
-
-## Con qué se juega: el mando, o el teclado y el ratón. _input, y no
-## _unhandled_input, para enterarse aunque otro se quede el evento.
-func _input(evento: InputEvent) -> void:
-	if evento is InputEventJoypadButton or (evento is InputEventJoypadMotion and absf(evento.axis_value) > 0.5):
-		_con_mando = true
-	elif evento is InputEventKey or evento is InputEventMouseButton:
-		_con_mando = false
 
 
 func _process(delta: float) -> void:
@@ -201,6 +192,8 @@ func _ulti(indice: int) -> float:
 
 
 ## La tecla o, si se juega con mando, el botón (con el nombre de la tira de
-## teclas_dibujadas.gd, que para las de una letra es la letra).
+## teclas_dibujadas.gd, que para las de una letra es la letra). Con qué se
+## juega lo sabe entrada.gd: hasta el 05/11 lo miraba esta barra por su
+## cuenta, y era la única que cambiaba.
 func _boton(tecla: String, boton: String) -> String:
-	return boton if _con_mando else tecla
+	return boton if Entrada.con_mando else tecla

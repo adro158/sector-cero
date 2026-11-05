@@ -21,7 +21,8 @@ func _ready() -> void:
 	var caja := VBoxContainer.new()
 	caja.add_theme_constant_override("separation", 12)
 	_titulo = EstiloInterfaz.etiqueta("", 32, EstiloInterfaz.DERROTA)
-	var ayuda := EstiloInterfaz.etiqueta("Elige quién sigue: click o su tecla", 14, EstiloInterfaz.TEXTO_SUAVE)
+	var ayuda := EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE),
+		"Elige quién sigue: click o su tecla", "Elige quién sigue: cruceta y A")
 	for etiqueta in [_titulo, ayuda]:
 		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caja.add_child(etiqueta)

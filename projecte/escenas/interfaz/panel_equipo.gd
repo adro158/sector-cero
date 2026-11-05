@@ -39,7 +39,7 @@ func _ready() -> void:
 	var caja := VBoxContainer.new()
 	caja.add_theme_constant_override("separation", 8)
 	_panel.add_child(caja)
-	caja.add_child(EstiloInterfaz.etiqueta("EQUIPO  [C]", 12, EstiloInterfaz.TEXTO_SUAVE))
+	caja.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 12, EstiloInterfaz.TEXTO_SUAVE), "EQUIPO  [C]", "EQUIPO  [Select]"))
 	for i in 3:
 		# Cada ficha va con el retrato del personaje a su izquierda.
 		var fila := HBoxContainer.new()

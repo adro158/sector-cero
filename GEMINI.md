@@ -107,6 +107,7 @@ signal anclas_pendientes(personajes: Array)
 signal escudo_final(suceso: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
+signal dispositivo_cambiado(con_mando: bool)
 ```
 
 La interfaz **escucha** casi todas y **emite** tres: `mejora_seleccionada`

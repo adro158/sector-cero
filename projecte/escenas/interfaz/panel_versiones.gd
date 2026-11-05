@@ -47,7 +47,7 @@ func _ready() -> void:
 	desplazable.add_child(_lista)
 	caja.add_child(desplazable)
 
-	_volver = EstiloInterfaz.boton("VOLVER  [Esc]", cerrar)
+	_volver = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]") as Button
 	_volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_volver)
 

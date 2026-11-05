@@ -93,3 +93,6 @@ signal escudo_final(suceso: String)
 ## daño de su herramienta en toda la partida) y donde (String: dónde acabó).
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
+## Si se juega con el mando (true) o con teclado y ratón (false): lo emite
+## globales/entrada.gd al cambiar, para que la interfaz enseñe sus botones.
+signal dispositivo_cambiado(con_mando: bool)
