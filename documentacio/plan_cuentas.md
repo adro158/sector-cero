@@ -3,12 +3,24 @@
 Propuesta del 05/11/2026 (sesión 21).
 
 **Estado (05/11, por la tarde): programado y probado contra un servidor
-local que imita a Supabase, sin subir a GitHub.** Hecho con las decisiones
-propuestas abajo: entrar es opcional y no hay ranking mundial todavía. Para
-que funcione de verdad falta el paso 1: Adam crea el proyecto, pega el SQL y
-pone la URL y la clave publicable en `URL` y `CLAVE` de
-`projecte/globales/cuenta.gd`. Mientras estén vacías, el juego dice que las
-cuentas no están activadas y se juega como invitado, como siempre.
+local que imita a Supabase, sin subir a GitHub.** Para que funcione de
+verdad falta el paso 1: Adam crea el proyecto, pega el SQL y pone la URL y la
+clave publicable en `URL` y `CLAVE` de `projecte/globales/cuenta.gd`.
+Mientras estén vacías, el juego dice que las cuentas no están activadas y se
+juega como invitado, como siempre.
+
+**Decisiones de Adam (05/11):**
+- **Al abrir el juego sale la bienvenida** (entrar o crear cuenta), con
+  **JUGAR SIN CUENTA** para quien no quiera o no tenga conexión.
+- **Quien entra una vez, entra solo después:** la sesión se recuerda (nunca
+  la contraseña) hasta SALIR DE LA CUENTA.
+- **En la cuenta se guarda:**
+  - cada partida
+  - los récords y las estadísticas, calculados en el servidor
+  - las opciones: menos pantalla completa, límite de fps y aviso de
+    versiones, que son de cada ordenador
+  - un inventario vacío, preparado para las skins
+- Sin ranking mundial todavía.
 
 ## Qué queremos
 
@@ -88,10 +100,15 @@ create table public.partidas (
   tiempo real not null check (tiempo >= 0),
   nivel int not null check (nivel >= 1),
   eliminados int not null check (eliminados >= 0),
-  personaje text not null,
+  -- Con tope de tamaño: sin él, alguien con la clave del juego podría subir
+  -- textos enormes y llenar los 500 MB del plan gratis (revisión del 05/11).
+  personaje text not null check (char_length(personaje) <= 20),
   dificultad text not null check (dificultad in ('facil', 'media', 'dificil')),
-  donde text,
-  version text
+  donde text check (char_length(donde) <= 40),
+  version text check (char_length(version) <= 16),
+  -- La misma partida no se guarda dos veces: si se pierde la respuesta del
+  -- servidor, el juego la vuelve a mandar y recibe un 409.
+  unique (usuario, jugada)
 );
 
 -- Seguridad por filas (RLS): sin una regla que lo permita, nadie puede nada.
@@ -106,10 +123,15 @@ create policy "leer partidas" on public.partidas for select using (true);
 create policy "añadir mis partidas" on public.partidas for insert
   to authenticated with check (usuario = (select auth.uid()));
 
--- Al crear una cuenta, su perfil, con el nombre que manda el juego.
+-- Al crear una cuenta, su perfil, con el nombre que manda el juego. El email
+-- tiene que ser el que sale del nombre (como lo hace el juego): si no, con la
+-- API alguien podría ocupar dos nombres con una cuenta (revisión del 05/11).
 create function public.crear_perfil() returns trigger
   language plpgsql security definer set search_path = '' as $$
 begin
+  if new.email is distinct from lower(new.raw_user_meta_data ->> 'nombre') || '@sectorcero.app' then
+    raise exception 'el email no corresponde al nombre';
+  end if;
   insert into public.perfiles (id, nombre)
   values (new.id, new.raw_user_meta_data ->> 'nombre');
   return new;
@@ -117,6 +139,48 @@ end;
 $$;
 create trigger al_crear_cuenta after insert on auth.users
   for each row execute function public.crear_perfil();
+
+-- Los récords y las estadísticas de cada jugador, calculados de sus
+-- partidas (no se guardan aparte: así nunca se contradicen).
+create view public.estadisticas with (security_invoker = true) as
+select usuario,
+  count(*) as partidas,
+  count(*) filter (where victoria) as victorias,
+  max(tiempo) as mejor_tiempo,
+  max(nivel) as mejor_nivel,
+  max(eliminados) as mas_eliminados
+from public.partidas
+group by usuario;
+
+-- Las opciones del jugador (volumen, CRT, texto grande...), para tenerlas
+-- igual en cualquier ordenador donde entre. Solo las suyas.
+create table public.opciones (
+  usuario uuid primary key default auth.uid() references public.perfiles (id) on delete cascade,
+  -- Unas pocas opciones ocupan menos de 1 KB: 4 KB de tope sobra.
+  datos jsonb not null default '{}' check (pg_column_size(datos) < 4096),
+  actualizado timestamptz not null default now()
+);
+alter table public.opciones enable row level security;
+create policy "leer mis opciones" on public.opciones for select
+  to authenticated using (usuario = (select auth.uid()));
+create policy "crear mis opciones" on public.opciones for insert
+  to authenticated with check (usuario = (select auth.uid()));
+create policy "cambiar mis opciones" on public.opciones for update
+  to authenticated using (usuario = (select auth.uid()))
+  with check (usuario = (select auth.uid()));
+
+-- Para las skins, más adelante: lo que tiene cada jugador. Se puede leer
+-- lo propio, pero no hay regla para añadir: las skins solo las podrá dar el
+-- servidor (una Edge Function), para que no se puedan trucar desde el juego.
+create table public.inventario (
+  usuario uuid not null references public.perfiles (id) on delete cascade,
+  objeto text not null,
+  conseguido timestamptz not null default now(),
+  primary key (usuario, objeto)
+);
+alter table public.inventario enable row level security;
+create policy "leer mi inventario" on public.inventario for select
+  to authenticated using (usuario = (select auth.uid()));
 ```
 
 ## Paso 3: en el juego (lo hace Claude)

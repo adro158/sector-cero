@@ -599,9 +599,16 @@ al recibir `partida_terminada`, sube la partida. Sin conexión, la partida esper
 en una cola en `user://cuenta.cfg` y se sube al volver. La clave del juego es la
 publicable de Supabase, que está hecha para ir en el cliente: la seguridad está
 en las reglas por filas (RLS) del SQL, que solo dejan añadir partidas a la
-cuenta propia y no dejan cambiarlas. Entrar es opcional: sin cuenta se juega
-como invitado, con los récords de siempre. Se probó contra un servidor local en
-PowerShell que imita su API, también la regla de las partidas propias.
+cuenta propia y no dejan cambiarlas. Al abrir el juego sale una bienvenida para
+entrar o crear la cuenta, con JUGAR SIN CUENTA: sin cuenta se juega como
+invitado, con los récords de siempre. En la cuenta también van los récords (una
+vista del SQL que los calcula de las partidas, para que nunca se contradigan),
+las opciones (`cuenta_opciones.gd`: al entrar se bajan, y cada cambio se sube a
+los 2 s, menos las que son del ordenador) y un inventario vacío para las skins,
+sin regla para añadir: las skins solo las podrá dar el servidor. Si dos
+peticiones necesitan renovar la sesión a la vez, la segunda espera a la
+primera, porque cada token de renovación vale una vez. Se probó contra un
+servidor local en PowerShell que imita su API, también las reglas de lo propio.
 
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el

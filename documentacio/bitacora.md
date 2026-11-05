@@ -5086,3 +5086,81 @@ están activadas y todo sigue como antes.
   - los ficheros de la VM quedaron como estaban
 - **Falta:** el proyecto de Supabase de verdad (lo crea Adam) y probarlo
   contra él; sobre todo que acepte el dominio inventado del email.
+
+### Las cuentas para todos: bienvenida, opciones y revisión
+
+Adam: «que cuando abras el juego te salga lo típico de registrarse o iniciar
+sesión», y que en la cuenta se guarde todo de esa persona, para las skins.
+
+- **Decisiones de Adam** (ventana de preguntas, todo lo recomendado):
+  - la bienvenida al abrir, con JUGAR SIN CUENTA (sin internet o con el
+    proyecto pausado se juega igual)
+  - la sesión se recuerda siempre
+  - se guardan también los récords, las opciones y un inventario para las
+    skins
+- **Hecho:**
+  - **SQL nuevo** (en `plan_cuentas.md`):
+    - la vista `estadisticas` (récords calculados de las partidas, para
+      que no se contradigan)
+    - la tabla `opciones`, con reglas de leer, crear y cambiar solo las
+      propias
+    - la tabla `inventario`, sin regla para añadir: las skins solo las
+      podrá dar el servidor
+  - **`cuenta.gd`:**
+    - `mis_estadisticas()`
+    - `pedir()` público, que renueva la sesión si va a caducar
+    - una sola renovación a la vez (cada token de renovación vale una vez)
+    - al arrancar con sesión, siempre se renueva
+  - **`cuenta_opciones.gd` (nuevo):**
+    - al entrar baja las opciones de la cuenta, o sube las de este
+      ordenador si no tiene
+    - cada cambio se sube a los 2 s
+    - no viajan pantalla completa, límite de fps ni aviso de versiones,
+      que son del ordenador
+  - **`panel_cuenta.gd`:** el modo bienvenida (título, JUGAR SIN CUENTA, se
+    cierra al entrar) y la línea de récords
+  - **`menu_principal.gd`:** abre la bienvenida una vez al arrancar si no
+    hay sesión
+- **Fallos vistos al probar:**
+  - si acababa una partida mientras se subía otra, la nueva esperaba al
+    siguiente aviso
+  - al arrancar, la sesión solo se renovaba si había algo en la cola
+- **Revisión con agentes** (workflow; 2 revisores, de seguridad y de
+  lógica, y un escéptico por hallazgo): 15 hallazgos, **10 confirmados y
+  arreglados**:
+  - **SQL:**
+    - topes de tamaño en partidas y opciones (si no, se podían llenar
+      los 500 MB gratis)
+    - el trigger exige que el email salga del nombre
+    - `unique (usuario, jugada)`
+  - **`cuenta.gd`:**
+    - solo un 400 o 401 al renovar cierra la sesión (un 503 o un 429
+      ya no te echan)
+    - una renovación que vuelve después de salir no te vuelve a meter
+    - un 409 al subir es «ya estaba», sin duplicar
+    - los 5xx al entrar ya no dicen «ese usuario ya existe»
+    - `supabase=` solo en depuración
+  - **Opciones:** se bajan otra vez si fallaron, y no se suben hasta
+    haberlas bajado.
+  - **Menú:** el selector de dificultad y la ventana de opciones siguen a
+    las opciones bajadas.
+  - **Bienvenida:** al cerrarla, el foco va a JUGAR.
+  - **Enter:** dos Enter ya no mandan dos peticiones.
+  - **Descartados** por el escéptico: el dominio del email (con la
+    confirmación apagada no se manda ningún correo); las partidas
+    falsificables (ya apuntado para las skins); la cola bloqueada por una
+    partida rechazada; y las corrutinas tras liberar el menú (Godot las
+    corta solo).
+- **Visto al probar el `unique`:** la hora de la partida tenía solo
+  segundos, y dos acabadas en el mismo segundo se tomaban por la misma. Ahora
+  va con la fracción de segundo (`_ahora()`).
+- **Probado:** el servidor falso ampliado (estadísticas, opciones, 409, el
+  trigger y un modo «caído» con 503) y **26 comprobaciones, todas bien**.
+  Además:
+  - captura de la bienvenida al abrir el menú
+  - headless y las partidas del minuto 10 y 15 iguales; 16 clases
+  - los ficheros de la VM, intactos
+- **Sin subir a GitHub** (Adam). Falta el proyecto de Supabase de verdad.
+- **Pedido para después:** el plan para que Adam y Alan trabajen cada uno
+  con su Claude Code (Alan deja Gemini). Contado en el chat; falta que Adam
+  decida y aplicarlo.

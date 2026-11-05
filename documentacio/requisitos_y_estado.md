@@ -196,9 +196,15 @@ panel de la C también se achicó (retratos a 32 px, unos 245 × 165 en vez de
 Adam y Alan quieren que cada jugador tenga cuenta (usuario y contraseña) con
 todas sus partidas, pensando en logros y un pase de batalla más adelante.
 Plan completo, con el SQL y los pasos, en `documentacio/plan_cuentas.md`.
-Programado con lo propuesto (entrar opcional, sin ranking mundial) y probado
-contra un servidor local que imita a Supabase. **Adam pidió no subirlo a
-GitHub todavía.** Falta:
+Programado y probado contra un servidor local que imita a Supabase:
+- al abrir el juego, la bienvenida (entrar, crear cuenta o JUGAR SIN
+  CUENTA)
+- la sesión recordada
+- en la cuenta: las partidas, los récords (calculados en el servidor), las
+  opciones y un inventario vacío para las skins
+
+Sin ranking mundial todavía. **Adam pidió no subirlo a GitHub todavía.**
+Falta:
 - que Adam cree el proyecto de Supabase, pegue el SQL y ponga la URL y la
   clave publicable en `globales/cuenta.gd` (Claude no puede crear cuentas)
 - probarlo contra el Supabase de verdad (sobre todo que acepte el dominio
