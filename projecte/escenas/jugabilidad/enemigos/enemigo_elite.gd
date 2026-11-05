@@ -19,6 +19,9 @@ const RADIO_AURA := 150.0
 const RADIO_EXPLOSION := 130.0
 ## Segundos de aviso entre la muerte de un explosivo y su explosión.
 const AVISO_EXPLOSION := 0.8
+## Lo que ocupan en vertical el nombre, la barra y los iconos de encima: con
+## otro élite a menos de esto, sus nombres se pisarían (_nombre_tapado).
+const ALTO_NOMBRES := 50.0
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
@@ -65,6 +68,12 @@ func _ready() -> void:
 
 func activo() -> bool:
 	return _activo or _cuenta_atras > 0.0 or _muerte > 0.0
+
+
+## Vivo y persiguiendo: sin contar la muerte ni el aviso de la explosión, en
+## los que ya no lleva el nombre encima.
+func vivo() -> bool:
+	return _activo
 
 
 func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
@@ -233,8 +242,28 @@ func _draw() -> void:
 	var arriba := Vector2(0.0, -datos.tamano * 0.5 - 20.0)
 	BarraVida.dibujar(self, arriba, 70.0, _salud.vida() / _salud.vida_maxima, datos.color)
 	# Caja de texto de 240 px centrada: caben dos afijos con nombre largo.
-	draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
+	if not _nombre_tapado():
+		draw_string(ThemeDB.fallback_font, Vector2(-120.0, arriba.y - 6.0), descripcion(), HORIZONTAL_ALIGNMENT_CENTER, 240.0, 12, datos.color)
 	Dibujo.iconos(self, _afijos, arriba.y - 38.0)
+
+
+## Con dos élites juntos los nombres se pisaban y no se leía ninguno: solo lo
+## escribe el que está más cerca del jugador. El otro sigue con sus iconos y su
+## barra, que también dicen qué lleva. Se pisan si sus textos se tocan a lo
+## ancho y están a menos de ALTO_NOMBRES en vertical.
+func _nombre_tapado() -> bool:
+	var fuente := ThemeDB.fallback_font
+	var mi_ancho := fuente.get_string_size(descripcion(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
+	var mi_distancia := global_position.distance_to(_jugador.global_position)
+	for otro in get_tree().get_nodes_in_group("elites"):
+		if otro == self or not otro.vivo():
+			continue
+		var separacion: Vector2 = (otro.global_position - global_position).abs()
+		var su_ancho := fuente.get_string_size(otro.descripcion(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
+		var se_pisan := separacion.x < (mi_ancho + su_ancho) / 2.0 and separacion.y < ALTO_NOMBRES
+		if se_pisan and otro.global_position.distance_to(_jugador.global_position) < mi_distancia:
+			return true
+	return false
 
 
 func _dibujar_encima() -> void:

@@ -3,7 +3,9 @@ extends Control
 ## Ventana que sale cuando cae el personaje activo y quedan otros: se elige
 ## quién sigue con click o con el número de su tecla (1, 2 o 3, su puesto en
 ## el equipo). Avisa con personaje_elegido; la pausa la pone y la quita la
-## jugabilidad, como en el panel de mejoras.
+## jugabilidad, como en el panel de mejoras. Si solo queda uno, no hay nada
+## que elegir: sigue él sin ventana (desde el 05/11; antes salía con una sola
+## opción).
 
 var _ventana: ColorRect
 var _titulo: Label
@@ -35,9 +37,22 @@ func _ready() -> void:
 	_ventana.visible = false
 	add_child(_ventana)
 	BusEventos.personaje_caido.connect(_al_caer)
+	# Se cierra con cualquier elección, también la que no sale de aquí (la del
+	# bot del simulador, o la de un solo superviviente): si no, se quedaba
+	# abierta la ventana de la caída anterior.
+	BusEventos.personaje_elegido.connect(func(_indice): _ventana.visible = false)
 
 
 func _al_caer(personajes: Array, caido: int) -> void:
+	var en_pie := []
+	for i in personajes.size():
+		if not personajes[i].caido:
+			en_pie.append(i)
+	if en_pie.size() == 1:
+		# Diferido: los demás que escuchan personaje_caido (el sonido, la barra
+		# del equipo) lo reciben antes de que entre el siguiente.
+		BusEventos.personaje_elegido.emit.call_deferred(en_pie[0])
+		return
 	_titulo.text = "%s HA CAÍDO" % personajes[caido].personaje.nombre.to_upper()
 	var primero: Button = null
 	for i in _botones.size():
@@ -66,5 +81,4 @@ func _unhandled_input(evento: InputEvent) -> void:
 func _elegir(indice: int) -> void:
 	if indice >= _botones.size() or not _botones[indice].visible:
 		return
-	_ventana.visible = false
 	BusEventos.personaje_elegido.emit(indice)

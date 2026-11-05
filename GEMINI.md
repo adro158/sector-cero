@@ -132,7 +132,7 @@ Detalles que la interfaz tiene que respetar:
   los tres (personaje, arma, vida, maxima, caido) y el índice del activo. Si cae
   el activo y quedan otros, la jugabilidad pausa, anima la caída (0,64 s, en
   pausa) y emite `personaje_caido`; la interfaz contesta con
-  `personaje_elegido(indice)`. Al caer los tres, después de la derrota
+  `personaje_elegido(indice)` (si solo queda uno, sin enseñar la ventana). Al caer los tres, después de la derrota
   (0,96 s), llega `partida_terminada`. Acciones de input: `cambiar_personaje` (E, Tab, Y del
   mando) pasa al siguiente y `personaje_anterior` (Q) vuelve al anterior.
 - **Ulti.** Cada personaje carga la suya matando; `ulti_cambiada` trae la carga
