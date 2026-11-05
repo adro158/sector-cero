@@ -7,8 +7,13 @@ extends Control
 ## hasta el 26/10 era una línea de texto de este script.
 ##
 ## Solo escucha el bus: equipo_cambiado trae la vida de todos.
+##
+## Desde el 05/11, más pequeño (Adam: se veía muy grande): retratos a 32 px,
+## la mitad justa de su dibujo para que los píxeles queden enteros, y la
+## ficha más estrecha, en tres líneas cortas.
 
-const ANCHO_FICHA := 210.0
+const ANCHO_FICHA := 170.0
+const LADO_RETRATO := 32.0
 
 var _estado: Array = []
 var _activo := 0
@@ -27,9 +32,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	_panel = PanelContainer.new()
-	_panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(Color(EstiloInterfaz.NEON, 0.5), 10))
-	# A la derecha y a media altura: arriba está la ficha del enemigo y abajo
-	# el panel técnico (F3).
+	_panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(Color(EstiloInterfaz.NEON, 0.5), 6))
+	# A la derecha y a media altura: arriba está la ficha del enemigo.
 	_panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
 	_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
@@ -37,16 +41,19 @@ func _ready() -> void:
 	_panel.visible = false
 	add_child(_panel)
 	var caja := VBoxContainer.new()
-	caja.add_theme_constant_override("separation", 8)
+	caja.add_theme_constant_override("separation", 6)
 	_panel.add_child(caja)
-	caja.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 12, EstiloInterfaz.TEXTO_SUAVE), "EQUIPO  [C]", "EQUIPO  [Select]"))
+	caja.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 11, EstiloInterfaz.TEXTO_SUAVE), "EQUIPO  [C]", "EQUIPO  [Select]"))
 	for i in 3:
 		# Cada ficha va con el retrato del personaje a su izquierda.
 		var fila := HBoxContainer.new()
-		fila.add_theme_constant_override("separation", 8)
+		fila.add_theme_constant_override("separation", 6)
 		var retrato := TextureRect.new()
 		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		retrato.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+		retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		retrato.custom_minimum_size = Vector2(LADO_RETRATO, LADO_RETRATO)
+		retrato.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		fila.add_child(retrato)
 		var ficha := _crear_ficha()
 		ficha.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -59,21 +66,23 @@ func _ready() -> void:
 	BusEventos.ulti_cambiada.connect(func(cargas, _activo): _ultis = cargas)
 
 
-## Una ficha: nombre y estado, barra de vida y una línea de datos.
+## Una ficha: nombre y estado, barra de vida, la vida y la ulti, y la
+## herramienta y lo que la resiste el malware.
 func _crear_ficha() -> VBoxContainer:
 	var ficha := VBoxContainer.new()
-	ficha.add_theme_constant_override("separation", 2)
+	ficha.add_theme_constant_override("separation", 1)
 	ficha.custom_minimum_size.x = ANCHO_FICHA
-	ficha.add_child(EstiloInterfaz.etiqueta("", 13))
+	ficha.add_child(EstiloInterfaz.etiqueta("", 12))
 	var barra := ProgressBar.new()
-	barra.custom_minimum_size = Vector2(ANCHO_FICHA, 6)
+	barra.custom_minimum_size = Vector2(ANCHO_FICHA, 4)
 	barra.show_percentage = false
 	var fondo := StyleBoxFlat.new()
 	fondo.bg_color = Color(0.1, 0.15, 0.2)
 	barra.add_theme_stylebox_override("background", fondo)
 	barra.add_theme_stylebox_override("fill", StyleBoxFlat.new())
 	ficha.add_child(barra)
-	ficha.add_child(EstiloInterfaz.etiqueta("", 11, EstiloInterfaz.TEXTO_SUAVE))
+	ficha.add_child(EstiloInterfaz.etiqueta("", 10, EstiloInterfaz.TEXTO_SUAVE))
+	ficha.add_child(EstiloInterfaz.etiqueta("", 10, EstiloInterfaz.TEXTO_SUAVE))
 	return ficha
 
 
@@ -105,8 +114,7 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	# Caído, en gris y apagado.
 	retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE
 	var titulo: Label = ficha.get_child(0)
-	var ulti := "ULTI LISTA" if _ulti(i) >= 1.0 else "ulti %d %%" % roundi(_ulti(i) * 100.0)
-	titulo.text = "%s  %s  ·  %s" % [personaje.nombre.to_upper(), estado, ulti]
+	titulo.text = "%s  ·  %s" % [personaje.nombre.to_upper(), estado]
 	titulo.add_theme_color_override("font_color", EstiloInterfaz.TEXTO_SUAVE if datos.caido else personaje.color)
 
 	var barra: ProgressBar = ficha.get_child(1)
@@ -118,7 +126,9 @@ func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
 	# La resistencia se lee del nodo del malware, como el panel técnico: cambia
 	# cada 20 s y no tiene señal en el bus.
 	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(datos.arma)
-	ficha.get_child(2).text = "%d / %d · %s · resiste %d %%" % [ceili(datos.vida), ceili(datos.maxima),datos.arma.nombre, roundi(resistencia * 100.0)]
+	var ulti := "ULTI LISTA" if _ulti(i) >= 1.0 else "ulti %d %%" % roundi(_ulti(i) * 100.0)
+	ficha.get_child(2).text = "%d / %d  ·  %s" % [ceili(datos.vida), ceili(datos.maxima), ulti]
+	ficha.get_child(3).text = "%s  ·  resiste %d %%" % [datos.arma.nombre, roundi(resistencia * 100.0)]
 
 
 func _ulti(indice: int) -> float:
