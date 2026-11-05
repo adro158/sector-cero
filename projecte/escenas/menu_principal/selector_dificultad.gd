@@ -38,6 +38,14 @@ func _ready() -> void:
 	_explicacion.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_explicacion)
 	_mostrar(Dificultad.actual())
+	# Si cambia por otro lado (al entrar en la cuenta se bajan sus opciones,
+	# cuenta_opciones.gd), el selector la sigue.
+	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)
+
+
+func _al_cambiar_opcion(clave: String, valor: Variant) -> void:
+	if clave == "dificultad":
+		_mostrar(valor)
 
 
 func _elegir(clave: String) -> void:

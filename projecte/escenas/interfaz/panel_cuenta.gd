@@ -2,8 +2,12 @@ extends Control
 
 ## Ventana de la cuenta, en el menú (05/11, documentacio/plan_cuentas.md). Sin
 ## cuenta: usuario, contraseña, ENTRAR y CREAR CUENTA, y que sin ella se juega
-## como invitado. Con cuenta: el nombre, las últimas partidas subidas y SALIR
-## DE LA CUENTA. Lo que habla con el servidor lo hace globales/cuenta.gd.
+## como invitado. Con cuenta: el nombre, sus récords, las últimas partidas
+## subidas y SALIR DE LA CUENTA. Lo que habla con el servidor lo hace
+## globales/cuenta.gd.
+##
+## Al abrir el juego sin una sesión guardada sale sola, como bienvenida (Adam,
+## 05/11): con JUGAR SIN CUENTA en vez de VOLVER, y se cierra al entrar.
 ##
 ## Sin class_name: lo crea el menú con preload.
 
@@ -16,11 +20,16 @@ var _formulario: VBoxContainer
 var _usuario: LineEdit
 var _contrasena: LineEdit
 var _botones: Array[Button] = []
+var _titulo: Label
+var _explicacion: Label
 var _dentro: VBoxContainer
 var _saludo: Label
+var _records: Label
 var _lista: VBoxContainer
 var _estado: Label
 var _volver: Button
+var _sin_cuenta: Button
+var _bienvenida := false
 
 
 func _ready() -> void:
@@ -28,10 +37,11 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("CUENTA", 36, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
-	caja.add_child(_parrafo("Con una cuenta, tus partidas se guardan en internet. Sin ella juegas como invitado y tus récords se quedan en este ordenador.", EstiloInterfaz.TEXTO_SUAVE))
+	_titulo = EstiloInterfaz.etiqueta("CUENTA", 36, EstiloInterfaz.NEON)
+	_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(_titulo)
+	_explicacion = _parrafo("", EstiloInterfaz.TEXTO_SUAVE)
+	caja.add_child(_explicacion)
 
 	_formulario = VBoxContainer.new()
 	_formulario.add_theme_constant_override("separation", 10)
@@ -55,6 +65,9 @@ func _ready() -> void:
 	_saludo = EstiloInterfaz.etiqueta("", 20, EstiloInterfaz.VICTORIA)
 	_saludo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_dentro.add_child(_saludo)
+	_records = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.NEON)
+	_records.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_dentro.add_child(_records)
 	_dentro.add_child(EstiloInterfaz.etiqueta("TUS ÚLTIMAS PARTIDAS", 14, EstiloInterfaz.TEXTO_SUAVE))
 	_lista = VBoxContainer.new()
 	_dentro.add_child(_lista)
@@ -68,6 +81,9 @@ func _ready() -> void:
 	_volver = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]") as Button
 	_volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_volver)
+	_sin_cuenta = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar, 300), "JUGAR SIN CUENTA  [Esc]", "JUGAR SIN CUENTA  [B]") as Button
+	_sin_cuenta.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	caja.add_child(_sin_cuenta)
 
 	add_child(EstiloInterfaz.ventana_centrada(caja))
 	visible = false
@@ -79,7 +95,14 @@ func _al_cambiar_sesion(_nombre: String) -> void:
 		_mostrar()
 
 
-func abrir() -> void:
+## bienvenida: la que sale sola al abrir el juego.
+func abrir(bienvenida := false) -> void:
+	_bienvenida = bienvenida
+	_titulo.text = "BIENVENIDO" if bienvenida else "CUENTA"
+	_explicacion.text = "Entra o crea una cuenta y se guardarán en internet tus partidas, tus récords y tus opciones (y, más adelante, tus skins). También puedes jugar sin cuenta." if bienvenida \
+		else "Con una cuenta, tus partidas, tus récords y tus opciones se guardan en internet. Sin ella juegas como invitado y todo se queda en este ordenador."
+	_volver.visible = not bienvenida
+	_sin_cuenta.visible = bienvenida
 	visible = true
 	_estado.text = ""
 	_mostrar()
@@ -114,6 +137,10 @@ func _mostrar() -> void:
 
 
 func _enviar(crear: bool) -> void:
+	# Enter en la contraseña no mira si los botones están desactivados: sin
+	# esto, dos Enter seguidos mandaban dos peticiones a la vez.
+	if _botones[0].disabled:
+		return
 	for boton in _botones:
 		boton.disabled = true
 	_estado.add_theme_color_override("font_color", EstiloInterfaz.TEXTO_SUAVE)
@@ -130,7 +157,11 @@ func _enviar(crear: bool) -> void:
 	_estado.text = error
 	if error == "":
 		_contrasena.clear()
-		_mostrar()
+		# En la bienvenida, a jugar; desde el botón CUENTA, se ve la cuenta.
+		if _bienvenida:
+			cerrar()
+		else:
+			_mostrar()
 
 
 func _salir() -> void:
@@ -143,6 +174,12 @@ func _cargar_partidas() -> void:
 		hijo.queue_free()
 	var cargando := EstiloInterfaz.etiqueta("Cargando...", 13, EstiloInterfaz.TEXTO_SUAVE)
 	_lista.add_child(cargando)
+	_records.text = ""
+	var records: Dictionary = await Cuenta.actual.mis_estadisticas()
+	if not records.is_empty():
+		var mejor := int(records.mejor_tiempo)
+		_records.text = "%d partidas  ·  %d victorias  ·  mejor tiempo %02d:%02d  ·  nivel %d  ·  %d eliminados" % [
+			records.partidas, records.victorias, mejor / 60, mejor % 60, records.mejor_nivel, records.mas_eliminados]
 	var partidas: Array = await Cuenta.actual.mis_partidas()
 	if not is_instance_valid(cargando):
 		return

@@ -127,6 +127,11 @@ func _deslizador(rejilla: GridContainer, texto: String, clave: String) -> void:
 	deslizador.step = 0.05
 	deslizador.value = GestorGuardado.opcion(clave)
 	deslizador.value_changed.connect(func(valor: float): GestorGuardado.cambiar_opcion(clave, valor))
+	# Si la opción cambia por otro lado (las de la cuenta, cuenta_opciones.gd),
+	# el deslizador la sigue, sin volver a guardarla.
+	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
+		if cambiada == clave:
+			deslizador.set_value_no_signal(valor))
 	rejilla.add_child(deslizador)
 
 
@@ -161,6 +166,9 @@ func _selector(rejilla: GridContainer, texto: String, clave: String, valores: Ar
 		GestorGuardado.cambiar_opcion(clave, valores[siguiente])
 		escribir.call()
 	escribir.call()
+	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, _valor: Variant):
+		if cambiada == clave:
+			escribir.call())
 	boton.pressed.connect(mover.bind(1))
 	boton.gui_input.connect(func(evento: InputEvent):
 		if evento.is_action_pressed("ui_right"):

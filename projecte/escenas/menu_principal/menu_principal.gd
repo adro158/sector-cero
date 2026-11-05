@@ -27,6 +27,9 @@ var _versiones: PanelVersiones
 var _cuenta: Control
 ## «Juegas como invitado» o el nombre de la cuenta (05/11).
 var _quien: Label
+## La bienvenida de las cuentas sale una vez al abrir el juego, no cada vez
+## que se vuelve al menú. Estática: dura mientras el juego está abierto.
+static var _bienvenida_vista := false
 var _version: Label
 var _actualizar: Button
 var _jugar_boton: Button
@@ -99,6 +102,14 @@ func _ready() -> void:
 	_cuenta = PanelCuenta.new()
 	_cuenta.cerrado.connect(cuenta.grab_focus)
 	add_child(_cuenta)
+	# Sin una sesión guardada, al abrir el juego: entrar, registrarse o jugar
+	# sin cuenta. Con las cuentas sin activar (sin proyecto de Supabase), no.
+	if not _bienvenida_vista and Cuenta.actual.activada() and Cuenta.actual.nombre == "":
+		_bienvenida_vista = true
+		_cuenta.abrir.call_deferred(true)
+		# Al cerrarla, el foco a JUGAR (y no a CUENTA, que la volvería a abrir
+		# con Enter o A). Se conecta después: va la última y gana, solo esa vez.
+		_cuenta.cerrado.connect(jugar.grab_focus, CONNECT_ONE_SHOT)
 	jugar.grab_focus()
 
 
