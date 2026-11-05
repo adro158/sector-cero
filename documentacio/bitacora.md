@@ -8,6 +8,10 @@ porqué, problemas encontrados, soluciones aplicadas y uso de IA.
 
 Se actualiza al terminar cada sesión de trabajo, antes de hacer el commit.
 
+> **Desde el 06/11/2026 ya no se escribe aquí:** cada sesión va en su propio
+> fichero en `bitacora/` (ver `bitacora/README.md`), para que Adam y Alan
+> puedan escribirla a la vez. Esto es la historia de las sesiones 1 a 21.
+
 ---
 
 ## Sesión 1 — 18/09/2026
@@ -5164,3 +5168,43 @@ sesión», y que en la cuenta se guarde todo de esa persona, para las skins.
 - **Pedido para después:** el plan para que Adam y Alan trabajen cada uno
   con su Claude Code (Alan deja Gemini). Contado en el chat; falta que Adam
   decida y aplicarlo.
+
+### El repositorio para dos Claude Code
+
+Adam: Alan deja Gemini y pasa a Claude Code, y para lo que venga (como el
+multijugador) quieren trabajar cada uno con el suyo «sin pisarnos y ser más
+eficientes».
+
+- **El problema:** el repo estaba pensado para una persona con Claude
+  (Adam) y otra con Gemini. `CLAUDE.md` hablaba siempre de Adam (sus frases,
+  sus máquinas, «el único push es a `main`»), y el contexto del juego estaba
+  en `GEMINI.md`.
+- **Decisiones de Adam** (ventana de preguntas, todo lo recomendado):
+  - los dos con ramas por tarea y Pull Requests (nadie sube a `main`)
+  - la bitácora en un fichero por sesión
+  - borrar la rama `feature/alan-arena-hud`
+- **Hecho:**
+  - **Contexto:** `GEMINI.md` pasa a `documentacio/equipo/contexto.md`
+    (con `git mv`, guarda su historia), sin la parte de ramas fijas.
+  - **`CLAUDE.md`:** común para los dos. Trabajo en equipo, comandos,
+    entorno, validación, versiones y cierre.
+  - **Fichas de cada persona:** `documentacio/equipo/adam.md` (sus
+    máquinas, sus frases y que él publica) y `alan.md` (con lo que tiene que
+    rellenar).
+  - **Reparto:** `documentacio/equipo/reparto.md`, quién es dueño de cada
+    sistema, los ficheros de paso y el ejemplo del multijugador.
+  - **Quién eres:** `CLAUDE.local.md` en cada ordenador (en `.gitignore`)
+    dice quién es y carga su ficha.
+  - **Skills del repo** (`.claude/skills/`): `/dia-nuevo`, `/validar`,
+    `/cerrar` y `/publicar`. Las frases clave de cada uno las llaman.
+  - **La Action `comprobar.yml`:** en cada PR y en `main`, importa,
+    arranca y juega dos partidas del simulador en Linux. Sale en rojo con
+    cualquier error de script.
+  - **Flujo:** `flujo_de_trabajo.md` con ramas, PR, issues y reglas.
+  - **Bitácora:** `documentacio/bitacora/` con su README. Este fichero
+    queda como historia hasta aquí.
+- **Falta (en GitHub, con el sí de Adam):**
+  - subir la rama y abrir el PR
+  - borrar `feature/alan-arena-hud`
+  - proteger `main` para que solo entre por PR con la comprobación en verde
+  - Alan, la primera vez: crear su `CLAUDE.local.md` y rellenar su ficha

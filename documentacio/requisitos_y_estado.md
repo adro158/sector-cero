@@ -211,12 +211,22 @@ Falta:
   inventado del email)
 - responder las preguntas abiertas del plan (ranking mundial, quién lo lleva)
 
-### Alan con Claude Pro (pendiente, cuando Adam lo pida)
+### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
-Alan se compra Claude Pro. Cuando todo esté hecho y subido, Adam pedirá
-ordenar el repositorio para que los dos trabajen por separado en el mismo
-GitHub (reparto de ficheros, ramas, instrucciones para su Claude). No
-empezar hasta que lo pida.
+Hecho en local:
+- `CLAUDE.md` común
+- las fichas en `documentacio/equipo/`
+- skills `/dia-nuevo`, `/validar`, `/cerrar` y `/publicar`
+- la Action `comprobar.yml`
+- ramas y Pull Requests para los dos
+- la bitácora por sesión en `documentacio/bitacora/`
+
+Detalle en la bitácora (sesión 21, «El repositorio para dos Claude Code»).
+Falta, con el sí de Adam:
+- subirlo y abrir el PR
+- borrar `feature/alan-arena-hud`
+- proteger `main`
+- que Alan cree su `CLAUDE.local.md` y rellene su ficha
 
 ### Para la entrega
 

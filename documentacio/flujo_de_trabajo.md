@@ -92,65 +92,60 @@ assets(arena): añadir texturas de suelo y paredes
 Un commit es una unidad de trabajo con sentido propio. Ni un commit por fichero,
 ni un commit semanal con todo mezclado.
 
-## Ramas
+## Ramas y Pull Requests (desde el 05/11/2026)
 
-Hay un único repositorio con dos ramas fijas que no se borran nunca:
+Hasta el 05/11 había dos ramas fijas: Adam trabajaba directamente en `main` y
+Alan en `feature/alan-arena-hud`, que Adam fusionaba al empezar cada clase.
+Al pasar los dos a Claude Code se cambió a ramas por tarea y Pull Requests,
+para poder trabajar a la vez en cosas grandes (como el multijugador) sin
+pisarse.
 
-- `main` — donde trabaja Adam. Es la versión del juego que se entrega.
-- `feature/alan-arena-hud` — donde trabaja Alan.
+**Nadie sube a `main` directamente.** Cada tarea:
 
-Como cada uno tiene sus propios ficheros, las dos ramas casi nunca chocan.
+1. **Rama nueva** desde `main` al día, con el nombre de quien la hace:
 
-**Al empezar la clase**, cada uno se baja lo que subió el otro.
+   ```
+   git switch main
+   git pull --ff-only
+   git switch -c adam/cuentas
+   ```
 
-Adam:
+2. **Commits** en esa rama, con la convención de arriba. Antes, `git status`:
+   Godot reescribe a veces ficheros al abrir el proyecto. Si sale uno que no
+   has tocado, se descarta con `git restore <fichero>`.
+3. **Subirla y abrir el PR**:
 
-```
-git switch main
-git pull
-git merge origin/feature/alan-arena-hud
-```
+   ```
+   git push -u origin adam/cuentas
+   gh pr create --base main
+   ```
 
-Alan:
+4. **La Action `comprobar.yml`** importa, arranca y juega dos partidas en cada
+   PR. Si sale en rojo, se arregla en la misma rama.
+5. **El otro lo revisa** (o su Claude, con `/code-review`).
+6. **Lo fusiona quien lo abrió**, con la comprobación en verde:
 
-```
-git switch feature/alan-arena-hud
-git pull
-git merge origin/main
-```
+   ```
+   gh pr merge --squash --delete-branch
+   ```
 
-Adam comprueba que el juego arranca después de fusionar. Si lo de Alan rompe
-algo, no se sube: se avisa para que lo arregle en su rama.
+Si `main` avanza mientras tu rama está abierta, tráetelo:
+`git switch <rama>` y `git merge main`.
 
-**Al terminar la clase**, cada uno commitea sus ficheros y sube su rama:
+Las tareas se apuntan como **issues** de GitHub, asignadas a quien las hace.
 
-```
-git status
-git add <tus ficheros>
-git commit -m "tipo(ámbito): descripción"
-git push
-```
-
-Antes del commit, mirar `git status`: Godot reescribe a veces ficheros al abrir
-el proyecto. Si sale modificado un fichero del otro que no has tocado, se
-descarta con `git restore <fichero>`.
-
-**Para ver en qué punto estáis**, este comando dibuja el historial de las dos
-ramas:
-
-```
-git log --graph --oneline --all
-```
-
-## Las tres reglas que importan
+## Las reglas que importan
 
 1. **`main` siempre tiene que poder ejecutarse.** Es la versión que se entrega:
-   si entra algo roto, el otro se lo baja y se queda bloqueado.
-2. **Cada uno commitea solo sus ficheros.** `projecte/escenas/juego.tscn` y
-   `projecte/project.godot` son de Adam: si Alan necesita cambiarlos, se lo pide.
-3. **Sincronizar en cada clase.** Bajar lo del otro al empezar y subir lo propio
-   al terminar. Cuanto más tiempo pasan las ramas sin juntarse, más duele
-   hacerlo.
+   por eso todo entra por un PR comprobado.
+2. **Cada sistema tiene un dueño** (`documentacio/equipo/reparto.md`). Si
+   necesitas cambiar algo de otro, se pide con una issue o un comentario.
+3. **Los ficheros de paso** (`project.godot`, `juego.tscn`,
+   `raiz_juego.tscn`, `bus_eventos.gd`, `CLAUDE.md`) van en PR pequeños y
+   aparte, que se fusionan antes que el resto.
+4. **Ramas cortas.** Cuanto más tiempo pasa una rama sin juntarse con `main`,
+   más duele hacerlo: mejor varios PR pequeños que uno enorme.
+5. **Las versiones las publica una sola persona** (Adam), desde `main`.
 
 ## Sobre la autoría
 

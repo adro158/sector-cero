@@ -5,6 +5,10 @@
 # Builds exportados: se entregan aparte, no se versionan
 /build/
 
+# Quién trabaja en cada ordenador (CLAUDE.md, «Con quién trabajas»): uno por
+# máquina, no se sube
+CLAUDE.local.md
+
 # OS junk files
 .DS_Store
 Thumbs.db
