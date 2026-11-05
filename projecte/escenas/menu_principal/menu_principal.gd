@@ -13,6 +13,8 @@ const SelectorDificultad := preload("res://escenas/menu_principal/selector_dific
 const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd")
+const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
+const Cuenta := preload("res://globales/cuenta.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
 ## panel de cuatro líneas, y el menú era casi todo texto.
@@ -22,6 +24,9 @@ var _reglas: PanelReglas
 var _opciones: PanelOpciones
 var _ranking: PanelRanking
 var _versiones: PanelVersiones
+var _cuenta: Control
+## «Juegas como invitado» o el nombre de la cuenta (05/11).
+var _quien: Label
 var _version: Label
 var _actualizar: Button
 var _jugar_boton: Button
@@ -55,6 +60,11 @@ func _ready() -> void:
 	var record := EstiloInterfaz.etiqueta(_texto_record(), 15, EstiloInterfaz.VICTORIA)
 	record.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(record)
+	_quien = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
+	_quien.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(_quien)
+	_escribir_quien(Cuenta.actual.nombre)
+	BusEventos.sesion_cambiada.connect(_escribir_quien)
 	caja.add_child(SelectorDificultad.new())
 
 	var botones := HBoxContainer.new()
@@ -67,7 +77,8 @@ func _ready() -> void:
 	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 160)
 	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 160)
 	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 160)
-	for boton in [jugar, reglas, ranking, opciones]:
+	var cuenta := EstiloInterfaz.boton("CUENTA", func(): _cuenta.abrir(), 150)
+	for boton in [jugar, reglas, ranking, opciones, cuenta]:
 		botones.add_child(boton)
 	# En el navegador no se puede cerrar el juego.
 	if not OS.has_feature("web"):
@@ -85,6 +96,9 @@ func _ready() -> void:
 	_ranking = PanelRanking.new()
 	_ranking.cerrado.connect(ranking.grab_focus)
 	add_child(_ranking)
+	_cuenta = PanelCuenta.new()
+	_cuenta.cerrado.connect(cuenta.grab_focus)
+	add_child(_cuenta)
 	jugar.grab_focus()
 
 
@@ -159,6 +173,10 @@ func _texto_record() -> String:
 		mejor.nivel, mejor.eliminados, resumen]
 
 
+func _escribir_quien(nombre: String) -> void:
+	_quien.text = "Juegas como invitado: con CUENTA, tus partidas se guardan en internet" if nombre == "" else "Cuenta: %s  ·  tus partidas se guardan en internet" % nombre
+
+
 func _abrir_reglas() -> void:
 	_reglas.abrir()
 
@@ -173,7 +191,7 @@ func _abrir_ranking() -> void:
 
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return

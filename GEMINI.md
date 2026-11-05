@@ -108,6 +108,7 @@ signal escudo_final(suceso: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 signal dispositivo_cambiado(con_mando: bool)
+signal sesion_cambiada(nombre: String)
 ```
 
 La interfaz **escucha** casi todas y **emite** tres: `mejora_seleccionada`
@@ -183,7 +184,11 @@ Nunca referenciar nodos de otro sistema por `NodePath`: se emite la señal.
 **El audio** (`GestorAudio`) no lo llama nadie: escucha el bus y los cambios de
 escena y decide qué suena. **La persistencia** (`GestorGuardado`) escucha
 `partida_terminada` para los récords, guarda las opciones y el ranking (las 10
-mejores partidas con nombre, que se escribe en la pantalla final).
+mejores partidas con nombre, que se escribe en la pantalla final). **Las
+cuentas** (`globales/cuenta.gd`, desde el 05/11; lo crea `Transicion`)
+también escuchan `partida_terminada` y suben la partida a Supabase si se ha
+entrado en una cuenta; avisan con `sesion_cambiada`. Plan y SQL en
+`documentacio/plan_cuentas.md`.
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
