@@ -97,7 +97,10 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.12** (29/10: los jefes más duros, y lo de la nube del 26 al 29/10: el lote 9 de la interfaz, el lote 10, el sonido nuevo y el tajo corriendo; novedades en `documentacio/novedades/v1.12.txt`). Antes, la **v1.11** (27/10: movimiento fluido, atacar
+**Publicado:** la última es la **v1.13** (05/11: el F3 rehecho, las
+opciones nuevas en pestañas, sin ventana con un solo superviviente y los
+nombres de los élites sin pisarse; novedades en
+`documentacio/novedades/v1.13.txt`). Antes, la **v1.12** (29/10: los jefes más duros, y lo de la nube del 26 al 29/10: el lote 9 de la interfaz, el lote 10, el sonido nuevo y el tajo corriendo; novedades en `documentacio/novedades/v1.12.txt`). Antes, la **v1.11** (27/10: movimiento fluido, atacar
 corriendo y el bastón del Mago; antes, la v1.10 del 24/10): instaladores de Windows y
 de Linux, los `.pck` que usa el lanzador y `version.json`, sin el juego
 suelto (decisión de Adam, sesión 18), y la web. Lleva NÚCLEO CERO a 0,5 en

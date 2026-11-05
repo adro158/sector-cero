@@ -4845,8 +4845,16 @@ apuntado»).
   puestos a mano, dos casi en el mismo sitio: se lee un solo «EXPLOSIVO».
 - El fichero de opciones del jugador quedó igual (hash).
 
+- **Publicada la v1.13** (Adam: «publícala», cambiando lo decidido el 02/11
+  de probarla antes en casa). Lleva el F3, las opciones nuevas y los dos
+  arreglos de hoy; novedades en `documentacio/novedades/v1.13.txt`. Sin
+  subir `EJECUTABLE_MINIMO`: `project.godot` igual que en la v1.12 y 16
+  clases. La Action acabó bien y subió los 7 ficheros (los dos
+  instaladores, los cuatro `.pck` y `version.json`).
+
 ### Siguiente paso
 
-- En casa: probar la v1.13 (F3 y opciones) y publicarla.
+- En casa: probar la v1.13 desde el lanzador (F3, opciones, «la pantalla» a
+  240 Hz). Si sale algo, una v1.14.
 - Simulador completo, 20 partidas por dificultad.
 - Al final de todo: vídeo y ensayo de la defensa.
