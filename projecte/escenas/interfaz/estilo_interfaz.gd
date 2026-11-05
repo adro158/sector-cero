@@ -110,6 +110,14 @@ static func tema() -> Theme:
 	_tema.set_stylebox("focus", "LineEdit", caja(NEON, 8))
 	_tema.set_stylebox("panel", "TooltipPanel", caja(NEON, 8))
 
+	# La lista que abren los selectores de las opciones (límite de fps,
+	# números de daño), con el panel y el neón de los botones.
+	_tema.set_stylebox("panel", "PopupMenu", caja(NEON, 6))
+	_tema.set_stylebox("hover", "PopupMenu", boton_estilo(Boton.ENCIMA, NEON))
+	_tema.set_color("font_color", "PopupMenu", TEXTO)
+	_tema.set_color("font_hover_color", "PopupMenu", Color.WHITE)
+	_tema.set_constant("v_separation", "PopupMenu", 8)
+
 	# Pestañas de la ventana de reglas.
 	_tema.set_stylebox("panel", "TabContainer", caja(Color(NEON, 0.35), 18))
 	_tema.set_stylebox("tab_selected", "TabContainer", _textura(PESTANAS, 0, Vector2(32, 24), 8, NEON, 10))

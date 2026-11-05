@@ -150,31 +150,30 @@ func _casilla(rejilla: GridContainer, texto: String, clave: String) -> void:
 	rejilla.add_child(casilla)
 
 
-## Una opción de varios valores: un botón con el que tiene. Al pulsarlo o con
-## derecha pasa al siguiente y con izquierda, al anterior (dando la vuelta en
-## los extremos). Sirve igual con el ratón, el teclado y el mando, sin lista
-## desplegable.
+## Una opción de varios valores: un botón con el que tiene que, al pulsarlo,
+## abre la lista para elegir (Adam, 05/11: antes cada clic pasaba al
+## siguiente y había que dar la vuelta entera). Con el teclado o el mando,
+## aceptar abre la lista y arriba y abajo se mueven por ella; izquierda y
+## derecha siguen cambiando sin abrirla.
 func _selector(rejilla: GridContainer, texto: String, clave: String, valores: Array, nombres: Array) -> void:
 	rejilla.add_child(EstiloInterfaz.etiqueta(texto, 18))
-	var boton := Button.new()
-	boton.custom_minimum_size = Vector2(260, 40)
-	var escribir := func():
-		# maxi: si el fichero trae un valor que ya no existe, se ve el primero.
-		boton.text = "<  %s  >" % nombres[maxi(valores.find(GestorGuardado.opcion(clave)), 0)]
-	var mover := func(paso: int):
-		var siguiente := posmod(valores.find(GestorGuardado.opcion(clave)) + paso, valores.size())
-		GestorGuardado.cambiar_opcion(clave, valores[siguiente])
-		escribir.call()
-	escribir.call()
-	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, _valor: Variant):
+	var lista := OptionButton.new()
+	lista.custom_minimum_size = Vector2(260, 40)
+	for nombre in nombres:
+		lista.add_item(nombre)
+	# maxi: si el fichero trae un valor que ya no existe, se ve el primero.
+	lista.select(maxi(valores.find(GestorGuardado.opcion(clave)), 0))
+	lista.item_selected.connect(func(indice: int): GestorGuardado.cambiar_opcion(clave, valores[indice]))
+	# Si la opción cambia por otro lado (las de la cuenta), la lista la sigue.
+	# select() no avisa con item_selected: no se vuelve a guardar.
+	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
 		if cambiada == clave:
-			escribir.call())
-	boton.pressed.connect(mover.bind(1))
-	boton.gui_input.connect(func(evento: InputEvent):
-		if evento.is_action_pressed("ui_right"):
-			mover.call(1)
-			boton.accept_event()
-		elif evento.is_action_pressed("ui_left"):
-			mover.call(-1)
-			boton.accept_event())
-	rejilla.add_child(boton)
+			lista.select(maxi(valores.find(valor), 0)))
+	lista.gui_input.connect(func(evento: InputEvent):
+		var paso := 1 if evento.is_action_pressed("ui_right") else -1 if evento.is_action_pressed("ui_left") else 0
+		if paso != 0:
+			var siguiente := posmod(lista.selected + paso, valores.size())
+			lista.select(siguiente)
+			GestorGuardado.cambiar_opcion(clave, valores[siguiente])
+			lista.accept_event())
+	rejilla.add_child(lista)
