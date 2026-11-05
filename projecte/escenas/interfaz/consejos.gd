@@ -32,8 +32,9 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	offset_left = -560.0
 	offset_right = 560.0
-	# Encima de la barra del equipo (barra_equipo.gd), que empieza a -158.
-	offset_top = -186.0
+	# Encima de la barra del equipo (barra_equipo.gd, ALTO), con el mismo
+	# hueco que antes: desde el 05/11 la barra mide 96 y no 158.
+	offset_top = -124.0
 	horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modulate.a = 0.0

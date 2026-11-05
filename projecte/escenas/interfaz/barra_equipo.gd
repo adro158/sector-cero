@@ -10,6 +10,11 @@ extends Control
 ## escudo de NÚCLEO CERO, de quién son las anclas que quedan.
 ##
 ## Hasta el 26/10 todo esto era una línea de texto (panel_equipo.gd).
+## Desde el 05/11, a la mitad de tamaño (ocupaba 158 px de alto, un 22 % de
+## la pantalla): las ranuras, los retratos, la ulti y la vida se dibujan a
+## ESCALA, que con 0,5 deja el pixel art con los píxeles enteros; las teclas
+## y los textos siguen a su tamaño para que se lean, y Q y E van por fuera de
+## su ranura.
 ## Solo escucha el bus. Sin class_name: lo crea hud.gd con preload.
 
 const RANURA := preload("res://medios/interfaz/equipo_ranura.png")
@@ -23,11 +28,15 @@ const Entrada := preload("res://globales/entrada.gd")
 ## El de las anclas en la tira de iconos de los avisos.
 const ICONO_ESCUDO := 4
 const COLOR_ULTI := Color(1.0, 0.8, 0.2)
-const LADO := 72.0
+## Las piezas están dibujadas a 72 px (la ranura); en pantalla, a ESCALA.
+const ESCALA := 0.5
+const LADO := 72.0 * ESCALA
 ## Lo que separa una ranura de otra y lo que sube la del que juega.
-const SEPARACION := 86.0
-const SUBE := 8.0
-const ALTO := 158.0
+const SEPARACION := 86.0 * ESCALA + 14.0
+const SUBE := 4.0
+const ALTO := 96.0
+## Dónde empiezan las ranuras, debajo de la línea de texto.
+const ARRIBA := 30.0
 ## Los fotogramas de «lista» de la carga de la ulti, en bucle.
 const SEGUNDOS_LISTA := 0.12
 
@@ -48,8 +57,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	offset_left = -320.0
-	offset_right = 320.0
+	offset_left = -260.0
+	offset_right = 260.0
 	offset_top = -ALTO
 	offset_bottom = 0.0
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
@@ -94,10 +103,11 @@ func _draw() -> void:
 			teclas.append(_boton("Q", "LB"))
 		if indice != _activo and indice == e:
 			teclas.append(_boton("E", "RB"))
-		_dibujar_ranura(indice, Vector2(size.x / 2.0 - LADO / 2.0 + lado * SEPARACION, 44.0 - (SUBE if lado == 0 else 0.0)), teclas)
+		_dibujar_ranura(indice, Vector2(size.x / 2.0 - LADO / 2.0 + lado * SEPARACION, ARRIBA - (SUBE if lado == 0 else 0.0)), teclas, lado)
 
 
-func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String]) -> void:
+## lado: -1 a la izquierda, 0 el que juega y 1 a la derecha.
+func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado: int) -> void:
 	var datos: Dictionary = _estado[indice]
 	var personaje: DatosPersonaje = datos.personaje
 	var juega := indice == _activo
@@ -105,15 +115,19 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String]) -> vo
 	var color: Color = personaje.color if juega else personaje.color.darkened(0.35)
 	if datos.caido:
 		color = Color(0.4, 0.4, 0.4)
-	draw_texture(RANURA, esquina, color)
 	var retrato := Color.WHITE if juega else Color(0.75, 0.75, 0.75)
 	if datos.caido:
 		retrato = Color(0.35, 0.35, 0.35)
-	if personaje.retrato != null:
-		draw_texture(personaje.retrato, esquina + Vector2(4.0, 4.0), retrato)
-
-	# La carga de la ulti: un borde que se llena, y en bucle cuando está lista.
 	var carga := _ulti(indice)
+	var esperando: bool = not juega and not datos.caido and _espera > 0.0
+
+	# Las piezas de pixel art, a ESCALA: dentro de este bloque las medidas son
+	# las del dibujo de 72 px, como antes del 05/11.
+	draw_set_transform(esquina, 0.0, Vector2(ESCALA, ESCALA))
+	draw_texture(RANURA, Vector2.ZERO, color)
+	if personaje.retrato != null:
+		draw_texture(personaje.retrato, Vector2(4.0, 4.0), retrato)
+	# La carga de la ulti: un borde que se llena, y en bucle cuando está lista.
 	var fotograma := -1
 	if carga >= 1.0:
 		fotograma = 8 + int(_tiempo / SEGUNDOS_LISTA) % 4
@@ -121,38 +135,40 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String]) -> vo
 		fotograma = int(carga * 8.0) - 1
 	if fotograma >= 0 and not datos.caido:
 		var tinte := COLOR_ULTI if juega else Color(COLOR_ULTI, 0.7)
-		draw_texture_rect_region(CARGA_ULTI, Rect2(esquina - Vector2(4.0, 4.0), Vector2(80.0, 80.0)), Rect2(fotograma * 80.0, 0.0, 80.0, 80.0), tinte)
-
+		draw_texture_rect_region(CARGA_ULTI, Rect2(-4.0, -4.0, 80.0, 80.0), Rect2(fotograma * 80.0, 0.0, 80.0, 80.0), tinte)
+	# Esperando el cambio: se oscurece desde arriba lo que falta.
+	if esperando:
+		draw_rect(Rect2(4.0, 4.0, 64.0, 64.0 * clampf(_espera / _espera_total, 0.0, 1.0)), Color(0.0, 0.0, 0.0, 0.6))
 	# La vida, debajo.
 	var parte: float = clampf(datos.vida / datos.maxima, 0.0, 1.0)
-	var debajo := esquina + Vector2(0.0, LADO + 6.0)
-	draw_texture(VIDA_MARCO, debajo)
+	draw_texture(VIDA_MARCO, Vector2(0.0, 78.0))
 	var ancho := VIDA_RELLENO.get_width() * parte
-	draw_texture_rect_region(VIDA_RELLENO, Rect2(debajo + Vector2(2.0, 2.0), Vector2(ancho, 4.0)), Rect2(0.0, 0.0, ancho, 4.0),
+	draw_texture_rect_region(VIDA_RELLENO, Rect2(2.0, 80.0, ancho, 4.0), Rect2(0.0, 0.0, ancho, 4.0),
 		Color(1.0, 0.3, 0.3).lerp(Color(0.3, 1.0, 0.5), parte))
+	draw_set_transform(Vector2.ZERO)
 
-	var tamano := EstiloInterfaz.tamano_texto(13)
+	# Lo demás, a su tamaño de siempre.
+	var tamano := EstiloInterfaz.tamano_texto(11)
 	if datos.caido:
-		_texto(fuente, esquina + Vector2(0.0, 40.0), "CAÍDO", tamano, EstiloInterfaz.DERROTA)
+		_texto(fuente, esquina + Vector2(-8.0, LADO / 2.0 + 4.0), "CAÍDO", tamano, EstiloInterfaz.DERROTA, LADO + 16.0)
 		return
-	# Esperando el cambio: se oscurece desde arriba lo que falta, con el reloj.
-	if not juega and _espera > 0.0:
-		var falta := clampf(_espera / _espera_total, 0.0, 1.0)
-		draw_rect(Rect2(esquina + Vector2(4.0, 4.0), Vector2(64.0, 64.0 * falta)), Color(0.0, 0.0, 0.0, 0.6))
-		draw_texture(ESPERA, esquina + Vector2(28.0, 18.0))
-		_texto(fuente, esquina + Vector2(0.0, 52.0), "%d s" % ceili(_espera), tamano, EstiloInterfaz.TEXTO)
+	if esperando:
+		draw_texture(ESPERA, esquina + Vector2(LADO / 2.0 - 8.0, 2.0))
+		_texto(fuente, esquina + Vector2(0.0, LADO - 3.0), "%d s" % ceili(_espera), tamano, EstiloInterfaz.TEXTO)
 	else:
-		# Las teclas que llevan a él, dibujadas, arriba a la izquierda.
+		# Las teclas que llevan a él, dibujadas, por fuera de la ranura: a la
+		# izquierda de la izquierda y a la derecha de la derecha.
 		for k in teclas.size():
-			draw_texture_rect_region(TeclasDibujadas.TIRA, Rect2(esquina + Vector2(3.0 + k * 21.0, 3.0), Vector2(20.0, 20.0)), TeclasDibujadas.region(teclas[k]))
+			var x := esquina.x - 22.0 - k * 21.0 if lado < 0 else esquina.x + LADO + 2.0 + k * 21.0
+			draw_texture_rect_region(TeclasDibujadas.TIRA, Rect2(x, esquina.y + LADO / 2.0 - 10.0, 20.0, 20.0), TeclasDibujadas.region(teclas[k]))
 	# Con el escudo, el candado en los que tienen anclas sin romper, parpadeando.
 	if personaje in _anclas and int(_tiempo * 3.0) % 2 == 0:
-		draw_texture_rect_region(ICONOS_AVISO, Rect2(esquina + Vector2(50.0, 6.0), Vector2(16.0, 16.0)), Rect2(ICONO_ESCUDO * 16.0, 0.0, 16.0, 16.0), personaje.color)
+		draw_texture_rect_region(ICONOS_AVISO, Rect2(esquina + Vector2(LADO - 10.0, -6.0), Vector2(16.0, 16.0)), Rect2(ICONO_ESCUDO * 16.0, 0.0, 16.0, 16.0), personaje.color)
 	if juega and carga >= 1.0:
-		# La tecla dibujada y, a su derecha, el aviso.
-		var debajo_ulti := esquina + Vector2(2.0, LADO + 16.0)
+		# Debajo de la vida, la tecla dibujada y, a su derecha, el aviso.
+		var debajo_ulti := esquina + Vector2(LADO / 2.0 - 32.0, LADO + 8.0)
 		draw_texture_rect_region(TeclasDibujadas.TIRA, Rect2(debajo_ulti, Vector2(20.0, 20.0)), TeclasDibujadas.region(_boton("R", "MandoB")))
-		_texto(fuente, debajo_ulti + Vector2(22.0, 15.0), "¡ULTI!", tamano, COLOR_ULTI, LADO - 24.0)
+		_texto(fuente, debajo_ulti + Vector2(22.0, 15.0), "¡ULTI!", tamano, COLOR_ULTI, 44.0)
 
 
 ## La línea de encima: quién juega y con qué, y lo que hay que saber.
@@ -168,7 +184,7 @@ func _escribir_linea() -> void:
 		linea += "      último en pie"
 	else:
 		linea += "      [%s] equipo" % _boton("C", "Select")
-	_texto(get_theme_default_font(), Vector2(0.0, 22.0), linea, EstiloInterfaz.tamano_texto(15), actual.personaje.color, size.x)
+	_texto(get_theme_default_font(), Vector2(0.0, 18.0), linea, EstiloInterfaz.tamano_texto(15), actual.personaje.color, size.x)
 
 
 ## Texto centrado en un ancho, con contorno oscuro para que se lea encima del
