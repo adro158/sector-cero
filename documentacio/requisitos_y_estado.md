@@ -325,6 +325,14 @@ carpeta de datos del juego.
 
 ### Pendiente técnico
 
+- **Por revisar (Adam, 05/11): «Texto grande» en plena partida cierra el
+  juego.** En la v1.15 (o antes), al encender la opción desde el menú de
+  pausa, el juego se cierra y vuelve a salir el lanzador (el selector de
+  versión): parece un cierre del juego, no un error de la opción. Sin
+  mirar todavía. Para empezar: reproducirlo con Godot abierto y ver la
+  salida; mirar qué hace cada pantalla al recibir
+  `opcion_cambiada("texto_grande")` con el juego en pausa, y el log del
+  juego en la carpeta de datos (`logs/godot.log`).
 6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
    mejoras por minuto): se midieron antes de cambiar las dificultades.
 7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el

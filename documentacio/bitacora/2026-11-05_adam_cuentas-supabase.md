@@ -88,6 +88,10 @@ de Adam: borrada `feature/alan-arena-hud` (sin nada fuera de `main`) y
 verde, también para administradores; sin aprobaciones obligatorias). Este
 apunte entró ya con un PR. Pendiente de Adam: apuntar las horas.
 
+**Fallo por revisar** (lo contó Adam al final): en plena partida, encender
+«Texto grande» cierra el juego y vuelve a salir el lanzador. Apuntado en
+`requisitos_y_estado.md`, «Pendiente técnico», sin mirar todavía.
+
 ## Siguiente paso: pantalla final y ranking más visuales (para la nube)
 
 Adam: «cuando pierdes y salga lo de los datos, que salga más bonito; si
