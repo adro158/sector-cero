@@ -13,7 +13,9 @@ const LADO := 20.0
 const ORDEN := ["Q", "E", "R", "C", "W", "A", "S", "D", "P", "1", "2", "3",
 	"Tab", "Esc", "Enter", "F1", "F3", "Arriba", "Abajo", "Izquierda", "Derecha",
 	"RatonIzquierdo", "RatonDerecho", "MandoA", "MandoB", "MandoX", "MandoY",
-	"LB", "RB", "Start", "Select", "Stick", "Cruceta"]
+	"LB", "RB", "Start", "Select", "Stick", "Cruceta",
+	# 05/11: la F4 del panel técnico, al final para no mover las demás.
+	"F4"]
 ## Cada control: las teclas y botones que lo hacen y lo que hace.
 const CONTROLES := [
 	[["W", "A", "S", "D", "Arriba", "Abajo", "Izquierda", "Derecha", "Stick", "Cruceta"], "Moverse"],
@@ -24,7 +26,7 @@ const CONTROLES := [
 	[["Esc", "P", "Start"], "Pausa"],
 	[["RatonIzquierdo", "1", "2", "3", "MandoA"], "Elegir mejora"],
 	[["RatonIzquierdo", "RatonDerecho"], "Ficha del enemigo: abrir y cerrar"],
-	[["F3"], "Panel técnico"],
+	[["F3", "F4"], "Panel técnico (F4 cambia de pestaña)"],
 	[["F1"], "Menú de desarrollador (la partida deja de contar para el ranking)"],
 ]
 

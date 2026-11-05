@@ -1,42 +1,44 @@
 extends Control
 
-## Panel técnico, no es la interfaz del juego: datos internos para probar y
-## enseñar el sistema, sobre todo la resistencia del malware. Se muestra y se
-## oculta con F3. Se alimenta de las señales del BusEventos y, para lo que no
-## viaja por el bus (enemigos en pantalla, resistencias), de los grupos.
+## Panel técnico, no es la interfaz del juego: datos internos para probar el
+## juego y enseñarlo por dentro. F3 lo abre y lo cierra y F4 cambia de
+## pestaña:
+## - Malware: lo que resiste a cada herramienta y lo que está midiendo para
+##   el próximo análisis (cuánto falta, a cuál se adaptará y el daño por
+##   segundo de cada una). Es el elemento diferencial, visto por dentro.
+## - Rendimiento: fps, física, llamadas de dibujo y nodos. Con cientos de
+##   enemigos, las llamadas y los nodos apenas suben: la horda es un MultiMesh
+##   por tipo, no un nodo por enemigo.
+## - Horda: los vivos de cada tipo, cuánta vida tienen de más y cuándo llegan
+##   el próximo élite y el jefe.
+## - Antivirus: la vida, el nivel, el último golpe y lo que suman las mejoras.
 ##
-## Desde el 29/10 se dibuja con sprites, como una terminal (el dibujo va en
-## dibujo_panel_tecnico.gd), y tiene dos gráficas: los fps del último minuto y
-## la resistencia a cada herramienta en los dos últimos. Aquí se guardan sus
-## muestras.
+## Desde el 05/11 va a la izquierda, junto a la columna de mejoras (abajo a la
+## derecha chocaba con el panel del equipo), en pestañas y sin gráficas. Se
+## alimenta del BusEventos y, para lo que no viaja por el bus, de los nodos.
 
 const Dibujo := preload("res://escenas/jugabilidad/depuracion/dibujo_panel_tecnico.gd")
-## Cada gráfica guarda sus últimas 60 muestras: los fps, una por segundo, y
-## cada resistencia, una cada 2 s. Así, en dos minutos se ven los escalones de
-## cada análisis del malware (cada 20 s).
-const MUESTRAS := 60
-const CADA_FPS := 1.0
-const CADA_RESISTENCIA := 2.0
+const Dificultad := preload("res://globales/dificultad.gd")
+enum Pestana { MALWARE, RENDIMIENTO, HORDA, ANTIVIRUS }
+const NOMBRES := ["MALWARE", "RENDIMIENTO", "HORDA", "ANTIVIRUS"]
+const ICONOS := [Dibujo.Icono.RESISTENCIA, Dibujo.Icono.SISTEMA, Dibujo.Icono.HORDA, Dibujo.Icono.ANTIVIRUS]
+## A la derecha de la columna de mejoras del HUD (hud.gd, en x 16 e y 104).
+const POSICION := Vector2(80.0, 104.0)
 
+var _pestana := Pestana.MALWARE
 var _vida := 0.0
 var _vida_maxima := 0.0
-var _experiencia := 0
 var _nivel := 1
-var _muertos := 0
-var _tiempo := 0.0
 var _ultimo_golpe := 0.0
-var _fps := PackedFloat32Array()
-## Por herramienta (DatosArma), sus últimas resistencias.
-var _historia := {}
-var _desde_fps := 0.0
-var _desde_resistencia := 0.0
 ## Para el piloto y el aviso, que laten también en pausa.
 var _segundos := 0.0
 ## Por herramienta (DatosArma): [icono de su mejora, color de su personaje].
 var _herramientas := {}
 ## El alto que ocupó el último dibujo: el panel mide lo que mide su contenido.
-var _alto := 400.0
+var _alto := 200.0
 var _resistencia_malware: Node
+var _director: Node
+var _gestor_armas: Node
 
 
 func _ready() -> void:
@@ -47,38 +49,28 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	theme = EstiloInterfaz.tema()
-	# Abajo a la derecha: la izquierda es del HUD y arriba a la derecha sale la
-	# ficha del enemigo pinchado. Los bordes en el mismo punto y creciendo hacia
-	# la izquierda y hacia arriba: el panel ocupa solo lo que mide su contenido.
-	set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	grow_vertical = Control.GROW_DIRECTION_BEGIN
-	offset_left = -16.0
-	offset_right = -16.0
-	offset_top = -16.0
-	offset_bottom = -16.0
+	position = POSICION
 	custom_minimum_size = Vector2(Dibujo.ANCHO, _alto)
 
-	_fps.resize(MUESTRAS)
+	var raiz := get_tree().get_first_node_in_group("jugador").get_parent()
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
-	_conocer_herramientas()
+	_director = raiz.get_node("DirectorOleadas")
+	_gestor_armas = raiz.get_node("Jugador/GestorArmas")
+	_conocer_herramientas(raiz)
 
-	BusEventos.salud_jugador_cambiada.connect(_al_cambiar_vida)
+	BusEventos.salud_jugador_cambiada.connect(func(actual, maxima):
+		_vida = actual
+		_vida_maxima = maxima)
+	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
 	# El golpe, de su señal y no restando vidas: al cambiar a un personaje con
 	# menos vida, la vida baja sin que nadie haya pegado.
 	BusEventos.jugador_danado.connect(func(cantidad): _ultimo_golpe = cantidad)
-	BusEventos.experiencia_ganada.connect(func(cantidad): _experiencia += cantidad)
-	BusEventos.experiencia_cambiada.connect(func(_actual, _necesaria, nivel): _nivel = nivel)
-	BusEventos.enemigo_muerto.connect(func(_posicion, _tipo): _muertos += 1)
-	# El reloj de la partida, el mismo que el del HUD: se para con el jefe.
-	BusEventos.tiempo_partida.connect(func(segundos, _duracion): _tiempo = segundos)
 
 
 ## El icono y el color de cada herramienta, sacados de los datos y no escritos
 ## a mano: el color, del personaje que la lleva; el icono, de su evolución en
 ## el pool de mejoras, que es el mismo para la base y para la evolucionada.
-func _conocer_herramientas() -> void:
-	var raiz := get_tree().get_first_node_in_group("jugador").get_parent()
+func _conocer_herramientas(raiz: Node) -> void:
 	var colores := {}
 	for personaje in raiz.get_node("Jugador/CambioPersonaje").personajes:
 		colores[personaje.arma] = personaje.color
@@ -89,108 +81,111 @@ func _conocer_herramientas() -> void:
 
 
 func _unhandled_input(evento: InputEvent) -> void:
-	if evento is InputEventKey and evento.pressed and evento.keycode == KEY_F3:
+	if not evento is InputEventKey or not evento.pressed or evento.echo:
+		return
+	if evento.keycode == KEY_F3:
 		visible = not visible
+	elif evento.keycode == KEY_F4 and visible:
+		_pestana = (_pestana + 1) % NOMBRES.size() as Pestana
 
 
-## Las gráficas se llenan aunque el panel esté cerrado: al abrirlo ya se ve
-## lo que ha pasado. En pausa no avanzan.
 func _process(delta: float) -> void:
-	# delta va escalado con Engine.time_scale (la velocidad x4 del F1 y el
-	# frenazo del tiempo de golpe). Los fps, el piloto y el aviso van en
-	# segundos reales; las resistencias, en tiempo de partida, porque el
-	# malware se analiza cada 20 s de partida.
-	var real := delta / Engine.time_scale
-	_segundos += real
-	if not get_tree().paused:
-		_desde_fps += real
-		if _desde_fps >= CADA_FPS:
-			_desde_fps -= CADA_FPS
-			_meter(_fps, Engine.get_frames_per_second())
-		_desde_resistencia += delta
-		if _desde_resistencia >= CADA_RESISTENCIA:
-			_desde_resistencia -= CADA_RESISTENCIA
-			_muestrear_resistencias()
+	# En segundos reales: delta va escalado con la velocidad x4 del F1 y con el
+	# frenazo del tiempo de golpe.
+	_segundos += delta / Engine.time_scale
 	if visible:
 		custom_minimum_size = Vector2(Dibujo.ANCHO, _alto)
 		queue_redraw()
 
 
-## Una muestra nueva al final y la más vieja fuera.
-func _meter(muestras: PackedFloat32Array, valor: float) -> void:
-	muestras.remove_at(0)
-	muestras.append(valor)
-
-
-## Una muestra por herramienta. La que aparece empieza con todas a cero, para
-## que su línea salga desde abajo; la que ya no tiene resistencia, a cero.
-func _muestrear_resistencias() -> void:
-	var actuales: Dictionary = _resistencia_malware.resistencias()
-	for arma in actuales:
-		if not _historia.has(arma):
-			var nueva := PackedFloat32Array()
-			nueva.resize(MUESTRAS)
-			_historia[arma] = nueva
-	for arma in _historia:
-		_meter(_historia[arma], actuales.get(arma, 0.0))
-
-
 func _draw() -> void:
 	var y := Dibujo.marco(self, size.y, _segundos)
-	y = Dibujo.cabecera(self, y, Dibujo.Icono.SISTEMA, "SISTEMA")
-	y = Dibujo.fila(self, y, Dibujo.Icono.TIEMPO, "tiempo", "%02d:%02d" % [int(_tiempo) / 60, int(_tiempo) % 60])
-	y = Dibujo.fila(self, y, Dibujo.Icono.FPS, "fps", "%d" % Engine.get_frames_per_second())
-	var fps_maximo := _escala_fps()
-	y = Dibujo.grafica(self, y, [[_fps, Dibujo.COLOR]], fps_maximo, str(fps_maximo))
-
-	y = Dibujo.cabecera(self, y, Dibujo.Icono.ANTIVIRUS, "ANTIVIRUS")
-	y = Dibujo.fila_vida(self, y, _vida, _vida_maxima)
-	y = Dibujo.fila(self, y, Dibujo.Icono.NIVEL, "nivel", str(_nivel))
-	y = Dibujo.fila(self, y, Dibujo.Icono.EXPERIENCIA, "experiencia", str(_experiencia))
-	y = Dibujo.fila(self, y, Dibujo.Icono.GOLPE, "último golpe", "-%.0f" % _ultimo_golpe if _ultimo_golpe > 0.0 else "-")
-
-	y = Dibujo.cabecera(self, y, Dibujo.Icono.HORDA, "HORDA")
-	y = Dibujo.fila(self, y, Dibujo.Icono.EN_PANTALLA, "en pantalla", str(_enemigos_vivos()))
-	y = Dibujo.fila(self, y, Dibujo.Icono.ELIMINADOS, "eliminados", str(_muertos))
-
-	# Llena, la barra y la gráfica son el máximo que puede llegar a resistir.
-	y = Dibujo.cabecera(self, y, Dibujo.Icono.RESISTENCIA, "RESISTENCIA MALWARE")
-	var maximo: float = _resistencia_malware.maximo
-	var resistencias: Dictionary = _resistencia_malware.resistencias()
-	if resistencias.is_empty():
-		y = Dibujo.ninguna(self, y)
-	for arma in resistencias:
-		y = Dibujo.fila_resistencia(self, y, _herramienta(arma), arma.nombre, resistencias[arma], maximo, _segundos)
-	var series := []
-	for arma in _historia:
-		series.append([_historia[arma], _herramienta(arma)[1]])
-	y = Dibujo.grafica(self, y, series, maximo, "%d%%" % roundi(maximo * 100.0))
+	y = Dibujo.pestanas(self, y, ICONOS, _pestana)
+	y = Dibujo.cabecera(self, y, ICONOS[_pestana], NOMBRES[_pestana])
+	match _pestana:
+		Pestana.MALWARE:
+			y = _malware(y)
+		Pestana.RENDIMIENTO:
+			y = _rendimiento(y)
+		Pestana.HORDA:
+			y = _horda(y)
+		Pestana.ANTIVIRUS:
+			y = _antivirus(y)
 	_alto = y + 6.0
 
 
-## El tope de la gráfica de los fps: lo más alto del último minuto, redondeado
-## hacia arriba a un múltiplo de 60 (como mínimo, 60). No vale el refresco de
-## la pantalla: con el driver de NVIDIA el juego va a 1000-2500 fps aunque el
-## vsync esté activado (bitácora, sesión 19). Con 5 fps de margen: a 60 Hz a
-## veces se mide 61, y la escala saltaría a 120 con la línea a media altura.
-func _escala_fps() -> int:
-	var mas_alto := 0.0
-	for muestra in _fps:
-		mas_alto = maxf(mas_alto, muestra)
-	return maxi(ceili((mas_alto - 5.0) / 60.0) * 60, 60)
+## Llena, la barra es el máximo que puede llegar a resistir.
+func _malware(y: float) -> float:
+	var malware := _resistencia_malware
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.ANALISIS), "próximo análisis", "%d s" % ceili(malware.falta_analisis()))
+	var objetivo: DatosArma = malware.mas_usada()
+	var nombre := objetivo.nombre if objetivo != null else "ninguna"
+	var color: Color = _herramienta(objetivo)[1] if objetivo != null else Color.WHITE
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.OBJETIVO), "se adaptará a", nombre, Dibujo.COLOR, color)
+	var resistencias: Dictionary = malware.resistencias()
+	if resistencias.is_empty():
+		y = Dibujo.ninguna(self, y)
+	for arma in resistencias:
+		y = Dibujo.fila_resistencia(self, y, _herramienta(arma), arma.nombre, resistencias[arma], malware.maximo, _segundos)
+	# El daño por segundo, el de este ciclo: lo que el malware está midiendo.
+	y = Dibujo.subtitulo(self, y, "daño por segundo")
+	var segundos := maxf(malware.tiempo_ciclo(), 1.0)
+	var dano: Dictionary = malware.dano_ciclo()
+	for arma in dano:
+		y = Dibujo.fila(self, y, _herramienta(arma)[0], arma.nombre, "%d" % roundi(dano[arma] / segundos), Color.WHITE)
+	return y
+
+
+func _rendimiento(y: float) -> float:
+	y = Dibujo.fila(self, y, _icono(Dibujo.Icono.FPS), "fps", "%d" % Engine.get_frames_per_second())
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.FISICA), "física", "%.1f ms" % (Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0))
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.DIBUJO), "llamadas de dibujo", "%d" % Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.NODOS), "nodos", "%d" % Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	var vivos := 0
+	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
+		vivos += gestor.vivos()
+	return Dibujo.fila(self, y, _icono(Dibujo.Icono.EN_PANTALLA), "enemigos vivos", str(vivos))
+
+
+func _horda(y: float) -> float:
+	var gestores := get_tree().get_nodes_in_group("gestor_enemigos")
+	for gestor in gestores:
+		y = Dibujo.fila(self, y, gestor.datos.textura, gestor.datos.nombre, str(gestor.vivos()), Color.WHITE)
+	# La vida de más de la horda: por el nivel del jugador, por el minuto y por
+	# la dificultad (la misma cuenta para todos los tipos).
+	var datos: DatosTipoEnemigo = gestores[0].datos
+	var escala: float = datos.vida_para(_nivel, _director.tiempo()) / datos.vida * Dificultad.dato("vida")
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.ESCALA), "vida de la horda", "x%.2f" % escala)
+	var elite: float = _director.falta_elite()
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.ELITE), "próximo élite", "en %d s" % ceili(elite) if elite >= 0.0 else "-")
+	var jefe: float = _director.duracion() - _director.tiempo()
+	var quien := "jefe" if _director.fase() == 1 else "jefe final"
+	return Dibujo.fila(self, y, _icono2(Dibujo.Icono2.JEFE), quien, "en %s" % _reloj(jefe) if jefe > 0.0 else "en juego")
+
+
+func _antivirus(y: float) -> float:
+	y = Dibujo.fila_vida(self, y, _vida, _vida_maxima)
+	y = Dibujo.fila(self, y, _icono(Dibujo.Icono.NIVEL), "nivel", str(_nivel))
+	y = Dibujo.fila(self, y, _icono(Dibujo.Icono.GOLPE), "último golpe", "-%.0f" % _ultimo_golpe if _ultimo_golpe > 0.0 else "-")
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.DANO), "daño", "x%.2f" % _gestor_armas.multiplicador_dano)
+	# multiplicador_cadencia multiplica la espera entre ataques: 0,8 es atacar
+	# un 25 % más a menudo. Se enseña al revés, como velocidad.
+	y = Dibujo.fila(self, y, _icono2(Dibujo.Icono2.CADENCIA), "cadencia", "x%.2f" % (1.0 / _gestor_armas.multiplicador_cadencia))
+	return Dibujo.fila(self, y, _icono(Dibujo.Icono.EN_PANTALLA), "alcance", "x%.2f" % _gestor_armas.multiplicador_alcance)
+
+
+func _icono(cual: Dibujo.Icono) -> AtlasTexture:
+	return Dibujo.icono(Dibujo.ICONOS, cual)
+
+
+func _icono2(cual: Dibujo.Icono2) -> AtlasTexture:
+	return Dibujo.icono(Dibujo.ICONOS_2, cual)
 
 
 func _herramienta(arma: DatosArma) -> Array:
 	return _herramientas.get(arma, [null, Dibujo.COLOR])
 
 
-func _enemigos_vivos() -> int:
-	var total := 0
-	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
-		total += gestor.vivos()
-	return total
-
-
-func _al_cambiar_vida(actual: float, maxima: float) -> void:
-	_vida = actual
-	_vida_maxima = maxima
+func _reloj(segundos: float) -> String:
+	var enteros := ceili(segundos)
+	return "%d:%02d" % [enteros / 60, enteros % 60]

@@ -41,6 +41,12 @@ func fase() -> int:
 	return _fase
 
 
+## Para el panel técnico (F3): segundos hasta el próximo élite. Con el jefe en
+## juego no salen más: -1.
+func falta_elite() -> float:
+	return -1.0 if _jefe_en_juego else _siguiente_elite - _tiempo
+
+
 ## Segundo en el que llega el jefe de la fase en curso: el de la fase 1 o el
 ## jefe final.
 func duracion() -> float:
