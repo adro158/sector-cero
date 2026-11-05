@@ -5041,3 +5041,48 @@ unos 260 de ancho.
   - fases, riesgos, qué contar al tribunal y tres preguntas abiertas
 - **Sin empezar:** falta que lo revisen Adam y Alan y que Adam cree el
   proyecto (Claude no puede crear cuentas).
+
+### Las cuentas, programadas (sin subir a GitHub)
+
+Adam: «quiero que lo implementes, de momento no lo subas al github». Hecho
+con las decisiones propuestas en el plan: entrar es opcional (invitado) y no
+hay ranking mundial todavía. El proyecto de Supabase aún no existe: `URL` y
+`CLAVE` de `cuenta.gd` van vacías, y así el juego dice que las cuentas no
+están activadas y todo sigue como antes.
+
+- **Hecho:**
+  - `globales/cuenta.gd` (nuevo, sin `class_name`; lo crea `Transicion`):
+    - crear cuenta, entrar, salir y renovar la sesión al arrancar
+    - la contraseña nunca se guarda: solo el token de renovación, en
+      `user://cuenta.cfg`
+    - al recibir `partida_terminada` (sin trucos), la partida va a una cola y
+      se sube; sin conexión espera y se sube al arrancar, al entrar o en la
+      siguiente partida; cada partida lleva el id de su cuenta
+    - `mis_partidas()` para la ventana
+    - los errores de Supabase, en castellano
+    - el argumento `supabase=<url>` para probarlo con un servidor local
+  - `escenas/interfaz/panel_cuenta.gd` (nuevo): el formulario (usuario,
+    contraseña oculta, ENTRAR, CREAR CUENTA) o, con cuenta, el nombre, las
+    últimas partidas y SALIR DE LA CUENTA
+  - en el menú, el botón CUENTA y una línea con «Juegas como invitado» o el
+    nombre de la cuenta
+  - la señal nueva `sesion_cambiada` (en `GEMINI.md`)
+- **Probado:**
+  - un servidor local en PowerShell (`HttpListener`) que imita la API de
+    Supabase que usa el juego, con la regla de las partidas propias
+  - un script con 18 comprobaciones, todas bien:
+    - datos que no valen
+    - crear, y crear otra vez con otras mayúsculas («Ese usuario ya existe»)
+    - la contraseña no queda en el fichero
+    - subir: la partida con trucos no sube
+    - mis partidas
+    - salir y entrar con la contraseña mala y con la buena
+    - sin conexión, a la cola y guardada
+    - al volver la conexión se sube
+    - al arrancar de nuevo recuerda la cuenta
+  - capturas de la ventana sin activar, con la cuenta y del menú
+  - headless y las partidas del minuto 10 y 15 iguales; 16 clases; no hace
+    falta subir `EJECUTABLE_MINIMO`
+  - los ficheros de la VM quedaron como estaban
+- **Falta:** el proyecto de Supabase de verdad (lo crea Adam) y probarlo
+  contra él; sobre todo que acepte el dominio inventado del email.

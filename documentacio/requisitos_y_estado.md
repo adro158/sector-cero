@@ -191,13 +191,19 @@ Adam se refería al panel de la C, pero la barra así le gustó y se queda: el
 panel de la C también se achicó (retratos a 32 px, unos 245 × 165 en vez de
 300 × 240). Todo publicado en la v1.14.
 
-### Cuentas de jugador con Supabase (propuesto el 05/11, sin empezar)
+### Cuentas de jugador con Supabase (programado el 05/11, sin subir)
 
 Adam y Alan quieren que cada jugador tenga cuenta (usuario y contraseña) con
 todas sus partidas, pensando en logros y un pase de batalla más adelante.
 Plan completo, con el SQL y los pasos, en `documentacio/plan_cuentas.md`.
-Falta que lo revisen, que respondan sus tres preguntas abiertas y que Adam
-cree el proyecto de Supabase (Claude no puede crear cuentas).
+Programado con lo propuesto (entrar opcional, sin ranking mundial) y probado
+contra un servidor local que imita a Supabase. **Adam pidió no subirlo a
+GitHub todavía.** Falta:
+- que Adam cree el proyecto de Supabase, pegue el SQL y ponga la URL y la
+  clave publicable en `globales/cuenta.gd` (Claude no puede crear cuentas)
+- probarlo contra el Supabase de verdad (sobre todo que acepte el dominio
+  inventado del email)
+- responder las preguntas abiertas del plan (ranking mundial, quién lo lleva)
 
 ### Alan con Claude Pro (pendiente, cuando Adam lo pida)
 

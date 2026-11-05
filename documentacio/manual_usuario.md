@@ -135,6 +135,9 @@ teclas al tocar el teclado o el ratón.
   abandonar la partida, que no cuenta para el ranking).
 - **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de
   cada una. Si tu partida entra, al acabar te pide un nombre.
+- **Cuenta** (opcional): con un usuario y una contraseña, tus partidas se
+  guardan en internet y las ves en la misma ventana. Sin cuenta juegas como
+  invitado. Si no hay conexión, las partidas esperan y se suben más tarde.
 - **Opciones**, en tres pestañas. Se guardan solas.
   - **Sonido:** volumen general, de la música y de los efectos, y silencio
     al cambiar de ventana.

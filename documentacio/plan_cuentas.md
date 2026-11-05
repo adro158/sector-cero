@@ -1,7 +1,14 @@
 # Plan: cuentas de jugador con Supabase
 
-Propuesta del 05/11/2026 (sesión 21), para revisarla Adam y Alan antes de
-empezar. Nada de esto está hecho todavía.
+Propuesta del 05/11/2026 (sesión 21).
+
+**Estado (05/11, por la tarde): programado y probado contra un servidor
+local que imita a Supabase, sin subir a GitHub.** Hecho con las decisiones
+propuestas abajo: entrar es opcional y no hay ranking mundial todavía. Para
+que funcione de verdad falta el paso 1: Adam crea el proyecto, pega el SQL y
+pone la URL y la clave publicable en `URL` y `CLAVE` de
+`projecte/globales/cuenta.gd`. Mientras estén vacías, el juego dice que las
+cuentas no están activadas y se juega como invitado, como siempre.
 
 ## Qué queremos
 
