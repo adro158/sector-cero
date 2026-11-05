@@ -5016,3 +5016,28 @@ unos 260 de ancho.
   `documentacio/novedades/v1.14.txt`. Sin subir `EJECUTABLE_MINIMO`
   (`project.godot` igual y 16 clases).
 - **Duración de la sesión:** por apuntar.
+
+### Plan de cuentas de jugador (Supabase)
+
+- **Lo que quieren Adam y Alan:** iniciar sesión con usuario y contraseña
+  para que se guarde el registro de cada persona y sus partidas. Más
+  adelante, logros y un pase de batalla con skins, sin concretar.
+- **Recomendación: Supabase**, que ya estaba apuntado para el ranking
+  mundial. Se usa con `HTTPRequest`, sin librerías; las tablas son SQL y se
+  explican bien; la seguridad va con reglas por filas (RLS).
+- **Comprobado en la web (05/11):**
+  - la clave que va en el juego ahora es la publicable (`sb_publishable_…`)
+  - `anon` y `service_role` se retiran a finales de 2026
+  - los proyectos gratis se pausan a los 7 días sin actividad: hay que
+    mirarlo antes de la defensa
+- **Escrito `documentacio/plan_cuentas.md`:**
+  - decisiones propuestas: entrar es opcional (invitado); sin email
+    (inventado a partir del usuario); las partidas con trucos no se suben;
+    las partidas se pueden leer y solo se añaden las tuyas
+  - los pasos para que Adam cree el proyecto y el SQL completo (perfiles,
+    partidas, RLS y el trigger que crea el perfil)
+  - cómo sería en el juego: `cuenta.gd` y `panel_cuenta.gd`, la cola sin
+    conexión y la señal `sesion_cambiada`
+  - fases, riesgos, qué contar al tribunal y tres preguntas abiertas
+- **Sin empezar:** falta que lo revisen Adam y Alan y que Adam cree el
+  proyecto (Claude no puede crear cuentas).

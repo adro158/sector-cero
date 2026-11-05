@@ -191,6 +191,14 @@ Adam se refería al panel de la C, pero la barra así le gustó y se queda: el
 panel de la C también se achicó (retratos a 32 px, unos 245 × 165 en vez de
 300 × 240). Todo publicado en la v1.14.
 
+### Cuentas de jugador con Supabase (propuesto el 05/11, sin empezar)
+
+Adam y Alan quieren que cada jugador tenga cuenta (usuario y contraseña) con
+todas sus partidas, pensando en logros y un pase de batalla más adelante.
+Plan completo, con el SQL y los pasos, en `documentacio/plan_cuentas.md`.
+Falta que lo revisen, que respondan sus tres preguntas abiertas y que Adam
+cree el proyecto de Supabase (Claude no puede crear cuentas).
+
 ### Alan con Claude Pro (pendiente, cuando Adam lo pida)
 
 Alan se compra Claude Pro. Cuando todo esté hecho y subido, Adam pedirá
