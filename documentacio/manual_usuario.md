@@ -34,6 +34,9 @@ navegador, en [adro158.github.io/sector-cero](https://adro158.github.io/sector-c
 | Elegir mejora | 1, 2, 3 o click | Cruceta y A |
 | Ficha de un enemigo | Click (click derecho la cierra) | — |
 | Empezar / reintentar | Enter | A |
+| Aceptar / volver en los menús | Enter / Esc | A / B |
+| Cambiar de pestaña (opciones y reglas) | Flechas | Cruceta (LB / RB en opciones) |
+| Pantalla completa | F11 | — |
 | Panel técnico | F3 | — |
 | Menú de desarrollador (la partida deja de contar) | F1 | — |
 
@@ -120,8 +123,9 @@ guardada para la próxima vez):
 
 Haz click en cualquier enemigo para ver su vida, su daño y cuánto resiste a tu
 herramienta. En las tres primeras partidas salen consejos abajo, cuando pasa lo
-que explican (se pueden apagar en Opciones). La línea de abajo enseña las
-teclas o, si juegas con mando, sus botones.
+que explican (se pueden apagar en Opciones). Todos los textos que nombran
+teclas enseñan los botones del mando en cuanto lo tocas, y vuelven a las
+teclas al tocar el teclado o el ratón.
 
 ## Pantallas
 
@@ -134,8 +138,9 @@ teclas o, si juegas con mando, sus botones.
 - **Opciones**, en tres pestañas. Se guardan solas.
   - **Sonido:** volumen general, de la música y de los efectos, y silencio
     al cambiar de ventana.
-  - **Pantalla:** pantalla completa, filtro CRT, límite de fps (la pantalla,
-    60, 144 o sin límite) y contador de fps.
+  - **Pantalla:** pantalla completa (también con F11), filtro CRT, límite
+    de fps (la pantalla, 30, 60, 120, 144, 165, 180, 200, 240 o ilimitado)
+    y contador de fps.
   - **Accesibilidad:** texto grande (un 25 % más), reducir destellos (golpes
     menos blancos, sin frenazos y menos glitch), sacudir la cámara, vibración
     del mando, números de daño (todos, solo los rojos o ninguno) y consejos.

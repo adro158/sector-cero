@@ -556,9 +556,12 @@ salen un 25 % más grandes.
 
 **Las opciones de la sesión 20** (02/11), en tres pestañas (`panel_opciones.gd`).
 Todas se guardan en `GestorGuardado` y las lee quien las necesita, sin que nadie
-las llame. El límite de fps es `Engine.max_fps`; «la pantalla» es la frecuencia
-del monitor y no el vsync, porque con el driver de NVIDIA el vsync no frenaba.
-No se aplica sin pantalla (el simulador va a toda velocidad) ni en la web.
+las llame. El límite de fps es `Engine.max_fps`. «La pantalla» enciende el vsync
+y además pone el tope a la frecuencia del monitor, porque con el driver de
+NVIDIA el vsync no frenaba; un número fijo o «ilimitado» lo apagan, porque con
+el vsync puesto un monitor de 60 Hz se quedaba en 60 aunque se eligieran 144
+(05/11). No se aplica sin pantalla (el simulador va a toda velocidad) ni en la
+web.
 «Reducir destellos» multiplica por 0,3 el blanco de los golpes (el shader de la
 horda y `sprite_destello.gd`) y el glitch, y quita el tiempo de golpe; el
 simulador la fuerza a «no», para que las partidas con semilla sigan saliendo
@@ -566,6 +569,18 @@ iguales. «Solo los rojos» deja los números de los golpes a herramientas con
 resistencia, los que avisan de que toca cambiar de personaje. El silencio al
 cambiar de ventana calla el bus `Master` en `GestorAudio`, con la misma
 notificación con la que la partida se pausa sola.
+
+**El mando en toda la interfaz** (05/11). En Godot 4.7, `ui_accept` y
+`ui_cancel` solo traen el teclado: con el mando se movía el foco, pero A no
+elegía la mejora ni B volvía. `globales/entrada.gd` (lo crea `Transicion` al
+arrancar, porque `project.godot` no llega con el `.pck`) les añade A y B, mira
+si lo último que se ha tocado es el mando y lo avisa con
+`dispositivo_cambiado`, y atiende F11. Cada texto que nombra teclas lleva un
+hijo `texto_mando.gd` (`EstiloInterfaz.segun_mando`), que cambia entre su texto
+de teclado y el de mando; es un nodo, y no una función conectada al bus, para
+que su conexión se borre sola con la pantalla. La ruleta y la pantalla final
+pasaron de mirar teclas sueltas a `ui_accept` y `ui_cancel`, LB y RB cambian de
+pestaña en las opciones, y arriba y abajo desplazan las reglas.
 
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el

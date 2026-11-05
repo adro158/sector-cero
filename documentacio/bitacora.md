@@ -4858,3 +4858,63 @@ apuntado»).
   240 Hz). Si sale algo, una v1.14.
 - Simulador completo, 20 partidas por dificultad.
 - Al final de todo: vídeo y ensayo de la defensa.
+
+### Después de publicar: F11, el límite de fps y el mando
+
+Lo pidió Adam tras probar en casa: F11 para la pantalla completa, más
+límites de fps, que el límite se cumpla de verdad (con 144 el contador
+seguía en 60) y el mando al 100 %: no se podía elegir mejora y los textos
+seguían enseñando las teclas.
+
+- **Decisiones de Adam** (ventana de preguntas): 180 y no 185 (no hay
+  monitores de 185 Hz) y «la pantalla» se queda, primera y por defecto.
+- **Por qué el mando no elegía:** en Godot 4.7, `ui_accept` trae solo Enter,
+  Enter del teclado numérico y espacio, y `ui_cancel` solo Esc; la cruceta y
+  el stick sí movían el foco. Reproducido con un A simulado
+  (`Input.parse_input_event`) antes de tocar nada.
+- **Por qué 144 se quedaba en 60:** con el vsync puesto manda la pantalla.
+  Ahora un número fijo o «ilimitado» apagan el vsync y «la pantalla» lo
+  enciende (con el tope a su refresco, por el driver de NVIDIA).
+- **Hecho:**
+  - `globales/entrada.gd` (nuevo, `preload`, sin `class_name`; lo crea
+    `Transicion`, como el icono, porque `project.godot` no viaja en el
+    `.pck`): A en `ui_accept` y B en `ui_cancel`, con qué se juega
+    (`con_mando`, estática) y la señal nueva `dispositivo_cambiado` (en
+    `GEMINI.md`), y F11
+  - `texto_mando.gd` (nuevo) y `EstiloInterfaz.segun_mando`: un hijo del
+    Label o Button que cambia entre el texto de teclado y el de mando. Nodo y
+    no una función conectada al bus: una función de un script estático no
+    se desconecta sola al cambiar de escena
+  - puestos en todos los textos con teclas: los VOLVER (opciones, reglas,
+    ranking, versiones), JUGAR y SALIR del menú (con mando sin tecla: A pulsa
+    el que tiene el foco y B no sale del juego), la pantalla final (MENÚ
+    con B; con el mando el foco va a GUARDAR, porque no se puede escribir),
+    la ruleta, la caída, las mejoras, la pausa y el panel del equipo. La
+    barra del equipo deja su detector propio y usa el de `entrada.gd`
+  - la ruleta y la pantalla final pasan de teclas sueltas a `ui_accept` y
+    `ui_cancel`; B cierra la pausa (solo con la pausa abierta: si no, es la
+    ulti)
+  - opciones: LB y RB cambian de pestaña; el selector va adelante y atrás
+    con derecha e izquierda; los interruptores siguen a la opción si cambia
+    por otro lado (F11); los límites, 30 a 240 e ilimitado
+  - reglas: arriba y abajo desplazan la pestaña (lo decía la ayuda, pero
+    movían el foco); el texto de «Cambia de personaje», con LB, RB y Select
+- **Probado** (VM): headless, import, `--quit-after` y las partidas del
+  minuto 10 y 15 iguales; 16 clases. Con ventana, un script con mando
+  simulado:
+  - en el menú, al tocar el mando «JUGAR [Enter]» pasa a «JUGAR»; A abre
+    las opciones; RB y LB cambian de pestaña
+  - el selector va 30, 60, 30 con la cruceta; con 144 el vsync se apaga y
+    la VM pasa de 60 a 86 fps (no da para más); «la pantalla» lo vuelve a
+    encender
+  - F11 pone y quita la pantalla completa y mueve el interruptor; B cierra
+    las opciones sin salir del menú
+  - en partida: la cruceta mueve el foco entre las tarjetas y A elige;
+    Start pausa y B continúa; la ruleta se acepta con A
+  - las ayudas salen con los botones («Start o B para continuar», «A para
+    aceptar», «[Select] equipo», LB y RB en la barra)
+  - en las reglas el stick desplaza sin quitar el foco y B las cierra
+  - el fichero de opciones del jugador, igual (hash)
+- **Sin probar:** con un mando de verdad, y el límite a 240 en casa.
+- **No hace falta subir `EJECUTABLE_MINIMO`:** `project.godot` igual y 16
+  clases.
