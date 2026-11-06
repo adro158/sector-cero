@@ -385,6 +385,10 @@ carpeta de datos del juego.
     - **Ranking mundial** con Supabase (Adam crea el proyecto; Claude le pasa
       el script SQL y los pasos).
     - **Pixel art propio** en lugar de los sprites hechos con IA.
+    - **Cooperativo en red local: planeado el 06/11** en
+      `plan_multijugador.md` (decisiones de Adam, contrato y reparto: la red
+      y la sala, Alan; el juego con varios jugadores, Adam). Lo de abajo es
+      la idea del 22/10, que el plan sustituye.
     - **Cooperativo en red local** (idea de Adam, 22/10, sesión 18). Tres
       personas en la misma red, cada una con un personaje, sin cambiar con E
       y Q. Lo que habría que decidir antes, con Adam:
