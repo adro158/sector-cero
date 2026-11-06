@@ -86,3 +86,24 @@ Adam lo vea jugando.
   «Texto grande».
 - Sigue pendiente el fallo del 05/11: encender «Texto grande» en plena
   partida cierra el juego.
+
+## Publicada la v1.16 (al final de la sesión)
+
+Adam: «si hay cambios desde la última versión, crea la nueva versión».
+`main` no tenía nada del juego desde la v1.15: lo nuevo estaba en esta rama.
+- **`gh` instalado en casa** (Adam, con `winget install --id GitHub.cli -e`
+  y `gh auth login --web`, con su cuenta). `gh` necesita `git` en el PATH: en
+  casa es el de GitHub Desktop, que se añade al PATH de la sesión (ficha de
+  Adam).
+- **PR #3** (el plan del multijugador) y **#4** (esta rama, con las novedades
+  de la v1.16): la comprobación en verde en los dos (unos 25 s) y fusionados
+  con *squash*, primero el del plan.
+- **Validado `main`** (import, `--quit-after`, 16 clases; `project.godot`
+  igual que en la v1.15, así que no se sube `EJECUTABLE_MINIMO`) y subida la
+  etiqueta `v1.16`. La Action de publicar, bien: los dos instaladores, los
+  cuatro `.pck` y `version.json` (1.16, ejecutable mínimo 0.2), y es la
+  última release.
+- **La web:** el despliegue de GitHub Pages falló por GitHub («Deployment
+  failed, try again later», en cola un minuto), y otra vez al relanzarlo. Se
+  pidió una construcción nueva a mano (`gh api -X POST .../pages/builds`) y
+  esa salió bien: la web es la v1.16 desde las 18:22.

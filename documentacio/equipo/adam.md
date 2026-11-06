@@ -39,7 +39,10 @@ Son órdenes completas: no tiene que explicar nada más.
   el rendimiento). El clon está en `C:\Users\Adam\Desktop\proyecto\sector-cero`.
   `git` no está en el PATH: se usa el de GitHub Desktop,
   `C:\Users\Adam\AppData\Local\GitHubDesktop\app-3.6.6\resources\app\git\cmd\git.exe`
-  (la carpeta `app-3.6.6` cambia al actualizarse GitHub Desktop). En su
+  (la carpeta `app-3.6.6` cambia al actualizarse GitHub Desktop). `gh`,
+  desde el 06/11, en `C:\Program Files\GitHub CLI\gh.exe`, con la cuenta de
+  Adam; necesita `git` en el PATH, así que antes de usarlo se añaden las dos
+  carpetas al PATH de la sesión. En su
   monitor de 240 Hz el driver de NVIDIA no respeta el vsync (sesión 19).
 - **Nube** (Claude Code en claude.ai/code): un contenedor Linux que trabaja en
   su propia rama `claude/...`. Godot no viene instalado: se baja el de Linux de
