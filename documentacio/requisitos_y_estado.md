@@ -217,14 +217,24 @@ Falta: responder las preguntas abiertas del plan (ranking mundial, quién lo
 lleva) y, **antes de la defensa, entrar al panel de Supabase**: un proyecto
 gratis se pausa tras 7 días sin uso.
 
-### Pantalla final y ranking más visuales (a medias, para la nube)
+### Pantalla final y ranking más visuales (hecho el 06/11, en su PR)
 
 Adam (05/11): que los datos de la pantalla final y las tablas del ranking
-sean más bonitos y visuales, con assets nuevos si hace falta. Empezado y
-dejado a medias en el instituto (solo capturas del estado actual y el
-diseño, sin código). Lo sigue el Claude Code de la nube con el encargo de
-la bitácora (`bitacora/2026-11-05_adam_cuentas-supabase.md`, «Siguiente
-paso»).
+sean más bonitos y visuales, con assets nuevos si hace falta. Hecho en casa
+el 06/11 en la rama `adam/final-y-ranking` (bitácora,
+`bitacora/2026-11-06_adam_final-y-ranking.md`), con el diseño del 05/11:
+- **Pantalla final:** tarjetas con icono para el tiempo, el nivel, los
+  eliminados y la dificultad (la de un récord, resaltada y latiendo), y la
+  barra del recorrido (fase 1, Kernel Panic, fase 2, NÚCLEO CERO) con una
+  marca donde acabó.
+- **Ranking y «tus últimas partidas»:** las mismas filas dibujadas
+  (`fila_partida.gd`), con medallas, victoria o derrota con icono, el
+  chip de la dificultad y, en el ranking, las partidas de tu cuenta
+  resaltadas.
+
+Falta: que Adam lo vea jugando y fusionar el PR con la comprobación en
+verde. `panel_cuenta.gd` sigue pasando de las ~200 líneas (217; ya tenía
+211).
 
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
