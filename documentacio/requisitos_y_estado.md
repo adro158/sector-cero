@@ -97,7 +97,9 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.15** (05/11: las cuentas de jugador con
+**Publicado:** la última es la **v1.16** (06/11: la pantalla final con tarjetas
+y el recorrido de la partida, y el ranking por filas dibujadas; novedades en
+`documentacio/novedades/v1.16.txt`). Antes, la **v1.15** (05/11: las cuentas de jugador con
 Supabase, el ranking que se guarda solo con cuenta y las listas
 desplegables en las opciones; novedades en
 `documentacio/novedades/v1.15.txt`). Antes, la **v1.14** (05/11: el mando en toda la
@@ -217,7 +219,7 @@ Falta: responder las preguntas abiertas del plan (ranking mundial, quién lo
 lleva) y, **antes de la defensa, entrar al panel de Supabase**: un proyecto
 gratis se pausa tras 7 días sin uso.
 
-### Pantalla final y ranking más visuales (hecho el 06/11, en su PR)
+### Pantalla final y ranking más visuales (hecho y publicado en la v1.16, 06/11)
 
 Adam (05/11): que los datos de la pantalla final y las tablas del ranking
 sean más bonitos y visuales, con assets nuevos si hace falta. Hecho en casa
@@ -232,8 +234,8 @@ el 06/11 en la rama `adam/final-y-ranking` (bitácora,
   chip de la dificultad y, en el ranking, las partidas de tu cuenta
   resaltadas.
 
-Falta: que Adam lo vea jugando y fusionar el PR con la comprobación en
-verde. `panel_cuenta.gd` sigue pasando de las ~200 líneas (217; ya tenía
+Fusionado (PR #4) y publicado en la v1.16. Falta que Adam lo vea jugando.
+`panel_cuenta.gd` sigue pasando de las ~200 líneas (217; ya tenía
 211).
 
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
