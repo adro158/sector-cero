@@ -16,7 +16,8 @@ dueño. Se actualiza cada vez que se reparte algo nuevo (en un PR, como todo).
 | Cuentas (Supabase) | `globales/cuenta*.gd`, `escenas/interfaz/panel_cuenta.gd`, `documentacio/plan_cuentas.md` | Adam |
 | Actualizador, versiones, lanzador, Actions | `globales/actualizador.gd`, `globales/version.gd`, `lanzador/`, `.github/` | Adam |
 | Recursos de datos (`.tres`) y arte | `recursos/`, `medios/` (menos audio y shaders) | Adam |
-| Multijugador (si se hace) | `globales/red.gd`, `escenas/red/` | Alan (propuesta) |
+| Multijugador: la red y la sala (06/11, `plan_multijugador.md`) | `globales/red.gd`, `escenas/red/` | Alan |
+| Multijugador: el juego con varios jugadores | lo de Adam de arriba (jugador, enemigos, interfaz...) | Adam |
 | Documentos de Alan | `documentacio/assets.md`, `documentacio/propuesta.md` | Alan |
 | Entregables y seguimiento | `documentacio/` (el resto) | Adam |
 
@@ -25,7 +26,9 @@ dueño. Se actualiza cada vez que se reparte algo nuevo (en un PR, como todo).
 `globales/bus_eventos.gd`, `CLAUDE.md` y `documentacio/equipo/`. Los cambios
 en ellos van en un PR pequeño y aparte, que se fusiona antes que el resto.
 
-## Ejemplo: cómo se repartiría el multijugador
+## El multijugador (planeado el 06/11)
+
+Así se hace, con el detalle y las decisiones en `documentacio/plan_multijugador.md`:
 
 1. **Un PR pequeño de contrato**: `documentacio/plan_multijugador.md` con las
    decisiones, las señales nuevas del bus y el reparto. Lo revisan los dos y
