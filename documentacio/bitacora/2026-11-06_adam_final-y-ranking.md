@@ -1,8 +1,9 @@
 # 06/11/2026 — Adam — Pantalla final y ranking más visuales
 
 **Participantes:** Adam (con Claude Code), en casa (Windows, RTX 5070).
-**Duración y horas acumuladas:** por apuntar (las últimas apuntadas son 48 h,
-sesión 21; las del 05/11 tampoco están).
+**Duración:** 2 h (las apuntó Adam). **Horas acumuladas:** 50 h de las 60
+sugeridas (83 %), sin contar las del 05/11, que siguen por apuntar (las
+últimas apuntadas eran 48 h, sesión 21).
 
 ## Qué se ha hecho
 
