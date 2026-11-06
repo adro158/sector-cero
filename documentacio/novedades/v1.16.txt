@@ -1,0 +1,4 @@
+- Pantalla final nueva: el tiempo, el nivel, el malware eliminado y la dificultad en tarjetas con su icono, y los récords batidos resaltados con una estrella.
+- Debajo, el recorrido de la partida: de la fase 1 a NÚCLEO CERO, con una marca justo donde acabaste.
+- El ranking, por filas: medallas para los tres primeros, una copa o un escudo roto según ganaste o perdiste, y la dificultad en un color. Si has entrado con tu cuenta, tus partidas salen resaltadas.
+- Tus últimas partidas, en el botón CUENTA, con las mismas filas que el ranking.
