@@ -256,6 +256,15 @@ scripts no forman parte del repositorio.
   jefe, daño y cadencia) y la tecla F4, al final de `teclas.png` (la F3 con un
   4). Los dibujó Claude con un script de Godot (la API `Image`, mapas de
   caracteres en cuatro grises) y Adam vio la vista previa.
+- **La pantalla final y el ranking** (06/11/2026): la tarjeta de un dato,
+  normal y la del récord (`final_tarjeta.png`); siete iconos de 16x16
+  (`final_iconos.png`: tiempo, nivel y eliminados, copiados de los del F3,
+  dificultad, victoria, derrota y récord); los cuatro hitos del recorrido de
+  la partida, su barra, su relleno y la marca (`recorrido_*.png`); la banda
+  de una fila del ranking, normal y resaltada (`fila_banda.png`), y el chip
+  de la dificultad (`chip.png`). Todo en grises para teñirlo, con la paleta
+  del lote 9. Los dibujó Claude con un script de Godot (`extends
+  SceneTree`, la API `Image`), que no se sube.
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

@@ -14,6 +14,7 @@ extends Control
 signal cerrado
 
 const Cuenta := preload("res://globales/cuenta.gd")
+const FilaPartida := preload("res://escenas/interfaz/fila_partida.gd")
 const ANCHO := 460.0
 
 var _formulario: VBoxContainer
@@ -185,13 +186,18 @@ func _cargar_partidas() -> void:
 		return
 	cargando.text = "Todavía no hay partidas en esta cuenta (o no hay conexión)." if partidas.is_empty() else ""
 	cargando.visible = partidas.is_empty()
+	_poner_partidas(partidas)
+
+
+## Una fila por partida, las mismas del ranking (fila_partida.gd, 06/11), con
+## la fecha en lugar del puesto y sin el nombre, que es el tuyo.
+func _poner_partidas(partidas: Array) -> void:
+	if not partidas.is_empty():
+		_lista.add_child(FilaPartida.cabecera("FECHA", false))
 	for partida in partidas:
-		var tiempo := int(partida.tiempo)
 		# La fecha llega como 2026-11-05T17:30:00+00:00: el día y el mes.
 		var fecha: String = partida.jugada.substr(8, 2) + "/" + partida.jugada.substr(5, 2)
-		var texto := "%s   %s   %02d:%02d   nivel %d   %s" % [fecha, "VICTORIA" if partida.victoria else "derrota",
-			tiempo / 60, tiempo % 60, partida.nivel, partida.dificultad]
-		_lista.add_child(EstiloInterfaz.etiqueta(texto, 14, EstiloInterfaz.VICTORIA if partida.victoria else EstiloInterfaz.TEXTO))
+		_lista.add_child(FilaPartida.crear(partida, fecha))
 
 
 func _campo(ayuda: String) -> LineEdit:
