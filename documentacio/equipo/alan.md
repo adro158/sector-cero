@@ -24,5 +24,14 @@ Alan trabaja con Claude Code desde el 05/11/2026 (antes, con Gemini).
 
 ## Sus máquinas
 
-- Por rellenar: dónde trabaja (instituto, casa), sistema operativo, ruta del
-  clon, ruta de Godot 4.7.2 y si `git` y `gh` están en el PATH.
+- **Instituto** (rellenado el 09/11/2026): Windows 10 Pro. El clon está en
+  `C:\Users\Alan\Desktop\proyecto\sector-cero`. Godot 4.7.2, en una carpeta
+  del Escritorio que se llama como el ejecutable:
+  `C:\Users\Alan\Desktop\Godot_v4.7.2-stable_win64.exe\Godot_v4.7.2-stable_win64.exe`
+  (con ventana) y `...\Godot_v4.7.2-stable_win64_console.exe` (en headless,
+  para ver la salida). `git` (Git for Windows) está en el PATH y entra en
+  GitHub con la cuenta `alansss10` (Git Credential Manager). `gh`, instalado
+  el 09/11 en `C:\Program Files\GitHub CLI\gh.exe`; en una terminal abierta
+  antes de instalarlo no está en el PATH, así que se llama con la ruta
+  entera.
+- Casa: por rellenar la primera vez que trabaje allí.
