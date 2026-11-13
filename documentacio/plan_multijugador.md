@@ -122,11 +122,20 @@ signal jugador_desconectado(id: int)
    `posiciones`, `mas_cercana` y `mas_cercano`): ya lo hacen la horda (cada
    enemigo va al más cercano y golpea a cualquiera que toque), las oleadas
    (salen alrededor de cada jugador por turnos, sin gastar azar), los
-   fragmentos, el corazón y el cofre de los élites y el hielo. Falta: los
-   élites, Kernel Panic y su jaula, su ráfaga y su espectáculo, NÚCLEO CERO
-   y sus ataques y escudo, las partículas, el sistema de niveles (punto 3) y
-   la cámara. Con un jugador, el simulador da lo mismo que antes (también
-   una partida entera: derrota en 1142 s con 5743 eliminados).
+   fragmentos, el corazón y el cofre de los élites, el hielo, los élites
+   (persiguen al más cercano; el golpe, el aura y la explosión, a todos),
+   Kernel Panic (persigue y apunta al más cercano; el golpe, la jaula, la
+   ráfaga y la sacudida, a todos) y NÚCLEO CERO (lo mismo; el rayo pega una
+   vez a cada uno y el escudo quita la espera de cambiar a todos). El nombre
+   tapado de los élites usa el primer jugador del grupo, que en red será el
+   local. Con un jugador, el simulador da lo mismo que antes (también una
+   partida entera: derrota en 1142 s con 5743 eliminados). Probado con un
+   segundo jugador quieto a 600 px: sin errores y la horda se reparte entre
+   los dos. **Falta:** las partículas, la cámara (con dos, Godot avisa de
+   que hay dos `Camera2D`), y lo de los puntos 2 a 4: al caer el segundo
+   jugador, la partida se para en «elige quién sigue» porque todo lo del
+   equipo (`cambio_personaje.gd`, `raiz_juego.gd`, `sistema_niveles.gd`)
+   sigue pensando en uno.
 2. Los personajes repartidos: quién lleva cuál, el libre, cambiar a él y
    pasar a él al caer (`cambio_personaje.gd` y la barra del equipo).
 3. La experiencia común y las mejoras por jugador, con la pausa hasta que
