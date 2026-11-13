@@ -105,6 +105,29 @@ signal jugador_desconectado(id: int)
 Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
 (`equipo/reparto.md`). Alan hizo el punto 1 (`alan/red`, 09/11).
 
+**Hecho el 13/11 (rama `adam/red`, con el commit de Alan dentro):**
+- `globales/red.gd` (lo crea `Transicion`, como `cuenta.gd`): crear la
+  sala, unirse con el código, la lista de jugadores `{id, nombre,
+  personaje}` con el primer personaje libre, elegir otro libre, la versión
+  (si no coincide, «La sala es de la versión...»), la sala llena (3), EMPEZAR
+  (solo el anfitrión), `enviar_entrada`/`enviar_estado` (sin garantía de
+  llegada, el siguiente trae lo de ahora) y `enviar_suceso` (con garantía),
+  y las desconexiones. Mensajes `[tipo, datos]` con `var_to_bytes` y
+  `send_bytes`, como la prueba de Alan. Avisa por el bus (las señales del
+  contrato) y los errores, con su señal `error_de_red`.
+- `globales/codigo_sala.gd`: el código, 7 letras con la IP dentro (base 32,
+  sin 0, O, 1 ni I), enseñado como `52C-J2B7`.
+- `escenas/red/sala_red.gd` y el botón EN RED del menú (no en la web): el
+  nombre, CREAR SALA, el código con UNIRSE, y en la sala el código, los
+  jugadores con su personaje, elegir personaje, EMPEZAR y SALIR DE LA SALA.
+  Hasta el punto 5, EMPEZAR solo avisa de que la partida en red no está
+  lista.
+- Probado con dos y cuatro copias del juego en el mismo ordenador
+  (`127.0.0.1`): la sala, los personajes, las entradas, el estado, los
+  sucesos, la salida de un cliente, la sala llena; y con ventana, las dos
+  pantallas de la sala. **Falta que Alan (o Adam) lo pruebe entre dos
+  ordenadores de verdad.**
+
 1. **Probar que conecta**, lo primero: dos ordenadores del instituto en la
    misma red con un script mínimo de ENet. Si la red de clase lo bloquea, se
    sabe ya (y se prueba en casa o con el móvil como punto de acceso).
@@ -186,6 +209,33 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    1, vuelve con el Mago a media vida y después le pasa lo mismo al 1.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
+   **En tres tandas.** La primera, hecha el 13/11 (`escenas/red/partida_red.gd`,
+   que añade `raiz_juego.gd` solo en red): EMPEZAR lleva a todos a la
+   partida; el jugador de la escena es el de este ordenador y los demás se
+   crean sin cámara ni teclado (`por_red` en el controlador), cada uno con
+   su personaje de la sala (`tomar()`), y no chocan entre ellos. En el
+   anfitrión se mueven, cambian y lanzan la ulti con `entrada_recibida`; los
+   clientes mandan lo que pulsan cada fotograma. La interfaz enseña solo lo
+   del de este ordenador (`equipo.local`, `es_local()`). Si se va un
+   cliente, su jugador se queda mirando y su personaje queda libre; si se va
+   el anfitrión, todos vuelven al menú. Probado con dos copias: el jugador
+   del cliente se mueve en el anfitrión con lo que pulsa en el suyo.
+   **La segunda, hecha el 13/11** (`escenas/red/estado_red.gd`): el
+   anfitrión manda cada 3 pasos de física (20 veces por segundo) los
+   jugadores (posición, velocidad, personaje y vida), la horda de cada tipo,
+   los fragmentos, el reloj, la experiencia y las vidas del equipo; los
+   clientes no simulan (las oleadas paradas, `solo_dibujar` en los gestores
+   y en los fragmentos) y lo dibujan. Las mejoras: el anfitrión manda a
+   cada uno sus opciones (por su ruta, un recurso no viaja), el cliente
+   elige con su panel y la elegida vuelve con garantía de llegada
+   (`enviar_entrada(..., true)`); el anfitrión sigue cuando han elegido
+   todos. Probado con dos copias: el reloj, el nivel y la horda iguales, y
+   la Memoria redundante del cliente sube la vida de los dos.
+   **Falta, la tercera:** los élites, los jefes y sus ataques, los efectos y
+   los números de daño en los clientes; la ruleta del cofre y las caídas
+   (con su animación) en los clientes; la pausa en red (no se pausa); el
+   final de la partida para todos; y que el anfitrión sin personaje no
+   bloquee las mejoras de los demás.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

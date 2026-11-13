@@ -33,6 +33,10 @@ const APAGADO_SACUDIDA := 1.5
 ## iba. Hacia aquí ataca el Espadachín si no tiene a nadie a su alcance
 ## (gestor_armas.gd).
 var mirando := Vector2.DOWN
+## Multijugador (partida_red.gd): el jugador de otro ordenador no lee el
+## teclado, se mueve con la dirección que llega por la red.
+var por_red := false
+var direccion_red := Vector2.ZERO
 
 var _efecto_golpe: Tween
 ## Las hojas del personaje que se lleva (las pone cambio_personaje.gd).
@@ -132,7 +136,7 @@ func ralentizar(fraccion: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var direccion := Input.get_vector(
+	var direccion := direccion_red if por_red else Input.get_vector(
 		"mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo"
 	)
 

@@ -2,6 +2,8 @@ extends Node2D
 
 const Dificultad := preload("res://globales/dificultad.gd")
 const TiempoGolpe := preload("res://escenas/jugabilidad/efectos/tiempo_golpe.gd")
+const Red := preload("res://globales/red.gd")
+const PartidaRed := preload("res://escenas/red/partida_red.gd")
 ## Segundos de negro entre la fase 1 y la 2.
 const DURACION_TRANSICION := 3.0
 ## La parte de su vida con la que vuelven los caídos al pasar a la fase 2.
@@ -41,6 +43,10 @@ func _ready() -> void:
 	BusEventos.juego_pausado.connect(_al_pausar)
 	# El frenazo de los momentos fuertes (tiempo_golpe.gd).
 	add_child(TiempoGolpe.new())
+	# En red, los jugadores de los demás y lo que llega por la red
+	# (partida_red.gd, multijugador).
+	if Red.actual != null and Red.actual.en_red():
+		add_child(PartidaRed.new())
 
 
 ## La física va a 60 pasos por segundo: en una pantalla de 144 o 240 Hz, el
