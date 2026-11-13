@@ -97,7 +97,11 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.16** (06/11: la pantalla final con tarjetas
+**Publicado:** la última es la **v1.17** (13/11: el arreglo del cierre al
+cambiar opciones en la pausa, el panel del equipo con sprites y la versión
+en el ranking; lleva también por dentro la parte de Adam del multijugador,
+que con un jugador no cambia nada; novedades en
+`documentacio/novedades/v1.17.txt`). Antes, la **v1.16** (06/11: la pantalla final con tarjetas
 y el recorrido de la partida, y el ranking por filas dibujadas; novedades en
 `documentacio/novedades/v1.16.txt`). Antes, la **v1.15** (05/11: las cuentas de jugador con
 Supabase, el ranking que se guarda solo con cuenta y las listas

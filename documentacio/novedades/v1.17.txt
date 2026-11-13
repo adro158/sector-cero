@@ -1,0 +1,3 @@
+- Arreglado: cambiar una opción en la pausa (por ejemplo, «Texto grande») podía cerrar el juego.
+- Panel del equipo nuevo (C o Select): una ficha por personaje con su retrato, su vida, la carga de su ulti y lo que resiste el malware su herramienta. El que juega lleva una luz alrededor y el caído, una grieta.
+- El ranking y tus últimas partidas dicen en qué versión se jugó cada partida.

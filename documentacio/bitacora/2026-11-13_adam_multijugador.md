@@ -74,6 +74,19 @@ a los demás», el cofre para quien lo recoge, mandar el estado por la red
 (punto 5, depende de `red.gd`), la interfaz en red (punto 6) y medir la
 vida con varios bots.
 
+## Publicada la v1.17 (al final de la sesión)
+
+Adam: «súbelo todo al GitHub y haz la nueva versión para jugar». Fusionados
+con la comprobación en verde: #8 (el arreglo de las opciones y la versión
+en el ranking), #9 (el contrato de la red; Adam lo pidió sin esperar la
+revisión de Alan), #10 (el panel del equipo) y #11 (esta rama, con `main`
+traído: un choque en `requisitos_y_estado.md`, la nota vieja del texto
+grande contra la de «Arreglado», resuelto con la de `main`). Antes de
+fusionar #11, la rama junta todo y se validó entera (simulador, la prueba
+del texto grande por el menú y la de dos jugadores). `project.godot` igual
+que en la v1.16 y 16 clases: no se sube `EJECUTABLE_MINIMO`. Novedades en
+`novedades/v1.17.txt`.
+
 ## Siguiente paso
 
 - Que Alan revise el contrato y siga con `red.gd`, o que Adam decida otro
