@@ -16,7 +16,7 @@ dueño. Se actualiza cada vez que se reparte algo nuevo (en un PR, como todo).
 | Cuentas (Supabase) | `globales/cuenta*.gd`, `escenas/interfaz/panel_cuenta.gd`, `documentacio/plan_cuentas.md` | Adam |
 | Actualizador, versiones, lanzador, Actions | `globales/actualizador.gd`, `globales/version.gd`, `lanzador/`, `.github/` | Adam |
 | Recursos de datos (`.tres`) y arte | `recursos/`, `medios/` (menos audio y shaders) | Adam |
-| Multijugador: la red y la sala (06/11, `plan_multijugador.md`) | `globales/red.gd`, `escenas/red/` | Alan |
+| Multijugador: la red y la sala (06/11, `plan_multijugador.md`) | `globales/red.gd`, `escenas/red/` | Adam (desde el 13/11; antes Alan, que hizo la prueba de conexión) |
 | Multijugador: el juego con varios jugadores | lo de Adam de arriba (jugador, enemigos, interfaz...) | Adam |
 | Documentos de Alan | `documentacio/assets.md`, `documentacio/propuesta.md` | Alan |
 | Entregables y seguimiento | `documentacio/` (el resto) | Adam |
@@ -39,3 +39,10 @@ Así se hace, con el detalle y las decisiones en `documentacio/plan_multijugador
    - `adam/varios-jugadores`: el juego con varios jugadores (la horda, los
      jefes, la cámara y el grupo `jugador` con más de uno).
 3. **Un PR de integración** que lo junta, probado por la Action y jugando.
+
+**Cambio del 13/11 (decisión de Adam):** la red y la sala pasan a Adam, que
+las hace con su Claude para acabar el online (Adam avisa a Alan). Se parte
+de la prueba de conexión de Alan (`alan/red`, 09/11). De Alan sigue haciendo
+falta probar con dos ordenadores de verdad que la red del instituto deja
+conectar: Claude solo puede probar dos copias del juego en el mismo
+ordenador.
