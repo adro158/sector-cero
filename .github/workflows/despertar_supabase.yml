@@ -1,0 +1,37 @@
+# Mantiene despierto el proyecto de Supabase de las cuentas (13/11/2026). Un
+# proyecto gratis se pausa tras 7 días sin uso, y entonces nadie puede entrar
+# en su cuenta (se pausó entre el 05 y el 13/11). Una consulta pequeña a la
+# base de datos cuenta como uso.
+#
+# Adam pidió una vez a la semana; va dos (lunes y jueves) porque GitHub puede
+# lanzar las programadas con horas de retraso y una semana justa se pasaría de
+# los 7 días. Si el proyecto ya estaba pausado, esto no lo despierta: hay que
+# reactivarlo en supabase.com (o Claude, con el conector de Supabase).
+#
+# GitHub apaga las Actions programadas de un repositorio que pasa 60 días sin
+# commits: si eso pasa, se vuelve a encender en la pestaña Actions.
+name: Despertar Supabase
+
+on:
+  schedule:
+    - cron: "0 7 * * 1,4"
+  # Para lanzarla a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+env:
+  # Los mismos que globales/cuenta.gd. La clave publicable está hecha para ir
+  # a la vista (lo que protege los datos son los permisos y el RLS).
+  URL: https://ounawnkngqsgozvadufe.supabase.co
+  CLAVE: sb_publishable_6tlMdkAvdfybL33FjGwoVw_iu0Pece4
+
+jobs:
+  despertar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar un perfil
+        # --fail: si no contesta bien (pausado, caído), la Action sale en rojo
+        # y GitHub avisa por correo.
+        run: |
+          curl --fail --silent --show-error --max-time 30 \
+            -H "apikey: $CLAVE" \
+            "$URL/rest/v1/perfiles?select=nombre&limit=1"

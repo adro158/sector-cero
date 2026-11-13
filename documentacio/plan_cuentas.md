@@ -283,7 +283,11 @@ puede trucar.
 ## Riesgos
 
 - **Pausa a los 7 días.** Un proyecto gratis sin actividad durante una semana
-  se pausa (no pierde datos). **Antes de la defensa, entrar al panel de
+  se pausa (no pierde datos). Pasó entre el 05 y el 13/11: Claude lo
+  reactivó con el conector. Desde el 13/11 la Action
+  `.github/workflows/despertar_supabase.yml` le hace una consulta los lunes
+  y los jueves para que no se pause (si sale en rojo, GitHub avisa por
+  correo y hay que reactivarlo a mano). **Antes de la defensa, entrar al panel de
   Supabase y comprobar que está activo.** El juego tiene que seguir yendo
   como invitado si el servidor no responde.
 - **Trampas.** Las partidas las manda el propio juego: quien sepa podría
