@@ -138,6 +138,20 @@ signal jugador_desconectado(id: int)
    sigue pensando en uno.
 2. Los personajes repartidos: quién lleva cuál, el libre, cambiar a él y
    pasar a él al caer (`cambio_personaje.gd` y la barra del equipo).
+   **Hecho el 13/11, menos la barra del equipo:** el equipo es uno por
+   partida (`jugador/equipo.gd`, lo crea el primer jugador y se guarda en la
+   raíz con `set_meta`, sin tocar la escena): los personajes, su herramienta,
+   su vida, los caídos y quién lleva a cada uno. `cambio_personaje.gd` es lo
+   de cada jugador: empieza con el primero libre, solo cambia a uno libre y,
+   con varios jugadores, si cae el suyo pasa sin pausa al libre que quede o
+   se queda sin personaje (sale del grupo `jugador`, la horda deja de verle).
+   Las mejoras del equipo (vida máxima, evoluciones) llegan a quien lleve a
+   cada uno. Con un jugador, igual que antes (el simulador da lo mismo).
+   Probado con dos: el 2 empieza con el Mago, al caer pasa al Segador libre,
+   al caer este se queda sin personaje y la partida acaba al caer el
+   Espadachín del 1. **Falta:** la barra del equipo y quién elige al entrar
+   (la sala de Alan dirá qué personaje lleva cada uno; ahora, el primero
+   libre).
 3. La experiencia común y las mejoras por jugador, con la pausa hasta que
    elijan todos.
 4. El espectador y la vuelta en la fase 2.
