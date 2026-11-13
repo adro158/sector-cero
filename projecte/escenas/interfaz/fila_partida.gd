@@ -5,7 +5,8 @@ extends RefCounted
 ## Es una banda de 9 trozos con, de izquierda a derecha: el puesto (medalla en
 ## los tres primeros) o la fecha, la victoria o la derrota como icono, el
 ## nombre (solo en el ranking), el tiempo, el nivel, los eliminados, el
-## personaje con su mini retrato y la dificultad en un chip de su color.
+## personaje con su mini retrato, la dificultad en un chip de su color y la
+## versión en la que se jugó (desde el 13/11; «—» en las de antes).
 ##
 ## Sin class_name: se carga con preload.
 
@@ -35,7 +36,7 @@ const COLORES_PODIO := [Color(1.0, 0.8, 0.3), Color(0.8, 0.85, 0.9), Color(0.85,
 ## El ancho de cada columna, para que las filas casen como en una tabla. Con
 ## «Texto grande» crecen como la letra.
 const ANCHOS := {"primera": 52, "resultado": 22, "nombre": 150, "tiempo": 64,
-	"nivel": 48, "eliminados": 92, "personaje": 140, "dificultad": 90}
+	"nivel": 48, "eliminados": 92, "personaje": 140, "dificultad": 90, "version": 72}
 const LETRA := 15
 
 
@@ -47,7 +48,7 @@ static func cabecera(primera: String, con_nombre: bool) -> HBoxContainer:
 	fila.add_child(_celda("", "resultado", EstiloInterfaz.TEXTO_SUAVE, 13))
 	if con_nombre:
 		fila.add_child(_celda("NOMBRE", "nombre", EstiloInterfaz.TEXTO_SUAVE, 13))
-	for titulo in [["TIEMPO", "tiempo"], ["NIVEL", "nivel"], ["ELIMINADOS", "eliminados"], ["PERSONAJE", "personaje"], ["DIFICULTAD", "dificultad"]]:
+	for titulo in [["TIEMPO", "tiempo"], ["NIVEL", "nivel"], ["ELIMINADOS", "eliminados"], ["PERSONAJE", "personaje"], ["DIFICULTAD", "dificultad"], ["VERSIÓN", "version"]]:
 		fila.add_child(_celda(titulo[0], titulo[1], EstiloInterfaz.TEXTO_SUAVE, 13))
 	# El mismo margen que la banda, para que los títulos caigan encima.
 	var margen := MarginContainer.new()
@@ -80,6 +81,9 @@ static func crear(partida: Dictionary, primera: Variant, resaltada := false) -> 
 	fila.add_child(_celda(str(int(partida.get("eliminados", 0))), "eliminados", color))
 	fila.add_child(_personaje(partida.get("personaje", ""), color))
 	fila.add_child(_chip(partida.get("dificultad", "media")))
+	# Las de Supabase pueden traerla a null.
+	var version: Variant = partida.get("version")
+	fila.add_child(_celda(_version(version if version is String else ""), "version", EstiloInterfaz.TEXTO_SUAVE))
 
 	var banda := PanelContainer.new()
 	banda.add_theme_stylebox_override("panel", estilo(BANDA, 1 if resaltada else 0, Vector2(48, 24), 6, borde))
@@ -142,6 +146,14 @@ static func _personaje(nombre: String, color: Color) -> HBoxContainer:
 	etiqueta.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	caja.add_child(etiqueta)
 	return caja
+
+
+## La versión como se lee en el lanzador («v1.16»). Las jugadas desde Godot
+## dicen «desarrollo», que no cabe: «dev». Las de antes del 13/11, «—».
+static func _version(version: String) -> String:
+	if version == "":
+		return "—"
+	return "dev" if version == "desarrollo" else version
 
 
 ## La dificultad: su nombre en oscuro sobre un chip de su color.

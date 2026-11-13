@@ -14,6 +14,10 @@ signal cerrado
 
 var _ventana: ColorRect
 var _pestanas: TabContainer
+## El control de cada opción, para que siga los cambios que llegan por otro
+## lado (F11, las opciones de la cuenta): clave → [control, valores]; valores
+## solo en las listas.
+var _controles := {}
 
 
 func _ready() -> void:
@@ -73,6 +77,28 @@ func _ready() -> void:
 	_ventana = EstiloInterfaz.ventana_centrada(caja)
 	add_child(_ventana)
 	visible = false
+	# Un método y no una lambda por control (13/11): una lambda que solo usa
+	# variables locales no queda atada a este nodo, y Godot no la desconecta
+	# al borrarlo. Al pasar del menú a la partida se quedaban las de la
+	# ventana del menú, y al cambiar una opción en la pausa se llamaban con el
+	# control ya borrado: en el juego exportado, se cerraba (Adam, «Texto
+	# grande»).
+	GestorGuardado.opcion_cambiada.connect(_al_cambiar_opcion)
+
+
+## Si la opción cambia por otro lado (F11, entrada.gd; las de la cuenta,
+## cuenta_opciones.gd), su control la sigue sin volver a guardarla.
+func _al_cambiar_opcion(clave: String, valor: Variant) -> void:
+	if not clave in _controles:
+		return
+	var control = _controles[clave][0]
+	if control is HSlider:
+		control.set_value_no_signal(valor)
+	elif control is CheckButton:
+		control.set_pressed_no_signal(valor)
+	elif control is OptionButton:
+		# select() no avisa con item_selected: no se vuelve a guardar.
+		control.select(maxi(_controles[clave][1].find(valor), 0))
 
 
 ## Con el foco en las pestañas: con el mando o las flechas, izquierda y
@@ -127,11 +153,7 @@ func _deslizador(rejilla: GridContainer, texto: String, clave: String) -> void:
 	deslizador.step = 0.05
 	deslizador.value = GestorGuardado.opcion(clave)
 	deslizador.value_changed.connect(func(valor: float): GestorGuardado.cambiar_opcion(clave, valor))
-	# Si la opción cambia por otro lado (las de la cuenta, cuenta_opciones.gd),
-	# el deslizador la sigue, sin volver a guardarla.
-	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
-		if cambiada == clave:
-			deslizador.set_value_no_signal(valor))
+	_controles[clave] = [deslizador]
 	rejilla.add_child(deslizador)
 
 
@@ -142,11 +164,7 @@ func _casilla(rejilla: GridContainer, texto: String, clave: String) -> void:
 	# Solo el interruptor, sin estirarse a lo ancho de la columna.
 	casilla.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	casilla.toggled.connect(func(activa: bool): GestorGuardado.cambiar_opcion(clave, activa))
-	# Si la opción cambia por otro lado (F11, entrada.gd), el interruptor la
-	# sigue, sin volver a guardarla.
-	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
-		if cambiada == clave:
-			casilla.set_pressed_no_signal(valor))
+	_controles[clave] = [casilla]
 	rejilla.add_child(casilla)
 
 
@@ -164,11 +182,7 @@ func _selector(rejilla: GridContainer, texto: String, clave: String, valores: Ar
 	# maxi: si el fichero trae un valor que ya no existe, se ve el primero.
 	lista.select(maxi(valores.find(GestorGuardado.opcion(clave)), 0))
 	lista.item_selected.connect(func(indice: int): GestorGuardado.cambiar_opcion(clave, valores[indice]))
-	# Si la opción cambia por otro lado (las de la cuenta), la lista la sigue.
-	# select() no avisa con item_selected: no se vuelve a guardar.
-	GestorGuardado.opcion_cambiada.connect(func(cambiada: String, valor: Variant):
-		if cambiada == clave:
-			lista.select(maxi(valores.find(valor), 0)))
+	_controles[clave] = [lista, valores]
 	lista.gui_input.connect(func(evento: InputEvent):
 		var paso := 1 if evento.is_action_pressed("ui_right") else -1 if evento.is_action_pressed("ui_left") else 0
 		if paso != 0:

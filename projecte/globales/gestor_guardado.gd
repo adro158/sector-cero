@@ -127,6 +127,9 @@ func anadir_al_ranking(estadisticas: Dictionary, nombre: String) -> int:
 		"personaje": estadisticas.personaje,
 		"dificultad": estadisticas.dificultad,
 		"fecha": Time.get_date_string_from_system(),
+		# En qué versión se jugó (Adam, 13/11): el equilibrio cambia de una a
+		# otra. Las guardadas antes no la traen.
+		"version": Version.ACTUAL,
 	}
 	var lista := ranking()
 	lista.append(entrada)
