@@ -170,6 +170,15 @@ signal jugador_desconectado(id: int)
    Heurística agresiva le sube su daño (×1,12) y no el del primero.
    **Falta:** que el panel diga «esperando a los demás» mientras eligen.
 4. El espectador y la vuelta en la fase 2.
+   **Hecho el 13/11 en `cambio_personaje.gd`:** sin personaje, el jugador
+   sale del grupo `jugador` (la horda y los jefes dejan de verle), no se
+   mueve, no dispara, no lanza la ulti, no se ve y va donde el jugador más
+   cercano, así que su cámara le sigue. Al revivir los caídos (al empezar la
+   fase 2, y con el F1) cada espectador vuelve con un personaje libre, con
+   su vida a medias y protegido un momento (`equipo.gd` guarda todos los
+   jugadores en `miembros`). Con un jugador nunca hay espectadores: el
+   simulador da lo mismo. Probado con dos: el 2 se queda mirando encima del
+   1, vuelve con el Mago a media vida y después le pasa lo mismo al 1.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
