@@ -209,6 +209,20 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    1, vuelve con el Mago a media vida y después le pasa lo mismo al 1.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
+   **En tres tandas.** La primera, hecha el 13/11 (`escenas/red/partida_red.gd`,
+   que añade `raiz_juego.gd` solo en red): EMPEZAR lleva a todos a la
+   partida; el jugador de la escena es el de este ordenador y los demás se
+   crean sin cámara ni teclado (`por_red` en el controlador), cada uno con
+   su personaje de la sala (`tomar()`), y no chocan entre ellos. En el
+   anfitrión se mueven, cambian y lanzan la ulti con `entrada_recibida`; los
+   clientes mandan lo que pulsan cada fotograma. La interfaz enseña solo lo
+   del de este ordenador (`equipo.local`, `es_local()`). Si se va un
+   cliente, su jugador se queda mirando y su personaje queda libre; si se va
+   el anfitrión, todos vuelven al menú. Probado con dos copias: el jugador
+   del cliente se mueve en el anfitrión con lo que pulsa en el suyo.
+   **Falta:** la segunda tanda (el anfitrión manda el estado y los clientes
+   dibujan su partida en vez de simular la suya, que ahora va por libre) y
+   la tercera (élites, jefes, efectos, la pausa en red y el final).
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

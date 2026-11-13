@@ -193,6 +193,9 @@ func _hacia_el_mas_cercano() -> Vector2:
 
 
 func _avisar() -> void:
+	# Con varios jugadores, la interfaz enseña las del de este ordenador.
+	if not _equipo.es_local():
+		return
 	var fracciones := _cargas.map(func(carga): return carga / CARGA_NECESARIA)
 	BusEventos.ulti_cambiada.emit(fracciones, _equipo.indice_actual())
 

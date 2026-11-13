@@ -68,6 +68,9 @@ func _ready() -> void:
 		raiz.set_meta("equipo", Equipo.new(personajes))
 	_equipo = raiz.get_meta("equipo")
 	_equipo.miembros.append(self)
+	# El primero es el jugador de la escena: el de este ordenador.
+	if _equipo.local == null:
+		_equipo.local = self
 	_equipo.derrotado.connect(equipo_derrotado.emit)
 	# Para contar cuántos juegan (jugadores.gd, la vida de los enemigos): a
 	# diferencia de jugador, de este grupo no se sale al quedarse mirando.
@@ -119,6 +122,31 @@ func cambiar(paso: int = 1) -> bool:
 	_sprite.modulate = Color(2.0, 2.0, 2.0)
 	create_tween().tween_property(_sprite, "modulate", Color.WHITE, 0.3)
 	return true
+
+
+## Multijugador (partida_red.gd): empezar con el personaje elegido en la sala,
+## si está libre.
+func tomar(indice: int) -> void:
+	if indice == _indice or _equipo.llevado_por[indice] != null:
+		return
+	_entrar(indice)
+	_aplicar()
+
+
+## Multijugador: se ha ido de la partida (se ha desconectado). Su personaje
+## queda libre con la vida que tenía, y él no vuelve en la fase 2.
+func irse() -> void:
+	if not _espectador:
+		_equipo.vidas[_indice] = _salud.vida()
+		_equipo.llevado_por[_indice] = null
+		_poner_espectador(true)
+	_equipo.miembros.erase(self)
+	_avisar_equipo()
+
+
+## Si este es el jugador de este ordenador: el que enseña la interfaz.
+func es_local() -> bool:
+	return _equipo.local == self
 
 
 ## El personaje que lleva el jugador ahora. Para el ranking.
@@ -352,13 +380,17 @@ func _aplicar() -> void:
 
 
 func _avisar_cambio() -> void:
+	# Con varios jugadores, la interfaz es la del de este ordenador.
+	if not es_local():
+		return
 	var siguiente := personajes[_equipo.disponible_desde(_indice, 1)]
 	# Diferido: al empezar la partida, el HUD aún no está conectado.
 	BusEventos.personaje_cambiado.emit.call_deferred(personajes[_indice], _equipo.armas[_indice], siguiente, _restante)
 
 
+## El activo que se avisa es el del jugador de este ordenador.
 func _avisar_equipo() -> void:
-	BusEventos.equipo_cambiado.emit(_estado(), _indice)
+	BusEventos.equipo_cambiado.emit(_estado(), _equipo.local.indice_actual())
 
 
 func _estado() -> Array:

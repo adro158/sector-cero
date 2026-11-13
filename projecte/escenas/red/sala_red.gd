@@ -20,6 +20,7 @@ const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/segador.tres"),
 ]
 const ANCHO := 460.0
+const PARTIDA := "res://escenas/juego.tscn"
 
 var _inicio: VBoxContainer
 var _nombre: LineEdit
@@ -153,12 +154,11 @@ func _al_irse_alguien(id: int) -> void:
 		_al_fallar("El anfitrión ha cerrado la sala.")
 
 
-## Hasta que la partida se pueda jugar sincronizada (el punto 5 del plan), la
-## sala solo junta a los jugadores: no empieza partidas sueltas en cada
-## ordenador.
+## El anfitrión ha pulsado EMPEZAR: todos a la partida (partida_red.gd pone a
+## cada uno con su personaje).
 func _al_empezar(_jugadores: Array) -> void:
-	_estado.add_theme_color_override("font_color", EstiloInterfaz.TEXTO_SUAVE)
-	_estado.text = "La sala funciona. La partida en red todavía no está lista: falta sincronizarla (punto 5 del plan)."
+	visible = false
+	Transicion.cambiar_a(PARTIDA)
 
 
 ## Sin sala, el formulario; en la sala, quién está, con qué personaje y los
