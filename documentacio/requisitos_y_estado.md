@@ -216,8 +216,11 @@ SQL (16 comprobaciones de seguridad) y por Adam desde el juego (cuentas
 (`bitacora/2026-11-05_adam_cuentas-supabase.md`).
 
 Falta: responder las preguntas abiertas del plan (ranking mundial, quién lo
-lleva) y, **antes de la defensa, entrar al panel de Supabase**: un proyecto
-gratis se pausa tras 7 días sin uso.
+lleva) y, **antes de la defensa, mirar que el proyecto de Supabase está
+activo**: un proyecto gratis se pausa tras 7 días sin uso. Se pausó entre el
+05 y el 13/11 (nadie podía entrar en su cuenta); Claude lo reactivó y, desde
+el 13/11, la Action `despertar_supabase.yml` le hace una consulta los lunes y
+los jueves para que no vuelva a pasar.
 
 ### Pantalla final y ranking más visuales (hecho y publicado en la v1.16, 06/11)
 
