@@ -265,6 +265,14 @@ scripts no forman parte del repositorio.
   de la dificultad (`chip.png`). Todo en grises para teñirlo, con la paleta
   del lote 9. Los dibujó Claude con un script de Godot (`extends
   SceneTree`, la API `Image`), que no se sube.
+- **El panel del equipo (C)** (`medios/interfaz/equipo_*.png`, 13/11/2026):
+  la ficha de un personaje en tres estados (activo, listo y caído), el
+  marco del retrato, la luz que da vueltas al del activo (4 fotogramas), la
+  grieta y el glitch del caído (3), ocho iconos de 12x12, la cabecera
+  «EQUIPO» con su emblema y las barras finas con su relleno y el destello
+  de la ulti lista (6). Todo en grises para teñirlo, con la paleta del lote
+  9 y del F3. Los dibujó Claude en el chat (claude.ai) con un script de
+  Python (numpy y Pillow), y Adam los trajo en un zip (rama `zips-lotes`).
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

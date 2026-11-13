@@ -241,6 +241,20 @@ Fusionado (PR #4) y publicado en la v1.16. Falta que Adam lo vea jugando.
 `panel_cuenta.gd` sigue pasando de las ~200 líneas (217; ya tenía
 211).
 
+### El panel del equipo (C) con sprites (hecho el 13/11, en su rama)
+
+Adam trajo las piezas en un zip (`lote_equipo_panel.zip`, hechas con Claude
+en el chat) y pidió pasar el panel de la C de una caja con texto a fichas
+con sprites. Hecho en `adam/panel-equipo` (bitácora,
+`bitacora/2026-11-13_adam_panel-equipo.md`): una ficha por personaje
+(activo, listo o caído) con el retrato enmarcado, la luz del activo o el
+glitch del caído, la vida, la ulti (con su destello al estar lista) y la
+herramienta con su resistencia (en rojo desde el 40 %). Decidido por Adam
+(13/11): el tamaño de la referencia (232 × unos 218 px, un poco más alto
+que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
+equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
+jugando.
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:
