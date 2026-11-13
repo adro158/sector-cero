@@ -627,7 +627,11 @@ tira), y en el ranking los tres primeros llevan medalla.
 barra del equipo (`barra_equipo.gd`) con los tres retratos: el que juega en
 medio y, a los lados, el anterior y el siguiente con la tecla que lleva a
 cada uno; la vida, la carga de la ulti alrededor y la espera del cambio. El
-panel de la C se queda en `panel_equipo.gd`. Arriba, la experiencia, el
+panel de la C se queda en `panel_equipo.gd`: desde el 13/11, una ficha de
+sprites por personaje dibujada con `_draw` (la ficha de 9 trozos según su
+estado, el retrato enmarcado con la luz del activo o el glitch del caído,
+iconos y barras finas de vida y de ulti), teñida de su color y del mismo
+tamaño con «Texto grande», como la barra del equipo y el F3. Arriba, la experiencia, el
 reloj y las mejoras con marcos dibujados, y los avisos sobre una banda de 9
 trozos con un icono. Los paneles y los botones de todo el juego son
 `StyleBoxTexture` de 9 trozos en grises, teñidos con `modulate_color`
