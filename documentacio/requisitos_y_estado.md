@@ -340,14 +340,20 @@ carpeta de datos del juego.
 
 ### Pendiente técnico
 
-- **Por revisar (Adam, 05/11): «Texto grande» en plena partida cierra el
-  juego.** En la v1.15 (o antes), al encender la opción desde el menú de
-  pausa, el juego se cierra y vuelve a salir el lanzador (el selector de
-  versión): parece un cierre del juego, no un error de la opción. Sin
-  mirar todavía. Para empezar: reproducirlo con Godot abierto y ver la
-  salida; mirar qué hace cada pantalla al recibir
-  `opcion_cambiada("texto_grande")` con el juego en pausa, y el log del
-  juego en la carpeta de datos (`logs/godot.log`).
+- **Arreglado el 13/11: cambiar una opción en la pausa cerraba el juego**
+  (lo vio Adam con «Texto grande» el 05/11 y el 13/11). El log del juego
+  exportado decía `Lambda capture at index 1 was freed`: en
+  `panel_opciones.gd` cada control seguía los cambios con una lambda
+  conectada a `GestorGuardado.opcion_cambiada`, y una lambda que solo usa
+  variables locales no queda atada al nodo, así que Godot no la desconecta
+  al borrarlo. Al pasar del menú a la partida se quedaban las de la ventana
+  de opciones del menú y, al cambiar una opción, se llamaban con el control
+  ya borrado. Ahora es un método del panel (`_al_cambiar_opcion`, con los
+  controles en un diccionario), que Godot sí desconecta. Las demás lambdas
+  conectadas al bus usan cosas del propio nodo y sí se desconectan. En la
+  VM no salía porque las pruebas cargaban la partida sin pasar por el menú:
+  la prueba nueva pasa por el menú (con el código viejo salen los mismos
+  errores y se corta; con el nuevo, nada).
 6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
    mejoras por minuto): se midieron antes de cambiar las dificultades.
 7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el
