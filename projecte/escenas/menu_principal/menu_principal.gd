@@ -15,6 +15,7 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd")
 const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
+const SalaRed := preload("res://escenas/red/sala_red.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
 ## panel de cuatro líneas, y el menú era casi todo texto.
@@ -25,6 +26,8 @@ var _opciones: PanelOpciones
 var _ranking: PanelRanking
 var _versiones: PanelVersiones
 var _cuenta: Control
+## La sala del multijugador (13/11, sala_red.gd).
+var _sala: Control
 ## «Juegas como invitado» o el nombre de la cuenta (05/11).
 var _quien: Label
 ## La bienvenida de las cuentas sale una vez al abrir el juego, no cada vez
@@ -81,7 +84,11 @@ func _ready() -> void:
 	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 160)
 	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 160)
 	var cuenta := EstiloInterfaz.boton("CUENTA", func(): _cuenta.abrir(), 150)
-	for boton in [jugar, reglas, ranking, opciones, cuenta]:
+	# El multijugador en red local. En la web no: ENet no funciona en el
+	# navegador (plan_multijugador.md).
+	var en_red := EstiloInterfaz.boton("EN RED", func(): _sala.abrir(), 130)
+	en_red.visible = not OS.has_feature("web")
+	for boton in [jugar, en_red, reglas, ranking, opciones, cuenta]:
 		botones.add_child(boton)
 	# En el navegador no se puede cerrar el juego.
 	if not OS.has_feature("web"):
@@ -102,6 +109,9 @@ func _ready() -> void:
 	_cuenta = PanelCuenta.new()
 	_cuenta.cerrado.connect(cuenta.grab_focus)
 	add_child(_cuenta)
+	_sala = SalaRed.new()
+	_sala.cerrado.connect(en_red.grab_focus)
+	add_child(_sala)
 	# Sin una sesión guardada, al abrir el juego: entrar, registrarse o jugar
 	# sin cuenta. Con las cuentas sin activar (sin proyecto de Supabase), no.
 	if not _bienvenida_vista and Cuenta.actual.activada() and Cuenta.actual.nombre == "":
@@ -202,7 +212,7 @@ func _abrir_ranking() -> void:
 
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible or _sala.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return

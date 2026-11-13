@@ -105,6 +105,29 @@ signal jugador_desconectado(id: int)
 Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
 (`equipo/reparto.md`). Alan hizo el punto 1 (`alan/red`, 09/11).
 
+**Hecho el 13/11 (rama `adam/red`, con el commit de Alan dentro):**
+- `globales/red.gd` (lo crea `Transicion`, como `cuenta.gd`): crear la
+  sala, unirse con el código, la lista de jugadores `{id, nombre,
+  personaje}` con el primer personaje libre, elegir otro libre, la versión
+  (si no coincide, «La sala es de la versión...»), la sala llena (3), EMPEZAR
+  (solo el anfitrión), `enviar_entrada`/`enviar_estado` (sin garantía de
+  llegada, el siguiente trae lo de ahora) y `enviar_suceso` (con garantía),
+  y las desconexiones. Mensajes `[tipo, datos]` con `var_to_bytes` y
+  `send_bytes`, como la prueba de Alan. Avisa por el bus (las señales del
+  contrato) y los errores, con su señal `error_de_red`.
+- `globales/codigo_sala.gd`: el código, 7 letras con la IP dentro (base 32,
+  sin 0, O, 1 ni I), enseñado como `52C-J2B7`.
+- `escenas/red/sala_red.gd` y el botón EN RED del menú (no en la web): el
+  nombre, CREAR SALA, el código con UNIRSE, y en la sala el código, los
+  jugadores con su personaje, elegir personaje, EMPEZAR y SALIR DE LA SALA.
+  Hasta el punto 5, EMPEZAR solo avisa de que la partida en red no está
+  lista.
+- Probado con dos y cuatro copias del juego en el mismo ordenador
+  (`127.0.0.1`): la sala, los personajes, las entradas, el estado, los
+  sucesos, la salida de un cliente, la sala llena; y con ventana, las dos
+  pantallas de la sala. **Falta que Alan (o Adam) lo pruebe entre dos
+  ordenadores de verdad.**
+
 1. **Probar que conecta**, lo primero: dos ordenadores del instituto en la
    misma red con un script mínimo de ENet. Si la red de clase lo bloquea, se
    sabe ya (y se prueba en casa o con el móvil como punto de acceso).
