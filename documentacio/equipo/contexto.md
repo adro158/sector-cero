@@ -102,6 +102,13 @@ signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
 signal dispositivo_cambiado(con_mando: bool)
 signal sesion_cambiada(nombre: String)
+# Multijugador en red (13/11, documentacio/plan_multijugador.md)
+signal sala_cambiada(jugadores: Array)
+signal partida_en_red_empieza(jugadores: Array)
+signal entrada_recibida(id: int, entrada: Dictionary)
+signal estado_recibido(estado: Dictionary)
+signal suceso_recibido(suceso: String, datos: Array)
+signal jugador_desconectado(id: int)
 ```
 
 La interfaz **escucha** casi todas y **emite** tres: `mejora_seleccionada`
