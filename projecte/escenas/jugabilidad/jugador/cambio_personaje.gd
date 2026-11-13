@@ -14,13 +14,17 @@ extends Node
 ##
 ## Con varios jugadores (multijugador, desde el 13/11) el equipo es de todos:
 ## solo se cambia a uno libre y, si cae el tuyo, pasas sin pausa al libre que
-## quede; si no queda, te quedas mirando (punto 4 del plan, por hacer).
+## quede; si no queda, te quedas mirando (la cámara sigue a otro jugador) y
+## vuelves con un personaje al empezar la fase 2.
 
 ## Han caído todos los personajes: se acaba la partida.
 signal equipo_derrotado
 
 const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antiguas.gd")
 const Equipo := preload("res://escenas/jugabilidad/jugador/equipo.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
+## Las partes del jugador que se apagan y se esconden sin personaje.
+const PARTES_ESPECTADOR := ["GestorArmas", "AuraArma", "Ultis", "BarraVida"]
 
 @export var personajes: Array[DatosPersonaje] = []
 @export var espera: float = 10.0
@@ -48,6 +52,8 @@ var _restante := 0.0
 var _equipo: Equipo
 ## Si el juego está pausado esperando a que se elija quién sigue.
 var _eligiendo := false
+## Sin personaje (multijugador): mira la partida hasta la fase 2.
+var _espectador := false
 
 @onready var _salud: Salud = get_parent().get_node("Salud")
 @onready var _sprite: Sprite2D = get_parent().get_node("Sprite")
@@ -61,6 +67,7 @@ func _ready() -> void:
 	if not raiz.has_meta("equipo"):
 		raiz.set_meta("equipo", Equipo.new(personajes))
 	_equipo = raiz.get_meta("equipo")
+	_equipo.miembros.append(self)
 	_equipo.derrotado.connect(equipo_derrotado.emit)
 	# Cada jugador empieza con el primero libre: el que juega solo, con el
 	# primero, como siempre.
@@ -78,9 +85,16 @@ func _physics_process(delta: float) -> void:
 	_restante = maxf(_restante - delta, 0.0)
 	if _equipo.curar_banquillo(delta, regeneracion_banquillo):
 		_avisar_equipo()
+	# Sin personaje, el jugador (y su cámara) va donde el que tiene más cerca.
+	if _espectador:
+		var otro := Jugadores.mas_cercano(get_tree(), get_parent().global_position)
+		if otro != null:
+			get_parent().global_position = otro.global_position
 
 
 func _unhandled_input(evento: InputEvent) -> void:
+	if _espectador:
+		return
 	if evento.is_action_pressed("cambiar_personaje"):
 		cambiar(1)
 	elif evento.is_action_pressed("personaje_anterior"):
@@ -131,6 +145,11 @@ func eligiendo() -> bool:
 	return _eligiendo
 
 
+## Si este jugador se ha quedado sin personaje y está mirando.
+func espectador() -> bool:
+	return _espectador
+
+
 ## Para el menú de desarrollador: todos vuelven con la vida llena.
 func revivir_todos() -> void:
 	for i in personajes.size():
@@ -138,6 +157,7 @@ func revivir_todos() -> void:
 		_equipo.vidas[i] = _equipo.maximas[i]
 	for quien in _jugadores_del_equipo():
 		quien.salud().poner(_equipo.maximas[quien.indice_actual()], _equipo.maximas[quien.indice_actual()])
+	_volver_espectadores()
 
 
 ## Al pasar a la fase 2 (raiz_juego.gd): el sector se reinicia y los que han
@@ -148,7 +168,47 @@ func revivir_caidos(fraccion: float) -> void:
 		if _equipo.caidos[i]:
 			_equipo.caidos[i] = false
 			_equipo.vidas[i] = _equipo.maximas[i] * fraccion
+	_volver_espectadores()
 	_avisar_equipo()
+
+
+## Los que se habían quedado sin personaje vuelven con uno libre (con varios
+## jugadores, al empezar la fase 2). Con uno solo nunca hay espectadores.
+func _volver_espectadores() -> void:
+	for miembro in _equipo.miembros:
+		var libre := _equipo.primero_libre()
+		if miembro.espectador() and libre != -1:
+			miembro.volver(libre)
+
+
+## Deja de mirar y entra con ese personaje, protegido un momento.
+func volver(indice: int) -> void:
+	_poner_espectador(false)
+	_indice = indice
+	_equipo.llevado_por[_indice] = self
+	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
+	_salud.proteger(proteccion_al_entrar)
+	_efectos.escudo(personajes[_indice].color, proteccion_al_entrar)
+	_aplicar()
+
+
+## Sin personaje no se mueve, ni dispara, ni lanza la ulti, ni se ve, y sale
+## del grupo jugador: la horda y los jefes dejan de verle.
+func _poner_espectador(si: bool) -> void:
+	_espectador = si
+	var jugador := get_parent()
+	jugador.set_physics_process(not si)
+	for parte in PARTES_ESPECTADOR:
+		var nodo = jugador.get_node(parte)
+		nodo.process_mode = Node.PROCESS_MODE_DISABLED if si else Node.PROCESS_MODE_INHERIT
+		if nodo is CanvasItem:
+			nodo.visible = not si
+	jugador.get_node("FormaColision").set_deferred("disabled", si)
+	_sprite.visible = not si
+	if si:
+		jugador.remove_from_group("jugador")
+	else:
+		jugador.add_to_group("jugador")
 
 
 ## Para el menú de desarrollador: cambiar de personaje sin esperar.
@@ -228,16 +288,15 @@ func _al_caer() -> void:
 
 
 ## Con varios jugadores no se pausa: si queda uno libre y vivo, se pasa a él
-## (decisión de Adam, 06/11); si no, el jugador se queda sin personaje y la
-## horda deja de verle (sale del grupo jugador). Volver en la fase 2, con la
-## cámara siguiendo a otro, es el punto 4 del plan.
+## (decisión de Adam, 06/11); si no, el jugador se queda mirando hasta la
+## fase 2.
 func _caer_en_red() -> void:
 	_sprite.visible = false
 	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, false)).timeout
 	var libre := _equipo.primero_libre()
 	if libre == -1:
 		_equipo.llevado_por[_indice] = null
-		get_parent().remove_from_group("jugador")
+		_poner_espectador(true)
 		_avisar_equipo()
 		return
 	_entrar(libre)

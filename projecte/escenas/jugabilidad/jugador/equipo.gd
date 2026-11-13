@@ -27,6 +27,9 @@ var caidos: Array[bool] = []
 ## Quién lleva a cada uno: el cambio_personaje.gd de su jugador, o null si
 ## está libre (en el banquillo).
 var llevado_por: Array = []
+## Los cambio_personaje.gd de todos los jugadores, también los que se han
+## quedado sin personaje (para que vuelvan en la fase 2).
+var miembros: Array = []
 ## Para curar el banquillo una sola vez por fotograma, aunque lo pidan todos
 ## los jugadores.
 var _ultimo_fotograma := -1
