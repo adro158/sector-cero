@@ -17,6 +17,7 @@ const EmbestidaHorda := preload("res://escenas/jugabilidad/enemigos/embestida_ho
 const VolteoHorda := preload("res://escenas/jugabilidad/enemigos/volteo_horda.gd")
 const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemigo.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var radio_separacion: float = 26.0
@@ -44,8 +45,6 @@ var _segundos := 0.0
 var _vida_dificultad := 1.0
 ## Segundos de animación que lleva la horda, para el shader.
 var _tiempo_animacion := 0.0
-var _jugador: Node2D
-var _salud_jugador: Salud
 var _rejilla: RejillaEspacial
 ## Solo en los tipos que embisten (el troyano). En los demás se queda en null.
 var _embestida: EmbestidaHorda
@@ -64,8 +63,6 @@ var _jaula: Node2D
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
 	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_vida_dificultad = Dificultad.dato("vida")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
@@ -133,7 +130,8 @@ func aparecer(posicion: Vector2) -> void:
 		return
 
 	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad
+	# Con varios jugadores, más vida (multijugador, punto 7 del plan).
+	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad * Jugadores.vida_por_jugadores(get_tree())
 	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
 	_huye[_vivos] = 0
@@ -290,9 +288,14 @@ func _reconstruir_rejilla() -> void:
 
 
 func _mover(delta: float) -> void:
-	var destino := _jugador.global_position
+	# Cada uno va a por el jugador que tiene más cerca (multijugador; con uno
+	# solo, siempre ese).
+	var jugadores := Jugadores.posiciones(get_tree())
+	if jugadores.is_empty():
+		return
 
 	for i in _vivos:
+		var destino := Jugadores.mas_cercana(jugadores, _posiciones[i])
 		# Se refleja al otro lado del jugador, algo más cerca: si el jugador
 		# huía de él, ahora lo tiene delante, fuera de la pantalla.
 		if _posiciones[i].distance_to(destino) > distancia_reciclaje:
@@ -360,15 +363,15 @@ func _separacion(indice: int) -> Vector2:
 
 
 func _danar_jugador() -> void:
-	var posicion_jugador := _jugador.global_position
 	var radio_contacto := datos.tamano * 0.5 + 16.0
-
-	for i in _rejilla.indices_cerca(posicion_jugador, radio_contacto):
-		if not _huyendo(i) and _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
-			# Basta con el primero que toque: el golpe activa la invulnerabilidad
-			# y los demás del montón no harían nada.
-			_salud_jugador.recibir_dano(datos.dano_contacto)
-			return
+	for jugador: Node2D in get_tree().get_nodes_in_group("jugador"):
+		var posicion_jugador := jugador.global_position
+		for i in _rejilla.indices_cerca(posicion_jugador, radio_contacto):
+			if not _huyendo(i) and _posiciones[i].distance_to(posicion_jugador) < radio_contacto:
+				# Basta con el primero que toque: el golpe activa la
+				# invulnerabilidad y los demás del montón no harían nada.
+				(jugador.get_node("Salud") as Salud).recibir_dano(datos.dano_contacto)
+				break
 
 
 func _retirar_muertos() -> void:
@@ -401,7 +404,7 @@ func _eliminar(indice: int) -> void:
 
 func _volcar_al_multimesh(delta: float) -> void:
 	var multimesh := _horda.multimesh
-	var jugador := _jugador.global_position
+	var jugadores := Jugadores.posiciones(get_tree())
 	# El reloj de la animación avanza con el juego: con la pausa se para.
 	_tiempo_animacion += delta
 	_horda.material.set_shader_parameter("tiempo", _tiempo_animacion)
@@ -413,7 +416,10 @@ func _volcar_al_multimesh(delta: float) -> void:
 	# Escala vertical -1: el QuadMesh tiene la textura invertida respecto al 2D.
 	# La horizontal es -1 en los que se dan la vuelta para mirar al jugador.
 	for i in _vivos:
-		var escala_x := _volteo.escala_x(i, _posiciones[i], _hacia_donde_mira(i, jugador)) if _volteo != null else 1.0
+		var escala_x := 1.0
+		if _volteo != null and not jugadores.is_empty():
+			var jugador := Jugadores.mas_cercana(jugadores, _posiciones[i])
+			escala_x = _volteo.escala_x(i, _posiciones[i], _hacia_donde_mira(i, jugador))
 		multimesh.set_instance_transform_2d(i, Transform2D(0.0, Vector2(escala_x, -1.0), 0.0, _posiciones[i]))
 		_destellos[i] = maxf(_destellos[i] - delta, 0.0)
 		var aviso := _embestida.avisando(i) if _embestida != null else 0.0

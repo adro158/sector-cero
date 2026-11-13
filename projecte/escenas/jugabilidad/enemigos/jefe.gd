@@ -38,6 +38,7 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 const DibujoJefeFinal := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const PosesJefe := preload("res://escenas/jugabilidad/enemigos/poses_jefe.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -123,8 +124,6 @@ var _guardaespaldas_llamado := false
 ## 0 sin furia; 1 y 2 al bajar de cada umbral.
 var _furia := 0
 var _tiempo_rabia := 0.0
-var _jugador: Node2D
-var _salud_jugador: Salud
 var _jaula: Node2D
 
 @onready var _sprite: SpriteDestello = $Sprite
@@ -138,9 +137,7 @@ var _jaula: Node2D
 
 func _ready() -> void:
 	visible = false
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
-	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
+	_jaula =get_tree().get_first_node_in_group("jaula_jefe")
 	_salud.murio.connect(_al_morir)
 	_salud.vida_cambiada.connect(_al_cambiar_vida)
 	_efectos.aparecido.connect(func(): _activo = true)
@@ -151,7 +148,7 @@ func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	# La vida de la escena por la de su dificultad, que va aparte de la de la
 	# horda desde el 23/10.
-	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe"))
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe") * Jugadores.vida_por_jugadores(get_tree()))
 	visible = true
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton
@@ -230,7 +227,11 @@ func _physics_process(delta: float) -> void:
 	_hasta_invocar -= delta * _ritmo()
 	_hasta_pisoton -= delta * _ritmo()
 	_hasta_rafaga -= delta * _ritmo()
-	var hacia_jugador := (_jugador.global_position - global_position).normalized()
+	# Persigue y apunta al jugador que tiene más cerca (multijugador).
+	var objetivo := Jugadores.mas_cercano(get_tree(), global_position)
+	if objetivo == null:
+		return
+	var hacia_jugador := (objetivo.global_position - global_position).normalized()
 
 	match _estado:
 		Estado.PERSEGUIR:
@@ -297,9 +298,10 @@ func _physics_process(delta: float) -> void:
 	# Si está dentro de su jaula, tampoco sale él, ni embistiendo.
 	global_position = _jaula.mantener(global_position, radio)
 
-	if global_position.distance_to(_jugador.global_position) < radio + 16.0:
-		var dano := dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto
-		_salud_jugador.recibir_dano(dano * DANO_FURIA[_furia])
+	var dano := dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		if global_position.distance_to(jugador.global_position) < radio + 16.0:
+			jugador.get_node("Salud").recibir_dano(dano * DANO_FURIA[_furia])
 
 	_animar(delta)
 

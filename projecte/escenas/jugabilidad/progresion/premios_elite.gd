@@ -19,14 +19,10 @@ const VELOCIDAD_FLOTE := 4.0
 
 var _corazon := preload("res://medios/sprites/corazon.png")
 var _cofre := preload("res://medios/sprites/cofre.png")
-var _jugador: Node2D
-var _salud: Salud
 var _tiempo := 0.0
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud = _jugador.get_node("Salud")
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 
 
@@ -65,17 +61,22 @@ func _physics_process(delta: float) -> void:
 		var suelo: Vector2 = premio.get_meta("suelo")
 		# Cada premio flota con un desfase distinto según dónde cayó.
 		premio.position.y = suelo.y + sin(_tiempo * VELOCIDAD_FLOTE + suelo.x) * ALTURA_FLOTE
-		if _jugador.global_position.distance_to(suelo) < RADIO_RECOGIDA:
-			_recoger(premio)
+		# Lo recoge el primero que pase por encima (multijugador).
+		for jugador: Node2D in get_tree().get_nodes_in_group("jugador"):
+			if jugador.global_position.distance_to(suelo) < RADIO_RECOGIDA:
+				_recoger(premio, jugador)
+				break
 
 
-func _recoger(premio: Sprite2D) -> void:
+## El corazón cura a quien lo recoge; el cofre abre la ruleta.
+func _recoger(premio: Sprite2D, jugador: Node2D) -> void:
 	premio.set_meta("recogido", true)
 	if premio.get_meta("tipo") == "corazon":
-		var antes := _salud.vida()
-		_salud.curar(CURACION)
-		_animar_corazon(premio, _salud.vida() - antes)
-		_jugador.get_node("EfectosJugador").curar()
+		var salud: Salud = jugador.get_node("Salud")
+		var antes := salud.vida()
+		salud.curar(CURACION)
+		_animar_corazon(premio, salud.vida() - antes)
+		jugador.get_node("EfectosJugador").curar()
 	else:
 		_animar_cofre(premio)
 

@@ -22,9 +22,18 @@ var _veces := {}
 # Las evoluciones son de un solo uso: una vez elegidas no vuelven a salir. Las
 # de porcentaje se pueden repetir y se acumulan.
 var _agotadas: Array[DatosMejora] = []
+## El jugador de este ordenador: el que elige con el panel de mejoras. Con
+## varios jugadores (multijugador, 13/11), los demás eligen por la red con
+## elegir() (punto 5 del plan).
 var _jugador: Node2D
-var _gestor_armas: Node
+## Para lo que es del equipo (las evoluciones): vale el de cualquier jugador.
 var _cambio_personaje: Node
+## Los jugadores que aún tienen que elegir la mejora en curso: la partida
+## sigue en pausa hasta que han elegido todos.
+var _por_elegir: Array = []
+## Las opciones de cada jugador en la subida de nivel en curso: cada uno las
+## suyas (para mandarlas por la red a los demás, punto 5).
+var _opciones := {}
 var _resistencia: Node
 var _pool_gemas: Node
 
@@ -32,7 +41,6 @@ var _pool_gemas: Node
 func _ready() -> void:
 	_objetivo = experiencia_primer_nivel
 	_jugador = get_tree().get_first_node_in_group("jugador")
-	_gestor_armas = _jugador.get_node("GestorArmas")
 	_cambio_personaje = _jugador.get_node("CambioPersonaje")
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	_pool_gemas = get_tree().get_first_node_in_group("pool_gemas")
@@ -85,14 +93,20 @@ func experiencia_para_subir() -> int:
 ## Para el menú de desarrollador: aplica una mejora sin pasar por los paneles
 ## y avisa para que el HUD la apunte en su columna.
 func regalar(mejora: DatosMejora) -> void:
-	_aplicar(mejora)
+	_aplicar(mejora, _jugador)
 	BusEventos.mejora_regalada.emit(mejora)
 
 
 ## Para el menú de desarrollador: las tres opciones que saldrían ahora al
 ## subir de nivel.
 func opciones_de_nivel() -> Array[DatosMejora]:
-	return _sortear_opciones()
+	return _sortear_opciones(_jugador)
+
+
+## Las opciones de un jugador en la subida de nivel en curso (vacío si no
+## tiene que elegir). Para mandárselas por la red (punto 5).
+func opciones_de(jugador: Node) -> Array:
+	return _opciones.get(jugador, [])
 
 
 ## Cuántas mejoras se han aplicado en la partida, contando las repetidas.
@@ -121,19 +135,29 @@ func _ofrecer_mejoras() -> void:
 	# solo tiene que mostrar las opciones y avisar de la elegida.
 	get_tree().paused = true
 	if _pendientes[0] == "cofre":
+		# El premio del cofre es uno: lo recibe el de este ordenador (en red,
+		# el que lo recoge, punto 5).
+		_por_elegir = [_jugador]
 		var sectores := _sortear_sectores()
 		BusEventos.ruleta_abierta.emit(sectores, sectores.pick_random())
 	else:
-		BusEventos.jugador_subio_nivel.emit(_sortear_opciones())
+		# Cada jugador elige la suya, de su propio sorteo.
+		_por_elegir = get_tree().get_nodes_in_group("jugador")
+		_opciones.clear()
+		for jugador in _por_elegir:
+			_opciones[jugador] = _sortear_opciones(jugador)
+		if _jugador in _opciones:
+			BusEventos.jugador_subio_nivel.emit(_opciones[_jugador])
 
 
-func _sortear_opciones() -> Array[DatosMejora]:
+func _sortear_opciones(jugador: Node) -> Array[DatosMejora]:
 	var opciones: Array[DatosMejora] = []
 
 	# Una evolución que ya se puede elegir sale siempre, y la primera: es el
-	# premio por haber repetido su mejora. Si hay varias, de una en una.
+	# premio por haber repetido su mejora. Si hay varias, de una en una. Con
+	# varios jugadores, solo a uno (_para_quien): si no, la elegirían dos.
 	var evolucion := _evolucion_disponible()
-	if evolucion != null:
+	if evolucion != null and _para_quien(evolucion) == jugador:
 		opciones.append(evolucion)
 
 	var normales := pool_mejoras.mejoras.duplicate()
@@ -166,13 +190,35 @@ func _evolucion_disponible() -> DatosMejora:
 	return null
 
 
+## A quién se le ofrece una evolución: al jugador que lleva esa herramienta
+## o, si está en el banquillo, al primero. Con uno solo, siempre a él.
+func _para_quien(evolucion: DatosMejora) -> Node:
+	var jugadores := get_tree().get_nodes_in_group("jugador")
+	for jugador in jugadores:
+		if jugador.get_node("GestorArmas").armas[0] == evolucion.arma_base:
+			return jugador
+	return jugadores[0] if not jugadores.is_empty() else null
+
+
 func _al_elegir_mejora(mejora: DatosMejora) -> void:
-	# Si no hay ninguna mejora esperando, la elección llega repetida (por ejemplo,
-	# desde dos sitios a la vez) y no debe aplicarse otra vez.
-	if _pendientes.is_empty():
+	elegir(_jugador, mejora)
+
+
+## Aplica la mejora que ha elegido un jugador: el de este ordenador desde el
+## panel; los demás, por la red (punto 5). Cuando han elegido todos, se ofrece
+## la siguiente pendiente o se quita la pausa.
+func elegir(jugador: Node, mejora: DatosMejora) -> void:
+	# Si ese jugador no tiene nada que elegir, la elección llega repetida (por
+	# ejemplo, desde dos sitios a la vez) y no debe aplicarse otra vez.
+	if _pendientes.is_empty() or jugador not in _por_elegir:
 		return
 
-	_aplicar(mejora)
+	_aplicar(mejora, jugador)
+	_por_elegir.erase(jugador)
+	# Los que se han quedado sin personaje mientras tanto ya no eligen.
+	_por_elegir = _por_elegir.filter(func(otro): return otro.is_in_group("jugador"))
+	if not _por_elegir.is_empty():
+		return
 	_pendientes.pop_front()
 
 	if not _pendientes.is_empty():
@@ -181,32 +227,36 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 		get_tree().paused = false
 
 
-func _aplicar(mejora: DatosMejora) -> void:
+## Las del arma, la velocidad y la espera son del jugador que la elige; la
+## vida máxima, las evoluciones, la adaptación y el imán, de todo el equipo.
+func _aplicar(mejora: DatosMejora, jugador: Node) -> void:
 	_veces[mejora] = _veces.get(mejora, 0) + 1
+	var gestor_armas: Node = jugador.get_node("GestorArmas")
+	var cambio_personaje: Node = jugador.get_node("CambioPersonaje")
 
 	match mejora.efecto:
 		DatosMejora.Efecto.DANO_ARMAS:
-			_gestor_armas.multiplicador_dano += mejora.valor
+			gestor_armas.multiplicador_dano += mejora.valor
 		DatosMejora.Efecto.CADENCIA_ARMAS:
 			# Se multiplica en lugar de restar: restando, tras unas cuantas
 			# mejoras el tiempo entre disparos llegaría a cero o a negativo y el
 			# arma dispararía en cada fotograma. Así cada mejora quita un
 			# porcentaje de lo que queda y nunca se llega a cero.
-			_gestor_armas.multiplicador_cadencia *= 1.0 - mejora.valor
+			gestor_armas.multiplicador_cadencia *= 1.0 - mejora.valor
 		DatosMejora.Efecto.ALCANCE_ARMAS:
-			_gestor_armas.multiplicador_alcance += mejora.valor
+			gestor_armas.multiplicador_alcance += mejora.valor
 		DatosMejora.Efecto.VELOCIDAD_JUGADOR:
-			_jugador.velocidad_maxima *= 1.0 + mejora.valor
+			jugador.velocidad_maxima *= 1.0 + mejora.valor
 		DatosMejora.Efecto.VIDA_MAXIMA:
-			_cambio_personaje.aumentar_vida_maxima(mejora.valor)
+			cambio_personaje.aumentar_vida_maxima(mejora.valor)
 		DatosMejora.Efecto.EVOLUCIONAR_ARMA:
-			_cambio_personaje.evolucionar(mejora.arma_base, mejora.arma)
+			cambio_personaje.evolucionar(mejora.arma_base, mejora.arma)
 			_agotadas.append(mejora)
 		DatosMejora.Efecto.ADAPTACION_MALWARE:
 			# Lo que gana el malware en cada análisis, multiplicado como la
 			# cadencia: cada vez que se elige queda un 30 % menos de lo que había.
 			_resistencia.aumento *= 1.0 - mejora.valor
 		DatosMejora.Efecto.ESPERA_CAMBIO:
-			_cambio_personaje.reducir_espera(mejora.valor)
+			cambio_personaje.reducir_espera(mejora.valor)
 		DatosMejora.Efecto.RADIO_IMAN:
 			_pool_gemas.radio_iman *= 1.0 + mejora.valor

@@ -25,19 +25,21 @@ juego y quién hace qué. Se fusiona antes que el código (PR pequeño, como pid
   a otro) y vuelve con media vida al empezar la fase 2, como los caídos de
   ahora. Se pierde si caen todos.
 
-## Propuestas, a confirmar con Adam (y Alan)
+## Confirmado por Adam (13/11, ventana de preguntas)
 
-Sin preguntar todavía, para no frenar el plan:
 - **La pausa:** en red no se pausa. Esc abre el menú sin parar el juego;
   solo el anfitrión puede acabar la partida para todos.
 - **La dificultad:** la horda y los jefes con más vida según los jugadores
   (por ejemplo ×1,6 con dos y ×2,2 con tres), medido con el simulador.
 - **El ranking y las cuentas:** las partidas en red no entran en el ranking
-  de una persona; como mucho, una lista aparte.
-- **El F1:** desactivado en red.
-- **La ulti:** cada jugador carga y lanza la de su personaje.
+  de una persona; como mucho, más adelante, una lista aparte.
 - **Desconexiones:** si se va un cliente, su personaje queda libre; si se va
   el anfitrión, se acaba la partida para todos con un aviso.
+
+## Propuestas, a confirmar
+
+- **El F1:** desactivado en red.
+- **La ulti:** cada jugador carga y lanza la de su personaje.
 - **La web:** sin red (ENet no funciona en el navegador): el botón no sale.
 
 ## Cómo funciona
@@ -118,16 +120,80 @@ signal jugador_desconectado(id: int)
 1. Varios jugadores en la partida: uno por jugador en el grupo `jugador`, y
    todo lo que hoy busca «el» jugador (la horda, los élites, los jefes, la
    jaula, los fragmentos, la cámara) busca al más cercano o al local.
+   **Empezado el 13/11** (`escenas/jugabilidad/jugadores.gd`, con
+   `posiciones`, `mas_cercana` y `mas_cercano`): ya lo hacen la horda (cada
+   enemigo va al más cercano y golpea a cualquiera que toque), las oleadas
+   (salen alrededor de cada jugador por turnos, sin gastar azar), los
+   fragmentos, el corazón y el cofre de los élites, el hielo, los élites
+   (persiguen al más cercano; el golpe, el aura y la explosión, a todos),
+   Kernel Panic (persigue y apunta al más cercano; el golpe, la jaula, la
+   ráfaga y la sacudida, a todos) y NÚCLEO CERO (lo mismo; el rayo pega una
+   vez a cada uno y el escudo quita la espera de cambiar a todos). El nombre
+   tapado de los élites usa el primer jugador del grupo, que en red será el
+   local. Con un jugador, el simulador da lo mismo que antes (también una
+   partida entera: derrota en 1142 s con 5743 eliminados). Probado con un
+   segundo jugador quieto a 600 px: sin errores y la horda se reparte entre
+   los dos. **Falta:** las partículas, la cámara (con dos, Godot avisa de
+   que hay dos `Camera2D`), y lo de los puntos 2 a 4: al caer el segundo
+   jugador, la partida se para en «elige quién sigue» porque todo lo del
+   equipo (`cambio_personaje.gd`, `raiz_juego.gd`, `sistema_niveles.gd`)
+   sigue pensando en uno.
 2. Los personajes repartidos: quién lleva cuál, el libre, cambiar a él y
    pasar a él al caer (`cambio_personaje.gd` y la barra del equipo).
+   **Hecho el 13/11, menos la barra del equipo:** el equipo es uno por
+   partida (`jugador/equipo.gd`, lo crea el primer jugador y se guarda en la
+   raíz con `set_meta`, sin tocar la escena): los personajes, su herramienta,
+   su vida, los caídos y quién lleva a cada uno. `cambio_personaje.gd` es lo
+   de cada jugador: empieza con el primero libre, solo cambia a uno libre y,
+   con varios jugadores, si cae el suyo pasa sin pausa al libre que quede o
+   se queda sin personaje (sale del grupo `jugador`, la horda deja de verle).
+   Las mejoras del equipo (vida máxima, evoluciones) llegan a quien lleve a
+   cada uno. Con un jugador, igual que antes (el simulador da lo mismo).
+   Probado con dos: el 2 empieza con el Mago, al caer pasa al Segador libre,
+   al caer este se queda sin personaje y la partida acaba al caer el
+   Espadachín del 1. **Falta:** la barra del equipo y quién elige al entrar
+   (la sala de Alan dirá qué personaje lleva cada uno; ahora, el primero
+   libre).
 3. La experiencia común y las mejoras por jugador, con la pausa hasta que
    elijan todos.
+   **Hecho el 13/11 en `sistema_niveles.gd`:** al subir de nivel cada
+   jugador tiene su propio sorteo (`opciones_de(jugador)`, para mandárselo
+   por la red) y la partida sigue en pausa hasta que han elegido todos. El
+   de este ordenador elige con el panel, como siempre
+   (`mejora_seleccionada`); los demás, con `elegir(jugador, mejora)`, que es
+   lo que llamará la red al recibir su elección (punto 5). Las mejoras del
+   arma, la velocidad y la espera de cambio son del que las elige; la vida
+   máxima, las evoluciones, la adaptación y el imán, del equipo. Una
+   evolución solo le sale al que lleva esa herramienta (si está en el
+   banquillo, al primero), para que no la elijan dos. Quien se queda sin
+   personaje ya no elige. El premio del cofre, de momento, para el de este
+   ordenador (en red, para quien lo recoja). Con un jugador, el mismo sorteo
+   y lo mismo que antes. Probado con dos: la partida espera al segundo y su
+   Heurística agresiva le sube su daño (×1,12) y no el del primero.
+   **Falta:** que el panel diga «esperando a los demás» mientras eligen.
 4. El espectador y la vuelta en la fase 2.
+   **Hecho el 13/11 en `cambio_personaje.gd`:** sin personaje, el jugador
+   sale del grupo `jugador` (la horda y los jefes dejan de verle), no se
+   mueve, no dispara, no lanza la ulti, no se ve y va donde el jugador más
+   cercano, así que su cámara le sigue. Al revivir los caídos (al empezar la
+   fase 2, y con el F1) cada espectador vuelve con un personaje libre, con
+   su vida a medias y protegido un momento (`equipo.gd` guarda todos los
+   jugadores en `miembros`). Con un jugador nunca hay espectadores: el
+   simulador da lo mismo. Probado con dos: el 2 se queda mirando encima del
+   1, vuelve con el Mago a media vida y después le pasa lo mismo al 1.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.
+   **Puesto el 13/11, sin medir:** `jugadores.gd`, `vida_por_jugadores()`,
+   ×1,6 con dos y ×2,2 con tres (lo confirmó Adam), sobre la vida de la
+   horda, los élites, Kernel Panic, NÚCLEO CERO y sus anclas. Cuenta a todos
+   los que empezaron (grupo `en_partida`, que pone `cambio_personaje.gd`),
+   también a los que miran: si no, al caer uno los enemigos nuevos saldrían
+   más flojos. Con uno, ×1 y el simulador da lo mismo. Probado con dos: un
+   bit corrupto nuevo sale con 32 de vida en vez de 20. **Falta medirlo:**
+   que el simulador juegue con varios bots y ajustar los números.
 
 ### Juntos
 

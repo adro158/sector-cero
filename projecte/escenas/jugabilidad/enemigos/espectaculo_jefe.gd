@@ -47,13 +47,8 @@ var _que := Que.NADA
 var _tiempo := 0.0
 ## Segundos desde que se enfureció (-1 si no se está dibujando la onda).
 var _tiempo_furia := -1.0
-var _jugador: Node2D
 
 @onready var _sprite: Sprite2D = get_parent().get_node("Sprite")
-
-
-func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
 
 
 func aparicion() -> void:
@@ -63,13 +58,19 @@ func aparicion() -> void:
 
 func furia() -> void:
 	_tiempo_furia = 0.0
-	_jugador.sacudir(SACUDIDA)
+	_sacudir(SACUDIDA)
 
 
 func muerte() -> void:
 	_empezar(Que.MUERTE)
 	_tiempo_furia = -1.0
-	_jugador.sacudir(SACUDIDA * 1.5)
+	_sacudir(SACUDIDA * 1.5)
+
+
+## La pantalla de todos tiembla (multijugador).
+func _sacudir(fuerza: float) -> void:
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		jugador.sacudir(fuerza)
 
 
 func _empezar(que: Que) -> void:
@@ -91,7 +92,7 @@ func _physics_process(delta: float) -> void:
 	if _que == Que.APARICION:
 		_sprite.modulate.a = _opacidad_aparicion()
 		if _tiempo >= GOLPE_APARICION and _tiempo - delta < GOLPE_APARICION:
-			_jugador.sacudir(SACUDIDA)
+			_sacudir(SACUDIDA)
 		if _tiempo >= DURA_APARICION:
 			_que = Que.NADA
 			aparecido.emit()

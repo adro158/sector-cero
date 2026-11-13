@@ -17,11 +17,6 @@ const LENTITUD := 0.4
 
 ## Cada zona: [posición en el mundo, segundos desde que se formó].
 var _zonas: Array = []
-var _jugador: Node2D
-
-
-func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
 
 
 func crear(posicion: Vector2) -> void:
@@ -41,8 +36,10 @@ func _physics_process(delta: float) -> void:
 		return
 	for zona in _zonas:
 		zona[1] += delta
-		if _jugador.global_position.distance_to(zona[0]) < RADIO:
-			_jugador.ralentizar(LENTITUD)
+		# A todos los que estén dentro (multijugador).
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if jugador.global_position.distance_to(zona[0]) < RADIO:
+				jugador.ralentizar(LENTITUD)
 	_zonas = _zonas.filter(func(zona): return zona[1] < DURACION)
 	queue_redraw()
 

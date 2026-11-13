@@ -21,6 +21,7 @@ extends Node2D
 const DibujoUltis := preload("res://escenas/jugabilidad/jugador/dibujo_ultis.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const EXPLOSIVO := preload("res://recursos/enemigos/afijos/explosivo.tres")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 ## Lo que avisan el rayo y el torbellino antes de hacer daño.
 const AVISO := 0.8
@@ -72,19 +73,16 @@ var _direcciones: Array[Vector2] = []
 var _dianas: Array[Vector2] = []
 ## Mini rayos de la tormenta que ya han caído.
 var _caidos := 0
-## El rayo pega una sola vez aunque el jugador se quede dentro.
-var _rayo_pego := false
+## A quién ha pegado ya el rayo: una sola vez a cada uno aunque se quede
+## dentro (multijugador; antes era un sí o no).
+var _rayo_pego: Array[Node] = []
 var _cristales: Array[Vector2] = []
 ## Cada portal: [posición, segundos abierto, segundos hasta el siguiente].
 var _portales: Array = []
 var _gestores: Array = []
-var _jugador: Node2D
-var _salud_jugador: Salud
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
 	# Como el primer jefe: solo los tipos sin límite de vivos.
 	_gestores = get_tree().get_nodes_in_group("gestor_enemigos").filter(func(gestor): return gestor.datos.maximo_vivos == 0)
 
@@ -111,11 +109,13 @@ func lanzar(ataque: String, forma: int) -> void:
 	_ataque = ataque
 	_tiempo = 0.0
 	_origen = get_parent().global_position
-	var jugador := _jugador.global_position
+	# Apunta al jugador que tiene más cerca (multijugador).
+	var cercano := Jugadores.mas_cercano(get_tree(), _origen)
+	var jugador := cercano.global_position if cercano != null else _origen
 	match ataque:
 		"rayo":
 			var hacia := (jugador - _origen).normalized()
-			_rayo_pego = false
+			_rayo_pego.clear()
 			_direcciones.clear()
 			if forma < 2:
 				_direcciones.append(hacia)
@@ -171,35 +171,44 @@ func _physics_process(delta: float) -> void:
 func _rayo() -> void:
 	if _tiempo >= AVISO + RAYO_DURACION:
 		_ataque = ""
-	elif _tiempo >= AVISO and not _rayo_pego:
-		for direccion in _direcciones:
-			var desde := _origen + direccion * RAYO_DELANTE
-			var cercano := Geometry2D.get_closest_point_to_segment(_jugador.global_position, desde, desde + direccion * RAYO_LARGO)
-			if cercano.distance_to(_jugador.global_position) < RAYO_RADIO + RADIO_JUGADOR:
-				var antes := _salud_jugador.vida()
-				_salud_jugador.recibir_dano(DANO_RAYO)
-				# Solo cuenta si le ha quitado vida. Si acababa de recibir otro
-				# golpe (la horda le toca a menudo), su salud está protegida medio
-				# segundo y no le hace nada: lo sigue intentando mientras se vea
-				# el rayo. Hasta el 22/10 contaba igual y el rayo no hacía daño.
-				if _salud_jugador.vida() < antes:
-					_rayo_pego = true
-					return
+	elif _tiempo >= AVISO:
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if jugador in _rayo_pego:
+				continue
+			for direccion in _direcciones:
+				var desde := _origen + direccion * RAYO_DELANTE
+				var cercano := Geometry2D.get_closest_point_to_segment(jugador.global_position, desde, desde + direccion * RAYO_LARGO)
+				if cercano.distance_to(jugador.global_position) < RAYO_RADIO + RADIO_JUGADOR:
+					var salud: Salud = jugador.get_node("Salud")
+					var antes := salud.vida()
+					salud.recibir_dano(DANO_RAYO)
+					# Solo cuenta si le ha quitado vida. Si acababa de recibir
+					# otro golpe (la horda le toca a menudo), su salud está
+					# protegida medio segundo y no le hace nada: lo sigue
+					# intentando mientras se vea el rayo. Hasta el 22/10 contaba
+					# igual y el rayo no hacía daño.
+					if salud.vida() < antes:
+						_rayo_pego.append(jugador)
+						break
 
 
 func _torbellino() -> void:
 	if _tiempo >= AVISO + TORBELLINO_DURACION:
 		_ataque = ""
-	elif _tiempo >= AVISO and _origen.distance_to(_jugador.global_position) < TORBELLINO_RADIO + RADIO_JUGADOR:
-		# Su salud se protege medio segundo tras cada golpe: no pega cada fotograma.
-		_salud_jugador.recibir_dano(DANO_TORBELLINO)
+	elif _tiempo >= AVISO:
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if _origen.distance_to(jugador.global_position) < TORBELLINO_RADIO + RADIO_JUGADOR:
+				# Su salud se protege medio segundo tras cada golpe: no pega
+				# cada fotograma.
+				jugador.get_node("Salud").recibir_dano(DANO_TORBELLINO)
 
 
 ## Cada mini rayo hace daño en el momento en que cae en su diana.
 func _tormenta() -> void:
 	while _caidos < _dianas.size() and _tiempo >= DIANAS_AVISO + _caidos * MINI_CADA:
-		if _dianas[_caidos].distance_to(_jugador.global_position) < MINI_RADIO + RADIO_JUGADOR:
-			_salud_jugador.recibir_dano(DANO_MINI)
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if _dianas[_caidos].distance_to(jugador.global_position) < MINI_RADIO + RADIO_JUGADOR:
+				jugador.get_node("Salud").recibir_dano(DANO_MINI)
 		_caidos += 1
 	if _tiempo >= DIANAS_AVISO + _dianas.size() * MINI_CADA + 0.25:
 		_ataque = ""
