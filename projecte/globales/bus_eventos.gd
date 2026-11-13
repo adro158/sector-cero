@@ -99,3 +99,27 @@ signal dispositivo_cambiado(con_mando: bool)
 ## Se ha entrado en una cuenta (su nombre) o se ha salido ("": invitado). Lo
 ## emite globales/cuenta.gd.
 signal sesion_cambiada(nombre: String)
+
+# Multijugador en red local (documentacio/plan_multijugador.md, el contrato,
+# 13/11). Las emite la red (globales/red.gd, de Alan); las escucha el juego
+# (Adam) y la sala. La red no sabe nada de la partida y el juego no sabe nada
+# de ENet. Un jugador es un diccionario {id, nombre, personaje}: id el de la
+# red (1 es el anfitrión) y personaje el índice en el equipo (0, 1 o 2).
+
+## Alguien entra en la sala, sale o elige personaje: la lista entera.
+signal sala_cambiada(jugadores: Array)
+## El anfitrión pulsa EMPEZAR: en todos los ordenadores se carga la partida
+## con estos jugadores.
+signal partida_en_red_empieza(jugadores: Array)
+## En el anfitrión: lo que ha pulsado un cliente en este fotograma (dirección,
+## ulti, cambiar, la mejora elegida...).
+signal entrada_recibida(id: int, entrada: Dictionary)
+## En los clientes: cómo está la partida (jugadores, horda, fragmentos,
+## proyectiles), unas 20 veces por segundo, para dibujarla sin simular.
+signal estado_recibido(estado: Dictionary)
+## En los clientes: algo que ha pasado en el anfitrión (una muerte, un daño,
+## un aviso), con sus datos.
+signal suceso_recibido(suceso: String, datos: Array)
+## Un jugador se ha ido o ha perdido la conexión. Si es un cliente, su
+## personaje queda libre; si es el anfitrión, se acaba la partida para todos.
+signal jugador_desconectado(id: int)
