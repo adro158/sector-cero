@@ -15,3 +15,4 @@ Orden para pasárselos a Claude Code, de uno en uno:
 8. `lote8_efectos.zip` (efectos de la partida; el lote 7 se hizo aparte)
 9. `lote11_correr_atacando.zip` (atacar corriendo y el ataque del Mago)
 10. `lote_f3_panel_tecnico.zip` (el panel técnico, F3, con sprites y gráficas)
+11. `lote_equipo_panel.zip` (el panel del equipo, tecla C, con fichas y sprites)
