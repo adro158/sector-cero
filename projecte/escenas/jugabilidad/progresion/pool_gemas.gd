@@ -3,6 +3,7 @@ extends Node2D
 const MAXIMO_GEMAS := 800
 
 const TiraFotogramas := preload("res://escenas/jugabilidad/efectos/tira_fotogramas.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 ## El fragmento de datos, en grises (cada gema lo tiñe según lo que vale): 4
 ## fotogramas de 12x12 en los que un brillo recorre el cristal. Todas las gemas
 ## van en el mismo fotograma: se cambia la textura del MultiMesh.
@@ -45,7 +46,6 @@ var _valores := PackedInt32Array()
 var _restantes := PackedFloat32Array()
 var _vivas := 0
 var _experiencia_por_tipo := {}
-var _jugador: Node2D
 var _fotogramas: Array[Texture2D] = []
 ## Segundos que lleva la animación.
 var _tiempo := 0.0
@@ -56,7 +56,6 @@ var _recogidas: Array = []
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
 	_posiciones.resize(MAXIMO_GEMAS)
 	_valores.resize(MAXIMO_GEMAS)
 	_restantes.resize(MAXIMO_GEMAS)
@@ -100,12 +99,17 @@ func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var objetivo := _jugador.global_position
+	# La experiencia es común (multijugador): cada fragmento va al jugador que
+	# tiene más cerca y lo recoge quien llegue.
+	var jugadores := Jugadores.posiciones(get_tree())
+	if jugadores.is_empty():
+		return
 
 	# Hacia atrás porque al recoger una gema se trae la última a su hueco.
 	var i := _vivas - 1
 
 	while i >= 0:
+		var objetivo := Jugadores.mas_cercana(jugadores, _posiciones[i])
 		var distancia := _posiciones[i].distance_to(objetivo)
 		_restantes[i] -= delta
 

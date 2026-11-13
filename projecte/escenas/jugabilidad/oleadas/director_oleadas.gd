@@ -16,14 +16,14 @@ var _jefe_en_juego := false
 ## 1 hasta derrotar al jefe; 2 desde entonces, hasta el jefe final.
 var _fase := 1
 var _siguiente_elite := 0.0
-var _jugador: Node2D
+## Alrededor de qué jugador sale lo siguiente (multijugador: por turnos).
+var _turno := 0
 var _gestores: Array[GestorEnemigos] = []
 var _elites: Array[Node] = []
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_elites = get_tree().get_nodes_in_group("elites")
+	_elites =get_tree().get_nodes_in_group("elites")
 	_siguiente_elite = config.primer_elite
 
 	for nodo in get_tree().get_nodes_in_group("gestor_enemigos"):
@@ -174,6 +174,11 @@ func _sortear_afijos() -> Array[DatosAfijoElite]:
 	return afijos.slice(0, cantidad)
 
 
+## Alrededor de un jugador cada vez, por turnos y no al azar: así la partida
+## de un jugador gasta los mismos números al azar que antes y el simulador da
+## lo mismo con la misma semilla.
 func _posicion_fuera_de_pantalla() -> Vector2:
+	var jugadores := get_tree().get_nodes_in_group("jugador")
+	_turno = (_turno + 1) % jugadores.size()
 	var angulo := randf() * TAU
-	return _jugador.global_position + Vector2.RIGHT.rotated(angulo) * config.distancia_aparicion
+	return (jugadores[_turno] as Node2D).global_position + Vector2.RIGHT.rotated(angulo) * config.distancia_aparicion
