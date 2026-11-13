@@ -184,6 +184,14 @@ signal jugador_desconectado(id: int)
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.
+   **Puesto el 13/11, sin medir:** `jugadores.gd`, `vida_por_jugadores()`,
+   ×1,6 con dos y ×2,2 con tres (lo confirmó Adam), sobre la vida de la
+   horda, los élites, Kernel Panic, NÚCLEO CERO y sus anclas. Cuenta a todos
+   los que empezaron (grupo `en_partida`, que pone `cambio_personaje.gd`),
+   también a los que miran: si no, al caer uno los enemigos nuevos saldrían
+   más flojos. Con uno, ×1 y el simulador da lo mismo. Probado con dos: un
+   bit corrupto nuevo sale con 32 de vida en vez de 20. **Falta medirlo:**
+   que el simulador juegue con varios bots y ajustar los números.
 
 ### Juntos
 
