@@ -259,6 +259,24 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
+### El multijugador en red local (13/11, a medias)
+
+Plan, decisiones y lo hecho punto por punto en
+`documentacio/plan_multijugador.md`. Al cerrar el 13/11:
+- **Fusionado y publicado en la v1.17** (por dentro, sin botón): la parte
+  de Adam, varios jugadores en la partida, el equipo compartido, las
+  mejoras por jugador, el espectador y la vida con más jugadores (PR #11);
+  y el contrato de la red en el bus (PR #9).
+- **La red, que era de Alan, pasó a Adam** el 13/11 (decisión de Adam,
+  PR #13). Hecha en `adam/red` con su PR (bitácora,
+  `bitacora/2026-11-13_adam_red.md`): la sala con su código, el botón EN
+  RED y la partida en red en dos tandas (los demás se mueven con lo que
+  pulsan y los clientes ven la partida del anfitrión). Alan hizo la prueba
+  de conexión.
+- **Falta:** la tercera tanda (élites, jefes, efectos, caídas, la ruleta,
+  la pausa y el final en los clientes), probarlo entre dos ordenadores de
+  verdad y medir la vida con varios bots.
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:
