@@ -220,9 +220,22 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    cliente, su jugador se queda mirando y su personaje queda libre; si se va
    el anfitrión, todos vuelven al menú. Probado con dos copias: el jugador
    del cliente se mueve en el anfitrión con lo que pulsa en el suyo.
-   **Falta:** la segunda tanda (el anfitrión manda el estado y los clientes
-   dibujan su partida en vez de simular la suya, que ahora va por libre) y
-   la tercera (élites, jefes, efectos, la pausa en red y el final).
+   **La segunda, hecha el 13/11** (`escenas/red/estado_red.gd`): el
+   anfitrión manda cada 3 pasos de física (20 veces por segundo) los
+   jugadores (posición, velocidad, personaje y vida), la horda de cada tipo,
+   los fragmentos, el reloj, la experiencia y las vidas del equipo; los
+   clientes no simulan (las oleadas paradas, `solo_dibujar` en los gestores
+   y en los fragmentos) y lo dibujan. Las mejoras: el anfitrión manda a
+   cada uno sus opciones (por su ruta, un recurso no viaja), el cliente
+   elige con su panel y la elegida vuelve con garantía de llegada
+   (`enviar_entrada(..., true)`); el anfitrión sigue cuando han elegido
+   todos. Probado con dos copias: el reloj, el nivel y la horda iguales, y
+   la Memoria redundante del cliente sube la vida de los dos.
+   **Falta, la tercera:** los élites, los jefes y sus ataques, los efectos y
+   los números de daño en los clientes; la ruleta del cofre y las caídas
+   (con su animación) en los clientes; la pausa en red (no se pausa); el
+   final de la partida para todos; y que el anfitrión sin personaje no
+   bloquee las mejoras de los demás.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

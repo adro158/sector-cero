@@ -144,6 +144,14 @@ func irse() -> void:
 	_avisar_equipo()
 
 
+## Multijugador, en los clientes: lleva el personaje que dice el anfitrión
+## (estado_red.gd). Si aún lo tiene otro, en el siguiente estado.
+func seguir_red(indice: int) -> void:
+	if indice != _indice and _equipo.llevado_por[indice] == null:
+		_entrar(indice)
+		_aplicar()
+
+
 ## Si este es el jugador de este ordenador: el que enseña la interfaz.
 func es_local() -> bool:
 	return _equipo.local == self

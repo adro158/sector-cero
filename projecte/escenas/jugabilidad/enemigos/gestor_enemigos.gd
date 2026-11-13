@@ -58,6 +58,9 @@ var _huye := PackedByteArray()
 ## La jaula del pisotón del jefe (jaula_jefe.gd): mientras está cerrada, la
 ## horda no cruza su muro.
 var _jaula: Node2D
+## Multijugador: en los clientes no simula, dibuja la horda que manda el
+## anfitrión (estado_red.gd).
+var solo_dibujar := false
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -253,6 +256,9 @@ func _preparar_multimesh() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if solo_dibujar:
+		_volcar_al_multimesh(delta)
+		return
 	# Primero se retiran los muertos y después se reconstruye la rejilla. Al
 	# revés, la retirada cambiaría de índice a los enemigos que llegan a los
 	# huecos y la rejilla seguiría apuntando a los índices antiguos: las armas,
@@ -267,6 +273,18 @@ func _physics_process(delta: float) -> void:
 	_volcar_al_multimesh(delta)
 	if datos.mostrar_vida:
 		queue_redraw()
+
+
+## Multijugador: dónde están los vivos, para mandarlo (en el anfitrión)...
+func posiciones_vivos() -> PackedVector2Array:
+	return _posiciones.slice(0, _vivos)
+
+
+## ... y ponerlo (en los clientes).
+func poner_desde_red(posiciones: PackedVector2Array) -> void:
+	_vivos = mini(posiciones.size(), MAXIMO_ENEMIGOS)
+	for i in _vivos:
+		_posiciones[i] = posiciones[i]
 
 
 func _draw() -> void:

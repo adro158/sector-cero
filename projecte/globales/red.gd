@@ -112,9 +112,12 @@ func empezar() -> void:
 	BusEventos.partida_en_red_empieza.emit(_jugadores)
 
 
-## Cliente → anfitrión, cada fotograma: lo que ha pulsado.
-func enviar_entrada(entrada: Dictionary) -> void:
-	_mandar(["entrada", entrada], 1, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED)
+## Cliente → anfitrión, cada fotograma: lo que ha pulsado. fiable: lo que
+## tiene que llegar sí o sí (la mejora elegida); lo demás, si se pierde, va
+## en el siguiente fotograma.
+func enviar_entrada(entrada: Dictionary, fiable := false) -> void:
+	var modo := MultiplayerPeer.TRANSFER_MODE_RELIABLE if fiable else MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED
+	_mandar(["entrada", entrada], 1, modo)
 
 
 ## Anfitrión → clientes, unas 20 veces por segundo: si se pierde uno, el
