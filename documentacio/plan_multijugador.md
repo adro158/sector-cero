@@ -154,6 +154,21 @@ signal jugador_desconectado(id: int)
    libre).
 3. La experiencia común y las mejoras por jugador, con la pausa hasta que
    elijan todos.
+   **Hecho el 13/11 en `sistema_niveles.gd`:** al subir de nivel cada
+   jugador tiene su propio sorteo (`opciones_de(jugador)`, para mandárselo
+   por la red) y la partida sigue en pausa hasta que han elegido todos. El
+   de este ordenador elige con el panel, como siempre
+   (`mejora_seleccionada`); los demás, con `elegir(jugador, mejora)`, que es
+   lo que llamará la red al recibir su elección (punto 5). Las mejoras del
+   arma, la velocidad y la espera de cambio son del que las elige; la vida
+   máxima, las evoluciones, la adaptación y el imán, del equipo. Una
+   evolución solo le sale al que lleva esa herramienta (si está en el
+   banquillo, al primero), para que no la elijan dos. Quien se queda sin
+   personaje ya no elige. El premio del cofre, de momento, para el de este
+   ordenador (en red, para quien lo recoja). Con un jugador, el mismo sorteo
+   y lo mismo que antes. Probado con dos: la partida espera al segundo y su
+   Heurística agresiva le sube su daño (×1,12) y no el del primero.
+   **Falta:** que el panel diga «esperando a los demás» mientras eligen.
 4. El espectador y la vuelta en la fase 2.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
