@@ -84,8 +84,10 @@ func enviar_estado(estado: Dictionary)     # anfitrión → clientes, 20 veces/s
 func enviar_suceso(suceso: String, datos: Array)  # anfitrión → clientes
 ```
 
-Señales nuevas del bus (se añaden en este PR de contrato o en el primero de
-código, y se apuntan en `equipo/contexto.md`):
+Señales nuevas del bus, **añadidas el 13/11** en `globales/bus_eventos.gd`
+(PR pequeño `adam/contrato-red`) y apuntadas en `equipo/contexto.md`. Un
+jugador es `{id, nombre, personaje}`: `id` el de la red (1 es el
+anfitrión) y `personaje` su índice en el equipo (0, 1 o 2):
 
 ```gdscript
 signal sala_cambiada(jugadores: Array)          # alguien entra, sale o elige personaje

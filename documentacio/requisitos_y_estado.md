@@ -241,6 +241,20 @@ Fusionado (PR #4) y publicado en la v1.16. Falta que Adam lo vea jugando.
 `panel_cuenta.gd` sigue pasando de las ~200 líneas (217; ya tenía
 211).
 
+### El panel del equipo (C) con sprites (hecho el 13/11, en su rama)
+
+Adam trajo las piezas en un zip (`lote_equipo_panel.zip`, hechas con Claude
+en el chat) y pidió pasar el panel de la C de una caja con texto a fichas
+con sprites. Hecho en `adam/panel-equipo` (bitácora,
+`bitacora/2026-11-13_adam_panel-equipo.md`): una ficha por personaje
+(activo, listo o caído) con el retrato enmarcado, la luz del activo o el
+glitch del caído, la vida, la ulti (con su destello al estar lista) y la
+herramienta con su resistencia (en rojo desde el 40 %). Decidido por Adam
+(13/11): el tamaño de la referencia (232 × unos 218 px, un poco más alto
+que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
+equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
+jugando.
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:
@@ -340,19 +354,20 @@ carpeta de datos del juego.
 
 ### Pendiente técnico
 
-- **Por revisar (Adam, 05/11): «Texto grande» en plena partida cierra el
-  juego.** En la v1.15 (o antes), al encender la opción desde el menú de
-  pausa, el juego se cierra y vuelve a salir el lanzador (el selector de
-  versión): parece un cierre del juego, no un error de la opción.
-  **13/11, no se reproduce en la VM** (desde Godot, con ventana): partida
-  en marcha, pausa, opciones, Accesibilidad, encender la casilla, cerrar y
-  seguir 5 s, sin cuenta y con la cuenta `adam` (que sube las opciones a
-  los 2 s): ni se cierra ni sale ningún error. Ninguna pantalla hace nada
-  especial con `texto_grande` al cambiar. Lo que queda por mirar es la
-  versión exportada o el lanzador: **hace falta el log de casa** justo
-  después del cierre (`%APPDATA%\Godot\app_userdata\Sector Cero\logs`, el
-  `godot.log` más nuevo) y cómo se hizo (ratón o mando, desde el lanzador,
-  qué versión).
+- **Arreglado el 13/11: cambiar una opción en la pausa cerraba el juego**
+  (lo vio Adam con «Texto grande» el 05/11 y el 13/11). El log del juego
+  exportado decía `Lambda capture at index 1 was freed`: en
+  `panel_opciones.gd` cada control seguía los cambios con una lambda
+  conectada a `GestorGuardado.opcion_cambiada`, y una lambda que solo usa
+  variables locales no queda atada al nodo, así que Godot no la desconecta
+  al borrarlo. Al pasar del menú a la partida se quedaban las de la ventana
+  de opciones del menú y, al cambiar una opción, se llamaban con el control
+  ya borrado. Ahora es un método del panel (`_al_cambiar_opcion`, con los
+  controles en un diccionario), que Godot sí desconecta. Las demás lambdas
+  conectadas al bus usan cosas del propio nodo y sí se desconectan. En la
+  VM no salía porque las pruebas cargaban la partida sin pasar por el menú:
+  la prueba nueva pasa por el menú (con el código viejo salen los mismos
+  errores y se corta; con el nuevo, nada).
 6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
    mejoras por minuto): se midieron antes de cambiar las dificultades.
 7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el

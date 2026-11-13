@@ -1,89 +1,84 @@
 extends Control
 
-## El panel del equipo, a la derecha, al pulsar C: una ficha pequeña de cada
-## personaje con su vida, su herramienta, la resistencia del malware contra
-## ella, la carga de su ulti y si está jugando, listo o caído. Lo de abajo en
-## el centro (quién juega, a quién se pasa y cuándo) lo lleva barra_equipo.gd;
-## hasta el 26/10 era una línea de texto de este script.
+## El panel del equipo, a la derecha, al pulsar C (o Select): una ficha de cada
+## personaje con su retrato, su vida, la carga de su ulti, su herramienta y lo
+## que la resiste el malware. Lo de abajo en el centro (quién juega, a quién
+## se pasa y cuándo) lo lleva barra_equipo.gd.
 ##
 ## Solo escucha el bus: equipo_cambiado trae la vida de todos.
 ##
-## Desde el 05/11, más pequeño (Adam: se veía muy grande): retratos a 32 px,
-## la mitad justa de su dibujo para que los píxeles queden enteros, y la
-## ficha más estrecha, en tres líneas cortas.
+## Desde el 13/11 se dibuja con sprites (lote del panel del equipo), en grises
+## teñidos del color de cada personaje: la ficha en tres estados (activo,
+## listo y caído), el marco del retrato con su luz o su glitch, iconos y
+## barras finas; la de la ulti brilla al estar lista. Antes era una caja con
+## texto (más pequeña desde el 05/11). Con _draw y no con nodos, como la barra
+## del equipo y el F3: son muchas piezas pequeñas y dos animaciones. Por eso
+## mide lo mismo con «Texto grande» (decisión de Adam, 13/11): los píxeles
+## quedan enteros.
 
-const ANCHO_FICHA := 170.0
-const LADO_RETRATO := 32.0
+const Entrada := preload("res://globales/entrada.gd")
+const FICHA := preload("res://medios/interfaz/equipo_ficha.png")
+const MARCO := preload("res://medios/interfaz/equipo_retrato_marco.png")
+const ACTIVO := preload("res://medios/interfaz/equipo_activo.png")
+const CAIDO := preload("res://medios/interfaz/equipo_caido.png")
+const ICONOS := preload("res://medios/interfaz/equipo_iconos.png")
+const CABECERA := preload("res://medios/interfaz/equipo_cabecera.png")
+const BARRA := preload("res://medios/interfaz/equipo_barra.png")
+const RELLENO := preload("res://medios/interfaz/equipo_barra_relleno.png")
+const BRILLO := preload("res://medios/interfaz/equipo_barra_brillo.png")
+## Los retratos de 32x32 dibujados para ese tamaño, como en el ranking.
+const RETRATOS := {
+	"Espadachín": preload("res://medios/interfaz/retrato_mini_espadachin.png"),
+	"Mago": preload("res://medios/interfaz/retrato_mini_mago.png"),
+	"Segador": preload("res://medios/interfaz/retrato_mini_segador.png"),
+}
+## El orden de la tira de iconos y de la de fichas.
+enum Icono { VIDA, ULTI, HERRAMIENTA, RESISTENCIA, ACTIVO, LISTO, CAIDO, EQUIPO }
+enum Estado { ACTIVO, LISTO, CAIDO }
+const ANCHO := 232.0
+const ALTO_FICHA := 62.0
+const COLOR_ULTI := Color(1.0, 0.8, 0.2)
+## Desde aquí la resistencia sale en rojo: ya conviene cambiar de personaje.
+const RESISTENCIA_ALTA := 0.4
 
 var _estado: Array = []
 var _activo := 0
 ## Carga de la ulti de cada personaje, de 0 a 1.
 var _ultis: Array = []
-var _panel: PanelContainer
-var _fichas: Array = []
 var _resistencia: Node
+## Reloj de las animaciones (la luz, el glitch y el destello).
+var _segundos := 0.0
+var _fichas: Array[StyleBoxTexture] = []
+var _cabecera: StyleBoxTexture
 
 
 func _ready() -> void:
 	# También en pausa: al caer un personaje, el panel tiene que enseñarlo caído
 	# mientras se elige quién sigue.
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	_panel = PanelContainer.new()
-	_panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(Color(EstiloInterfaz.NEON, 0.5), 6))
-	# A la derecha y a media altura: arriba está la ficha del enemigo.
-	_panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_panel.offset_right = -16.0
-	_panel.visible = false
-	add_child(_panel)
-	var caja := VBoxContainer.new()
-	caja.add_theme_constant_override("separation", 6)
-	_panel.add_child(caja)
-	caja.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.etiqueta("", 11, EstiloInterfaz.TEXTO_SUAVE), "EQUIPO  [C]", "EQUIPO  [Select]"))
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	visible = false
+	# La ficha, en tres trozos de 40x40 (uno por estado), de 9 trozos con
+	# margen 8; la cabecera, en horizontal: 18 a la izquierda (el emblema) y 6
+	# a la derecha (la punta).
 	for i in 3:
-		# Cada ficha va con el retrato del personaje a su izquierda.
-		var fila := HBoxContainer.new()
-		fila.add_theme_constant_override("separation", 6)
-		var retrato := TextureRect.new()
-		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		retrato.custom_minimum_size = Vector2(LADO_RETRATO, LADO_RETRATO)
-		retrato.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		fila.add_child(retrato)
-		var ficha := _crear_ficha()
-		ficha.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		fila.add_child(ficha)
-		caja.add_child(fila)
-		_fichas.append(ficha)
-
+		_fichas.append(_estilo(FICHA, Rect2(i * 40, 0, 40, 40), 8, 8, 8))
+	_cabecera = _estilo(CABECERA, Rect2(0, 0, 64, 16), 18, 6, 0)
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
 	BusEventos.ulti_cambiada.connect(func(cargas, _activo): _ultis = cargas)
 
 
-## Una ficha: nombre y estado, barra de vida, la vida y la ulti, y la
-## herramienta y lo que la resiste el malware.
-func _crear_ficha() -> VBoxContainer:
-	var ficha := VBoxContainer.new()
-	ficha.add_theme_constant_override("separation", 1)
-	ficha.custom_minimum_size.x = ANCHO_FICHA
-	ficha.add_child(EstiloInterfaz.etiqueta("", 12))
-	var barra := ProgressBar.new()
-	barra.custom_minimum_size = Vector2(ANCHO_FICHA, 4)
-	barra.show_percentage = false
-	var fondo := StyleBoxFlat.new()
-	fondo.bg_color = Color(0.1, 0.15, 0.2)
-	barra.add_theme_stylebox_override("background", fondo)
-	barra.add_theme_stylebox_override("fill", StyleBoxFlat.new())
-	ficha.add_child(barra)
-	ficha.add_child(EstiloInterfaz.etiqueta("", 10, EstiloInterfaz.TEXTO_SUAVE))
-	ficha.add_child(EstiloInterfaz.etiqueta("", 10, EstiloInterfaz.TEXTO_SUAVE))
-	return ficha
+func _estilo(textura: Texture2D, region: Rect2, izquierda: int, derecha: int, arriba_y_abajo: int) -> StyleBoxTexture:
+	var estilo := StyleBoxTexture.new()
+	estilo.texture = textura
+	estilo.region_rect = region
+	estilo.texture_margin_left = izquierda
+	estilo.texture_margin_right = derecha
+	estilo.texture_margin_top = arriba_y_abajo
+	estilo.texture_margin_bottom = arriba_y_abajo
+	return estilo
 
 
 func _al_cambiar_equipo(personajes: Array, activo: int) -> void:
@@ -94,41 +89,111 @@ func _al_cambiar_equipo(personajes: Array, activo: int) -> void:
 func _unhandled_input(evento: InputEvent) -> void:
 	# C o Select (la acción la añade teclas_antiguas.gd al empezar la partida).
 	if evento.is_action_pressed("ver_equipo"):
-		_panel.visible = not _panel.visible
+		visible = not visible
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_segundos += delta
+	if visible and not _estado.is_empty():
+		# A la derecha y a media altura: arriba está la ficha del enemigo.
+		size = Vector2(ANCHO, 20.0 + _estado.size() * (ALTO_FICHA + 4.0))
+		var pantalla := get_viewport_rect().size
+		position = Vector2(pantalla.x - ANCHO - 16.0, (pantalla.y - size.y) * 0.5)
+		queue_redraw()
+
+
+func _draw() -> void:
 	if _estado.is_empty():
 		return
-	if _panel.visible:
-		for i in _fichas.size():
-			_escribir_ficha(_fichas[i], i)
+	_cabecera.modulate_color = EstiloInterfaz.NEON
+	draw_style_box(_cabecera, Rect2(0, 0, ANCHO, 16))
+	_icono(Vector2(2, 2), Icono.EQUIPO, EstiloInterfaz.NEON)
+	# Con el mando, el botón del mando, como los demás textos.
+	var cabecera := "EQUIPO  [Select]" if Entrada.con_mando else "EQUIPO  [C]"
+	draw_string(EstiloInterfaz.fuente_pixel(), Vector2(22, 12), cabecera, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, EstiloInterfaz.TEXTO)
+	var fuente := EstiloInterfaz.tema().default_font
+	for i in _estado.size():
+		_dibujar_ficha(Vector2(0, 20.0 + i * (ALTO_FICHA + 4.0)), i, fuente)
 
 
-func _escribir_ficha(ficha: VBoxContainer, i: int) -> void:
+func _dibujar_ficha(esquina: Vector2, i: int, fuente: Font) -> void:
 	var datos: Dictionary = _estado[i]
 	var personaje: DatosPersonaje = datos.personaje
-	var estado := "CAÍDO" if datos.caido else ("ACTIVO" if i == _activo else "LISTO")
-	var retrato: TextureRect = ficha.get_parent().get_child(0)
-	retrato.texture = personaje.retrato
-	# Caído, en gris y apagado.
-	retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE
-	var titulo: Label = ficha.get_child(0)
-	titulo.text = "%s  ·  %s" % [personaje.nombre.to_upper(), estado]
-	titulo.add_theme_color_override("font_color", EstiloInterfaz.TEXTO_SUAVE if datos.caido else personaje.color)
+	var estado: int = Estado.CAIDO if datos.caido else (Estado.ACTIVO if i == _activo else Estado.LISTO)
+	var color: Color = EstiloInterfaz.TEXTO_SUAVE if datos.caido else personaje.color
 
-	var barra: ProgressBar = ficha.get_child(1)
-	barra.max_value = datos.maxima
-	barra.value = datos.vida
-	# Verde con vida, rojo con poca: como la barra sobre el personaje.
-	(barra.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = Color(1.0, 0.3, 0.3).lerp(Color(0.3, 1.0, 0.5), datos.vida / datos.maxima)
+	var ficha: StyleBoxTexture = _fichas[estado]
+	ficha.modulate_color = color
+	draw_style_box(ficha, Rect2(esquina, Vector2(ANCHO, ALTO_FICHA)))
 
-	# La resistencia se lee del nodo del malware, como el panel técnico: cambia
-	# cada 20 s y no tiene señal en el bus.
+	# El retrato con su marco; el activo, con la luz que da vueltas; el caído,
+	# en gris y con la grieta y el glitch encima, en rojo.
+	var marco := esquina + Vector2(9, 11)
+	draw_texture(MARCO, marco, color)
+	draw_texture(RETRATOS.get(personaje.nombre, personaje.retrato), marco + Vector2(4, 4), Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE)
+	if estado == Estado.ACTIVO:
+		var fotograma := int(_segundos / 0.1) % 4
+		draw_texture_rect_region(ACTIVO, Rect2(marco - Vector2(2, 2), Vector2(44, 44)), Rect2(fotograma * 44, 0, 44, 44), color)
+	elif estado == Estado.CAIDO:
+		var fotograma := int(_segundos / 0.12) % 3
+		draw_texture_rect_region(CAIDO, Rect2(marco + Vector2(4, 4), Vector2(32, 32)), Rect2(fotograma * 32, 0, 32, 32), EstiloInterfaz.DERROTA)
+
+	# Nombre y estado.
+	var x := esquina.x + 58.0
+	var y := esquina.y
+	_icono(Vector2(x, y + 6), [Icono.ACTIVO, Icono.LISTO, Icono.CAIDO][estado], color)
+	draw_string(EstiloInterfaz.fuente_pixel(), Vector2(x + 16, y + 16), personaje.nombre.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, color)
+	draw_string(fuente, Vector2(esquina.x + ANCHO - 70.0, y + 16), ["ACTIVO", "LISTO", "CAÍDO"][estado], HORIZONTAL_ALIGNMENT_RIGHT, 60, 10, EstiloInterfaz.TEXTO_SUAVE)
+
+	# Vida: de rojo a verde, como la barra sobre el personaje.
+	var vida: float = datos.vida / maxf(datos.maxima, 1.0)
+	_icono(Vector2(x, y + 21), Icono.VIDA, color)
+	_barra(Vector2(x + 16, y + 23), 100.0, vida, Color(1.0, 0.3, 0.3).lerp(Color(0.3, 1.0, 0.5), vida), false)
+	draw_string(fuente, Vector2(x + 122, y + 30), "%d/%d" % [ceili(datos.vida), ceili(datos.maxima)], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, EstiloInterfaz.TEXTO)
+
+	# Ulti: dorada; llena, con el destello que la recorre.
+	var ulti := _ulti(i)
+	var lista := ulti >= 1.0
+	_icono(Vector2(x, y + 34), Icono.ULTI, COLOR_ULTI if lista else color)
+	_barra(Vector2(x + 16, y + 36), 100.0, ulti, COLOR_ULTI, lista)
+	draw_string(fuente, Vector2(x + 122, y + 43), "LISTA" if lista else "%d %%" % roundi(ulti * 100.0), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, COLOR_ULTI if lista else EstiloInterfaz.TEXTO_SUAVE)
+
+	# Herramienta y lo que la resiste el malware (cambia cada 20 s y no tiene
+	# señal en el bus: se lee del nodo, como el panel técnico).
 	var resistencia: float = 0.0 if _resistencia == null else _resistencia.resistencia(datos.arma)
-	var ulti := "ULTI LISTA" if _ulti(i) >= 1.0 else "ulti %d %%" % roundi(_ulti(i) * 100.0)
-	ficha.get_child(2).text = "%d / %d  ·  %s" % [ceili(datos.vida), ceili(datos.maxima), ulti]
-	ficha.get_child(3).text = "%s  ·  resiste %d %%" % [datos.arma.nombre, roundi(resistencia * 100.0)]
+	var alta := resistencia >= RESISTENCIA_ALTA
+	_icono(Vector2(x, y + 47), Icono.HERRAMIENTA, color)
+	_texto_que_quepa(fuente, Vector2(x + 16, y + 57), datos.arma.nombre, 88.0, EstiloInterfaz.TEXTO_SUAVE)
+	_icono(Vector2(x + 108, y + 47), Icono.RESISTENCIA, EstiloInterfaz.DERROTA if alta else color)
+	draw_string(fuente, Vector2(x + 122, y + 57), "%d %%" % roundi(resistencia * 100.0), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, EstiloInterfaz.DERROTA if alta else EstiloInterfaz.TEXTO)
+
+
+## Un texto de letra 10 que encoge hasta caber en ancho: los nombres largos
+## («Análisis heurístico», «Firewall perimetral») pisaban el escudo de la
+## resistencia. Como los valores del panel técnico.
+func _texto_que_quepa(fuente: Font, posicion: Vector2, texto: String, ancho: float, color: Color) -> void:
+	var tamano := 10
+	while tamano > 7 and fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano).x > ancho:
+		tamano -= 1
+	draw_string(fuente, posicion, texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano, color)
+
+
+func _icono(posicion: Vector2, icono: int, color: Color) -> void:
+	draw_texture_rect_region(ICONOS, Rect2(posicion, Vector2(12, 12)), Rect2(icono * 12, 0, 12, 12), color)
+
+
+## Barra fina: el marco en 3 trozos (3 px a cada lado), el relleno recortado
+## a lo que haya y, si está llena, el destello encima.
+func _barra(posicion: Vector2, ancho: float, proporcion: float, color: Color, brillo: bool) -> void:
+	draw_texture_rect_region(BARRA, Rect2(posicion, Vector2(3, 7)), Rect2(0, 0, 3, 7))
+	draw_texture_rect_region(BARRA, Rect2(posicion + Vector2(3, 0), Vector2(ancho - 6.0, 7)), Rect2(3, 0, 58, 7))
+	draw_texture_rect_region(BARRA, Rect2(posicion + Vector2(ancho - 3.0, 0), Vector2(3, 7)), Rect2(61, 0, 3, 7))
+	var lleno := roundf((ancho - 4.0) * clampf(proporcion, 0.0, 1.0))
+	if lleno > 0.0:
+		draw_texture_rect_region(RELLENO, Rect2(posicion + Vector2(2, 2), Vector2(lleno, 3)), Rect2(0, 0, minf(lleno, 60.0), 3), color)
+	if brillo:
+		var fotograma := int(_segundos / 0.06) % 6
+		draw_texture_rect_region(BRILLO, Rect2(posicion + Vector2(2, 2), Vector2(ancho - 4.0, 3)), Rect2(fotograma * 60, 0, 60, 3))
 
 
 func _ulti(indice: int) -> float:
