@@ -1,20 +1,26 @@
 extends Node
 
-## El equipo de personajes. Cada uno lleva su propia herramienta y su propia
-## vida, y solo dispara y recibe golpes el activo: cuando el malware se hace
-## resistente a su herramienta, o cuando le queda poca vida, se cambia a otro
-## (E al siguiente, Q al anterior). La espera entre cambios obliga a decidir
-## cuándo hacerlo. Los que esperan se curan poco a poco.
+## El personaje que lleva este jugador, de los del equipo (equipo.gd). Cada uno
+## lleva su propia herramienta y su propia vida, y solo dispara y recibe
+## golpes el que juega: cuando el malware se hace resistente a su
+## herramienta, o cuando le queda poca vida, se cambia a otro (E al
+## siguiente, Q al anterior). La espera entre cambios obliga a decidir cuándo
+## hacerlo. Los que esperan se curan poco a poco.
 ##
-## El nodo Salud del jugador es siempre la vida del activo: al cambiar, se
-## guarda la suya aquí y Salud pasa a tener la del que entra. Cuando el activo
+## El nodo Salud del jugador es siempre la vida del que lleva: al cambiar, se
+## guarda la suya en el equipo y Salud pasa a tener la del que entra. Cuando
 ## cae, el juego se pausa, se deshace (efectos_jugador.gd) y se elige quién
 ## sigue entre los que quedan; la partida se pierde cuando han caído todos.
+##
+## Con varios jugadores (multijugador, desde el 13/11) el equipo es de todos:
+## solo se cambia a uno libre y, si cae el tuyo, pasas sin pausa al libre que
+## quede; si no queda, te quedas mirando (punto 4 del plan, por hacer).
 
 ## Han caído todos los personajes: se acaba la partida.
 signal equipo_derrotado
 
 const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antiguas.gd")
+const Equipo := preload("res://escenas/jugabilidad/jugador/equipo.gd")
 
 @export var personajes: Array[DatosPersonaje] = []
 @export var espera: float = 10.0
@@ -39,15 +45,7 @@ var sin_espera := false:
 
 var _indice := 0
 var _restante := 0.0
-## La herramienta actual de cada personaje. Empieza siendo la de sus datos y
-## cambia al evolucionar; se guarda aquí porque el .tres está compartido y en
-## caché, y modificarlo dejaría la evolución pegada para la siguiente partida.
-var _armas: Array[DatosArma] = []
-## La vida de cada personaje, su máximo y si ha caído. La del activo vive en
-## el nodo Salud mientras juega.
-var _vidas: Array[float] = []
-var _maximas: Array[float] = []
-var _caidos: Array[bool] = []
+var _equipo: Equipo
 ## Si el juego está pausado esperando a que se elija quién sigue.
 var _eligiendo := false
 
@@ -57,31 +55,28 @@ var _eligiendo := false
 
 
 func _ready() -> void:
-	for personaje in personajes:
-		_armas.append(personaje.arma)
-		_vidas.append(personaje.vida_maxima)
-		_maximas.append(personaje.vida_maxima)
-		_caidos.append(false)
+	# Uno por partida, en la raíz: el primer jugador lo crea y los demás lo
+	# encuentran ya hecho.
+	var raiz := get_parent().get_parent()
+	if not raiz.has_meta("equipo"):
+		raiz.set_meta("equipo", Equipo.new(personajes))
+	_equipo = raiz.get_meta("equipo")
+	_equipo.derrotado.connect(equipo_derrotado.emit)
+	# Cada jugador empieza con el primero libre: el que juega solo, con el
+	# primero, como siempre.
+	_indice = _equipo.primero_libre()
+	_equipo.llevado_por[_indice] = self
 	TeclasAntiguas.configurar()
 	_salud.vida_cambiada.connect(func(_actual, _maxima): _avisar_equipo())
 	_salud.murio.connect(_al_caer)
 	BusEventos.personaje_elegido.connect(_al_elegir_personaje)
-	_salud.poner(_vidas[_indice], _maximas[_indice])
+	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
 	_aplicar()
 
 
 func _physics_process(delta: float) -> void:
 	_restante = maxf(_restante - delta, 0.0)
-
-	var cambio := false
-	for i in personajes.size():
-		if i == _indice or _caidos[i] or _vidas[i] >= _maximas[i]:
-			continue
-		var antes := int(_vidas[i])
-		_vidas[i] = minf(_vidas[i] + regeneracion_banquillo * delta, _maximas[i])
-		# Como Salud: solo se avisa cuando cambia el número entero.
-		cambio = cambio or int(_vidas[i]) != antes
-	if cambio:
+	if _equipo.curar_banquillo(delta, regeneracion_banquillo):
 		_avisar_equipo()
 
 
@@ -92,10 +87,10 @@ func _unhandled_input(evento: InputEvent) -> void:
 		cambiar(-1)
 
 
-## Pasa al siguiente personaje vivo (paso 1) o al anterior (paso -1) si ha
-## terminado la espera. Devuelve si cambió.
+## Pasa al siguiente personaje vivo y libre (paso 1) o al anterior (paso -1)
+## si ha terminado la espera. Devuelve si cambió.
 func cambiar(paso: int = 1) -> bool:
-	var otro := _vivo_desde(_indice, paso)
+	var otro := _equipo.disponible_desde(_indice, paso)
 	if (_restante > 0.0 and not sin_espera) or otro == _indice:
 		return false
 
@@ -120,10 +115,15 @@ func indice_actual() -> int:
 	return _indice
 
 
+## La salud de este jugador: la del personaje que lleva. Para equipo.gd.
+func salud() -> Salud:
+	return _salud
+
+
 ## Cómo está cada personaje (lo mismo que trae equipo_cambiado). Para el
 ## resumen de la pantalla final.
 func estado() -> Array:
-	return _estado()
+	return _equipo.estado()
 
 
 ## Si el juego está pausado porque se está eligiendo quién sigue.
@@ -134,9 +134,10 @@ func eligiendo() -> bool:
 ## Para el menú de desarrollador: todos vuelven con la vida llena.
 func revivir_todos() -> void:
 	for i in personajes.size():
-		_caidos[i] = false
-		_vidas[i] = _maximas[i]
-	_salud.poner(_maximas[_indice], _maximas[_indice])
+		_equipo.caidos[i] = false
+		_equipo.vidas[i] = _equipo.maximas[i]
+	for quien in _jugadores_del_equipo():
+		quien.salud().poner(_equipo.maximas[quien.indice_actual()], _equipo.maximas[quien.indice_actual()])
 
 
 ## Al pasar a la fase 2 (raiz_juego.gd): el sector se reinicia y los que han
@@ -144,9 +145,9 @@ func revivir_todos() -> void:
 ## la fase 2 con uno o dos personajes y casi siempre se perdía al empezarla.
 func revivir_caidos(fraccion: float) -> void:
 	for i in personajes.size():
-		if _caidos[i]:
-			_caidos[i] = false
-			_vidas[i] = _maximas[i] * fraccion
+		if _equipo.caidos[i]:
+			_equipo.caidos[i] = false
+			_equipo.vidas[i] = _equipo.maximas[i] * fraccion
 	_avisar_equipo()
 
 
@@ -166,38 +167,50 @@ func reducir_espera(fraccion: float) -> void:
 ## La mejora Memoria redundante: más vida máxima para todo el equipo.
 func aumentar_vida_maxima(cantidad: float) -> void:
 	for i in personajes.size():
-		_maximas[i] += cantidad
-		if not _caidos[i]:
-			_vidas[i] += cantidad
-	_salud.aumentar_vida_maxima(cantidad)
+		_equipo.maximas[i] += cantidad
+		if not _equipo.caidos[i]:
+			_equipo.vidas[i] += cantidad
+	for quien in _jugadores_del_equipo():
+		quien.salud().aumentar_vida_maxima(cantidad)
 
 
 ## Si esa herramienta la lleva alguien que no ha caído: la evolución de un
 ## caído no sirve de nada y no se ofrece.
 func puede_evolucionar(base: DatosArma) -> bool:
-	var cual := _armas.find(base)
-	return cual != -1 and not _caidos[cual]
+	var cual := _equipo.armas.find(base)
+	return cual != -1 and not _equipo.caidos[cual]
 
 
 ## Sustituye la herramienta base por su evolución en el personaje que la lleva.
-## Si es el activo, la nueva empieza a disparar ya.
+## Si lo lleva un jugador, la nueva empieza a disparar ya.
 func evolucionar(base: DatosArma, nueva: DatosArma) -> void:
-	var cual := _armas.find(base)
+	var cual := _equipo.armas.find(base)
 	if cual == -1:
 		return
-	_armas[cual] = nueva
+	_equipo.armas[cual] = nueva
 	BusEventos.arma_evolucionada.emit(nueva)
-	# El efecto, solo si es el que juega: el del banquillo no está en pantalla
+	# El efecto, solo si alguien lo lleva: el del banquillo no está en pantalla
 	# (ya avisan el HUD y las partículas).
-	if cual == _indice:
-		_efectos.evolucion(personajes[cual].color)
-		_aplicar()
+	var quien = _equipo.llevado_por[cual]
+	if quien != null:
+		quien.al_evolucionar()
+
+
+## El efecto y la herramienta nueva del que lleva este jugador. Lo llama el
+## evolucionar() de cualquier jugador del equipo.
+func al_evolucionar() -> void:
+	_efectos.evolucion(personajes[_indice].color)
+	_aplicar()
 
 
 func _al_caer() -> void:
-	_vidas[_indice] = 0.0
-	_caidos[_indice] = true
+	_equipo.vidas[_indice] = 0.0
+	_equipo.caidos[_indice] = true
 	_avisar_equipo()
+	var ultimo := _equipo.todos_caidos()
+	if not ultimo and get_tree().get_nodes_in_group("jugador").size() > 1:
+		_caer_en_red()
+		return
 	# La pausa la pone la jugabilidad, como al subir de nivel, y es suya hasta
 	# que se elige quién sigue o se acaba la partida: el menú de pausa no la
 	# quita (raiz_juego.gd mira eligiendo()).
@@ -205,18 +218,37 @@ func _al_caer() -> void:
 	get_tree().paused = true
 	# Con el juego parado, el personaje se deshace (el efecto se anima en
 	# pausa) y al acabar se avisa. El temporizador corre en pausa.
-	var ultimo := not _caidos.has(false)
 	_sprite.visible = false
 	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, ultimo)).timeout
 	if ultimo:
-		equipo_derrotado.emit()
+		_equipo.derrotado.emit()
 		return
 	# La interfaz enseña quién queda y avisa del elegido con personaje_elegido.
 	BusEventos.personaje_caido.emit(_estado(), _indice)
 
 
+## Con varios jugadores no se pausa: si queda uno libre y vivo, se pasa a él
+## (decisión de Adam, 06/11); si no, el jugador se queda sin personaje y la
+## horda deja de verle (sale del grupo jugador). Volver en la fase 2, con la
+## cámara siguiendo a otro, es el punto 4 del plan.
+func _caer_en_red() -> void:
+	_sprite.visible = false
+	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, false)).timeout
+	var libre := _equipo.primero_libre()
+	if libre == -1:
+		_equipo.llevado_por[_indice] = null
+		get_parent().remove_from_group("jugador")
+		_avisar_equipo()
+		return
+	_entrar(libre)
+	_sprite.visible = true
+	_salud.proteger(proteccion_al_entrar)
+	_efectos.escudo(personajes[libre].color, proteccion_al_entrar)
+	_aplicar()
+
+
 func _al_elegir_personaje(indice: int) -> void:
-	if not _eligiendo or _caidos[indice]:
+	if not _eligiendo or _equipo.caidos[indice]:
 		return
 	_eligiendo = false
 	_entrar(indice)
@@ -227,61 +259,45 @@ func _al_elegir_personaje(indice: int) -> void:
 	get_tree().paused = false
 
 
-## Guarda la vida del que sale y pone en Salud la del que entra.
+## Guarda la vida del que sale, lo deja libre y pone en Salud la del que entra.
 func _entrar(indice: int) -> void:
-	if not _caidos[_indice]:
-		_vidas[_indice] = _salud.vida()
-		_maximas[_indice] = _salud.vida_maxima
+	if not _equipo.caidos[_indice]:
+		_equipo.vidas[_indice] = _salud.vida()
+		_equipo.maximas[_indice] = _salud.vida_maxima
+	_equipo.llevado_por[_indice] = null
 	_indice = indice
-	_salud.poner(_vidas[_indice], _maximas[_indice])
+	_equipo.llevado_por[_indice] = self
+	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
 
 
-## El primer personaje vivo a partir de desde, avanzando de paso en paso. Si
-## no hay ningún otro vivo, devuelve el mismo desde.
-func _vivo_desde(desde: int, paso: int) -> int:
-	for salto in range(1, personajes.size()):
-		var otro := posmod(desde + paso * salto, personajes.size())
-		if not _caidos[otro]:
-			return otro
-	return desde
+## Los cambio_personaje.gd de los jugadores que llevan a alguien.
+func _jugadores_del_equipo() -> Array:
+	return _equipo.llevado_por.filter(func(quien): return quien != null)
 
 
 func _aplicar() -> void:
 	var personaje := personajes[_indice]
 	# Con la herramienta evolucionada, la hoja con el arma nueva. Vale también
 	# para el que evolucionó en el banquillo: sale con ella al entrar.
-	var evolucionada := _armas[_indice] != personaje.arma and personaje.hoja_evolucion != null
+	var evolucionada := _equipo.armas[_indice] != personaje.arma and personaje.hoja_evolucion != null
 	if evolucionada:
 		get_parent().poner_hojas(personaje.hoja_evolucion, personaje.hoja_ataque_evolucion, personaje.hoja_correr_ataque_evolucion, personaje.hoja_reposo_evolucion, personaje.segundos_ataque)
 	else:
 		get_parent().poner_hojas(personaje.hoja, personaje.hoja_ataque, personaje.hoja_correr_ataque, personaje.hoja_reposo, personaje.segundos_ataque)
-	get_parent().get_node("GestorArmas").cambiar_arma(_armas[_indice])
+	get_parent().get_node("GestorArmas").cambiar_arma(_equipo.armas[_indice])
 	_avisar_cambio()
 	_avisar_equipo.call_deferred()
 
 
 func _avisar_cambio() -> void:
-	var siguiente := personajes[_vivo_desde(_indice, 1)]
+	var siguiente := personajes[_equipo.disponible_desde(_indice, 1)]
 	# Diferido: al empezar la partida, el HUD aún no está conectado.
-	BusEventos.personaje_cambiado.emit.call_deferred(personajes[_indice], _armas[_indice], siguiente, _restante)
+	BusEventos.personaje_cambiado.emit.call_deferred(personajes[_indice], _equipo.armas[_indice], siguiente, _restante)
 
 
 func _avisar_equipo() -> void:
 	BusEventos.equipo_cambiado.emit(_estado(), _indice)
 
 
-## Cómo está cada personaje, para la interfaz: un diccionario por personaje
-## con personaje, arma, vida, maxima y caido. La vida del activo es la de Salud.
 func _estado() -> Array:
-	var estado := []
-	for i in personajes.size():
-		var activo := i == _indice and not _caidos[i]
-		estado.append({
-			"personaje": personajes[i],
-			"arma": _armas[i],
-			"vida": _salud.vida() if activo else _vidas[i],
-			"maxima": _salud.vida_maxima if activo else _maximas[i],
-			"caido": _caidos[i],
-		})
-	return estado
-
+	return _equipo.estado()

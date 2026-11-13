@@ -274,7 +274,8 @@ func _cambiar_a(personaje: DatosPersonaje) -> void:
 	var cambio: Node = _jugador.get_node("CambioPersonaje")
 	var actual: int = cambio.indice_actual()
 	var destino: int = cambio.personajes.find(personaje)
-	if destino == -1 or destino == actual or cambio._caidos[destino]:
+	# Los caídos están en el equipo de la partida (equipo.gd, desde el 13/11).
+	if destino == -1 or destino == actual or cambio._equipo.caidos[destino]:
 		return
 	var paso := 1 if posmod(destino - actual, cambio.personajes.size()) == 1 else -1
 	if cambio.cambiar(paso):
