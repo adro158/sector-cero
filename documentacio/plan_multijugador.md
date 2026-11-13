@@ -25,19 +25,21 @@ juego y quién hace qué. Se fusiona antes que el código (PR pequeño, como pid
   a otro) y vuelve con media vida al empezar la fase 2, como los caídos de
   ahora. Se pierde si caen todos.
 
-## Propuestas, a confirmar con Adam (y Alan)
+## Confirmado por Adam (13/11, ventana de preguntas)
 
-Sin preguntar todavía, para no frenar el plan:
 - **La pausa:** en red no se pausa. Esc abre el menú sin parar el juego;
   solo el anfitrión puede acabar la partida para todos.
 - **La dificultad:** la horda y los jefes con más vida según los jugadores
   (por ejemplo ×1,6 con dos y ×2,2 con tres), medido con el simulador.
 - **El ranking y las cuentas:** las partidas en red no entran en el ranking
-  de una persona; como mucho, una lista aparte.
-- **El F1:** desactivado en red.
-- **La ulti:** cada jugador carga y lanza la de su personaje.
+  de una persona; como mucho, más adelante, una lista aparte.
 - **Desconexiones:** si se va un cliente, su personaje queda libre; si se va
   el anfitrión, se acaba la partida para todos con un aviso.
+
+## Propuestas, a confirmar
+
+- **El F1:** desactivado en red.
+- **La ulti:** cada jugador carga y lanza la de su personaje.
 - **La web:** sin red (ENet no funciona en el navegador): el botón no sale.
 
 ## Cómo funciona
@@ -116,6 +118,15 @@ signal jugador_desconectado(id: int)
 1. Varios jugadores en la partida: uno por jugador en el grupo `jugador`, y
    todo lo que hoy busca «el» jugador (la horda, los élites, los jefes, la
    jaula, los fragmentos, la cámara) busca al más cercano o al local.
+   **Empezado el 13/11** (`escenas/jugabilidad/jugadores.gd`, con
+   `posiciones`, `mas_cercana` y `mas_cercano`): ya lo hacen la horda (cada
+   enemigo va al más cercano y golpea a cualquiera que toque), las oleadas
+   (salen alrededor de cada jugador por turnos, sin gastar azar), los
+   fragmentos, el corazón y el cofre de los élites y el hielo. Falta: los
+   élites, Kernel Panic y su jaula, su ráfaga y su espectáculo, NÚCLEO CERO
+   y sus ataques y escudo, las partículas, el sistema de niveles (punto 3) y
+   la cámara. Con un jugador, el simulador da lo mismo que antes (también
+   una partida entera: derrota en 1142 s con 5743 eliminados).
 2. Los personajes repartidos: quién lleva cuál, el libre, cambiar a él y
    pasar a él al caer (`cambio_personaje.gd` y la barra del equipo).
 3. La experiencia común y las mejoras por jugador, con la pausa hasta que

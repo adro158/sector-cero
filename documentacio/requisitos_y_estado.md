@@ -340,11 +340,16 @@ carpeta de datos del juego.
 - **Por revisar (Adam, 05/11): «Texto grande» en plena partida cierra el
   juego.** En la v1.15 (o antes), al encender la opción desde el menú de
   pausa, el juego se cierra y vuelve a salir el lanzador (el selector de
-  versión): parece un cierre del juego, no un error de la opción. Sin
-  mirar todavía. Para empezar: reproducirlo con Godot abierto y ver la
-  salida; mirar qué hace cada pantalla al recibir
-  `opcion_cambiada("texto_grande")` con el juego en pausa, y el log del
-  juego en la carpeta de datos (`logs/godot.log`).
+  versión): parece un cierre del juego, no un error de la opción.
+  **13/11, no se reproduce en la VM** (desde Godot, con ventana): partida
+  en marcha, pausa, opciones, Accesibilidad, encender la casilla, cerrar y
+  seguir 5 s, sin cuenta y con la cuenta `adam` (que sube las opciones a
+  los 2 s): ni se cierra ni sale ningún error. Ninguna pantalla hace nada
+  especial con `texto_grande` al cambiar. Lo que queda por mirar es la
+  versión exportada o el lanzador: **hace falta el log de casa** justo
+  después del cierre (`%APPDATA%\Godot\app_userdata\Sector Cero\logs`, el
+  `godot.log` más nuevo) y cómo se hizo (ratón o mando, desde el lanzador,
+  qué versión).
 6. **Volver a medir las tablas del F1** (`progreso_por_minuto.gd`, nivel y
    mejoras por minuto): se midieron antes de cambiar las dificultades.
 7. **Si se toca algo de los jefes o del equilibrio, volver a pasar el
