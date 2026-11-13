@@ -100,7 +100,10 @@ signal jugador_desconectado(id: int)
 
 ## El reparto
 
-### Alan: la red (`alan/red`, `globales/red.gd`, `escenas/red/`)
+### La red (`globales/red.gd`, `escenas/red/`): de Alan; desde el 13/11, de Adam
+
+Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
+(`equipo/reparto.md`). Alan hizo el punto 1 (`alan/red`, 09/11).
 
 1. **Probar que conecta**, lo primero: dos ordenadores del instituto en la
    misma red con un script mínimo de ENet. Si la red de clase lo bloquea, se
