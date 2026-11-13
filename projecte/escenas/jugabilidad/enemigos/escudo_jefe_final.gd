@@ -22,6 +22,7 @@ signal roto
 const Dificultad := preload("res://globales/dificultad.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 ## Vida de cada ancla antes de la dificultad: se multiplica por su
 ## vida_anclas.
 const VIDA_ANCLA := 300.0
@@ -81,7 +82,7 @@ func levantar() -> void:
 	for i in _anclas.size():
 		var direccion := Vector2.from_angle(TAU * (i + 0.5) / _anclas.size())
 		var de_quien: String = orden[REPARTO[i] % orden.size()]
-		_anclas[i].activar(global_position + direccion * DISTANCIA_ANCLAS, VIDA_ANCLA * Dificultad.dato("vida_anclas"), de_quien)
+		_anclas[i].activar(global_position + direccion * DISTANCIA_ANCLAS, VIDA_ANCLA * Dificultad.dato("vida_anclas") * Jugadores.vida_por_jugadores(get_tree()), de_quien)
 	BusEventos.jefe_final_ataco.emit("escudo")
 
 

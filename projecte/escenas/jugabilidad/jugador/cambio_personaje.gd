@@ -69,6 +69,9 @@ func _ready() -> void:
 	_equipo = raiz.get_meta("equipo")
 	_equipo.miembros.append(self)
 	_equipo.derrotado.connect(equipo_derrotado.emit)
+	# Para contar cuántos juegan (jugadores.gd, la vida de los enemigos): a
+	# diferencia de jugador, de este grupo no se sale al quedarse mirando.
+	get_parent().add_to_group("en_partida")
 	# Cada jugador empieza con el primero libre: el que juega solo, con el
 	# primero, como siempre.
 	_indice = _equipo.primero_libre()

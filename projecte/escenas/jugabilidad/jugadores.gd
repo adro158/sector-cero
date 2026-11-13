@@ -8,6 +8,20 @@ extends RefCounted
 ##
 ## Sin class_name: se carga con preload, como dificultad.gd.
 
+## Cuánta más vida tienen la horda, los élites y los jefes según cuántos
+## juegan, por número de jugadores (Adam, 13/11: ×1,6 con dos y ×2,2 con
+## tres). Falta medirlo con el simulador cuando juegue con varios bots.
+const VIDA_POR_JUGADORES: Array[float] = [1.0, 1.0, 1.6, 2.2]
+
+
+## El multiplicador de vida de la partida. Cuenta a todos los que la
+## empezaron (grupo en_partida, que pone cambio_personaje.gd), también a los
+## que se han quedado mirando: si no, al caer uno los enemigos nuevos
+## saldrían más flojos.
+static func vida_por_jugadores(arbol: SceneTree) -> float:
+	var cuantos := arbol.get_nodes_in_group("en_partida").size()
+	return VIDA_POR_JUGADORES[clampi(cuantos, 1, VIDA_POR_JUGADORES.size() - 1)]
+
 
 ## Las posiciones de todos. La horda las pide una vez por fotograma y después
 ## elige la más cercana de cada enemigo sin volver a preguntar al árbol.

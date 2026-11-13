@@ -80,7 +80,7 @@ func aparecer(posicion: Vector2, afijos: Array[DatosAfijoElite]) -> void:
 	# todos a la vez. Sale de dónde aparece y no de randf(), que gastaría
 	# números del azar de la partida.
 	_tiempo = fmod(absf(posicion.x + posicion.y), Dibujo.VUELTA)
-	_salud.reiniciar(datos.vida_para(_nivel, _segundos) * Dificultad.dato("vida"))
+	_salud.reiniciar(datos.vida_para(_nivel, _segundos) * Dificultad.dato("vida") * Jugadores.vida_por_jugadores(get_tree()))
 	_activo = true
 	visible = true
 	queue_redraw()

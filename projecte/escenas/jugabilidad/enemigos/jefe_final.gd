@@ -96,7 +96,7 @@ func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	# La de la escena por la de su dificultad, que va aparte de la del resto:
 	# contra él se pierde por daño, no por vida (sesión 18).
-	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe_final"))
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe_final") * Jugadores.vida_por_jugadores(get_tree()))
 	_forma = 0
 	_cambiar_estado(Estado.LUCHANDO)
 	_hasta_atacar = PRIMER_ATAQUE

@@ -148,7 +148,7 @@ func aparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	# La vida de la escena por la de su dificultad, que va aparte de la de la
 	# horda desde el 23/10.
-	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe"))
+	_salud.reiniciar(_salud.vida_maxima * Dificultad.dato("vida_jefe") * Jugadores.vida_por_jugadores(get_tree()))
 	visible = true
 	_hasta_invocar = intervalo_invocacion
 	_hasta_pisoton = primer_pisoton

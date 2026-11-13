@@ -63,7 +63,7 @@ var _jaula: Node2D
 
 
 func _ready() -> void:
-	_jaula =get_tree().get_first_node_in_group("jaula_jefe")
+	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_vida_dificultad = Dificultad.dato("vida")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
@@ -130,7 +130,8 @@ func aparecer(posicion: Vector2) -> void:
 		return
 
 	_posiciones[_vivos] = posicion
-	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad
+	# Con varios jugadores, más vida (multijugador, punto 7 del plan).
+	_vidas[_vivos] = datos.vida_para(_nivel, _segundos) * _vida_dificultad * Jugadores.vida_por_jugadores(get_tree())
 	_vidas_maximas[_vivos] = _vidas[_vivos]
 	_destellos[_vivos] = 0.0
 	_huye[_vivos] = 0
