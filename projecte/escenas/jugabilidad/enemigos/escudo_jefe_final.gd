@@ -52,13 +52,9 @@ var _vivos: Array = Ancla.PERSONAJES.keys()
 var _pendientes: Array = []
 
 @onready var _anclas: Array[Node] = get_children()
-## El equipo del jugador: con el escudo puesto se cambia de personaje sin
-## espera, para poder ir a por cada ancla con el suyo.
-var _cambio_personaje: Node
 
 
 func _ready() -> void:
-	_cambio_personaje = get_tree().get_first_node_in_group("jugador").get_node("CambioPersonaje")
 	BusEventos.equipo_cambiado.connect(_al_cambiar_equipo)
 
 
@@ -66,9 +62,16 @@ func activo() -> bool:
 	return _activo
 
 
+## Con el escudo puesto se cambia de personaje sin espera, para poder ir a por
+## cada ancla con el suyo. A todos los jugadores (multijugador).
+func _sin_espera(sin_espera: bool) -> void:
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		jugador.get_node("CambioPersonaje").sin_espera = sin_espera
+
+
 func levantar() -> void:
 	_activo = true
-	_cambio_personaje.sin_espera = true
+	_sin_espera(true)
 	_rotas = 0
 	_desde_ultima_rota = 0.0
 	# Barajados, para que no salgan siempre en el mismo sitio.
@@ -85,7 +88,7 @@ func levantar() -> void:
 ## Sin animación: al morir el jefe.
 func quitar() -> void:
 	_activo = false
-	_cambio_personaje.sin_espera = false
+	_sin_espera(false)
 	_rotura = 0.0
 	for ancla in _anclas:
 		ancla.ocultar()

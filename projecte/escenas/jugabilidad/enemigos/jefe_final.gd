@@ -23,6 +23,7 @@ enum Estado { OCULTO, LUCHANDO, TRANSFORMANDO, ATURDIDO, MURIENDO }
 const Dificultad := preload("res://globales/dificultad.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 ## Una entrada por forma: 0 rootkit gigante, 1 núcleo armado y 2 amalgama.
 const DANO_RECIBIDO: Array[float] = [1.0, 0.75, 0.6]
@@ -74,8 +75,6 @@ var _hasta_escudo := 0.0
 var _ultimo_ataque := ""
 ## Los de AL_LLEGAR que aún no ha lanzado.
 var _por_lanzar: Array = []
-var _jugador: Node2D
-var _salud_jugador: Salud
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -88,8 +87,6 @@ var _salud_jugador: Salud
 
 func _ready() -> void:
 	visible = false
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
 	_salud.murio.connect(_al_morir)
 	_salud.vida_cambiada.connect(BusEventos.jefe_final_vida_cambiada.emit)
 	_escudo.roto.connect(_al_romper_escudo)
@@ -217,8 +214,10 @@ func _physics_process(delta: float) -> void:
 				derrotado.emit()
 				return
 
-	if activo() and global_position.distance_to(_jugador.global_position) < radio + 16.0:
-		_salud_jugador.recibir_dano(dano_contacto)
+	if activo():
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if global_position.distance_to(jugador.global_position) < radio + 16.0:
+				jugador.get_node("Salud").recibir_dano(dano_contacto)
 	_animar()
 	queue_redraw()
 
@@ -230,12 +229,13 @@ func _luchar(delta: float) -> void:
 		return
 	# Con el escudo está anclado: ni se mueve ni se recoloca, y el tiempo hasta
 	# el siguiente escudo no corre.
-	if not _escudo.activo():
-		var hacia_jugador := _jugador.global_position - global_position
+	var objetivo := Jugadores.mas_cercano(get_tree(), global_position)
+	if not _escudo.activo() and objetivo != null:
+		var hacia_jugador := objetivo.global_position - global_position
 		# Como los élites: si se queda muy atrás, reaparece al otro lado del
-		# jugador, fuera de la pantalla.
+		# jugador más cercano, fuera de la pantalla.
 		if hacia_jugador.length() > distancia_reciclaje:
-			global_position = _jugador.global_position + hacia_jugador * 0.6
+			global_position = objetivo.global_position + hacia_jugador * 0.6
 		elif hacia_jugador.length() > DISTANCIA:
 			global_position += hacia_jugador.normalized() * VELOCIDAD[_forma] * delta
 		if ESCUDO_CADA[_forma] > 0.0:
@@ -297,9 +297,10 @@ func _animar() -> void:
 
 
 ## La cámara tiembla con la sacudida del jugador, la única que la mueve: si
-## tuviera la suya, se pelearían por ella.
+## tuviera la suya, se pelearían por ella. La de todos (multijugador).
 func _temblar() -> void:
-	_jugador.sacudir(12.0)
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		jugador.sacudir(12.0)
 
 
 func _draw() -> void:
@@ -318,7 +319,8 @@ func _al_morir() -> void:
 	_cambiar_estado(Estado.MURIENDO)
 	# Ya está ganada: mientras se rompe, un golpe de la horda que queda no
 	# puede cambiar la victoria por una derrota.
-	_salud_jugador.proteger(MUERTE + 0.1)
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		jugador.get_node("Salud").proteger(MUERTE + 0.1)
 	# La muerte ya trae al jefe rompiéndose.
 	_sprite.visible = false
 	_temblar()

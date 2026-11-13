@@ -38,13 +38,6 @@ const DANO := 15.0
 
 ## Cada proyectil: [posición, dirección, segundos volando, daño].
 var _proyectiles: Array = []
-var _jugador: Node2D
-var _salud_jugador: Salud
-
-
-func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
 
 
 ## multiplicador_dano: el de la furia del jefe en ese momento. Va en cada
@@ -68,13 +61,17 @@ func _physics_process(delta: float) -> void:
 	if _proyectiles.is_empty():
 		return
 
+	var jugadores := get_tree().get_nodes_in_group("jugador")
 	for proyectil in _proyectiles:
 		proyectil[0] += proyectil[1] * VELOCIDAD * delta
 		proyectil[2] += delta
-		if proyectil[0].distance_to(_jugador.global_position) < RADIO_IMPACTO:
-			_salud_jugador.recibir_dano(proyectil[3])
-			# Así lo retira el filtro de abajo.
-			proyectil[2] = VIDA
+		# Al primero que toque (multijugador).
+		for jugador in jugadores:
+			if proyectil[0].distance_to(jugador.global_position) < RADIO_IMPACTO:
+				jugador.get_node("Salud").recibir_dano(proyectil[3])
+				# Así lo retira el filtro de abajo.
+				proyectil[2] = VIDA
+				break
 	_proyectiles = _proyectiles.filter(func(proyectil): return proyectil[2] < VIDA)
 	queue_redraw()
 

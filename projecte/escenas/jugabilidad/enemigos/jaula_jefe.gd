@@ -49,12 +49,10 @@ var _fase := Fase.NADA
 var _tiempo := 0.0
 ## Dónde pisó: la jaula no se mueve con el jefe.
 var _centro := Vector2.ZERO
-var _jugador: Node2D
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	# Después del jugador: así se le devuelve dentro en el mismo fotograma en el
+	# Después de los jugadores: así se le devuelve dentro en el mismo fotograma en el
 	# que intenta salir, y no se le ve un instante metido en el muro.
 	process_physics_priority = 1
 
@@ -113,7 +111,9 @@ func _physics_process(delta: float) -> void:
 				_cambiar_fase(Fase.CERRADA)
 				BusEventos.jefe_ataco.emit("pisoton")
 		Fase.CERRADA:
-			_jugador.global_position = mantener(_jugador.global_position, RADIO_JUGADOR)
+			# A todos: el de dentro no sale y el de fuera no entra.
+			for jugador in get_tree().get_nodes_in_group("jugador"):
+				jugador.global_position = mantener(jugador.global_position, RADIO_JUGADOR)
 			if _tiempo >= DURA_JAULA:
 				_cambiar_fase(Fase.ROTURA)
 		Fase.ROTURA:

@@ -26,6 +26,7 @@ const BarraVida := preload("res://escenas/jugabilidad/enemigos/barra_vida_enemig
 const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_elite.gd")
+const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -41,8 +42,6 @@ var _nivel := 1
 var _segundos := 0.0
 ## Segundos de su animación en reposo.
 var _tiempo := 0.0
-var _jugador: Node2D
-var _salud_jugador: Salud
 ## Lo que va encima del rootkit (las placas del Blindado): un hijo creado al
 ## empezar, que se dibuja desde aquí con su señal draw.
 var _encima: Node2D
@@ -53,8 +52,6 @@ var _encima: Node2D
 
 func _ready() -> void:
 	visible = false
-	_jugador = get_tree().get_first_node_in_group("jugador")
-	_salud_jugador = _jugador.get_node("Salud")
 	_sprite.texture = Dibujo.REPOSO
 	_sprite.hframes = Dibujo.FOTOGRAMAS_REPOSO
 	# Después del Sprite en la lista de hijos: se dibuja encima de él.
@@ -171,19 +168,26 @@ func _physics_process(delta: float) -> void:
 	if not _activo:
 		return
 
-	var hacia_jugador := _jugador.global_position - global_position
+	# Va a por el jugador que tiene más cerca (multijugador).
+	var objetivo := Jugadores.mas_cercano(get_tree(), global_position)
+	if objetivo == null:
+		return
+	var hacia_jugador := objetivo.global_position - global_position
 	# Mapa sin fin: si se queda muy atrás, reaparece al otro lado del jugador.
 	if hacia_jugador.length() > distancia_reciclaje:
-		global_position = _jugador.global_position + hacia_jugador * 0.6
-		hacia_jugador = _jugador.global_position - global_position
+		global_position = objetivo.global_position + hacia_jugador * 0.6
+	# El golpe y el aura miden desde donde estaba antes de moverse, como
+	# siempre, y llegan a todos los que estén cerca.
+	var desde := global_position
+	global_position += (objetivo.global_position - global_position).normalized() * datos.velocidad * delta
 
-	global_position += hacia_jugador.normalized() * datos.velocidad * delta
-	var distancia := hacia_jugador.length()
-	if distancia < datos.tamano * 0.5 + 16.0:
-		_salud_jugador.recibir_dano(datos.dano_contacto)
 	var lentitud := _valor(DatosAfijoElite.Efecto.AURA_LENTA)
-	if lentitud > 0.0 and distancia < RADIO_AURA:
-		_jugador.ralentizar(lentitud)
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		var distancia: float = jugador.global_position.distance_to(desde)
+		if distancia < datos.tamano * 0.5 + 16.0:
+			jugador.get_node("Salud").recibir_dano(datos.dano_contacto)
+		if lentitud > 0.0 and distancia < RADIO_AURA:
+			jugador.ralentizar(lentitud)
 
 
 ## El valor del afijo con ese efecto, o 0 si este élite no lo tiene.
@@ -219,8 +223,9 @@ func _al_morir() -> void:
 
 
 func _explotar() -> void:
-	if global_position.distance_to(_jugador.global_position) < RADIO_EXPLOSION:
-		_salud_jugador.recibir_dano(_valor(DatosAfijoElite.Efecto.EXPLOSIVO))
+	for jugador in get_tree().get_nodes_in_group("jugador"):
+		if global_position.distance_to(jugador.global_position) < RADIO_EXPLOSION:
+			jugador.get_node("Salud").recibir_dano(_valor(DatosAfijoElite.Efecto.EXPLOSIVO))
 	BusEventos.elite_exploto.emit(global_position)
 	_sprite.visible = true
 	visible = false
@@ -254,14 +259,17 @@ func _draw() -> void:
 func _nombre_tapado() -> bool:
 	var fuente := ThemeDB.fallback_font
 	var mi_ancho := fuente.get_string_size(descripcion(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
-	var mi_distancia := global_position.distance_to(_jugador.global_position)
+	# Es solo dibujo: el jugador de esta pantalla (en red, el primero del
+	# grupo será el local).
+	var jugador: Node2D = get_tree().get_first_node_in_group("jugador")
+	var mi_distancia := global_position.distance_to(jugador.global_position)
 	for otro in get_tree().get_nodes_in_group("elites"):
 		if otro == self or not otro.vivo():
 			continue
 		var separacion: Vector2 = (otro.global_position - global_position).abs()
 		var su_ancho := fuente.get_string_size(otro.descripcion(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
 		var se_pisan := separacion.x < (mi_ancho + su_ancho) / 2.0 and separacion.y < ALTO_NOMBRES
-		if se_pisan and otro.global_position.distance_to(_jugador.global_position) < mi_distancia:
+		if se_pisan and otro.global_position.distance_to(jugador.global_position) < mi_distancia:
 			return true
 	return false
 
