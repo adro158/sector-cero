@@ -49,6 +49,9 @@ var _fase := Fase.NADA
 var _tiempo := 0.0
 ## Dónde pisó: la jaula no se mueve con el jefe.
 var _centro := Vector2.ZERO
+## Multijugador: en los clientes no encierra a nadie; está como diga el
+## anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 
 func _ready() -> void:
@@ -105,6 +108,9 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_tiempo += delta
+	if solo_dibujar:
+		queue_redraw()
+		return
 	match _fase:
 		Fase.AVISO:
 			if _tiempo >= DURA_AVISO:
@@ -120,6 +126,21 @@ func _physics_process(delta: float) -> void:
 			if _tiempo >= ROTURA_CADA * FOTOGRAMAS_ROTURA:
 				_cambiar_fase(Fase.NADA)
 	queue_redraw()
+
+
+## Multijugador: lo que manda el anfitrión (estado_red.gd)...
+func datos_red() -> Array:
+	return [_fase, _tiempo, _centro]
+
+
+## ... y cómo lo pone un cliente.
+func poner_desde_red(datos: Array) -> void:
+	if datos[0] != _fase:
+		_cambiar_fase(datos[0])
+		if _fase == Fase.CERRADA:
+			BusEventos.jefe_ataco.emit("pisoton")
+	_tiempo = datos[1]
+	_centro = datos[2]
 
 
 func _cambiar_fase(nueva: Fase) -> void:

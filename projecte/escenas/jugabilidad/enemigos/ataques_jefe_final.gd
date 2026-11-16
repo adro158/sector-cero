@@ -80,6 +80,9 @@ var _cristales: Array[Vector2] = []
 ## Cada portal: [posición, segundos abierto, segundos hasta el siguiente].
 var _portales: Array = []
 var _gestores: Array = []
+## Multijugador: en los clientes no hacen daño ni sacan horda; van como diga
+## el anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 
 func _ready() -> void:
@@ -146,6 +149,13 @@ func lanzar(ataque: String, forma: int) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# En los clientes, entre un estado y el siguiente, solo corre su tiempo.
+	if solo_dibujar:
+		for portal in _portales:
+			portal[1] += delta
+		_tiempo += delta
+		queue_redraw()
+		return
 	_avanzar_portales(delta)
 	if _ataque == "":
 		return
@@ -235,6 +245,25 @@ func _invocar_explosivo(donde: Vector2) -> void:
 			var afijos: Array[DatosAfijoElite] = [EXPLOSIVO]
 			elite.aparecer(donde, afijos)
 			return
+
+
+## Multijugador: lo que manda el anfitrión (estado_red.gd)...
+func datos_red() -> Array:
+	return [_ataque, _tiempo, _origen, _direcciones, _dianas, _cristales, _portales]
+
+
+## ... y cómo lo pone un cliente: suena al empezar cada ataque.
+func poner_desde_red(datos: Array) -> void:
+	if datos[0] != _ataque and datos[0] != "":
+		BusEventos.jefe_final_ataco.emit(datos[0])
+	_ataque = datos[0]
+	_tiempo = datos[1]
+	_origen = datos[2]
+	_direcciones.assign(datos[3])
+	_dianas.assign(datos[4])
+	_cristales.assign(datos[5])
+	_portales = datos[6]
+	queue_redraw()
 
 
 func _draw() -> void:

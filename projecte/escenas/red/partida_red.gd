@@ -112,8 +112,12 @@ func _solo_dibujar(raiz: Node) -> void:
 	for grupo in ["gestor_enemigos", "elites"]:
 		for enemigo in get_tree().get_nodes_in_group(grupo):
 			enemigo.solo_dibujar = true
-	raiz.get_node("Jefe").solo_dibujar = true
-	raiz.get_node("JefeFinal").solo_dibujar = true
+	# Los jefes y sus ataques (salvo el hielo, que no hace daño).
+	for ruta in EstadoRed.RAIZ:
+		if ruta != "ZonasHielo":
+			raiz.get_node(ruta).solo_dibujar = true
+	for ancla in raiz.get_node("JefeFinal/Escudo").get_children():
+		ancla.solo_dibujar = true
 	get_tree().get_first_node_in_group("pool_gemas").solo_dibujar = true
 	for jugador in _por_id.values():
 		jugador.por_red = true

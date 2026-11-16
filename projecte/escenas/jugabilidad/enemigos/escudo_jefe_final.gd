@@ -51,6 +51,9 @@ var _desde_ultima_rota := 0.0
 var _vivos: Array = Ancla.PERSONAJES.keys()
 ## Lo último que se avisó con anclas_pendientes, para avisar solo al cambiar.
 var _pendientes: Array = []
+## Multijugador: en los clientes no cuenta las anclas rotas; está como diga
+## el anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 @onready var _anclas: Array[Node] = get_children()
 
@@ -119,6 +122,8 @@ func _physics_process(delta: float) -> void:
 	if not _activo:
 		return
 	queue_redraw()
+	if solo_dibujar:
+		return
 	var rotas := 0
 	for ancla in _anclas:
 		if ancla.rota():
@@ -158,6 +163,27 @@ func _al_cambiar_equipo(personajes: Array, _indice_activo: int) -> void:
 	for ancla in _anclas:
 		if not ancla.herramienta in _vivos:
 			ancla.herramienta = _vivos.pick_random()
+
+
+## Multijugador: lo que manda el anfitrión (estado_red.gd)...
+func datos_red() -> Array:
+	return [_activo, _rotura, _anclas.map(func(ancla): return ancla.datos_red())]
+
+
+## ... y cómo lo pone un cliente: se levanta, estalla al romper las cuatro
+## y avisa al HUD de qué anclas quedan, como en el anfitrión.
+func poner_desde_red(datos: Array) -> void:
+	if datos[0] and not _activo:
+		_activo = true
+		BusEventos.jefe_final_ataco.emit("escudo")
+	elif not datos[0] and _activo:
+		quitar()
+		if datos[1] > 0.0:
+			_rotura = datos[1]
+			BusEventos.escudo_final.emit("roto")
+	for i in _anclas.size():
+		_anclas[i].poner_desde_red(datos[2][i])
+	_avisar_pendientes()
 
 
 func _draw() -> void:

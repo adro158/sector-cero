@@ -16,10 +16,15 @@ extends RefCounted
 ## - e: [vidas, máximas, caídos] del equipo (para el banquillo)
 ## - l: los élites (en el orden del grupo elites, el mismo en todos), cada uno
 ##   con lo de enemigo_elite.gd datos_red()
-## - k: Kernel Panic, lo de jefe.gd datos_red(); n: NÚCLEO CERO, lo de
-##   jefe_final.gd datos_red()
+## - a: los jefes y sus ataques (los de RAIZ, en ese orden), cada uno con lo
+##   de su datos_red()
 ##
 ## Sin class_name: se carga con preload.
+
+## Los nodos de RaizJuego que se mandan y se ponen igual, con datos_red() y
+## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques.
+const RAIZ := ["Jefe", "JefeFinal", "JaulaJefe", "Jefe/Rafaga", "JefeFinal/Ataques",
+	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo"]
 
 
 ## En el anfitrión. reloj y experiencia: lo último que avisó el bus.
@@ -36,6 +41,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 	for gestor in arbol.get_nodes_in_group("gestor_enemigos"):
 		horda.append(gestor.posiciones_vivos())
 	var gemas: Node = arbol.get_first_node_in_group("pool_gemas")
+	var raiz := arbol.current_scene.get_node("RaizJuego")
 	return {
 		"j": jugadores,
 		"h": horda,
@@ -44,8 +50,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		"x": experiencia,
 		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
 		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
-		"k": arbol.current_scene.get_node("RaizJuego/Jefe").datos_red(),
-		"n": arbol.current_scene.get_node("RaizJuego/JefeFinal").datos_red(),
+		"a": RAIZ.map(func(ruta): return raiz.get_node(ruta).datos_red()),
 	}
 
 
@@ -70,8 +75,9 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 	var elites := arbol.get_nodes_in_group("elites")
 	for i in mini(elites.size(), estado.l.size()):
 		elites[i].poner_desde_red(estado.l[i])
-	arbol.current_scene.get_node("RaizJuego/Jefe").poner_desde_red(estado.k)
-	arbol.current_scene.get_node("RaizJuego/JefeFinal").poner_desde_red(estado.n)
+	var raiz := arbol.current_scene.get_node("RaizJuego")
+	for i in RAIZ.size():
+		raiz.get_node(RAIZ[i]).poner_desde_red(estado.a[i])
 	if estado.t.size() == 2:
 		BusEventos.tiempo_partida.emit(estado.t[0], estado.t[1])
 	if estado.x.size() == 3:
