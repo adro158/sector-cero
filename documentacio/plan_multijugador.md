@@ -302,8 +302,16 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    del anfitrión. Probado con dos copias: el cliente ve los dos premios,
    recoge el cofre, le sale su ruleta (al anfitrión ninguna), la mejora se
    aplica y la partida sigue; el simulador da lo mismo, también la entera.
-   **Falta:** los efectos y los números de daño en los clientes, y la
-   animación de la caída en los clientes.
+   La caída, el 16/11: en los clientes el personaje cambiaba de golpe.
+   Ahora `seguir_red` ve que el que lleva ha caído (los caídos se ponen
+   antes que los jugadores en `estado_red.gd`) y se deshace como en el
+   anfitrión, que tarda lo mismo en pasar al siguiente; el siguiente entra
+   con el escudo. Y en el anfitrión, la caída en red se decide por los
+   miembros del equipo y no por los jugadores en pie: con el anfitrión
+   mirando (con tres jugadores) se pausaba y le preguntaba a él quién
+   seguía. Probado con dos copias: el del cliente cae, se deshace, vuelve
+   con el Mago con el escudo, cae otra vez y se queda mirando.
+   **Falta:** los efectos y los números de daño en los clientes.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

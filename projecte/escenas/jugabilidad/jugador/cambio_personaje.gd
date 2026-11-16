@@ -146,7 +146,8 @@ func irse() -> void:
 
 ## Multijugador, en los clientes: lleva el personaje que dice el anfitrión
 ## (estado_red.gd), o se queda mirando si allí no tiene. Si el personaje aún
-## lo tiene otro, en el siguiente estado.
+## lo tiene otro, en el siguiente estado. Si el que lleva ha caído, se deshace
+## como en el anfitrión, que tarda lo mismo en pasar al siguiente.
 func seguir_red(indice: int, mirando: bool) -> void:
 	if mirando != _espectador:
 		if mirando:
@@ -154,9 +155,17 @@ func seguir_red(indice: int, mirando: bool) -> void:
 		_poner_espectador(mirando)
 	if mirando:
 		return
+	if indice == _indice and _equipo.caidos[_indice] and _sprite.visible:
+		_sprite.visible = false
+		_efectos.caer(personajes[_indice].color, false)
+		return
 	if indice != _indice and _equipo.llevado_por[indice] == null:
+		var tras_caer := not _sprite.visible
 		_entrar(indice)
 		_aplicar()
+		if tras_caer:
+			_sprite.visible = true
+			_efectos.escudo(personajes[indice].color, proteccion_al_entrar)
 
 
 ## Si este es el jugador de este ordenador: el que enseña la interfaz.
@@ -314,7 +323,9 @@ func _al_caer() -> void:
 	_equipo.caidos[_indice] = true
 	_avisar_equipo()
 	var ultimo := _equipo.todos_caidos()
-	if not ultimo and get_tree().get_nodes_in_group("jugador").size() > 1:
+	# Con varios en el equipo, aunque los demás estén mirando: si no, al caer
+	# uno con el anfitrión mirando, se pausaba y le preguntaba a él.
+	if not ultimo and _equipo.miembros.size() > 1:
 		_caer_en_red()
 		return
 	# La pausa la pone la jugabilidad, como al subir de nivel, y es suya hasta

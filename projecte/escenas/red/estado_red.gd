@@ -57,6 +57,11 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 
 ## En los clientes.
 static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) -> void:
+	# Los caídos, antes que los jugadores: así seguir_red sabe si el que lleva
+	# cada uno acaba de caer (y lo anima). Las vidas, al final: al cambiar de
+	# personaje, cambio_personaje.gd guarda la que tenía aquí.
+	var equipo: RefCounted = por_id.values()[0].get_node("CambioPersonaje")._equipo
+	equipo.caidos.assign(estado.e[2])
 	for id in estado.j:
 		var jugador: CharacterBody2D = por_id.get(id)
 		if jugador == null:
@@ -83,7 +88,5 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		BusEventos.tiempo_partida.emit(estado.t[0], estado.t[1])
 	if estado.x.size() == 3:
 		BusEventos.experiencia_cambiada.emit(estado.x[0], estado.x[1], estado.x[2])
-	var equipo: RefCounted = por_id.values()[0].get_node("CambioPersonaje")._equipo
 	equipo.vidas.assign(estado.e[0])
 	equipo.maximas.assign(estado.e[1])
-	equipo.caidos.assign(estado.e[2])
