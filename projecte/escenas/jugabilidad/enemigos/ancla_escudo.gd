@@ -32,8 +32,6 @@ var _activa := false
 var _rota := false
 var _segundos := 0.0
 var _ultimo_cero := -1.0
-## El personaje que lleva el jugador ahora.
-var _personaje_activo: DatosPersonaje
 ## Multijugador: en los clientes no recibe golpes; está como diga el
 ## anfitrión (poner_desde_red).
 var solo_dibujar := false
@@ -41,7 +39,6 @@ var solo_dibujar := false
 
 func _ready() -> void:
 	visible = false
-	BusEventos.equipo_cambiado.connect(func(personajes, activo): _personaje_activo = personajes[activo].personaje)
 
 
 func activar(posicion: Vector2, vida: float, de_quien: String) -> void:
@@ -74,8 +71,9 @@ func rota() -> bool:
 ## Misma forma que el resto de objetivos: devuelve a cuántos alcanza. Con otra
 ## herramienta enseña el 0 pero no cuenta como alcanzada: si contara, el robo
 ## de vida curaría y la resistencia del malware lo tomaría por daño. El
-## proyectil del Ping la atraviesa.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
+## proyectil del Ping la atraviesa. quien: el jugador cuya arma pega; cuenta
+## el personaje que lleva él, no el de la pantalla (multijugador).
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, quien: Node2D = null) -> int:
 	if solo_dibujar or not _activa or global_position.distance_to(centro) > radio_golpe + RADIO:
 		return 0
 	# Fuera del cono ni el 0 rojo: no le ha llegado el golpe.
@@ -83,7 +81,7 @@ func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resiste
 	if factor <= 0.0:
 		return 0
 	var numero_en := global_position + Vector2(randf_range(-10.0, 10.0), -36.0)
-	if _personaje_activo != PERSONAJES[herramienta]:
+	if quien == null or quien.get_node("CambioPersonaje").personaje_actual() != PERSONAJES[herramienta]:
 		if _segundos - _ultimo_cero > ESPERA_CERO:
 			_ultimo_cero = _segundos
 			enemigo_danado.emit(numero_en, 0.0, 1.0)

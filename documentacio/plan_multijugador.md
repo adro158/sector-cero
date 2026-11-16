@@ -272,11 +272,17 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    no sacan horda ni encierran a nadie, pero se ven y suenan, y el HUD dice
    qué anclas quedan. Probado con dos copias: la ráfaga, el pisotón,
    invocar, la tormenta, el escudo, las anclas rotas y la rotura, a la vez.
-   **Fallo apuntado (sin arreglar):** en la partida del anfitrión, un ancla
-   mira el personaje del anfitrión (`equipo_cambiado` lleva el del jugador
-   local), no el del jugador cuya arma le pega: el de otro ordenador solo
-   rompe las anclas del personaje que lleve el anfitrión. Hace falta que el
-   golpe diga de quién es.
+   Las anclas, arregladas el 16/11: miraban el personaje del anfitrión
+   (`equipo_cambiado` lleva el del jugador local), así que el de otro
+   ordenador solo rompía las del personaje que llevara el anfitrión. Ahora
+   cada golpe dice qué jugador lo da (`danar_en_area(..., quien)`, desde las
+   armas, el Ping y las ultis) y el ancla mira el personaje que lleva él en
+   ese momento, la regla de siempre. De paso, `gestor_armas.gd` cogía «el
+   primer jugador del grupo»: las armas de los demás salían del jugador
+   local y su robo de vida le curaba a él. Ahora es su padre. Probado con
+   dos copias (cada ancla acepta solo al suyo, y el Segador del cliente
+   rompe la suya solo) y el simulador da lo mismo, también la partida
+   entera.
    **Falta:** los efectos y los números
    de daño en los clientes; la ruleta del cofre y la animación de la caída
    en los clientes; y que el anfitrión sin personaje no bloquee las mejoras

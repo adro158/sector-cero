@@ -35,6 +35,8 @@ var _vidas := PackedFloat32Array()
 var _esperas := PackedFloat32Array()
 # Qué arma lanzó cada proyectil, para aplicar y registrar su resistencia.
 var _armas: Array[DatosArma] = []
+# Y qué jugador: las anclas del jefe final miran el personaje que lleva.
+var _jugadores: Array[Node2D] = []
 var _activos := 0
 var _objetivos: Array = []
 var _resistencia_malware: Node
@@ -60,6 +62,7 @@ func _ready() -> void:
 	_vidas.resize(MAXIMO_PROYECTILES)
 	_esperas.resize(MAXIMO_PROYECTILES)
 	_armas.resize(MAXIMO_PROYECTILES)
+	_jugadores.resize(MAXIMO_PROYECTILES)
 
 	# La horda y el jefe: todo lo que tiene danar_en_area y mas_cercano.
 	_objetivos = get_tree().get_nodes_in_group("objetivos")
@@ -87,7 +90,7 @@ func _preparar_multimesh(malla: MultiMeshInstance2D, textura: Texture2D) -> void
 	malla.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
-func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float) -> void:
+func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float, quien: Node2D) -> void:
 	if _activos >= MAXIMO_PROYECTILES:
 		return
 
@@ -105,6 +108,7 @@ func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float) -> void
 	_vidas[_activos] = arma.vida_util
 	_esperas[_activos] = 0.0
 	_armas[_activos] = arma
+	_jugadores[_activos] = quien
 	_activos += 1
 
 
@@ -135,7 +139,7 @@ func _impactar(indice: int) -> bool:
 	var alcanzados := 0
 
 	for objetivo in _objetivos:
-		alcanzados += objetivo.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia)
+		alcanzados += objetivo.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia, null, _jugadores[indice])
 
 	if alcanzados == 0:
 		return false
@@ -184,6 +188,7 @@ func _eliminar(indice: int) -> void:
 	_vidas[indice] = _vidas[_activos]
 	_esperas[indice] = _esperas[_activos]
 	_armas[indice] = _armas[_activos]
+	_jugadores[indice] = _jugadores[_activos]
 
 
 func _volcar_al_multimesh() -> void:

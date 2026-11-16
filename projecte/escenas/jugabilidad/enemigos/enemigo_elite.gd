@@ -99,7 +99,7 @@ func descripcion() -> String:
 
 
 ## Misma forma que la horda y el jefe: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, _quien: Node2D = null) -> int:
 	if solo_dibujar or not _activo or global_position.distance_to(centro) > radio_golpe + datos.tamano * 0.5:
 		return 0
 	if cono != null:

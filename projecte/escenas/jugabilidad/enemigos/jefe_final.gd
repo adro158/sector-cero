@@ -128,7 +128,7 @@ func siguiente_forma() -> void:
 
 
 ## Misma forma que el resto de objetivos: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, _quien: Node2D = null) -> int:
 	if solo_dibujar or not activo() or _escudo.activo() or global_position.distance_to(centro) > radio_golpe + radio:
 		return 0
 	if cono != null:

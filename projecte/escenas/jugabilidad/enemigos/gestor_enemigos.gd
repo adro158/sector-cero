@@ -152,7 +152,7 @@ func aparecer(posicion: Vector2) -> void:
 ## resistencia descontada; la resistencia solo se usa para el aviso. Con un
 ## cono (golpe_cono.gd, el Firewall), solo a los que están dentro y con su
 ## daño según la distancia.
-func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
+func danar_en_area(centro: Vector2, radio: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, _quien: Node2D = null) -> int:
 	var alcanzados := 0
 
 	for i in _rejilla.indices_cerca(centro, radio):

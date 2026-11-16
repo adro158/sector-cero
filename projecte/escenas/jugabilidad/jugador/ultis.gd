@@ -168,7 +168,7 @@ func _physics_process(delta: float) -> void:
 		var golpe: Array = _golpes.pop_front()
 		var centro: Vector2 = global_position if golpe[1] == Vector2.INF else golpe[1]
 		for objetivo in get_tree().get_nodes_in_group("objetivos"):
-			objetivo.danar_en_area(centro, golpe[2], golpe[3])
+			objetivo.danar_en_area(centro, golpe[2], golpe[3], 0.0, null, get_parent())
 	if _tiempo >= _duracion():
 		_efecto = ""
 	queue_redraw()
