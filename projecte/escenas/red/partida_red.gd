@@ -40,7 +40,6 @@ func _ready() -> void:
 	BusEventos.jugador_desconectado.connect(_al_irse)
 	BusEventos.tiempo_partida.connect(_al_cambiar_reloj)
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
-	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 	BusEventos.partida_terminada.connect(_al_terminar)
 
@@ -67,6 +66,7 @@ func _preparar() -> void:
 	var red: Node = Red.actual
 	var raiz := get_parent()
 	var local: Node2D = raiz.get_node("Jugador")
+	raiz.get_node("SistemaNiveles").opciones_sorteadas.connect(_al_subir_nivel)
 	# Primero el de este ordenador: al empezar lleva el primer personaje y, si
 	# eligió otro, lo deja libre para los demás.
 	for jugador in red.jugadores():
@@ -165,8 +165,10 @@ func _al_recibir_estado(estado: Dictionary) -> void:
 
 
 ## En el anfitrión: al subir de nivel, a cada uno de los demás sus opciones
-## (por su ruta: un recurso no viaja por la red).
-func _al_subir_nivel(_opciones: Array) -> void:
+## (por su ruta: un recurso no viaja por la red). Con la señal del sistema de
+## niveles y no con la del bus: si el anfitrión se queda mirando, el bus no
+## avisa (no elige) y los demás se quedarían esperando en pausa.
+func _al_subir_nivel() -> void:
 	if not Red.actual.es_anfitrion():
 		return
 	var niveles: Node = get_parent().get_node("SistemaNiveles")

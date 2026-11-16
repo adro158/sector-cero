@@ -283,10 +283,17 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    dos copias (cada ancla acepta solo al suyo, y el Segador del cliente
    rompe la suya solo) y el simulador da lo mismo, también la partida
    entera.
-   **Falta:** los efectos y los números
-   de daño en los clientes; la ruleta del cofre y la animación de la caída
-   en los clientes; y que el anfitrión sin personaje no bloquee las mejoras
-   de los demás.
+   Las mejoras con el anfitrión mirando, arregladas el 16/11: la red
+   mandaba las opciones a los demás al oír `jugador_subio_nivel`, que solo
+   salta si el de este ordenador elige; con el anfitrión sin personaje no
+   llegaban y la partida se quedaba en pausa. Ahora escucha
+   `opciones_sorteadas`, una señal del sistema de niveles (no del bus) que
+   salta siempre. Probado con dos copias: el anfitrión cae dos veces, se
+   queda mirando, sube del nivel 1 al 5 y el cliente elige sus cuatro
+   mejoras sin que la partida se quede en pausa.
+   **Falta:** los efectos y los números de daño en los clientes, y la
+   ruleta del cofre y la animación de la caída en los clientes (el premio
+   del cofre lo elige siempre el anfitrión, lo recoja quien lo recoja).
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

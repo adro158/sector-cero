@@ -1,5 +1,10 @@
 extends Node
 
+## Al sortear las opciones de cada jugador en una subida de nivel. Para la red
+## (partida_red.gd), que manda las suyas a los demás: salta siempre, también
+## si el de este ordenador se ha quedado mirando y no elige.
+signal opciones_sorteadas
+
 const OPCIONES_POR_NIVEL := 3
 ## Sectores de la ruleta del cofre.
 const SECTORES_RULETA := 8
@@ -146,6 +151,7 @@ func _ofrecer_mejoras() -> void:
 		_opciones.clear()
 		for jugador in _por_elegir:
 			_opciones[jugador] = _sortear_opciones(jugador)
+		opciones_sorteadas.emit()
 		if _jugador in _opciones:
 			BusEventos.jugador_subio_nivel.emit(_opciones[_jugador])
 
