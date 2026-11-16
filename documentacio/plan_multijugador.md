@@ -242,7 +242,14 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    pantalla final cuando quiere. Probado con dos copias: la pausa no para
    nada, el del cliente cae dos veces y se queda mirando también en el
    cliente, y el final le llega sin tocar sus récords.
-   **Falta:** los élites, los jefes y sus ataques, los efectos y los números
+   Los élites, también el 16/11: el anfitrión los manda en el estado (clave
+   `l`, en el orden del grupo `elites`: posición, vida, máxima y sus
+   afijos por la ruta) y en los clientes no persiguen ni reciben golpes
+   (`solo_dibujar`): aparecen con su aviso, destellan al perder vida y al
+   morir se parten o estallan como en el anfitrión, sin soltar nada ni
+   hacer daño (eso es de la partida del anfitrión). Probado con dos copias:
+   misma vida y sitio en los dos, y el explosivo estalla en el cliente.
+   **Falta:** los jefes y sus ataques, los efectos y los números
    de daño en los clientes; la ruleta del cofre y la animación de la caída
    en los clientes; y que el anfitrión sin personaje no bloquee las mejoras
    de los demás.

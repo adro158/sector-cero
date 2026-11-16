@@ -14,6 +14,8 @@ extends RefCounted
 ## - g: [posiciones, valores] de los fragmentos de datos
 ## - t: [segundos, duración] del reloj; x: [experiencia, necesaria, nivel]
 ## - e: [vidas, máximas, caídos] del equipo (para el banquillo)
+## - l: los élites (en el orden del grupo elites, el mismo en todos), cada uno
+##   con lo de enemigo_elite.gd datos_red()
 ##
 ## Sin class_name: se carga con preload.
 
@@ -39,6 +41,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		"t": reloj,
 		"x": experiencia,
 		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
+		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
 	}
 
 
@@ -60,6 +63,9 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 	for i in mini(gestores.size(), estado.h.size()):
 		gestores[i].poner_desde_red(estado.h[i])
 	arbol.get_first_node_in_group("pool_gemas").poner_desde_red(estado.g[0], estado.g[1])
+	var elites := arbol.get_nodes_in_group("elites")
+	for i in mini(elites.size(), estado.l.size()):
+		elites[i].poner_desde_red(estado.l[i])
 	if estado.t.size() == 2:
 		BusEventos.tiempo_partida.emit(estado.t[0], estado.t[1])
 	if estado.x.size() == 3:

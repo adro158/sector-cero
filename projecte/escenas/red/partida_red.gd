@@ -104,13 +104,14 @@ func _preparar() -> void:
 		_solo_dibujar(raiz)
 
 
-## En los clientes no se simula: las oleadas paradas, la horda y los
-## fragmentos solo se dibujan y los jugadores (también el de aquí) van donde
-## dice el anfitrión. Lo que se pulsa se manda en _physics_process.
+## En los clientes no se simula: las oleadas paradas, la horda, los élites y
+## los fragmentos solo se dibujan y los jugadores (también el de aquí) van
+## donde dice el anfitrión. Lo que se pulsa se manda en _physics_process.
 func _solo_dibujar(raiz: Node) -> void:
 	raiz.get_node("DirectorOleadas").process_mode = Node.PROCESS_MODE_DISABLED
-	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
-		gestor.solo_dibujar = true
+	for grupo in ["gestor_enemigos", "elites"]:
+		for enemigo in get_tree().get_nodes_in_group(grupo):
+			enemigo.solo_dibujar = true
 	get_tree().get_first_node_in_group("pool_gemas").solo_dibujar = true
 	for jugador in _por_id.values():
 		jugador.por_red = true
