@@ -75,6 +75,9 @@ var _hasta_escudo := 0.0
 var _ultimo_ataque := ""
 ## Los de AL_LLEGAR que aún no ha lanzado.
 var _por_lanzar: Array = []
+## Multijugador: en los clientes no se mueve, no ataca ni recibe golpes; está
+## donde dice el anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -126,7 +129,7 @@ func siguiente_forma() -> void:
 
 ## Misma forma que el resto de objetivos: devuelve a cuántos alcanza.
 func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
-	if not activo() or _escudo.activo() or global_position.distance_to(centro) > radio_golpe + radio:
+	if solo_dibujar or not activo() or _escudo.activo() or global_position.distance_to(centro) > radio_golpe + radio:
 		return 0
 	if cono != null:
 		var factor: float = cono.factor(global_position, radio)
@@ -190,6 +193,16 @@ func _physics_process(delta: float) -> void:
 
 	_segundos += delta
 	_tiempo_estado += delta
+	# En los clientes solo se anima. Al acabar de morir no avisa: el final de
+	# la partida llega del anfitrión (partida_red.gd).
+	if solo_dibujar:
+		if _estado == Estado.MURIENDO and _tiempo_estado >= MUERTE:
+			_estado = Estado.OCULTO
+			visible = false
+			return
+		_animar()
+		queue_redraw()
+		return
 	match _estado:
 		Estado.LUCHANDO:
 			_luchar(delta)
@@ -325,5 +338,44 @@ func _al_morir() -> void:
 	_sprite.visible = false
 	_temblar()
 	# Con el mismo tipo que el primer jefe: las ultis no cargan, no suelta
-	# premios y suena la explosión.
-	BusEventos.enemigo_muerto.emit(global_position, "jefe")
+	# premios y suena la explosión. En los clientes, solo en la del anfitrión.
+	if not solo_dibujar:
+		BusEventos.enemigo_muerto.emit(global_position, "jefe")
+
+
+## Multijugador. Lo que manda el anfitrión (estado_red.gd) mientras se ve:
+## [posición, vida, máxima, estado, forma].
+func datos_red() -> Array:
+	if not visible:
+		return []
+	return [global_position, _salud.vida(), _salud.vida_maxima, _estado, _forma]
+
+
+## ... y cómo lo pone un cliente: aparece, se transforma, se queda aturdido
+## y muere como en el anfitrión.
+func poner_desde_red(datos: Array) -> void:
+	if datos.is_empty():
+		return
+	if not visible:
+		# Al acabar de morir aquí, el anfitrión aún puede mandarlo un momento.
+		if datos[1] <= 0.0:
+			return
+		aparecer(datos[0])
+	global_position = datos[0]
+	var estaba_vivo := _salud.vida() > 0.0
+	if not is_equal_approx(_salud.vida(), datos[1]) or not is_equal_approx(_salud.vida_maxima, datos[2]):
+		if datos[1] < _salud.vida():
+			_sprite.destellar()
+		_salud.poner(datos[1], datos[2])
+	if estaba_vivo and datos[1] <= 0.0:
+		_al_morir()
+		return
+	if datos[4] != _forma:
+		_forma = datos[4]
+		BusEventos.jefe_final_forma_cambiada.emit(_forma)
+	# La muerte ya la ha puesto la vida.
+	if datos[3] != _estado and _estado != Estado.MURIENDO and datos[3] != Estado.MURIENDO:
+		if datos[3] == Estado.TRANSFORMANDO:
+			_transformar()
+		else:
+			_cambiar_estado(datos[3])

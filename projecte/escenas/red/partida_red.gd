@@ -113,6 +113,7 @@ func _solo_dibujar(raiz: Node) -> void:
 		for enemigo in get_tree().get_nodes_in_group(grupo):
 			enemigo.solo_dibujar = true
 	raiz.get_node("Jefe").solo_dibujar = true
+	raiz.get_node("JefeFinal").solo_dibujar = true
 	get_tree().get_first_node_in_group("pool_gemas").solo_dibujar = true
 	for jugador in _por_id.values():
 		jugador.por_red = true

@@ -257,8 +257,15 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    da experiencia ni carga las ultis en los clientes: eso llega del
    anfitrión. Probado con dos copias: misma vida, furia 1 y 2 y la fase 2
    en los dos.
-   **Falta:** los ataques de Kernel Panic (la jaula y la ráfaga) y NÚCLEO
-   CERO con los suyos, su escudo y sus anclas; los efectos y los números
+   NÚCLEO CERO, también el 16/11: el anfitrión lo manda en el estado
+   (clave `n`: posición, vida, máxima, estado y forma) y en los clientes no
+   se mueve, no ataca ni recibe golpes; aparece con su aviso, se transforma,
+   se queda aturdido y muere como en el anfitrión. Al acabar de morir en un
+   cliente no avisa de la victoria: el final llega del anfitrión («fin»), y
+   si no saldrían dos. Probado con dos copias: la forma 1 a la vez y una
+   sola victoria en el cliente.
+   **Falta:** los ataques de los dos jefes (la jaula y la ráfaga de Kernel
+   Panic; los de NÚCLEO CERO, su escudo y sus anclas); los efectos y los números
    de daño en los clientes; la ruleta del cofre y la animación de la caída
    en los clientes; y que el anfitrión sin personaje no bloquee las mejoras
    de los demás.
