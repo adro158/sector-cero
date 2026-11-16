@@ -21,6 +21,9 @@ const MENU := "res://escenas/menu_principal/menu_principal.tscn"
 const SEPARACION := 60.0
 ## El estado, cada 3 pasos de física: 20 veces por segundo.
 const CADA := 3
+## Lo más que va en cada estado de muertes y de golpes (_muertes, _golpes).
+const MAXIMO_MUERTES := 150
+const MAXIMO_GOLPES := 40
 
 ## Los jugadores por su id de la red.
 var _por_id := {}
@@ -30,6 +33,11 @@ var _reloj := []
 var _experiencia := []
 ## Si la partida ya se ha acabado (cada uno está en su pantalla final).
 var _terminada := false
+## En el anfitrión, las muertes y los golpes desde el último estado (van con
+## el siguiente, para los efectos de los clientes). Con un tope: con un arma
+## de área golpeando a decenas a la vez no hace falta mandarlos todos.
+var _muertes := []
+var _golpes := []
 
 
 func _ready() -> void:
@@ -42,6 +50,7 @@ func _ready() -> void:
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
 	BusEventos.partida_terminada.connect(_al_terminar)
+	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 
 
 ## Al salir de la partida (al menú), también de la red: si no, se seguiría
@@ -101,7 +110,10 @@ func _preparar() -> void:
 		for otro in _por_id.values():
 			if uno != otro:
 				uno.add_collision_exception_with(otro)
-	if not red.es_anfitrion():
+	if red.es_anfitrion():
+		for objetivo in get_tree().get_nodes_in_group("objetivos"):
+			objetivo.enemigo_danado.connect(_al_danar_enemigo)
+	else:
 		_solo_dibujar(raiz)
 
 
@@ -131,7 +143,9 @@ func _physics_process(_delta: float) -> void:
 	if red.es_anfitrion():
 		_pasos += 1
 		if _pasos % CADA == 0 and not _por_id.is_empty():
-			red.enviar_estado(EstadoRed.del_anfitrion(get_tree(), _por_id, _reloj, _experiencia))
+			red.enviar_estado(EstadoRed.del_anfitrion(get_tree(), _por_id, _reloj, _experiencia, _muertes, _golpes))
+			_muertes = []
+			_golpes = []
 		return
 	var cambiar := 0
 	if Input.is_action_just_pressed("cambiar_personaje"):
@@ -216,6 +230,17 @@ func _al_elegir_mejora(mejora: DatosMejora) -> void:
 	if Red.actual.en_red() and not Red.actual.es_anfitrion():
 		Red.actual.enviar_entrada({"mejora": mejora.resource_path}, true)
 		get_tree().paused = false
+
+
+## En el anfitrión (en los clientes, las muertes las avisa estado_red.gd).
+func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
+	if Red.actual.es_anfitrion() and _muertes.size() < MAXIMO_MUERTES:
+		_muertes.append([posicion, tipo])
+
+
+func _al_danar_enemigo(posicion: Vector2, cantidad: float, resistencia: float) -> void:
+	if _golpes.size() < MAXIMO_GOLPES:
+		_golpes.append([posicion, cantidad, resistencia])
 
 
 func _al_cambiar_reloj(segundos: float, duracion: float) -> void:

@@ -92,7 +92,8 @@ func _preparar_multimesh() -> void:
 
 
 func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
-	if _vivas >= MAXIMO_GEMAS:
+	# En los clientes los fragmentos llegan del anfitrión con su estado.
+	if solo_dibujar or _vivas >= MAXIMO_GEMAS:
 		return
 
 	_posiciones[_vivas] = posicion

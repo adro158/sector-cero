@@ -311,7 +311,20 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    mirando (con tres jugadores) se pausaba y le preguntaba a él quién
    seguía. Probado con dos copias: el del cliente cae, se deshace, vuelve
    con el Mago con el escudo, cae otra vez y se queda mirando.
-   **Falta:** los efectos y los números de daño en los clientes.
+   Los efectos y los números de daño, el 16/11: el anfitrión apunta las
+   muertes (`enemigo_muerto`) y los golpes (`enemigo_danado` de cada
+   objetivo) y van con el siguiente estado (claves `m` y `d`, con tope:
+   150 muertes y 40 golpes por estado). En los clientes, las muertes se
+   avisan por el bus como si fueran suyas (su dibujo, las partículas, el
+   aviso del élite, el frenazo y la carga de la ulti), sin soltar
+   fragmentos ni premios, que ya llegan en el estado; los números, con
+   `PoolNumeros.mostrar()`. Probado con dos copias: llegan las muertes y
+   los números, y fragmentos y premios no salen repetidos.
+   **Falta:** probarlo entre dos ordenadores de verdad, y partir
+   `partida_red.gd` (267 líneas) y `red.gd` (237): pasan del límite de
+   ~200. La carga de la ulti en los clientes se cuenta con las muertes que
+   llegan: si se pierde algún estado puede ir un poco por detrás de la del
+   anfitrión, que es la que decide si se puede lanzar.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

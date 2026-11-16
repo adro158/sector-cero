@@ -33,7 +33,8 @@ func _ready() -> void:
 
 
 func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
-	if tipo == "elite":
+	# En los clientes los premios llegan del anfitrión (poner_desde_red).
+	if tipo == "elite" and not solo_dibujar:
 		soltar(posicion)
 
 

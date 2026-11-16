@@ -18,6 +18,9 @@ extends RefCounted
 ##   con lo de enemigo_elite.gd datos_red()
 ## - a: los jefes, sus ataques y los premios de los élites (los de RAIZ, en
 ##   ese orden), cada uno con lo de su datos_red()
+## - m: las muertes desde el anterior, [posición, tipo]; d: los golpes,
+##   [posición, cantidad, resistencia]. Para los efectos y los números de
+##   daño: en los clientes nadie muere ni recibe golpes.
 ##
 ## Sin class_name: se carga con preload.
 
@@ -28,8 +31,9 @@ const RAIZ := ["Jefe", "JefeFinal", "JaulaJefe", "Jefe/Rafaga", "JefeFinal/Ataqu
 	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite"]
 
 
-## En el anfitrión. reloj y experiencia: lo último que avisó el bus.
-static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, experiencia: Array) -> Dictionary:
+## En el anfitrión. reloj y experiencia: lo último que avisó el bus; muertes
+## y golpes: los apuntados desde el estado anterior (partida_red.gd).
+static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, experiencia: Array, muertes: Array, golpes: Array) -> Dictionary:
 	var jugadores := {}
 	var equipo: RefCounted = null
 	for id in por_id:
@@ -52,6 +56,8 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
 		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
 		"a": RAIZ.map(func(ruta): return raiz.get_node(ruta).datos_red()),
+		"m": muertes,
+		"d": golpes,
 	}
 
 
@@ -84,6 +90,13 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 	var raiz := arbol.current_scene.get_node("RaizJuego")
 	for i in RAIZ.size():
 		raiz.get_node(RAIZ[i]).poner_desde_red(estado.a[i])
+	# Las muertes, por el bus como en el anfitrión: su dibujo, sus partículas,
+	# los avisos y la carga de la ulti. Los fragmentos y los premios no se
+	# sueltan aquí (pool_gemas.gd y premios_elite.gd): llegan en el estado.
+	for muerte in estado.m:
+		BusEventos.enemigo_muerto.emit(muerte[0], muerte[1])
+	for golpe in estado.d:
+		raiz.get_node("PoolNumeros").mostrar(golpe[0], golpe[1], golpe[2])
 	if estado.t.size() == 2:
 		BusEventos.tiempo_partida.emit(estado.t[0], estado.t[1])
 	if estado.x.size() == 3:
