@@ -67,6 +67,7 @@ func _preparar() -> void:
 	var raiz := get_parent()
 	var local: Node2D = raiz.get_node("Jugador")
 	raiz.get_node("SistemaNiveles").opciones_sorteadas.connect(_al_subir_nivel)
+	raiz.get_node("SistemaNiveles").ruleta_sorteada.connect(_al_sortear_ruleta)
 	# Primero el de este ordenador: al empezar lleva el primer personaje y, si
 	# eligió otro, lo deja libre para los demás.
 	for jugador in red.jugadores():
@@ -112,7 +113,7 @@ func _solo_dibujar(raiz: Node) -> void:
 	for grupo in ["gestor_enemigos", "elites"]:
 		for enemigo in get_tree().get_nodes_in_group(grupo):
 			enemigo.solo_dibujar = true
-	# Los jefes y sus ataques (salvo el hielo, que no hace daño).
+	# Los jefes, sus ataques y los premios (salvo el hielo, que no hace daño).
 	for ruta in EstadoRed.RAIZ:
 		if ruta != "ZonasHielo":
 			raiz.get_node(ruta).solo_dibujar = true
@@ -178,17 +179,26 @@ func _al_subir_nivel() -> void:
 			Red.actual.enviar_suceso("mejoras", [id, opciones.map(func(mejora): return mejora.resource_path)])
 
 
+## En el anfitrión: un cofre que ha recogido otro. Su ruleta, a él.
+func _al_sortear_ruleta(jugador: Node, sectores: Array, premio: DatosMejora) -> void:
+	Red.actual.enviar_suceso("ruleta", [_por_id.find_key(jugador),
+		sectores.map(func(mejora): return mejora.resource_path), premio.resource_path])
+
+
 ## En los clientes: le toca elegir. Se pausa aquí, como al subir de nivel, y
-## el panel de mejoras enseña las suyas.
+## el panel de mejoras enseña las suyas (o la ruleta, la de su cofre).
 func _al_recibir_suceso(suceso: String, datos: Array) -> void:
 	if suceso == "fin":
 		_terminar_aqui(datos[0])
-	elif suceso == "mejoras" and datos[0] == Red.actual.mi_id():
+	elif suceso in ["mejoras", "ruleta"] and datos[0] == Red.actual.mi_id():
 		var opciones: Array[DatosMejora] = []
 		for ruta in datos[1]:
 			opciones.append(load(ruta))
 		get_tree().paused = true
-		BusEventos.jugador_subio_nivel.emit(opciones)
+		if suceso == "mejoras":
+			BusEventos.jugador_subio_nivel.emit(opciones)
+		else:
+			BusEventos.ruleta_abierta.emit(opciones, load(datos[2]))
 
 
 ## En los clientes: la partida del anfitrión se ha acabado. Como en la de un

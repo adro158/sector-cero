@@ -16,15 +16,16 @@ extends RefCounted
 ## - e: [vidas, máximas, caídos] del equipo (para el banquillo)
 ## - l: los élites (en el orden del grupo elites, el mismo en todos), cada uno
 ##   con lo de enemigo_elite.gd datos_red()
-## - a: los jefes y sus ataques (los de RAIZ, en ese orden), cada uno con lo
-##   de su datos_red()
+## - a: los jefes, sus ataques y los premios de los élites (los de RAIZ, en
+##   ese orden), cada uno con lo de su datos_red()
 ##
 ## Sin class_name: se carga con preload.
 
 ## Los nodos de RaizJuego que se mandan y se ponen igual, con datos_red() y
-## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques.
+## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques, y los premios
+## de los élites.
 const RAIZ := ["Jefe", "JefeFinal", "JaulaJefe", "Jefe/Rafaga", "JefeFinal/Ataques",
-	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo"]
+	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite"]
 
 
 ## En el anfitrión. reloj y experiencia: lo último que avisó el bus.

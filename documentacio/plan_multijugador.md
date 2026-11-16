@@ -291,9 +291,19 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    salta siempre. Probado con dos copias: el anfitrión cae dos veces, se
    queda mirando, sube del nivel 1 al 5 y el cliente elige sus cuatro
    mejoras sin que la partida se quede en pausa.
+   Los premios y la ruleta, el 16/11: el corazón y el cofre de los élites
+   van en el estado (`PremiosElite` en la lista `RAIZ`) y en los clientes
+   se ven, y al recogerlos se animan, sin curar ni abrir nada. El premio
+   del cofre es de quien lo recoge (antes, siempre del anfitrión):
+   `premios_elite.gd` apunta quién (`ultimo_cofre_de`) y el sistema de
+   niveles lo guarda en la cola con el cofre; si es de otro ordenador,
+   emite `ruleta_sorteada` y la red le manda su ruleta (suceso «ruleta»),
+   que vuelve como cualquier mejora. Si quien lo recogió ya no juega, el
+   del anfitrión. Probado con dos copias: el cliente ve los dos premios,
+   recoge el cofre, le sale su ruleta (al anfitrión ninguna), la mejora se
+   aplica y la partida sigue; el simulador da lo mismo, también la entera.
    **Falta:** los efectos y los números de daño en los clientes, y la
-   ruleta del cofre y la animación de la caída en los clientes (el premio
-   del cofre lo elige siempre el anfitrión, lo recoja quien lo recoja).
+   animación de la caída en los clientes.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

@@ -4,6 +4,9 @@ extends Node
 ## (partida_red.gd), que manda las suyas a los demás: salta siempre, también
 ## si el de este ordenador se ha quedado mirando y no elige.
 signal opciones_sorteadas
+## La ruleta de un cofre que ha recogido un jugador de otro ordenador: la red
+## se la manda a él (partida_red.gd).
+signal ruleta_sorteada(jugador: Node, sectores: Array, premio: DatosMejora)
 
 const OPCIONES_POR_NIVEL := 3
 ## Sectores de la ruleta del cofre.
@@ -41,6 +44,9 @@ var _por_elegir: Array = []
 var _opciones := {}
 var _resistencia: Node
 var _pool_gemas: Node
+var _premios: Node
+## Quién recogió cada cofre por elegir, en orden: su premio es suyo.
+var _cofres: Array = []
 
 
 func _ready() -> void:
@@ -49,10 +55,11 @@ func _ready() -> void:
 	_cambio_personaje = _jugador.get_node("CambioPersonaje")
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	_pool_gemas = get_tree().get_first_node_in_group("pool_gemas")
+	_premios = get_parent().get_node("PremiosElite")
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
-	BusEventos.cofre_recogido.connect(_anadir_pendiente.bind("cofre"))
+	BusEventos.cofre_recogido.connect(_al_recoger_cofre)
 	# Diferido para que la interfaz, que está lista después, ya esté conectada.
 	_avisar_experiencia.call_deferred()
 
@@ -79,6 +86,11 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_anadir_pendiente("nivel")
 
 	_avisar_experiencia()
+
+
+func _al_recoger_cofre() -> void:
+	_cofres.append(_premios.ultimo_cofre_de)
+	_anadir_pendiente("cofre")
 
 
 ## Apunta una mejora por elegir. Si no había ninguna, se ofrece ya; si no,
@@ -140,11 +152,18 @@ func _ofrecer_mejoras() -> void:
 	# solo tiene que mostrar las opciones y avisar de la elegida.
 	get_tree().paused = true
 	if _pendientes[0] == "cofre":
-		# El premio del cofre es uno: lo recibe el de este ordenador (en red,
-		# el que lo recoge, punto 5).
-		_por_elegir = [_jugador]
+		# El premio del cofre es uno: lo recibe quien lo recogió. Si ya no
+		# juega (se ha quedado mirando o se ha ido), el de este ordenador.
+		var quien: Node = _cofres.pop_front()
+		if not is_instance_valid(quien) or not quien.is_in_group("jugador"):
+			quien = _jugador
+		_por_elegir = [quien]
 		var sectores := _sortear_sectores()
-		BusEventos.ruleta_abierta.emit(sectores, sectores.pick_random())
+		var premio: DatosMejora = sectores.pick_random()
+		if quien == _jugador:
+			BusEventos.ruleta_abierta.emit(sectores, premio)
+		else:
+			ruleta_sorteada.emit(quien, sectores, premio)
 	else:
 		# Cada jugador elige la suya, de su propio sorteo.
 		_por_elegir = get_tree().get_nodes_in_group("jugador")
