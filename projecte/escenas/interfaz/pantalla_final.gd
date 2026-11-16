@@ -65,6 +65,9 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		caja.add_child(ResumenFinal.equipo(estadisticas.equipo))
 	if estadisticas.get("trucos", false):
 		caja.add_child(EstiloInterfaz.etiqueta("Partida con el menú de desarrollador (F1): no cuenta para los récords ni el ranking", 13, EstiloInterfaz.TEXTO_SUAVE))
+	var en_red: bool = estadisticas.get("en_red", false)
+	if en_red:
+		caja.add_child(EstiloInterfaz.etiqueta("Partida en red: no cuenta para el ranking ni para la cuenta", 13, EstiloInterfaz.TEXTO_SUAVE))
 
 	_estadisticas = estadisticas
 	# Con cuenta ya se sabe el nombre: se guarda solo (decisión de Adam,
@@ -81,6 +84,8 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	botones.alignment = BoxContainer.ALIGNMENT_CENTER
 	botones.add_theme_constant_override("separation", 16)
 	_boton_reintentar = EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _reintentar, 220), "REINTENTAR  [Enter]", "REINTENTAR") as Button
+	# En red no: la partida es de todos y se vuelve a empezar desde la sala.
+	_boton_reintentar.visible = not en_red
 	botones.add_child(_boton_reintentar)
 	botones.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _ir_al_menu, 220), "MENÚ  [Esc]", "MENÚ  [B]"))
 	caja.add_child(botones)
@@ -154,6 +159,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _reintentar() -> void:
+	if not _boton_reintentar.visible:
+		_ir_al_menu()
+		return
 	_guardar_si_falta()
 	# Ruta vacía: recargar la escena actual.
 	Transicion.cambiar_a("")

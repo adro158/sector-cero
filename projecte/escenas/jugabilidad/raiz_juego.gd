@@ -88,6 +88,10 @@ func _al_pausar(en_pausa: bool) -> void:
 	# la de la transición.
 	if _terminada or _en_transicion or _sistema_niveles.eligiendo() or $Jugador/CambioPersonaje.eligiendo():
 		return
+	# En red no se pausa (decisión de Adam, 13/11): el menú sale, pero la
+	# partida de los demás sigue.
+	if Red.actual != null and Red.actual.en_red():
+		return
 
 	get_tree().paused = en_pausa
 
@@ -147,6 +151,8 @@ func _terminar_partida(victoria: bool) -> void:
 		# Para el resumen de la pantalla final: el ranking no las guarda.
 		"equipo": _resumen_equipo(),
 		"donde": _donde(victoria),
+		# Las partidas en red no van al ranking ni a la cuenta.
+		"en_red": Red.actual != null and Red.actual.en_red(),
 	})
 
 

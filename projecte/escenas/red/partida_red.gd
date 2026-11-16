@@ -28,6 +28,8 @@ var _pasos := 0
 ## Lo último que avisó el bus en el anfitrión, para mandarlo con el estado.
 var _reloj := []
 var _experiencia := []
+## Si la partida ya se ha acabado (cada uno está en su pantalla final).
+var _terminada := false
 
 
 func _ready() -> void:
@@ -40,6 +42,25 @@ func _ready() -> void:
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.jugador_subio_nivel.connect(_al_subir_nivel)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
+	BusEventos.partida_terminada.connect(_al_terminar)
+
+
+## Al salir de la partida (al menú), también de la red: si no, se seguiría
+## conectado a una sala que ya no se ve.
+func _exit_tree() -> void:
+	Red.actual.salir()
+
+
+## En el anfitrión: la partida se ha acabado, para todos. Los personajes, por
+## su ruta (un recurso no viaja por la red).
+func _al_terminar(estadisticas: Dictionary) -> void:
+	_terminada = true
+	if not Red.actual.es_anfitrion():
+		return
+	var datos := estadisticas.duplicate(true)
+	datos.equipo = estadisticas.equipo.map(func(personaje): return {
+		"personaje": personaje.personaje.resource_path, "caido": personaje.caido, "dano": personaje.dano})
+	Red.actual.enviar_suceso("fin", [datos])
 
 
 func _preparar() -> void:
@@ -151,12 +172,23 @@ func _al_subir_nivel(_opciones: Array) -> void:
 ## En los clientes: le toca elegir. Se pausa aquí, como al subir de nivel, y
 ## el panel de mejoras enseña las suyas.
 func _al_recibir_suceso(suceso: String, datos: Array) -> void:
-	if suceso == "mejoras" and datos[0] == Red.actual.mi_id():
+	if suceso == "fin":
+		_terminar_aqui(datos[0])
+	elif suceso == "mejoras" and datos[0] == Red.actual.mi_id():
 		var opciones: Array[DatosMejora] = []
 		for ruta in datos[1]:
 			opciones.append(load(ruta))
 		get_tree().paused = true
 		BusEventos.jugador_subio_nivel.emit(opciones)
+
+
+## En los clientes: la partida del anfitrión se ha acabado. Como en la de un
+## jugador, con el juego en pausa: la pantalla final lo enseña.
+func _terminar_aqui(estadisticas: Dictionary) -> void:
+	estadisticas.equipo = estadisticas.equipo.map(func(personaje): return {
+		"personaje": load(personaje.personaje), "caido": personaje.caido, "dano": personaje.dano})
+	get_tree().paused = true
+	BusEventos.partida_terminada.emit(estadisticas)
 
 
 ## En los clientes: la elegida, al anfitrión (que la aplica y sigue cuando
@@ -178,6 +210,9 @@ func _al_cambiar_experiencia(actual: int, necesaria: int, nivel: int) -> void:
 ## Se va un cliente: su personaje queda libre (decisión de Adam, 13/11). Se va
 ## el anfitrión: se acaba para todos.
 func _al_irse(id: int) -> void:
+	# Acabada la partida, cada uno sale de su pantalla final cuando quiere.
+	if _terminada:
+		return
 	if id == 1:
 		get_tree().paused = false
 		Transicion.cambiar_a(MENU)

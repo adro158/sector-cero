@@ -7,7 +7,8 @@ extends RefCounted
 ## de ahora.
 ##
 ## Las claves son cortas porque va muchas veces por segundo:
-## - j: por id de la red, [posición, velocidad, personaje, vida, máxima]
+## - j: por id de la red, [posición, velocidad, personaje, vida, máxima, si
+##   está mirando sin personaje]
 ## - h: por tipo de la horda (en el orden del grupo gestor_enemigos, el mismo
 ##   en todos los ordenadores), las posiciones de los vivos
 ## - g: [posiciones, valores] de los fragmentos de datos
@@ -25,7 +26,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		var jugador: CharacterBody2D = por_id[id]
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		var salud: Salud = jugador.get_node("Salud")
-		jugadores[id] = [jugador.global_position, jugador.velocity, cambio.indice_actual(), salud.vida(), salud.vida_maxima]
+		jugadores[id] = [jugador.global_position, jugador.velocity, cambio.indice_actual(), salud.vida(), salud.vida_maxima, cambio.espectador()]
 		equipo = cambio._equipo
 	var horda := []
 	for gestor in arbol.get_nodes_in_group("gestor_enemigos"):
@@ -51,7 +52,7 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		jugador.global_position = datos[0]
 		# Entre un estado y el siguiente sigue andando hacia donde iba.
 		jugador.direccion_red = (datos[1] / jugador.velocidad_maxima).limit_length(1.0)
-		jugador.get_node("CambioPersonaje").seguir_red(datos[2])
+		jugador.get_node("CambioPersonaje").seguir_red(datos[2], datos[5])
 		var salud: Salud = jugador.get_node("Salud")
 		if not is_equal_approx(salud.vida(), datos[3]) or not is_equal_approx(salud.vida_maxima, datos[4]):
 			salud.poner(datos[3], datos[4])

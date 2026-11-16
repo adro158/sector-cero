@@ -231,11 +231,21 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    (`enviar_entrada(..., true)`); el anfitrión sigue cuando han elegido
    todos. Probado con dos copias: el reloj, el nivel y la horda iguales, y
    la Memoria redundante del cliente sube la vida de los dos.
-   **Falta, la tercera:** los élites, los jefes y sus ataques, los efectos y
-   los números de daño en los clientes; la ruleta del cofre y las caídas
-   (con su animación) en los clientes; la pausa en red (no se pausa); el
-   final de la partida para todos; y que el anfitrión sin personaje no
-   bloquee las mejoras de los demás.
+   **La tercera, empezada el 16/11:** en red no se pausa (`raiz_juego.gd`:
+   el menú sale y la partida sigue); el final de la partida para todos (el
+   anfitrión manda «fin» con las estadísticas, los personajes por su ruta, y
+   cada cliente enseña su pantalla final con el juego en pausa); las
+   partidas en red llevan `en_red` y no van al ranking, a los récords ni a
+   la cuenta; en red no hay REINTENTAR; el que se queda sin personaje
+   también se ve mirando en su pantalla (`seguir_red`); salir de la partida
+   es salir de la red, y si la partida ya ha acabado, cada uno sale de su
+   pantalla final cuando quiere. Probado con dos copias: la pausa no para
+   nada, el del cliente cae dos veces y se queda mirando también en el
+   cliente, y el final le llega sin tocar sus récords.
+   **Falta:** los élites, los jefes y sus ataques, los efectos y los números
+   de daño en los clientes; la ruleta del cofre y la animación de la caída
+   en los clientes; y que el anfitrión sin personaje no bloquee las mejoras
+   de los demás.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

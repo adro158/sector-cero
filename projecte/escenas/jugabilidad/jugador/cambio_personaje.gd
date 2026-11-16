@@ -145,8 +145,15 @@ func irse() -> void:
 
 
 ## Multijugador, en los clientes: lleva el personaje que dice el anfitrión
-## (estado_red.gd). Si aún lo tiene otro, en el siguiente estado.
-func seguir_red(indice: int) -> void:
+## (estado_red.gd), o se queda mirando si allí no tiene. Si el personaje aún
+## lo tiene otro, en el siguiente estado.
+func seguir_red(indice: int, mirando: bool) -> void:
+	if mirando != _espectador:
+		if mirando:
+			_equipo.llevado_por[_indice] = null
+		_poner_espectador(mirando)
+	if mirando:
+		return
 	if indice != _indice and _equipo.llevado_por[indice] == null:
 		_entrar(indice)
 		_aplicar()
