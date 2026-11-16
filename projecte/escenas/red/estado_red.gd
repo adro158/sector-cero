@@ -16,6 +16,7 @@ extends RefCounted
 ## - e: [vidas, máximas, caídos] del equipo (para el banquillo)
 ## - l: los élites (en el orden del grupo elites, el mismo en todos), cada uno
 ##   con lo de enemigo_elite.gd datos_red()
+## - k: Kernel Panic, lo de jefe.gd datos_red()
 ##
 ## Sin class_name: se carga con preload.
 
@@ -42,6 +43,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		"x": experiencia,
 		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
 		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
+		"k": arbol.current_scene.get_node("RaizJuego/Jefe").datos_red(),
 	}
 
 
@@ -66,6 +68,7 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 	var elites := arbol.get_nodes_in_group("elites")
 	for i in mini(elites.size(), estado.l.size()):
 		elites[i].poner_desde_red(estado.l[i])
+	arbol.current_scene.get_node("RaizJuego/Jefe").poner_desde_red(estado.k)
 	if estado.t.size() == 2:
 		BusEventos.tiempo_partida.emit(estado.t[0], estado.t[1])
 	if estado.x.size() == 3:

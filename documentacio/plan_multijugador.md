@@ -249,7 +249,16 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    morir se parten o estallan como en el anfitrión, sin soltar nada ni
    hacer daño (eso es de la partida del anfitrión). Probado con dos copias:
    misma vida y sitio en los dos, y el explosivo estalla en el cliente.
-   **Falta:** los jefes y sus ataques, los efectos y los números
+   Kernel Panic, también el 16/11: el anfitrión lo manda en el estado
+   (clave `k`: posición, vida, máxima, estado, hacia dónde mira y furia) y
+   en los clientes no persigue, no ataca ni recibe golpes; aparece con su
+   aviso, pone sus poses, se enfurece a la vez y, al morir, el cliente
+   también pasa a la fase 2 (el negro, la arena y la música). Su muerte no
+   da experiencia ni carga las ultis en los clientes: eso llega del
+   anfitrión. Probado con dos copias: misma vida, furia 1 y 2 y la fase 2
+   en los dos.
+   **Falta:** los ataques de Kernel Panic (la jaula y la ráfaga) y NÚCLEO
+   CERO con los suyos, su escudo y sus anclas; los efectos y los números
    de daño en los clientes; la ruleta del cofre y la animación de la caída
    en los clientes; y que el anfitrión sin personaje no bloquee las mejoras
    de los demás.
