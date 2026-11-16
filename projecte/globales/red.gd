@@ -18,9 +18,8 @@ extends Node
 signal error_de_red(texto: String)
 
 const CodigoSala := preload("res://globales/codigo_sala.gd")
+const ReglasSala := preload("res://globales/reglas_sala.gd")
 const PUERTO := 7777
-const MAXIMO_JUGADORES := 3
-const PERSONAJES := 3
 
 static var actual: Node
 
@@ -62,7 +61,7 @@ func crear_sala(nombre: String) -> String:
 	var peer := ENetMultiplayerPeer.new()
 	# Una plaza más de las que caben: así el que sobra conecta y recibe «La
 	# sala está llena», en vez de quedarse esperando a que ENet le corte.
-	if peer.create_server(PUERTO, MAXIMO_JUGADORES) != OK:
+	if peer.create_server(PUERTO, ReglasSala.MAXIMO_JUGADORES) != OK:
 		error_de_red.emit("No se puede abrir la sala: ¿hay otra abierta en este ordenador?")
 		return ""
 	multiplayer.multiplayer_peer = peer
@@ -169,18 +168,15 @@ func _al_entrar_en_la_sala() -> void:
 
 
 ## En el anfitrión: entra si tiene la misma versión y queda sitio, con el
-## primer personaje libre.
+## primer personaje libre (reglas_sala.gd).
 func _al_saludar(id: int, nombre: String, version: String) -> void:
 	if not es_anfitrion():
 		return
-	if version != Version.ACTUAL:
-		_rechazar(id, "La sala es de la versión %s y tú tienes la %s." % [Version.ACTUAL, version])
+	var motivo := ReglasSala.motivo_rechazo(_jugadores, version)
+	if motivo != "":
+		_rechazar(id, motivo)
 		return
-	var libre := _primer_personaje_libre()
-	if _jugadores.size() >= MAXIMO_JUGADORES or libre == -1:
-		_rechazar(id, "La sala está llena.")
-		return
-	_jugadores.append({"id": id, "nombre": nombre, "personaje": libre})
+	_jugadores.append({"id": id, "nombre": nombre, "personaje": ReglasSala.primer_personaje_libre(_jugadores)})
 	_avisar_sala()
 
 
@@ -192,22 +188,8 @@ func _rechazar(id: int, texto: String) -> void:
 
 ## Si está libre (y existe), ese jugador pasa a llevarlo.
 func _poner_personaje(id: int, indice: int) -> void:
-	if indice < 0 or indice >= PERSONAJES:
-		return
-	for jugador in _jugadores:
-		if jugador.personaje == indice and jugador.id != id:
-			return
-	for jugador in _jugadores:
-		if jugador.id == id:
-			jugador.personaje = indice
-	_avisar_sala()
-
-
-func _primer_personaje_libre() -> int:
-	for indice in PERSONAJES:
-		if not _jugadores.any(func(jugador): return jugador.personaje == indice):
-			return indice
-	return -1
+	if ReglasSala.poner_personaje(_jugadores, id, indice):
+		_avisar_sala()
 
 
 ## El anfitrión manda la lista a todos y la avisa aquí.

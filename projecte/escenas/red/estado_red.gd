@@ -103,3 +103,19 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		BusEventos.experiencia_cambiada.emit(estado.x[0], estado.x[1], estado.x[2])
 	equipo.vidas.assign(estado.e[0])
 	equipo.maximas.assign(estado.e[1])
+
+
+## Las estadísticas del final (partida_terminada), para mandarlas: los
+## personajes del equipo van por su ruta (un recurso no viaja por la red)...
+static func fin_para_red(estadisticas: Dictionary) -> Dictionary:
+	var datos := estadisticas.duplicate(true)
+	datos.equipo = estadisticas.equipo.map(func(personaje): return {
+		"personaje": personaje.personaje.resource_path, "caido": personaje.caido, "dano": personaje.dano})
+	return datos
+
+
+## ... y como las espera la pantalla final, en los clientes.
+static func fin_desde_red(datos: Dictionary) -> Dictionary:
+	datos.equipo = datos.equipo.map(func(personaje): return {
+		"personaje": load(personaje.personaje), "caido": personaje.caido, "dano": personaje.dano})
+	return datos

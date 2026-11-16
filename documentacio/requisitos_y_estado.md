@@ -259,7 +259,7 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
-### El multijugador en red local (13/11, a medias)
+### El multijugador en red local (13/11 y 16/11, sin fusionar)
 
 Plan, decisiones y lo hecho punto por punto en
 `documentacio/plan_multijugador.md`. Al cerrar el 13/11:
@@ -273,9 +273,16 @@ Plan, decisiones y lo hecho punto por punto en
   RED y la partida en red en dos tandas (los demás se mueven con lo que
   pulsan y los clientes ven la partida del anfitrión). Alan hizo la prueba
   de conexión.
-- **Falta:** la tercera tanda (élites, jefes, efectos, caídas, la ruleta,
-  la pausa y el final en los clientes), probarlo entre dos ordenadores de
-  verdad y medir la vida con varios bots.
+- **El 16/11, la tercera tanda entera** (misma rama y PR, bitácora
+  `bitacora/2026-11-16_adam_red-tercera-tanda.md`): en red no se pausa; el
+  final llega a todos y no cuenta para el ranking ni la cuenta; en los
+  clientes se ven los élites, los dos jefes con todos sus ataques, el
+  escudo y sus anclas, los premios, la ruleta (para quien recoge el
+  cofre), las caídas, las muertes y los números de daño. Arreglados: las
+  anclas miraban el personaje del anfitrión, las armas de los demás salían
+  del jugador local, y con el anfitrión mirando no llegaban las mejoras.
+- **Falta:** probarlo entre dos ordenadores de verdad (issue #15) y medir
+  la vida con varios bots.
 
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 

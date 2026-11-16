@@ -320,9 +320,11 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    fragmentos ni premios, que ya llegan en el estado; los números, con
    `PoolNumeros.mostrar()`. Probado con dos copias: llegan las muertes y
    los números, y fragmentos y premios no salen repetidos.
-   **Falta:** probarlo entre dos ordenadores de verdad, y partir
-   `partida_red.gd` (267 líneas) y `red.gd` (237): pasan del límite de
-   ~200. La carga de la ulti en los clientes se cuenta con las muertes que
+   Partidos el 16/11: `preparar_red.gd` (los jugadores y lo que solo se
+   dibuja) y `reglas_sala.gd` (quién entra y qué personaje lleva), y la
+   conversión del final en `estado_red.gd`; `partida_red.gd` queda en 205
+   líneas y `red.gd` en 219.
+   **Falta:** probarlo entre dos ordenadores de verdad (issue #15). La carga de la ulti en los clientes se cuenta con las muertes que
    llegan: si se pierde algún estado puede ir un poco por detrás de la del
    anfitrión, que es la que decide si se puede lanzar.
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
