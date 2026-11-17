@@ -114,7 +114,8 @@ func _al_recibir_entrada(id: int, entrada: Dictionary) -> void:
 		return
 	# La ulti, con la dirección que ha apuntado allí (cero: al más cercano).
 	if entrada.has("ulti"):
-		if not jugador.get_node("CambioPersonaje").espectador() and jugador.get_node("Ultis").lista():
+		# En pausa (alguien elige mejora) no: se vería y golpearía después.
+		if not get_tree().paused and not jugador.get_node("CambioPersonaje").espectador() and jugador.get_node("Ultis").lista():
 			jugador.get_node("Ultis").lanzar(entrada.ulti)
 		return
 	jugador.direccion_red = entrada.get("direccion", Vector2.ZERO)

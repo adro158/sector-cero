@@ -359,6 +359,9 @@ func _al_caer() -> void:
 func _caer_en_red() -> void:
 	_sprite.visible = false
 	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, false)).timeout
+	# Si se ha ido de la partida mientras caía, no coge a nadie.
+	if _espectador or self not in _equipo.miembros:
+		return
 	var libre := _equipo.primero_libre()
 	if libre == -1:
 		_equipo.llevado_por[_indice] = null
