@@ -1,0 +1,3 @@
+- Arreglado: en algunos ordenadores (Linux con Docker o máquinas virtuales, o con VirtualBox) el código de la sala llevaba a una red a la que nadie llegaba y no se podía entrar.
+- La sala enseña su IP debajo del código, y para unirse también se puede escribir la IP en vez del código.
+- Si no se puede entrar, el aviso explica qué comprobar (la misma red, la IP y el cortafuegos).
