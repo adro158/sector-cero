@@ -51,7 +51,7 @@ func _ready() -> void:
 	_inicio.add_child(_crear_sala)
 	var fila := HBoxContainer.new()
 	fila.add_theme_constant_override("separation", 10)
-	_codigo = _campo(fila, "Código de la sala (7 letras)", 9)
+	_codigo = _campo(fila, "Código de la sala (o su IP)", 15)
 	_codigo.custom_minimum_size.x = ANCHO - 170.0
 	_codigo.text_submitted.connect(func(_texto): _unirse())
 	fila.add_child(EstiloInterfaz.boton("UNIRSE", _unirse, 160))
@@ -184,8 +184,10 @@ func _mostrar() -> void:
 	_sala.visible = en_sala
 	if not en_sala:
 		return
-	var codigo := CodigoSala.de_ip(CodigoSala.ip_local())
-	_titulo_sala.text = "CÓDIGO  %s" % CodigoSala.bonito(codigo) if red.es_anfitrion() else "Estás en la sala"
+	# Con la IP debajo: si el código no lleva a este ordenador, se ve, y los
+	# demás pueden escribir la IP buena en vez del código.
+	var ip := CodigoSala.ip_local()
+	_titulo_sala.text = "CÓDIGO  %s\nIP %s" % [CodigoSala.bonito(CodigoSala.de_ip(ip)), ip] if red.es_anfitrion() else "Estás en la sala"
 	for hijo in _lista.get_children():
 		hijo.queue_free()
 	var ocupados := []

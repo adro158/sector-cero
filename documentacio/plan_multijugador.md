@@ -358,6 +358,14 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    queda con otro; con el anfitrión en pausa no se lanzan ultis; el suceso
    «ulti» dice de qué personaje es; y con el menú de pausa abierto en red,
    el Mago deja de apuntar.
+   **Primera prueba con dos ordenadores (17/11, dos Linux de clase, sin
+   máquina virtual):** «No se ha podido conectar con esa sala». Causas
+   posibles: el código llevaba la IP de una red virtual (Docker, KVM), el
+   cortafuegos del que crea la sala corta el puerto 7777 (UDP), o la red del
+   instituto no deja que los ordenadores se hablen. Arreglado lo primero
+   (`adam/red-conexion`): `ip_local()` mira el adaptador de cada IP y se
+   salta los virtuales; la sala enseña la IP debajo del código; se puede
+   escribir la IP en vez del código; y el aviso de fallo dice qué mirar.
    **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
    (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
    vida del ransomware no se ven en los clientes (sus vidas no viajan).
