@@ -143,19 +143,24 @@ Detalles que la interfaz tiene que respetar:
 - **Menú de desarrollador (F1).** Vive en la partida (`depuracion/`), no en la
   interfaz. Las mejoras que regala llegan a la interfaz con `mejora_regalada`.
   Si se ha abierto, `partida_terminada` trae `trucos: true` y la partida no
-  cuenta para los récords ni el ranking.
+  cuenta para los récords ni el ranking. En una partida en red no se abre.
 - **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
   jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o
   personaje, o tras el fin de partida. La acción de input es `pausar` (Esc, P y
-  Start del mando).
+  Start del mando). **En red no se pausa** (la partida es de todos): el menú
+  sale, el árbol sigue y el jugador de ese ordenador se queda quieto mientras
+  está abierto.
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
   para el ranking), `trucos` (bool, si se usó el menú de desarrollador),
   `dificultad` (String: `facil`, `media` o `dificil`), `equipo` (Array: por
   personaje, un diccionario con `personaje`, `caido` y `dano`, el daño de su
-  herramienta en la partida) y `donde` (String: dónde acabó). Las dos últimas
-  son para el resumen de la pantalla final; el ranking no las guarda. Al cumplirse
+  herramienta en la partida), `donde` (String: dónde acabó) y `en_red` (bool,
+  si se jugó en red: entonces no cuenta para los récords, el ranking ni la
+  cuenta). `equipo` y `donde` son para el resumen de la pantalla final; el
+  ranking no las guarda. En una partida en red, en los clientes llega el
+  diccionario del anfitrión. Al cumplirse
   `duracion_partida` (`recursos/oleadas/datos/config_principal.tres`, 10
   minutos) deja de aparecer horda y llega el jefe, Kernel Panic, que invoca
   anillos de horda (`jefe_invoco`); mientras está, el reloj se para en las
