@@ -131,6 +131,12 @@ teclas al tocar el teclado o el ratón.
 
 - **Menú:** dificultad, jugar, reglas (qué hace cada personaje, mejora y
   enemigo, y cada ataque de los jefes), ranking, opciones y salir.
+- **Armario (skins):** pulsa un personaje del menú (con el ratón o con el
+  mando) para cambiarle el aspecto. Cada personaje tiene su original y sus
+  skins, ordenadas por categoría, de la C a la S+. Pincha una para verla
+  andando y pulsa PONÉRSELA: la lleva en la partida, en el menú y en sus
+  retratos. Solo cambia el aspecto, no cómo juega. Se guarda sola (y en tu
+  cuenta, si has entrado).
 - **Pausa:** continuar, reglas, opciones y volver al menú (pregunta antes de
   abandonar la partida, que no cuenta para el ranking).
 - **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de

@@ -259,6 +259,27 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
+### Las skins (Alan, 17/11, en sus ramas)
+
+Alan trajo las 11 skins del Mago (`lote_skins_mago.zip`, hechas con Claude
+en el chat) y las montó con su Claude Code (issue #16; bitácora,
+`bitacora/2026-11-17_alan_skins.md`). Con la forma del lote y no la de la
+#16 (decisión de Alan): cada skin por su número y la elegida en la opción
+`"skins"`.
+- **PR de contrato** (`alan/skins-contrato`): `datos_skin.gd`,
+  `DatosPersonaje.skin()`, la opción `"skins"`, y en `reparto.md` las skins
+  pasan a Alan.
+- **`alan/skins`:** los PNG, las 11 skins del Mago y el armario.
+- **Pedido a Adam** (issue, con el parche probado): la lista de skins en
+  `mago.tres`, las hojas de la skin en `cambio_personaje.gd`, los retratos
+  en el HUD (barra y panel del equipo, ventana de caída y resumen final) y
+  abrir el armario pulsando un personaje en el menú. Hasta entonces las
+  skins no se ven en el juego.
+
+Falta: los lotes del Espadachín y el Segador (solo sus `.tres` y su lista),
+la skin de cada uno en red (cuando `adam/red` esté en `main`) y, más
+adelante, la tienda, el gacha y el pase de la #16.
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:

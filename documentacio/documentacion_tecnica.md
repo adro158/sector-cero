@@ -610,6 +610,29 @@ peticiones necesitan renovar la sesión a la vez, la segunda espera a la
 primera, porque cada token de renovación vale una vez. Se probó contra un
 servidor local en PowerShell que imita su API, también las reglas de lo propio.
 
+**Las skins** (17/11, de Alan). Cada personaje puede llevar otro aspecto con
+las mismas animaciones. Una skin es un recurso (`recursos/skins/datos_skin.gd`,
+uno por skin en `recursos/skins/<personaje>/`) con su número, su nombre, su
+categoría (C, B, A, S o S+, de menos a más trabajada), una frase y las mismas
+ocho hojas y retratos que el personaje, **con los mismos nombres**
+(`hoja`, `hoja_ataque`...). Por eso el código que dibuja no necesita saber si
+es una skin: `DatosPersonaje.skin(numero)` devuelve la skin o, si es la 1 (el
+aspecto original) o no existe, el propio personaje, y a lo que devuelva se le
+piden las hojas. La elegida se guarda por personaje en la opción `"skins"`
+(`{"Mago": 12}`), así que viaja a la cuenta como las demás opciones, y
+`DatosSkin.elegida(personaje)` la lee. Se elige en el armario
+(`escenas/skins/armario.gd`), que se abre pulsando un personaje en el menú:
+las skins por categoría con su color, el personaje andando con la que se
+mira, su frase y PONÉRSELA. De momento están todas disponibles; cuáles tiene
+cada jugador lo dirá más adelante una sola función (`disponible`), con el
+pase y el inventario de la cuenta. Dos detalles: el color del personaje no
+cambia con la skin (es lo que lo identifica en el HUD, las ultis y los
+efectos), y `DatosPersonaje` no lee la opción, porque con `--script` (el
+simulador) las clases globales se compilan antes que los autoloads. Sin
+`class_name` nuevo: no hace falta un ejecutable nuevo. Una prueba en
+headless comprueba que cada skin tiene sus 10 imágenes con las medidas del
+original y que en la partida el Mago sale con la elegida.
+
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el
 malware a la herramienta que se lleva: un escudo, una barra que se llena al
