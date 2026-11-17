@@ -225,7 +225,7 @@ func _al_desconectarse(id: int) -> void:
 
 func _al_fallar() -> void:
 	salir()
-	error_de_red.emit("No se ha podido conectar con esa sala.")
+	error_de_red.emit("No se ha podido conectar con esa sala. Comprobad que estáis en la misma red, que la IP de debajo del código es la del ordenador que la crea (en Linux, «hostname -I») y que su cortafuegos deja pasar el puerto 7777 (UDP).")
 
 
 ## Se ha ido el anfitrión: se acaba para todos.
