@@ -74,8 +74,8 @@ func _al_aplicar_mejora(jugador: Node, mejora: DatosMejora) -> void:
 		Red.actual.enviar_suceso("mejora", [por_id.find_key(jugador), mejora.resource_path])
 
 
-func _al_lanzar_ulti(direccion: Vector2, mini: Array, id: int) -> void:
-	Red.actual.enviar_suceso("ulti", [id, direccion, mini])
+func _al_lanzar_ulti(direccion: Vector2, mini: Array, indice: int, id: int) -> void:
+	Red.actual.enviar_suceso("ulti", [id, direccion, mini, indice])
 
 
 ## En los clientes. «mejoras» y «ruleta»: le toca elegir; se pausa aquí, como
@@ -87,7 +87,7 @@ func _al_recibir_suceso(suceso: String, datos: Array) -> void:
 		get_tree().paused = true
 		BusEventos.partida_terminada.emit(EstadoRed.fin_desde_red(datos[0]))
 	elif suceso == "ulti" and por_id.has(datos[0]):
-		por_id[datos[0]].get_node("Ultis").mostrar_lanzada(datos[1], datos[2])
+		por_id[datos[0]].get_node("Ultis").mostrar_lanzada(datos[1], datos[2], datos[3])
 	elif suceso == "mejora" and por_id.has(datos[0]):
 		niveles.aplicar_desde_red(por_id[datos[0]], load(datos[1]))
 	elif suceso in ["mejoras", "ruleta"] and datos[0] == Red.actual.mi_id():

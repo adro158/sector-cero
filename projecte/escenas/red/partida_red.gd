@@ -157,6 +157,10 @@ func _al_pausar(en_pausa: bool) -> void:
 	var local: Node = get_parent().get_node("Jugador")
 	for parte in ["CambioPersonaje", "Ultis"]:
 		local.get_node(parte).set_process_unhandled_input(not en_pausa)
+	# El clic de apuntar del Mago va por _input: también fuera, y sin mira.
+	local.get_node("Ultis").set_process_input(not en_pausa)
+	if en_pausa:
+		local.get_node("Ultis").cancelar_mira()
 	# En el anfitrión se mueve con el teclado: se le para como a los de la red.
 	if Red.actual.es_anfitrion():
 		local.por_red = en_pausa

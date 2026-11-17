@@ -17,8 +17,9 @@ extends Node2D
 ## Multijugador. En los clientes no se lanza: se pide al anfitrión, que es
 ## quien pega (partida_red.gd)...
 signal pedida(direccion: Vector2)
-## ... y él avisa de cada una que lanza, para que los clientes la dibujen.
-signal lanzada(direccion: Vector2, mini: Array)
+## ... y él avisa de cada una que lanza, para que los clientes la dibujen
+## (con el personaje: allí el cambio puede llegar después que la ulti).
+signal lanzada(direccion: Vector2, mini: Array, indice: int)
 
 const DibujoUltis := preload("res://escenas/jugabilidad/jugador/dibujo_ultis.gd")
 
@@ -136,6 +137,13 @@ func _input(evento: InputEvent) -> void:
 		_dejar_de_apuntar()
 
 
+## Multijugador: al abrir el menú de pausa en red (que no pausa), deja de
+## apuntar el rayo.
+func cancelar_mira() -> void:
+	if _apuntando:
+		_dejar_de_apuntar()
+
+
 func _dejar_de_apuntar() -> void:
 	_apuntando = false
 	queue_redraw()
@@ -177,15 +185,15 @@ func lanzar(direccion := Vector2.ZERO) -> void:
 				var donde := _origen + Vector2.from_angle(randf() * TAU) * randf_range(60.0, MINI_ALCANCE)
 				_mini.append(donde)
 				_golpes.append([0.3 + i * 0.08, donde, MINI_RADIO, MINI_DANO * dano])
-	lanzada.emit(_direccion, _mini)
+	lanzada.emit(_direccion, _mini, _equipo.indice_actual())
 	BusEventos.ulti_lanzada.emit(personaje)
 	_avisar()
 
 
 ## Multijugador, en los clientes: la que ha lanzado este jugador en la partida
 ## del anfitrión. Solo se dibuja: sin golpes, que son de allí.
-func mostrar_lanzada(direccion: Vector2, mini: Array) -> void:
-	var personaje: DatosPersonaje = _equipo.personaje_actual()
+func mostrar_lanzada(direccion: Vector2, mini: Array, indice: int) -> void:
+	var personaje: DatosPersonaje = _equipo.personajes[indice]
 	_efecto = personaje.ulti
 	_tiempo = 0.0
 	_origen = global_position

@@ -352,6 +352,12 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
      otra; el foco del mando entra en la sala.
    - `partida_red.gd` se parte otra vez: lo que pasa una vez (el final, las
      mejoras, la ruleta, las ultis) va en `sucesos_red.gd`.
+   Una segunda revisión, solo de esos arreglos, encontró 5 más, leves, y
+   también están arreglados: en los clientes la vida ya no se regenera
+   (luego parecía un golpe); quien se va mientras su personaje cae no se
+   queda con otro; con el anfitrión en pausa no se lanzan ultis; el suceso
+   «ulti» dice de qué personaje es; y con el menú de pausa abierto en red,
+   el Mago deja de apuntar.
    **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
    (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
    vida del ransomware no se ven en los clientes (sus vidas no viajan).
