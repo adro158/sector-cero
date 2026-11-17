@@ -1,7 +1,9 @@
 # 17/11/2026 — Alan — Las skins del Mago y el armario
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración y horas acumuladas:** por apuntar (se preguntan al cerrar).
+10). **Duración:** 2 h (las dijo Alan). **Horas acumuladas:** es la primera
+entrada de Alan en la bitácora por sesión y sus horas anteriores no están
+sumadas en ningún sitio: desde aquí, 2 h, y las siguientes se suman a estas.
 Esta sesión también llevó la revisión del PR #14 de Adam (la red), que está
 comentada en el propio PR.
 
@@ -96,13 +98,15 @@ plan, el código, las pruebas y los documentos; Alan decidió el plan.
 
 ## Estado al cerrar
 
-Tres commits en `alan/skins` (sobre el de `alan/skins-contrato`), sin
-subir. El parche para Adam, en `../parche_adam_skins.diff` (fuera del
-repositorio), aplicado en local sin commit.
+Alan: «ya he acabado». Subidas `alan/skins-contrato` y `alan/skins`, cada
+una con su PR (primero se fusiona el de contrato), y abierta una issue para
+Adam con el parche de sus ficheros. El parche sigue aplicado en local en el
+ordenador de Alan, sin commit (fuera del repositorio, en
+`../parche_adam_skins.diff`).
 
 ## Siguiente paso
 
-- «Ya he acabado» → subir las dos ramas, abrir sus dos PR (primero el de
-  contrato) y la issue para Adam con el parche.
+- Que Adam revise los dos PR y aplique (o rehaga) su parche; fusionar primero
+  el de contrato.
 - Los lotes del Espadachín y el Segador: sus PNG, sus `.tres` y su lista.
 - La skin en red, cuando `adam/red` esté en `main`.
