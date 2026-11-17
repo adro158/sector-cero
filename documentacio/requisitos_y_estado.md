@@ -259,7 +259,7 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
-### El multijugador en red local (13/11 y 16/11, sin fusionar)
+### El multijugador en red local (en la v1.18, 17/11)
 
 Plan, decisiones y lo hecho punto por punto en
 `documentacio/plan_multijugador.md`. Al cerrar el 13/11:
@@ -281,6 +281,10 @@ Plan, decisiones y lo hecho punto por punto en
   cofre), las caídas, las muertes y los números de daño. Arreglados: las
   anclas miraban el personaje del anfitrión, las armas de los demás salían
   del jugador local, y con el anfitrión mirando no llegaban las mejoras.
+- **El 17/11, revisado a fondo** (28 fallos arreglados: pausa eterna si se
+  iba un cliente, muertes falsas en la fase 2, ultis y mejoras en los
+  clientes...; `bitacora/2026-11-17_adam_revision-red-y-v1.18.md`) y
+  **publicado en la v1.18**.
 - **Falta:** probarlo entre dos ordenadores de verdad (issue #15) y medir
   la vida con varios bots.
 
