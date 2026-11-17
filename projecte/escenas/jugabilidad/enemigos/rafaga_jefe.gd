@@ -38,6 +38,12 @@ const DANO := 15.0
 
 ## Cada proyectil: [posición, dirección, segundos volando, daño].
 var _proyectiles: Array = []
+## Multijugador: en los clientes no hacen daño; vuelan como diga el
+## anfitrión (poner_desde_red).
+var solo_dibujar := false
+## En los clientes, cuántos llegaron la última vez: si llegan más, ha
+## disparado.
+var _recibidos := 0
 
 
 ## multiplicador_dano: el de la furia del jefe en ese momento. Va en cada
@@ -65,6 +71,8 @@ func _physics_process(delta: float) -> void:
 	for proyectil in _proyectiles:
 		proyectil[0] += proyectil[1] * VELOCIDAD * delta
 		proyectil[2] += delta
+		if solo_dibujar:
+			continue
 		# Al primero que toque (multijugador).
 		for jugador in jugadores:
 			if proyectil[0].distance_to(jugador.global_position) < RADIO_IMPACTO:
@@ -73,6 +81,20 @@ func _physics_process(delta: float) -> void:
 				proyectil[2] = VIDA
 				break
 	_proyectiles = _proyectiles.filter(func(proyectil): return proyectil[2] < VIDA)
+	queue_redraw()
+
+
+## Multijugador: lo que manda el anfitrión (estado_red.gd)...
+func datos_red() -> Array:
+	return _proyectiles
+
+
+## ... y cómo lo pone un cliente.
+func poner_desde_red(proyectiles: Array) -> void:
+	if proyectiles.size() > _recibidos:
+		BusEventos.jefe_ataco.emit("rafaga")
+	_recibidos = proyectiles.size()
+	_proyectiles = proyectiles
 	queue_redraw()
 
 

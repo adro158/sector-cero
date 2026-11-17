@@ -259,6 +259,35 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
+### El multijugador en red local (en la v1.18, 17/11)
+
+Plan, decisiones y lo hecho punto por punto en
+`documentacio/plan_multijugador.md`. Al cerrar el 13/11:
+- **Fusionado y publicado en la v1.17** (por dentro, sin botón): la parte
+  de Adam, varios jugadores en la partida, el equipo compartido, las
+  mejoras por jugador, el espectador y la vida con más jugadores (PR #11);
+  y el contrato de la red en el bus (PR #9).
+- **La red, que era de Alan, pasó a Adam** el 13/11 (decisión de Adam,
+  PR #13). Hecha en `adam/red` con su PR (bitácora,
+  `bitacora/2026-11-13_adam_red.md`): la sala con su código, el botón EN
+  RED y la partida en red en dos tandas (los demás se mueven con lo que
+  pulsan y los clientes ven la partida del anfitrión). Alan hizo la prueba
+  de conexión.
+- **El 16/11, la tercera tanda entera** (misma rama y PR, bitácora
+  `bitacora/2026-11-16_adam_red-tercera-tanda.md`): en red no se pausa; el
+  final llega a todos y no cuenta para el ranking ni la cuenta; en los
+  clientes se ven los élites, los dos jefes con todos sus ataques, el
+  escudo y sus anclas, los premios, la ruleta (para quien recoge el
+  cofre), las caídas, las muertes y los números de daño. Arreglados: las
+  anclas miraban el personaje del anfitrión, las armas de los demás salían
+  del jugador local, y con el anfitrión mirando no llegaban las mejoras.
+- **El 17/11, revisado a fondo** (28 fallos arreglados: pausa eterna si se
+  iba un cliente, muertes falsas en la fase 2, ultis y mejoras en los
+  clientes...; `bitacora/2026-11-17_adam_revision-red-y-v1.18.md`) y
+  **publicado en la v1.18**.
+- **Falta:** probarlo entre dos ordenadores de verdad (issue #15) y medir
+  la vida con varios bots.
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:

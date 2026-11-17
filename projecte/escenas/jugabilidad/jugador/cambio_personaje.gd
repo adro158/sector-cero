@@ -68,6 +68,9 @@ func _ready() -> void:
 		raiz.set_meta("equipo", Equipo.new(personajes))
 	_equipo = raiz.get_meta("equipo")
 	_equipo.miembros.append(self)
+	# El primero es el jugador de la escena: el de este ordenador.
+	if _equipo.local == null:
+		_equipo.local = self
 	_equipo.derrotado.connect(equipo_derrotado.emit)
 	# Para contar cuántos juegan (jugadores.gd, la vida de los enemigos): a
 	# diferencia de jugador, de este grupo no se sale al quedarse mirando.
@@ -107,6 +110,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 ## Pasa al siguiente personaje vivo y libre (paso 1) o al anterior (paso -1)
 ## si ha terminado la espera. Devuelve si cambió.
 func cambiar(paso: int = 1) -> bool:
+	# Mirando no lleva a nadie (en red puede llegar la tecla del otro ordenador).
+	if _espectador:
+		return false
 	var otro := _equipo.disponible_desde(_indice, paso)
 	if (_restante > 0.0 and not sin_espera) or otro == _indice:
 		return false
@@ -119,6 +125,60 @@ func cambiar(paso: int = 1) -> bool:
 	_sprite.modulate = Color(2.0, 2.0, 2.0)
 	create_tween().tween_property(_sprite, "modulate", Color.WHITE, 0.3)
 	return true
+
+
+## Multijugador (partida_red.gd): empezar con el personaje elegido en la sala,
+## si está libre.
+func tomar(indice: int) -> void:
+	if indice == _indice or _equipo.llevado_por[indice] != null:
+		return
+	_entrar(indice)
+	_aplicar()
+
+
+## Multijugador: se ha ido de la partida (se ha desconectado). Su personaje
+## queda libre con la vida que tenía, y él no vuelve en la fase 2.
+func irse() -> void:
+	if not _espectador:
+		_equipo.vidas[_indice] = _salud.vida()
+		_equipo.llevado_por[_indice] = null
+		_poner_espectador(true)
+	_equipo.miembros.erase(self)
+	_avisar_equipo()
+
+
+## Multijugador, en los clientes: lleva el personaje que dice el anfitrión
+## (estado_red.gd), o se queda mirando si allí no tiene. Si el personaje aún
+## lo tiene otro, en el siguiente estado. Si el que lleva ha caído, se deshace
+## como en el anfitrión, que tarda lo mismo en pasar al siguiente.
+func seguir_red(indice: int, mirando: bool) -> void:
+	if mirando != _espectador:
+		if mirando:
+			_equipo.llevado_por[_indice] = null
+			_poner_espectador(true)
+		else:
+			# Vuelve (al empezar la fase 2 o al quedar uno libre), con el
+			# personaje que dice el anfitrión.
+			volver(indice)
+		return
+	if mirando:
+		return
+	if indice == _indice and _equipo.caidos[_indice] and _sprite.visible:
+		_sprite.visible = false
+		_efectos.caer(personajes[_indice].color, false)
+		return
+	if indice != _indice and _equipo.llevado_por[indice] == null:
+		var tras_caer := not _sprite.visible
+		_entrar(indice)
+		_aplicar()
+		if tras_caer:
+			_sprite.visible = true
+			_efectos.escudo(personajes[indice].color, proteccion_al_entrar)
+
+
+## Si este es el jugador de este ordenador: el que enseña la interfaz.
+func es_local() -> bool:
+	return _equipo.local == self
 
 
 ## El personaje que lleva el jugador ahora. Para el ranking.
@@ -160,7 +220,7 @@ func revivir_todos() -> void:
 		_equipo.vidas[i] = _equipo.maximas[i]
 	for quien in _jugadores_del_equipo():
 		quien.salud().poner(_equipo.maximas[quien.indice_actual()], _equipo.maximas[quien.indice_actual()])
-	_volver_espectadores()
+	volver_espectadores()
 
 
 ## Al pasar a la fase 2 (raiz_juego.gd): el sector se reinicia y los que han
@@ -171,13 +231,14 @@ func revivir_caidos(fraccion: float) -> void:
 		if _equipo.caidos[i]:
 			_equipo.caidos[i] = false
 			_equipo.vidas[i] = _equipo.maximas[i] * fraccion
-	_volver_espectadores()
+	volver_espectadores()
 	_avisar_equipo()
 
 
 ## Los que se habían quedado sin personaje vuelven con uno libre (con varios
-## jugadores, al empezar la fase 2). Con uno solo nunca hay espectadores.
-func _volver_espectadores() -> void:
+## jugadores: al empezar la fase 2, o al irse uno y dejar el suyo libre). Con
+## uno solo nunca hay espectadores.
+func volver_espectadores() -> void:
 	for miembro in _equipo.miembros:
 		var libre := _equipo.primero_libre()
 		if miembro.espectador() and libre != -1:
@@ -271,7 +332,9 @@ func _al_caer() -> void:
 	_equipo.caidos[_indice] = true
 	_avisar_equipo()
 	var ultimo := _equipo.todos_caidos()
-	if not ultimo and get_tree().get_nodes_in_group("jugador").size() > 1:
+	# Con varios en el equipo, aunque los demás estén mirando: si no, al caer
+	# uno con el anfitrión mirando, se pausaba y le preguntaba a él.
+	if not ultimo and _equipo.miembros.size() > 1:
 		_caer_en_red()
 		return
 	# La pausa la pone la jugabilidad, como al subir de nivel, y es suya hasta
@@ -296,6 +359,9 @@ func _al_caer() -> void:
 func _caer_en_red() -> void:
 	_sprite.visible = false
 	await get_tree().create_timer(_efectos.caer(personajes[_indice].color, false)).timeout
+	# Si se ha ido de la partida mientras caía, no coge a nadie.
+	if _espectador or self not in _equipo.miembros:
+		return
 	var libre := _equipo.primero_libre()
 	if libre == -1:
 		_equipo.llevado_por[_indice] = null
@@ -352,13 +418,17 @@ func _aplicar() -> void:
 
 
 func _avisar_cambio() -> void:
+	# Con varios jugadores, la interfaz es la del de este ordenador.
+	if not es_local():
+		return
 	var siguiente := personajes[_equipo.disponible_desde(_indice, 1)]
 	# Diferido: al empezar la partida, el HUD aún no está conectado.
 	BusEventos.personaje_cambiado.emit.call_deferred(personajes[_indice], _equipo.armas[_indice], siguiente, _restante)
 
 
+## El activo que se avisa es el del jugador de este ordenador.
 func _avisar_equipo() -> void:
-	BusEventos.equipo_cambiado.emit(_estado(), _indice)
+	BusEventos.equipo_cambiado.emit(_estado(), _equipo.local.indice_actual())
 
 
 func _estado() -> Array:

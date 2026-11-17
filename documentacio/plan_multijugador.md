@@ -105,6 +105,29 @@ signal jugador_desconectado(id: int)
 Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
 (`equipo/reparto.md`). Alan hizo el punto 1 (`alan/red`, 09/11).
 
+**Hecho el 13/11 (rama `adam/red`, con el commit de Alan dentro):**
+- `globales/red.gd` (lo crea `Transicion`, como `cuenta.gd`): crear la
+  sala, unirse con el código, la lista de jugadores `{id, nombre,
+  personaje}` con el primer personaje libre, elegir otro libre, la versión
+  (si no coincide, «La sala es de la versión...»), la sala llena (3), EMPEZAR
+  (solo el anfitrión), `enviar_entrada`/`enviar_estado` (sin garantía de
+  llegada, el siguiente trae lo de ahora) y `enviar_suceso` (con garantía),
+  y las desconexiones. Mensajes `[tipo, datos]` con `var_to_bytes` y
+  `send_bytes`, como la prueba de Alan. Avisa por el bus (las señales del
+  contrato) y los errores, con su señal `error_de_red`.
+- `globales/codigo_sala.gd`: el código, 7 letras con la IP dentro (base 32,
+  sin 0, O, 1 ni I), enseñado como `52C-J2B7`.
+- `escenas/red/sala_red.gd` y el botón EN RED del menú (no en la web): el
+  nombre, CREAR SALA, el código con UNIRSE, y en la sala el código, los
+  jugadores con su personaje, elegir personaje, EMPEZAR y SALIR DE LA SALA.
+  Hasta el punto 5, EMPEZAR solo avisa de que la partida en red no está
+  lista.
+- Probado con dos y cuatro copias del juego en el mismo ordenador
+  (`127.0.0.1`): la sala, los personajes, las entradas, el estado, los
+  sucesos, la salida de un cliente, la sala llena; y con ventana, las dos
+  pantallas de la sala. **Falta que Alan (o Adam) lo pruebe entre dos
+  ordenadores de verdad.**
+
 1. **Probar que conecta**, lo primero: dos ordenadores del instituto en la
    misma red con un script mínimo de ENet. Si la red de clase lo bloquea, se
    sabe ya (y se prueba en casa o con el móvil como punto de acceso).
@@ -186,6 +209,158 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    1, vuelve con el Mago a media vida y después le pasa lo mismo al 1.
 5. El anfitrión manda el estado (cada gestor da sus posiciones) y los
    clientes lo dibujan sin simular.
+   **En tres tandas.** La primera, hecha el 13/11 (`escenas/red/partida_red.gd`,
+   que añade `raiz_juego.gd` solo en red): EMPEZAR lleva a todos a la
+   partida; el jugador de la escena es el de este ordenador y los demás se
+   crean sin cámara ni teclado (`por_red` en el controlador), cada uno con
+   su personaje de la sala (`tomar()`), y no chocan entre ellos. En el
+   anfitrión se mueven, cambian y lanzan la ulti con `entrada_recibida`; los
+   clientes mandan lo que pulsan cada fotograma. La interfaz enseña solo lo
+   del de este ordenador (`equipo.local`, `es_local()`). Si se va un
+   cliente, su jugador se queda mirando y su personaje queda libre; si se va
+   el anfitrión, todos vuelven al menú. Probado con dos copias: el jugador
+   del cliente se mueve en el anfitrión con lo que pulsa en el suyo.
+   **La segunda, hecha el 13/11** (`escenas/red/estado_red.gd`): el
+   anfitrión manda cada 3 pasos de física (20 veces por segundo) los
+   jugadores (posición, velocidad, personaje y vida), la horda de cada tipo,
+   los fragmentos, el reloj, la experiencia y las vidas del equipo; los
+   clientes no simulan (las oleadas paradas, `solo_dibujar` en los gestores
+   y en los fragmentos) y lo dibujan. Las mejoras: el anfitrión manda a
+   cada uno sus opciones (por su ruta, un recurso no viaja), el cliente
+   elige con su panel y la elegida vuelve con garantía de llegada
+   (`enviar_entrada(..., true)`); el anfitrión sigue cuando han elegido
+   todos. Probado con dos copias: el reloj, el nivel y la horda iguales, y
+   la Memoria redundante del cliente sube la vida de los dos.
+   **La tercera, empezada el 16/11:** en red no se pausa (`raiz_juego.gd`:
+   el menú sale y la partida sigue); el final de la partida para todos (el
+   anfitrión manda «fin» con las estadísticas, los personajes por su ruta, y
+   cada cliente enseña su pantalla final con el juego en pausa); las
+   partidas en red llevan `en_red` y no van al ranking, a los récords ni a
+   la cuenta; en red no hay REINTENTAR; el que se queda sin personaje
+   también se ve mirando en su pantalla (`seguir_red`); salir de la partida
+   es salir de la red, y si la partida ya ha acabado, cada uno sale de su
+   pantalla final cuando quiere. Probado con dos copias: la pausa no para
+   nada, el del cliente cae dos veces y se queda mirando también en el
+   cliente, y el final le llega sin tocar sus récords.
+   Los élites, también el 16/11: el anfitrión los manda en el estado (clave
+   `l`, en el orden del grupo `elites`: posición, vida, máxima y sus
+   afijos por la ruta) y en los clientes no persiguen ni reciben golpes
+   (`solo_dibujar`): aparecen con su aviso, destellan al perder vida y al
+   morir se parten o estallan como en el anfitrión, sin soltar nada ni
+   hacer daño (eso es de la partida del anfitrión). Probado con dos copias:
+   misma vida y sitio en los dos, y el explosivo estalla en el cliente.
+   Kernel Panic, también el 16/11: el anfitrión lo manda en el estado
+   (en la clave `a`, la lista `RAIZ` de `estado_red.gd`: posición, vida, máxima, estado, hacia dónde mira y furia) y
+   en los clientes no persigue, no ataca ni recibe golpes; aparece con su
+   aviso, pone sus poses, se enfurece a la vez y, al morir, el cliente
+   también pasa a la fase 2 (el negro, la arena y la música). Su muerte no
+   da experiencia ni carga las ultis en los clientes: eso llega del
+   anfitrión. Probado con dos copias: misma vida, furia 1 y 2 y la fase 2
+   en los dos.
+   NÚCLEO CERO, también el 16/11: el anfitrión lo manda en el estado
+   (también en la clave `a`: posición, vida, máxima, estado y forma) y en los clientes no
+   se mueve, no ataca ni recibe golpes; aparece con su aviso, se transforma,
+   se queda aturdido y muere como en el anfitrión. Al acabar de morir en un
+   cliente no avisa de la victoria: el final llega del anfitrión («fin»), y
+   si no saldrían dos. Probado con dos copias: la forma 1 a la vez y una
+   sola victoria en el cliente.
+   Los ataques de los jefes, también el 16/11: la jaula y la ráfaga de
+   Kernel Panic, los cinco ataques de NÚCLEO CERO (con sus portales), su
+   escudo con las anclas y las zonas de hielo van en el estado (clave `a`,
+   con los dos jefes: la lista `RAIZ` de `estado_red.gd`, cada nodo con su
+   `datos_red()` y su `poner_desde_red()`). En los clientes no hacen daño,
+   no sacan horda ni encierran a nadie, pero se ven y suenan, y el HUD dice
+   qué anclas quedan. Probado con dos copias: la ráfaga, el pisotón,
+   invocar, la tormenta, el escudo, las anclas rotas y la rotura, a la vez.
+   Las anclas, arregladas el 16/11: miraban el personaje del anfitrión
+   (`equipo_cambiado` lleva el del jugador local), así que el de otro
+   ordenador solo rompía las del personaje que llevara el anfitrión. Ahora
+   cada golpe dice qué jugador lo da (`danar_en_area(..., quien)`, desde las
+   armas, el Ping y las ultis) y el ancla mira el personaje que lleva él en
+   ese momento, la regla de siempre. De paso, `gestor_armas.gd` cogía «el
+   primer jugador del grupo»: las armas de los demás salían del jugador
+   local y su robo de vida le curaba a él. Ahora es su padre. Probado con
+   dos copias (cada ancla acepta solo al suyo, y el Segador del cliente
+   rompe la suya solo) y el simulador da lo mismo, también la partida
+   entera.
+   Las mejoras con el anfitrión mirando, arregladas el 16/11: la red
+   mandaba las opciones a los demás al oír `jugador_subio_nivel`, que solo
+   salta si el de este ordenador elige; con el anfitrión sin personaje no
+   llegaban y la partida se quedaba en pausa. Ahora escucha
+   `opciones_sorteadas`, una señal del sistema de niveles (no del bus) que
+   salta siempre. Probado con dos copias: el anfitrión cae dos veces, se
+   queda mirando, sube del nivel 1 al 5 y el cliente elige sus cuatro
+   mejoras sin que la partida se quede en pausa.
+   Los premios y la ruleta, el 16/11: el corazón y el cofre de los élites
+   van en el estado (`PremiosElite` en la lista `RAIZ`) y en los clientes
+   se ven, y al recogerlos se animan, sin curar ni abrir nada. El premio
+   del cofre es de quien lo recoge (antes, siempre del anfitrión):
+   `premios_elite.gd` apunta quién (`ultimo_cofre_de`) y el sistema de
+   niveles lo guarda en la cola con el cofre; si es de otro ordenador,
+   emite `ruleta_sorteada` y la red le manda su ruleta (suceso «ruleta»),
+   que vuelve como cualquier mejora. Si quien lo recogió ya no juega, el
+   del anfitrión. Probado con dos copias: el cliente ve los dos premios,
+   recoge el cofre, le sale su ruleta (al anfitrión ninguna), la mejora se
+   aplica y la partida sigue; el simulador da lo mismo, también la entera.
+   La caída, el 16/11: en los clientes el personaje cambiaba de golpe.
+   Ahora `seguir_red` ve que el que lleva ha caído (los caídos se ponen
+   antes que los jugadores en `estado_red.gd`) y se deshace como en el
+   anfitrión, que tarda lo mismo en pasar al siguiente; el siguiente entra
+   con el escudo. Y en el anfitrión, la caída en red se decide por los
+   miembros del equipo y no por los jugadores en pie: con el anfitrión
+   mirando (con tres jugadores) se pausaba y le preguntaba a él quién
+   seguía. Probado con dos copias: el del cliente cae, se deshace, vuelve
+   con el Mago con el escudo, cae otra vez y se queda mirando.
+   Los efectos y los números de daño, el 16/11: el anfitrión apunta las
+   muertes (`enemigo_muerto`) y los golpes (`enemigo_danado` de cada
+   objetivo) y van con el siguiente estado (claves `m` y `d`, con tope:
+   150 muertes y 40 golpes por estado). En los clientes, las muertes se
+   avisan por el bus como si fueran suyas (su dibujo, las partículas, el
+   aviso del élite, el frenazo y la carga de la ulti), sin soltar
+   fragmentos ni premios, que ya llegan en el estado; los números, con
+   `PoolNumeros.mostrar()`. Probado con dos copias: llegan las muertes y
+   los números, y fragmentos y premios no salen repetidos.
+   Partidos el 16/11: `preparar_red.gd` (los jugadores y lo que solo se
+   dibuja) y `reglas_sala.gd` (quién entra y qué personaje lleva), y la
+   conversión del final en `estado_red.gd`; `partida_red.gd` queda en 205
+   líneas y `red.gd` en 219.
+   **Revisión del 17/11** (cuatro revisores y un verificador sobre el PR
+   #14: 23 fallos confirmados, todos arreglados y probados con dos o tres
+   copias):
+   - Salidas: si se iba un cliente mientras era el único que faltaba por
+     elegir mejora (o girando su ruleta), el anfitrión se quedaba en pausa
+     para siempre (ahora `SistemaNiveles.quitar()`); los que miraban no
+     volvían con el personaje que dejaba libre (`volver_espectadores()`
+     pública); los clientes no se enteraban de que se iba otro cliente (se
+     va quien no viene en el estado); un espectador podía «quedarse» con un
+     personaje al pulsar E (`cambiar()` no hace nada mirando); se podía
+     entrar con la partida empezada («La partida ya ha empezado»); al irse
+     el anfitrión, el cliente vuelve al menú con un aviso.
+   - Fase 2 en los clientes: `vaciar()` daba por muerta a toda la horda
+     (sus vidas allí son 0) y salían cientos de muertes falsas; y el cliente
+     repartía él los personajes de los que miraban (con tres, podía salir
+     cruzado): ahora lo dice el estado.
+   - Lo que no llegaba a los clientes: las ultis (la carga va en el estado;
+     el cliente pide la suya con la dirección a la que apunta y el anfitrión
+     avisa de cada una que lanza, suceso «ulti»), las mejoras aplicadas
+     (suceso «mejora»: las evoluciones, el alcance y la velocidad se ven),
+     el aviso rojo del troyano antes de embestir y los golpes al jugador
+     (su destello y su sonido).
+   - En red: sin estados, los jugadores ya no siguen andando solos; con el
+     menú de pausa abierto, el jugador de ese ordenador se queda quieto; el
+     F1 no se abre; el código de sala no usa las redes de VirtualBox si hay
+     otra; el foco del mando entra en la sala.
+   - `partida_red.gd` se parte otra vez: lo que pasa una vez (el final, las
+     mejoras, la ruleta, las ultis) va en `sucesos_red.gd`.
+   Una segunda revisión, solo de esos arreglos, encontró 5 más, leves, y
+   también están arreglados: en los clientes la vida ya no se regenera
+   (luego parecía un golpe); quien se va mientras su personaje cae no se
+   queda con otro; con el anfitrión en pausa no se lanzan ultis; el suceso
+   «ulti» dice de qué personaje es; y con el menú de pausa abierto en red,
+   el Mago deja de apuntar.
+   **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
+   (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
+   vida del ransomware no se ven en los clientes (sus vidas no viajan).
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

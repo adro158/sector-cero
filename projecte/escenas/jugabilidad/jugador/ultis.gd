@@ -14,6 +14,13 @@ extends Node2D
 ## las mejoras de daño. Los efectos los dibuja dibujo_ultis.gd con sprites; aquí
 ## solo se decide qué toca dibujar.
 
+## Multijugador. En los clientes no se lanza: se pide al anfitrión, que es
+## quien pega (partida_red.gd)...
+signal pedida(direccion: Vector2)
+## ... y él avisa de cada una que lanza, para que los clientes la dibujen
+## (con el personaje: allí el cambio puede llegar después que la ulti).
+signal lanzada(direccion: Vector2, mini: Array, indice: int)
+
 const DibujoUltis := preload("res://escenas/jugabilidad/jugador/dibujo_ultis.gd")
 
 const CARGA_NECESARIA := 180.0
@@ -58,6 +65,9 @@ var _apuntando := false
 var _tiempo_mira := 0.0
 var _equipo: Node
 var _armas: Node
+## Multijugador: en los clientes la carga llega del anfitrión (poner_cargas) y
+## la ulti se pide en vez de lanzarse.
+var solo_dibujar := false
 
 
 func _ready() -> void:
@@ -80,8 +90,24 @@ func llenar_todas() -> void:
 	_avisar()
 
 
+## Multijugador: la carga de cada personaje, para mandarla (en el anfitrión)...
+func cargas() -> Array[float]:
+	return _cargas
+
+
+## ... y ponerla (en los clientes). Solo avisa a la interfaz si ha cambiado.
+func poner_cargas(cargas_anfitrion: Array) -> void:
+	var cambia := false
+	for i in mini(_cargas.size(), cargas_anfitrion.size()):
+		if not is_equal_approx(_cargas[i], cargas_anfitrion[i]):
+			_cargas[i] = cargas_anfitrion[i]
+			cambia = true
+	if cambia:
+		_avisar()
+
+
 func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
-	if tipo == "jefe" or _efecto != "":
+	if solo_dibujar or tipo == "jefe" or _efecto != "":
 		return
 	var i: int = _equipo.indice_actual()
 	_cargas[i] = minf(_cargas[i] + (CARGA_ELITE if tipo == "elite" else 1.0), CARGA_NECESARIA)
@@ -111,6 +137,13 @@ func _input(evento: InputEvent) -> void:
 		_dejar_de_apuntar()
 
 
+## Multijugador: al abrir el menú de pausa en red (que no pausa), deja de
+## apuntar el rayo.
+func cancelar_mira() -> void:
+	if _apuntando:
+		_dejar_de_apuntar()
+
+
 func _dejar_de_apuntar() -> void:
 	_apuntando = false
 	queue_redraw()
@@ -120,6 +153,10 @@ func _dejar_de_apuntar() -> void:
 func lanzar(direccion := Vector2.ZERO) -> void:
 	_apuntando = false
 	if not lista() or _efecto != "":
+		return
+	if solo_dibujar:
+		queue_redraw()
+		pedida.emit(direccion)
 		return
 	var personaje: DatosPersonaje = _equipo.personaje_actual()
 	_cargas[_equipo.indice_actual()] = 0.0
@@ -148,8 +185,22 @@ func lanzar(direccion := Vector2.ZERO) -> void:
 				var donde := _origen + Vector2.from_angle(randf() * TAU) * randf_range(60.0, MINI_ALCANCE)
 				_mini.append(donde)
 				_golpes.append([0.3 + i * 0.08, donde, MINI_RADIO, MINI_DANO * dano])
+	lanzada.emit(_direccion, _mini, _equipo.indice_actual())
 	BusEventos.ulti_lanzada.emit(personaje)
 	_avisar()
+
+
+## Multijugador, en los clientes: la que ha lanzado este jugador en la partida
+## del anfitrión. Solo se dibuja: sin golpes, que son de allí.
+func mostrar_lanzada(direccion: Vector2, mini: Array, indice: int) -> void:
+	var personaje: DatosPersonaje = _equipo.personajes[indice]
+	_efecto = personaje.ulti
+	_tiempo = 0.0
+	_origen = global_position
+	_golpes.clear()
+	_direccion = direccion
+	_mini.assign(mini)
+	BusEventos.ulti_lanzada.emit(personaje)
 
 
 func _physics_process(delta: float) -> void:
@@ -168,7 +219,7 @@ func _physics_process(delta: float) -> void:
 		var golpe: Array = _golpes.pop_front()
 		var centro: Vector2 = global_position if golpe[1] == Vector2.INF else golpe[1]
 		for objetivo in get_tree().get_nodes_in_group("objetivos"):
-			objetivo.danar_en_area(centro, golpe[2], golpe[3])
+			objetivo.danar_en_area(centro, golpe[2], golpe[3], 0.0, null, get_parent())
 	if _tiempo >= _duracion():
 		_efecto = ""
 	queue_redraw()
@@ -193,6 +244,9 @@ func _hacia_el_mas_cercano() -> Vector2:
 
 
 func _avisar() -> void:
+	# Con varios jugadores, la interfaz enseña las del de este ordenador.
+	if not _equipo.es_local():
+		return
 	var fracciones := _cargas.map(func(carga): return carga / CARGA_NECESARIA)
 	BusEventos.ulti_cambiada.emit(fracciones, _equipo.indice_actual())
 

@@ -45,6 +45,9 @@ var _tiempo := 0.0
 ## Lo que va encima del rootkit (las placas del Blindado): un hijo creado al
 ## empezar, que se dibuja desde aquí con su señal draw.
 var _encima: Node2D
+## Multijugador: en los clientes no persigue ni recibe golpes; está donde
+## dice el anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -96,8 +99,8 @@ func descripcion() -> String:
 
 
 ## Misma forma que la horda y el jefe: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
-	if not _activo or global_position.distance_to(centro) > radio_golpe + datos.tamano * 0.5:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, _quien: Node2D = null) -> int:
+	if solo_dibujar or not _activo or global_position.distance_to(centro) > radio_golpe + datos.tamano * 0.5:
 		return 0
 	if cono != null:
 		var factor: float = cono.factor(global_position, datos.tamano * 0.5)
@@ -165,7 +168,7 @@ func _physics_process(delta: float) -> void:
 		if _cuenta_atras <= 0.0:
 			_explotar()
 		return
-	if not _activo:
+	if not _activo or solo_dibujar:
 		return
 
 	# Va a por el jugador que tiene más cerca (multijugador).
@@ -210,10 +213,13 @@ func _al_morir() -> void:
 	var gestor = get_tree().get_first_node_in_group("gestor_enemigos")
 	for i in copias:
 		gestor.aparecer(global_position + Vector2.RIGHT.rotated(TAU * i / copias) * 40.0)
+	_empezar_muerte()
 
-	# El explosivo no desaparece aún: avisa con un anillo y luego estalla.
-	# Los demás se parten en trozos en su sitio y luego desaparecen. Mientras,
-	# encima de la horda, como la explosión.
+
+## El explosivo no desaparece aún: avisa con un anillo y luego estalla. Los
+## demás se parten en trozos en su sitio y luego desaparecen. Mientras, encima
+## de la horda, como la explosión.
+func _empezar_muerte() -> void:
 	_sprite.visible = false
 	if _valor(DatosAfijoElite.Efecto.EXPLOSIVO) > 0.0:
 		_cuenta_atras = AVISO_EXPLOSION
@@ -223,12 +229,47 @@ func _al_morir() -> void:
 
 
 func _explotar() -> void:
-	for jugador in get_tree().get_nodes_in_group("jugador"):
-		if global_position.distance_to(jugador.global_position) < RADIO_EXPLOSION:
-			jugador.get_node("Salud").recibir_dano(_valor(DatosAfijoElite.Efecto.EXPLOSIVO))
+	# En los clientes solo se ve: el daño lo hace la del anfitrión.
+	if not solo_dibujar:
+		for jugador in get_tree().get_nodes_in_group("jugador"):
+			if global_position.distance_to(jugador.global_position) < RADIO_EXPLOSION:
+				jugador.get_node("Salud").recibir_dano(_valor(DatosAfijoElite.Efecto.EXPLOSIVO))
 	BusEventos.elite_exploto.emit(global_position)
 	_sprite.visible = true
 	visible = false
+
+
+## Multijugador. Lo que manda el anfitrión (estado_red.gd): [posición, vida,
+## máxima, rutas de los afijos] si está vivo, o nada si no.
+func datos_red() -> Array:
+	if not _activo:
+		return []
+	return [global_position, _salud.vida(), _salud.vida_maxima, _afijos.map(func(afijo): return afijo.resource_path)]
+
+
+## ... y cómo lo pone un cliente. Al morir se ve igual que en el anfitrión,
+## pero sin soltar nada: la experiencia y los premios son de su partida.
+func poner_desde_red(datos_anfitrion: Array) -> void:
+	if datos_anfitrion.is_empty():
+		if _activo:
+			_activo = false
+			_empezar_muerte()
+		return
+	global_position = datos_anfitrion[0]
+	if not _activo:
+		_afijos.assign(datos_anfitrion[3].map(func(ruta): return load(ruta)))
+		_tiempo = fmod(absf(global_position.x + global_position.y), Dibujo.VUELTA)
+		_cuenta_atras = 0.0
+		_muerte = 0.0
+		_sprite.visible = true
+		z_index = 0
+		_activo = true
+		visible = true
+		BusEventos.elite_aparecio.emit(descripcion())
+	if not is_equal_approx(_salud.vida(), datos_anfitrion[1]) or not is_equal_approx(_salud.vida_maxima, datos_anfitrion[2]):
+		if datos_anfitrion[1] < _salud.vida():
+			_sprite.destellar()
+		_salud.poner(datos_anfitrion[1], datos_anfitrion[2])
 
 
 func _draw() -> void:

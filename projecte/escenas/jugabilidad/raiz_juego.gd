@@ -2,6 +2,8 @@ extends Node2D
 
 const Dificultad := preload("res://globales/dificultad.gd")
 const TiempoGolpe := preload("res://escenas/jugabilidad/efectos/tiempo_golpe.gd")
+const Red := preload("res://globales/red.gd")
+const PartidaRed := preload("res://escenas/red/partida_red.gd")
 ## Segundos de negro entre la fase 1 y la 2.
 const DURACION_TRANSICION := 3.0
 ## La parte de su vida con la que vuelven los caídos al pasar a la fase 2.
@@ -41,6 +43,10 @@ func _ready() -> void:
 	BusEventos.juego_pausado.connect(_al_pausar)
 	# El frenazo de los momentos fuertes (tiempo_golpe.gd).
 	add_child(TiempoGolpe.new())
+	# En red, los jugadores de los demás y lo que llega por la red
+	# (partida_red.gd, multijugador).
+	if Red.actual != null and Red.actual.en_red():
+		add_child(PartidaRed.new())
 
 
 ## La física va a 60 pasos por segundo: en una pantalla de 144 o 240 Hz, el
@@ -82,8 +88,18 @@ func _al_pausar(en_pausa: bool) -> void:
 	# la de la transición.
 	if _terminada or _en_transicion or _sistema_niveles.eligiendo() or $Jugador/CambioPersonaje.eligiendo():
 		return
+	# En red no se pausa (decisión de Adam, 13/11): el menú sale, pero la
+	# partida de los demás sigue.
+	if Red.actual != null and Red.actual.en_red():
+		return
 
 	get_tree().paused = en_pausa
+
+
+## Si este ordenador es un cliente de una partida en red: la partida es la del
+## anfitrión y aquí solo se dibuja.
+func _en_cliente() -> bool:
+	return Red.actual != null and Red.actual.en_red() and not Red.actual.es_anfitrion()
 
 
 func usar_trucos() -> void:
@@ -111,7 +127,11 @@ func _pasar_a_fase_2() -> void:
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
 	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
 		gestor.vaciar()
-	$Jugador/CambioPersonaje.revivir_caidos(VIDA_AL_REVIVIR)
+	# En los clientes, quién vuelve y con qué personaje lo dice el anfitrión
+	# (estado_red.gd): si lo repartiera cada ordenador, con tres jugadores
+	# podía salir cruzado.
+	if not _en_cliente():
+		$Jugador/CambioPersonaje.revivir_caidos(VIDA_AL_REVIVIR)
 	# Emite fase_cambiada: la arena, el audio y el HUD cambian detrás del negro.
 	_director.empezar_fase_2()
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
@@ -141,6 +161,8 @@ func _terminar_partida(victoria: bool) -> void:
 		# Para el resumen de la pantalla final: el ranking no las guarda.
 		"equipo": _resumen_equipo(),
 		"donde": _donde(victoria),
+		# Las partidas en red no van al ranking ni a la cuenta.
+		"en_red": Red.actual != null and Red.actual.en_red(),
 	})
 
 

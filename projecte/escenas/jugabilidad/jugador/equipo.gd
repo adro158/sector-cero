@@ -30,6 +30,9 @@ var llevado_por: Array = []
 ## Los cambio_personaje.gd de todos los jugadores, también los que se han
 ## quedado sin personaje (para que vuelvan en la fase 2).
 var miembros: Array = []
+## El cambio_personaje.gd del jugador de este ordenador (el de la escena): la
+## interfaz enseña su personaje.
+var local: Node = null
 ## Para curar el banquillo una sola vez por fotograma, aunque lo pidan todos
 ## los jugadores.
 var _ultimo_fotograma := -1
