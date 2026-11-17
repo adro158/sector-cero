@@ -371,9 +371,16 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    (`adam/red-mejoras`): el triángulo del Espadachín salía recto en el
    cliente (allí no se puede buscar al enemigo más cercano: ahora hacia dónde
    apunta cada uno va en el estado) y el aviso «Esperando a que los demás
-   jugadores elijan» (`aviso_espera_red.gd`). Faltan las otras tres de la
-   #19: el personaje «en uso» en la barra de abajo, el nombre encima de cada
-   jugador y preguntar a los demás si se para al pulsar Esc.
+   jugadores elijan» (`aviso_espera_red.gd`). Y además: el nombre encima de
+   cada jugador y una flecha en el borde hacia los compañeros que no se ven
+   (`indicador_companeros_red.gd`); y contra el lag de Alan, a cada cliente
+   solo se le manda lo que tiene cerca (`RADIO_VISTA`, 1000 px: con 600
+   enemigos lejos, el estado pasa de 6,5 KB a 1,5 KB) y su jugador se mueve
+   en cuanto pulsa, sin esperar al anfitrión (se corrige si se separa más de
+   120 px o, quieto, poco a poco). Pendiente en la #19: el personaje «en
+   uso» en la barra de abajo, la pausa por votación, la animación del cofre
+   del compañero, ver sus mejoras al pincharle y la resistencia del malware
+   en los clientes.
    **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
    (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
    vida del ransomware no se ven en los clientes (sus vidas no viajan).

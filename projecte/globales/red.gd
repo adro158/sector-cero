@@ -132,8 +132,8 @@ func enviar_entrada(entrada: Dictionary, fiable := false) -> void:
 
 ## Anfitrión → clientes, unas 20 veces por segundo: si se pierde uno, el
 ## siguiente ya trae lo de ahora, así que no hace falta que llegue.
-func enviar_estado(estado: Dictionary) -> void:
-	_mandar(["estado", estado], 0, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED)
+func enviar_estado(estado: Dictionary, destino := 0) -> void:
+	_mandar(["estado", estado], destino, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED)
 
 
 ## Anfitrión → clientes: algo que ha pasado, que sí tiene que llegar.

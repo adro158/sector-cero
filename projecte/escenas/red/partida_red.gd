@@ -17,6 +17,7 @@ const EstadoRed := preload("res://escenas/red/estado_red.gd")
 const PrepararRed := preload("res://escenas/red/preparar_red.gd")
 const SucesosRed := preload("res://escenas/red/sucesos_red.gd")
 const AvisoEsperaRed := preload("res://escenas/red/aviso_espera_red.gd")
+const IndicadorCompaneros := preload("res://escenas/red/indicador_companeros_red.gd")
 const MENU := "res://escenas/menu_principal/menu_principal.tscn"
 ## El estado, cada 3 pasos de física: 20 veces por segundo.
 const CADA := 3
@@ -49,6 +50,7 @@ func _ready() -> void:
 	_sucesos = SucesosRed.new()
 	add_child(_sucesos)
 	add_child(AvisoEsperaRed.new(self))
+	add_child(IndicadorCompaneros.new(self))
 	_preparar.call_deferred()
 	BusEventos.entrada_recibida.connect(_al_recibir_entrada)
 	BusEventos.estado_recibido.connect(_al_recibir_estado)
@@ -67,6 +69,15 @@ func terminada() -> bool:
 
 func sin_estados_ms() -> int:
 	return Time.get_ticks_msec() - _ultimo_estado if _ultimo_estado > 0 else 0
+
+
+## Para el indicador de compañeros (indicador_companeros_red.gd).
+func jugadores() -> Array:
+	return _por_id.values()
+
+
+func id_de(jugador: Node) -> int:
+	return _por_id.find_key(jugador)
 
 
 ## Al salir de la partida (al menú), también de la red: si no, se seguiría
@@ -96,15 +107,21 @@ func _physics_process(_delta: float) -> void:
 	if red.es_anfitrion():
 		_pasos += 1
 		if _pasos % CADA == 0 and not _por_id.is_empty():
-			red.enviar_estado(EstadoRed.del_anfitrion(get_tree(), _por_id, _reloj, _experiencia, _muertes, _golpes))
+			# A cada cliente el suyo, con lo que tiene cerca (estado_red.gd).
+			for id in _por_id:
+				if id != 1:
+					var centro: Vector2 = _por_id[id].global_position
+					red.enviar_estado(EstadoRed.del_anfitrion(get_tree(), _por_id, _reloj, _experiencia, _muertes, _golpes, centro), id)
 			_muertes = []
 			_golpes = []
 		return
 	# Entre un estado y el siguiente cada jugador sigue hacia donde iba; si no
 	# llegan, se queda quieto en vez de irse andando.
+	var local: Node = get_parent().get_node("Jugador")
 	if Time.get_ticks_msec() - _ultimo_estado > SIN_ESTADO_MS:
 		for jugador in _por_id.values():
-			jugador.direccion_red = Vector2.ZERO
+			if jugador != local:
+				jugador.direccion_red = Vector2.ZERO
 	var direccion := Vector2.ZERO
 	var cambiar := 0
 	if not _menu_abierto:
@@ -114,6 +131,10 @@ func _physics_process(_delta: float) -> void:
 		elif Input.is_action_just_pressed("personaje_anterior"):
 			cambiar = -1
 	red.enviar_entrada({"direccion": direccion, "cambiar": cambiar})
+	# El de aquí se mueve ya con lo que se pulsa, sin esperar a que el anfitrión
+	# devuelva su sitio (en la red de clase iba con retraso, 17/11); si se
+	# separa de donde dice el anfitrión, lo corrige estado_red.gd.
+	local.direccion_red = direccion
 
 
 ## En el anfitrión: lo que ha pulsado (o elegido) el de otro ordenador.
@@ -147,7 +168,7 @@ func _al_recibir_estado(estado: Dictionary) -> void:
 		if not estado.j.has(id):
 			_por_id[id].get_node("CambioPersonaje").irse()
 			_por_id.erase(id)
-	EstadoRed.aplicar(get_tree(), _por_id, estado)
+	EstadoRed.aplicar(get_tree(), _por_id, estado, get_parent().get_node("Jugador"))
 
 
 ## En el anfitrión (en los clientes, las muertes las avisa estado_red.gd).

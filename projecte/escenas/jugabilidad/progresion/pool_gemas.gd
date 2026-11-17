@@ -146,6 +146,18 @@ func valores_vivos() -> PackedInt32Array:
 	return _valores.slice(0, _vivas)
 
 
+## Los que están a menos de radio de centro, como [posiciones, valores]: a
+## cada cliente solo se le mandan los que tiene cerca (estado_red.gd).
+func datos_red(centro: Vector2, radio: float) -> Array:
+	var posiciones := PackedVector2Array()
+	var valores := PackedInt32Array()
+	for i in _vivas:
+		if _posiciones[i].distance_to(centro) < radio:
+			posiciones.append(_posiciones[i])
+			valores.append(_valores[i])
+	return [posiciones, valores]
+
+
 ## ... y ponerlos (en los clientes), sin el parpadeo de caducar.
 func poner_desde_red(posiciones: PackedVector2Array, valores: PackedInt32Array) -> void:
 	_vivas = mini(posiciones.size(), MAXIMO_GEMAS)
