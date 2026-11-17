@@ -74,6 +74,7 @@ static func solo_dibujar(raiz: Node, por_id: Dictionary) -> void:
 	for jugador in por_id.values():
 		jugador.por_red = true
 		jugador.get_node("Ultis").solo_dibujar = true
+		jugador.get_node("GestorArmas").solo_dibujar = true
 		# La vida la pone el anfitrión: si se regenerara aquí, el siguiente estado
 		# parecería un golpe (estado_red.gd avisa de los golpes).
 		jugador.get_node("Salud").regeneracion = 0.0

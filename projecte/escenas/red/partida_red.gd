@@ -16,6 +16,7 @@ const Red := preload("res://globales/red.gd")
 const EstadoRed := preload("res://escenas/red/estado_red.gd")
 const PrepararRed := preload("res://escenas/red/preparar_red.gd")
 const SucesosRed := preload("res://escenas/red/sucesos_red.gd")
+const AvisoEsperaRed := preload("res://escenas/red/aviso_espera_red.gd")
 const MENU := "res://escenas/menu_principal/menu_principal.tscn"
 ## El estado, cada 3 pasos de física: 20 veces por segundo.
 const CADA := 3
@@ -47,6 +48,7 @@ var _sucesos: Node
 func _ready() -> void:
 	_sucesos = SucesosRed.new()
 	add_child(_sucesos)
+	add_child(AvisoEsperaRed.new(self))
 	_preparar.call_deferred()
 	BusEventos.entrada_recibida.connect(_al_recibir_entrada)
 	BusEventos.estado_recibido.connect(_al_recibir_estado)
@@ -55,6 +57,16 @@ func _ready() -> void:
 	BusEventos.experiencia_cambiada.connect(_al_cambiar_experiencia)
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	BusEventos.juego_pausado.connect(_al_pausar)
+
+
+## Para el aviso de espera (aviso_espera_red.gd): si la partida ya ha acabado,
+## y en los clientes, cuánto hace que no llega un estado (0 antes del primero).
+func terminada() -> bool:
+	return _sucesos.terminada
+
+
+func sin_estados_ms() -> int:
+	return Time.get_ticks_msec() - _ultimo_estado if _ultimo_estado > 0 else 0
 
 
 ## Al salir de la partida (al menú), también de la red: si no, se seguiría

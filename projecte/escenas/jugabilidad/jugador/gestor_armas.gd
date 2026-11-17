@@ -28,6 +28,10 @@ var ultimo_cono: RefCounted
 ## 24/10 era siempre hacia donde miraba, y jugando casi nunca daba a nada
 ## (Adam). aura_arma.gd dibuja el contorno hacia aquí.
 var apuntando := Vector2.DOWN
+## Multijugador: en los clientes no se busca a quién apuntar (allí la horda
+## no se sabe dónde está para buscar): apuntando llega del anfitrión
+## (estado_red.gd).
+var solo_dibujar := false
 
 
 func _ready() -> void:
@@ -54,7 +58,7 @@ func cambiar_arma(arma: DatosArma) -> void:
 
 func _physics_process(delta: float) -> void:
 	for i in armas.size():
-		if armas[i].angulo_cono > 0.0:
+		if armas[i].angulo_cono > 0.0 and not solo_dibujar:
 			_apuntar(armas[i].radio * multiplicador_alcance)
 		_tiempos[i] -= delta
 		if _tiempos[i] > 0.0:

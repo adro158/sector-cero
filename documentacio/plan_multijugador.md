@@ -366,6 +366,14 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    (`adam/red-conexion`): `ip_local()` mira el adaptador de cada IP y se
    salta los virtuales; la sala enseña la IP debajo del código; se puede
    escribir la IP en vez del código; y el aviso de fallo dice qué mirar.
+   **Con la v1.19 ya conecta entre dos ordenadores** (Adam y Alan, 17/11).
+   Peticiones de Adam tras jugar, en la issue #19. Hechas el 17/11
+   (`adam/red-mejoras`): el triángulo del Espadachín salía recto en el
+   cliente (allí no se puede buscar al enemigo más cercano: ahora hacia dónde
+   apunta cada uno va en el estado) y el aviso «Esperando a que los demás
+   jugadores elijan» (`aviso_espera_red.gd`). Faltan las otras tres de la
+   #19: el personaje «en uso» en la barra de abajo, el nombre encima de cada
+   jugador y preguntar a los demás si se para al pulsar Esc.
    **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
    (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
    vida del ransomware no se ven en los clientes (sus vidas no viajan).

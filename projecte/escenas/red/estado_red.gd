@@ -8,7 +8,8 @@ extends RefCounted
 ##
 ## Las claves son cortas porque va muchas veces por segundo:
 ## - j: por id de la red, [posición, velocidad, personaje, vida, máxima, si
-##   está mirando sin personaje, la carga de las ultis de sus personajes]
+##   está mirando sin personaje, la carga de las ultis de sus personajes,
+##   hacia dónde apunta su golpe en cono]
 ## - h: por tipo de la horda (en el orden del grupo gestor_enemigos, el mismo
 ##   en todos los ordenadores), lo de gestor_enemigos.gd datos_red()
 ## - g: [posiciones, valores] de los fragmentos de datos
@@ -41,7 +42,8 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		var salud: Salud = jugador.get_node("Salud")
 		jugadores[id] = [jugador.global_position, jugador.velocity, cambio.indice_actual(), salud.vida(),
-			salud.vida_maxima, cambio.espectador(), jugador.get_node("Ultis").cargas()]
+			salud.vida_maxima, cambio.espectador(), jugador.get_node("Ultis").cargas(),
+			jugador.get_node("GestorArmas").apuntando]
 		equipo = cambio._equipo
 	var horda := []
 	for gestor in arbol.get_nodes_in_group("gestor_enemigos"):
@@ -89,6 +91,7 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		if cambio.indice_actual() == indice_antes and vida_antes - datos[3] >= 1.0:
 			salud.danado.emit(vida_antes - datos[3])
 		jugador.get_node("Ultis").poner_cargas(datos[6])
+		jugador.get_node("GestorArmas").apuntando = datos[7]
 	var gestores := arbol.get_nodes_in_group("gestor_enemigos")
 	for i in mini(gestores.size(), estado.h.size()):
 		gestores[i].poner_desde_red(estado.h[i])
