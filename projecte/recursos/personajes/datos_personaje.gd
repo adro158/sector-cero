@@ -44,5 +44,23 @@ extends Resource
 @export var nombre_ulti: String = ""
 @export_multiline var descripcion_ulti: String = ""
 
-## Color que lo identifica en la interfaz.
+## Color que lo identifica en la interfaz. No cambia con la skin: es lo que
+## lo reconoce en el HUD, las ultis y los efectos.
 @export var color: Color = Color.WHITE
+
+## Sus skins (recursos/skins/<personaje>/, con datos_skin.gd), de la categoría
+## más baja a la más alta. El aspecto original es la número 1 y no está aquí.
+@export var skins: Array[Resource] = []
+
+
+## La skin con ese número, o el propio personaje si es la 1 (la original) o no
+## la tiene. Las dos tienen las hojas y el retrato con los mismos nombres, así
+## que quien dibuja no necesita saber cuál es. El número lo da quien llama: la
+## opción guardada (datos_skin.gd, elegida) o, en red, el de cada jugador.
+## Aquí no se lee la opción: con --script (el simulador) esta clase se compila
+## antes de que existan los autoloads y GestorGuardado no se encontraría.
+func skin(numero: int) -> Resource:
+	for una in skins:
+		if una.numero == numero:
+			return una
+	return self

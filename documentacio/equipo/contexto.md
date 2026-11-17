@@ -190,6 +190,19 @@ también escuchan `partida_terminada` y suben la partida a Supabase si se ha
 entrado en una cuenta; avisan con `sesion_cambiada`. Plan y SQL en
 `documentacio/plan_cuentas.md`.
 
+**Las skins** (desde el 17/11, de Alan; `equipo/reparto.md`) no tienen nodo
+ni señales: son datos. Cada personaje lista las suyas en
+`DatosPersonaje.skins` (recursos `recursos/skins/datos_skin.gd`, sin
+`class_name`, con las mismas hojas y retratos que el personaje). Una skin se
+identifica por su número (1 es el aspecto original): `personaje.skin(numero)`
+da la skin o el propio personaje, y `DatosSkin.elegida(personaje)` (con
+`const DatosSkin := preload("res://recursos/skins/datos_skin.gd")`), la que ha
+elegido el jugador de este ordenador, guardada en la opción `"skins"` de
+`GestorGuardado` (`{"Mago": 12}`). Quien dibuja al personaje pide las hojas o
+el retrato a lo que devuelven, sin saber si es una skin. El color del
+personaje no cambia con la skin. `DatosPersonaje` no lee la opción: con
+`--script` (el simulador) se compila antes que los autoloads.
+
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
 `GestorAudio`, `Transicion` (fundido entre escenas; al arrancar pone también el

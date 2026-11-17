@@ -18,6 +18,7 @@ dueño. Se actualiza cada vez que se reparte algo nuevo (en un PR, como todo).
 | Recursos de datos (`.tres`) y arte | `recursos/`, `medios/` (menos audio y shaders) | Adam |
 | Multijugador: la red y la sala (06/11, `plan_multijugador.md`) | `globales/red.gd`, `escenas/red/` | Adam (desde el 13/11; antes Alan, que hizo la prueba de conexión) |
 | Multijugador: el juego con varios jugadores | lo de Adam de arriba (jugador, enemigos, interfaz...) | Adam |
+| Skins: los datos, sus PNG y el armario (17/11, issue #16) | `recursos/skins/`, `medios/sprites/skins/`, `escenas/skins/` | Alan |
 | Documentos de Alan | `documentacio/assets.md`, `documentacio/propuesta.md` | Alan |
 | Entregables y seguimiento | `documentacio/` (el resto) | Adam |
 
@@ -46,3 +47,23 @@ de la prueba de conexión de Alan (`alan/red`, 09/11). De Alan sigue haciendo
 falta probar con dos ordenadores de verdad que la red del instituto deja
 conectar: Claude solo puede probar dos copias del juego en el mismo
 ordenador.
+
+## Las skins (17/11)
+
+Alan monta las skins de los personajes (issue #16) con la forma de su lote
+de assets: cada skin es un recurso `recursos/skins/datos_skin.gd` con las
+mismas hojas que el personaje, identificada por un número (1 es el aspecto
+original), y la elegida se guarda en la opción `"skins"` de
+`GestorGuardado` (`{"Mago": 12}`).
+
+- **De Alan:** `recursos/skins/` (el recurso y una carpeta por personaje con
+  sus skins), `medios/sprites/skins/` (los PNG) y `escenas/skins/` (el
+  armario, donde se elige la skin).
+- **En ficheros de Adam, en el PR de contrato** (`alan/skins-contrato`):
+  `DatosPersonaje` gana `skins` y `skin(numero)`, y `GestorGuardado` la
+  opción `"skins"`. La elegida la da `DatosSkin.elegida(personaje)`, de Alan.
+- **Lo que se pide a Adam** (issue aparte, con el parche propuesto): la
+  lista de skins en el `.tres` de cada personaje, las hojas de la skin en
+  `cambio_personaje.gd` (`_aplicar`), los retratos de la skin en el HUD y
+  abrir el armario desde el menú. En red (cuando esté `adam/red` en `main`),
+  que cada jugador mande su número de skin al entrar en la sala.
