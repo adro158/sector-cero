@@ -110,6 +110,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 ## Pasa al siguiente personaje vivo y libre (paso 1) o al anterior (paso -1)
 ## si ha terminado la espera. Devuelve si cambió.
 func cambiar(paso: int = 1) -> bool:
+	# Mirando no lleva a nadie (en red puede llegar la tecla del otro ordenador).
+	if _espectador:
+		return false
 	var otro := _equipo.disponible_desde(_indice, paso)
 	if (_restante > 0.0 and not sin_espera) or otro == _indice:
 		return false
@@ -152,7 +155,12 @@ func seguir_red(indice: int, mirando: bool) -> void:
 	if mirando != _espectador:
 		if mirando:
 			_equipo.llevado_por[_indice] = null
-		_poner_espectador(mirando)
+			_poner_espectador(true)
+		else:
+			# Vuelve (al empezar la fase 2 o al quedar uno libre), con el
+			# personaje que dice el anfitrión.
+			volver(indice)
+		return
 	if mirando:
 		return
 	if indice == _indice and _equipo.caidos[_indice] and _sprite.visible:
@@ -212,7 +220,7 @@ func revivir_todos() -> void:
 		_equipo.vidas[i] = _equipo.maximas[i]
 	for quien in _jugadores_del_equipo():
 		quien.salud().poner(_equipo.maximas[quien.indice_actual()], _equipo.maximas[quien.indice_actual()])
-	_volver_espectadores()
+	volver_espectadores()
 
 
 ## Al pasar a la fase 2 (raiz_juego.gd): el sector se reinicia y los que han
@@ -223,13 +231,14 @@ func revivir_caidos(fraccion: float) -> void:
 		if _equipo.caidos[i]:
 			_equipo.caidos[i] = false
 			_equipo.vidas[i] = _equipo.maximas[i] * fraccion
-	_volver_espectadores()
+	volver_espectadores()
 	_avisar_equipo()
 
 
 ## Los que se habían quedado sin personaje vuelven con uno libre (con varios
-## jugadores, al empezar la fase 2). Con uno solo nunca hay espectadores.
-func _volver_espectadores() -> void:
+## jugadores: al empezar la fase 2, o al irse uno y dejar el suyo libre). Con
+## uno solo nunca hay espectadores.
+func volver_espectadores() -> void:
 	for miembro in _equipo.miembros:
 		var libre := _equipo.primero_libre()
 		if miembro.espectador() and libre != -1:

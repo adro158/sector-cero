@@ -61,6 +61,8 @@ var _jaula: Node2D
 ## Multijugador: en los clientes no simula, dibuja la horda que manda el
 ## anfitrión (estado_red.gd).
 var solo_dibujar := false
+## En los clientes, el aviso de embestida de cada vivo (poner_desde_red).
+var _avisos_red := PackedFloat32Array()
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -120,7 +122,10 @@ func huir(parte := 1.0) -> void:
 ## juego en pausa no avanza. Los que ya habían muerto con el último golpe y
 ## aún no se habían retirado cuentan como siempre.
 func vaciar() -> void:
-	_retirar_muertos()
+	# En los clientes (solo_dibujar) las vidas no se usan y están a 0: se
+	# retirarían todos como muertos. Allí las muertes llegan del anfitrión.
+	if not solo_dibujar:
+		_retirar_muertos()
 	_vivos = 0
 	_huida = 0.0
 	_horda.multimesh.visible_instance_count = 0
@@ -275,16 +280,24 @@ func _physics_process(delta: float) -> void:
 		queue_redraw()
 
 
-## Multijugador: dónde están los vivos, para mandarlo (en el anfitrión)...
-func posiciones_vivos() -> PackedVector2Array:
-	return _posiciones.slice(0, _vivos)
+## Multijugador: los vivos, para mandarlos (en el anfitrión): [posiciones, el
+## aviso rojo de embestida de cada uno (vacío si este tipo no embiste)]...
+func datos_red() -> Array:
+	var avisos := PackedFloat32Array()
+	if _embestida != null:
+		for i in _vivos:
+			avisos.append(_embestida.avisando(i))
+	return [_posiciones.slice(0, _vivos), avisos]
 
 
-## ... y ponerlo (en los clientes).
-func poner_desde_red(posiciones: PackedVector2Array) -> void:
+## ... y ponerlos (en los clientes). El aviso hace falta para poder esquivar
+## al troyano también allí.
+func poner_desde_red(datos_anfitrion: Array) -> void:
+	var posiciones: PackedVector2Array = datos_anfitrion[0]
 	_vivos = mini(posiciones.size(), MAXIMO_ENEMIGOS)
 	for i in _vivos:
 		_posiciones[i] = posiciones[i]
+	_avisos_red = datos_anfitrion[1]
 
 
 func _draw() -> void:
@@ -444,6 +457,11 @@ func _volcar_al_multimesh(delta: float) -> void:
 		# El tercer dato es el desfase de su animación. Sale de su id, que
 		# viaja con él al cambiar de hueco: así no da saltos de fotograma.
 		var desfase := fmod(_ids[i] * 0.37, 1.0)
+		# En los clientes los ids no llegan (se usa el hueco) y el aviso es el
+		# que manda el anfitrión.
+		if solo_dibujar:
+			desfase = fmod(i * 0.37, 1.0)
+			aviso = _avisos_red[i] if i < _avisos_red.size() else 0.0
 		# El cuarto, cuánto se ha desvanecido huyendo.
 		var desvanecido := 1.0 - _huida / DURACION_HUIDA if _huyendo(i) else 0.0
 		multimesh.set_instance_custom_data(i, Color(_destellos[i] / DURACION_DESTELLO * destellos, aviso, desfase, desvanecido))

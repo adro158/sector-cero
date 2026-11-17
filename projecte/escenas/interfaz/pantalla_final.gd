@@ -67,7 +67,7 @@ func _mostrar(estadisticas: Dictionary) -> void:
 		caja.add_child(EstiloInterfaz.etiqueta("Partida con el menú de desarrollador (F1): no cuenta para los récords ni el ranking", 13, EstiloInterfaz.TEXTO_SUAVE))
 	var en_red: bool = estadisticas.get("en_red", false)
 	if en_red:
-		caja.add_child(EstiloInterfaz.etiqueta("Partida en red: no cuenta para el ranking ni para la cuenta", 13, EstiloInterfaz.TEXTO_SUAVE))
+		caja.add_child(EstiloInterfaz.etiqueta("Partida en red: no cuenta para los récords, el ranking ni la cuenta", 13, EstiloInterfaz.TEXTO_SUAVE))
 
 	_estadisticas = estadisticas
 	# Con cuenta ya se sabe el nombre: se guarda solo (decisión de Adam,

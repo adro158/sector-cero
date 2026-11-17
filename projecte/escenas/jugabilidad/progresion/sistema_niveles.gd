@@ -7,6 +7,9 @@ signal opciones_sorteadas
 ## La ruleta de un cofre que ha recogido un jugador de otro ordenador: la red
 ## se la manda a él (partida_red.gd).
 signal ruleta_sorteada(jugador: Node, sectores: Array, premio: DatosMejora)
+## Al aplicar una mejora a un jugador: la red la manda a los clientes, que la
+## aplican también para que se vea (la evolución, el alcance, la velocidad).
+signal mejora_aplicada(jugador: Node, mejora: DatosMejora)
 
 const OPCIONES_POR_NIVEL := 3
 ## Sectores de la ruleta del cofre.
@@ -242,10 +245,30 @@ func elegir(jugador: Node, mejora: DatosMejora) -> void:
 	_por_elegir.erase(jugador)
 	# Los que se han quedado sin personaje mientras tanto ya no eligen.
 	_por_elegir = _por_elegir.filter(func(otro): return otro.is_in_group("jugador"))
-	if not _por_elegir.is_empty():
-		return
-	_pendientes.pop_front()
+	if _por_elegir.is_empty():
+		_siguiente()
 
+
+## Multijugador: ese jugador ya no elige (se ha ido de la partida). Si era el
+## último que faltaba, se sigue como si hubiera elegido: si no, la partida se
+## quedaría en pausa para siempre esperándole.
+func quitar(jugador: Node) -> void:
+	if _pendientes.is_empty() or jugador not in _por_elegir:
+		return
+	_por_elegir.erase(jugador)
+	if _por_elegir.is_empty():
+		_siguiente()
+
+
+## Multijugador, en los clientes: la mejora que el anfitrión ha aplicado a ese
+## jugador. Allí no se elige (elegir() no hace nada): se aplica para que se vea.
+func aplicar_desde_red(jugador: Node, mejora: DatosMejora) -> void:
+	_aplicar(mejora, jugador)
+
+
+## Han elegido todos: la siguiente pendiente o, si no hay, fuera la pausa.
+func _siguiente() -> void:
+	_pendientes.pop_front()
 	if not _pendientes.is_empty():
 		_ofrecer_mejoras()
 	else:
@@ -285,3 +308,4 @@ func _aplicar(mejora: DatosMejora, jugador: Node) -> void:
 			cambio_personaje.reducir_espera(mejora.valor)
 		DatosMejora.Efecto.RADIO_IMAN:
 			_pool_gemas.radio_iman *= 1.0 + mejora.valor
+	mejora_aplicada.emit(jugador, mejora)

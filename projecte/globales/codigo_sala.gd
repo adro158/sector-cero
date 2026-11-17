@@ -49,6 +49,11 @@ static func a_ip(codigo: String) -> String:
 	return "%d.%d.%d.%d" % [(numero >> 24) & 255, (numero >> 16) & 255, (numero >> 8) & 255, numero & 255]
 
 
+## Las redes que crea VirtualBox en el ordenador: la de solo anfitrión
+## (192.168.56.x) y la NAT de una máquina virtual (10.0.2.x).
+const VIRTUALES := ["192.168.56.", "10.0.2."]
+
+
 ## Para enseñarlo: en dos trozos, más fácil de leer y de dictar.
 static func bonito(codigo: String) -> String:
 	return codigo.substr(0, 3) + "-" + codigo.substr(3)
@@ -56,14 +61,23 @@ static func bonito(codigo: String) -> String:
 
 ## La IP de este ordenador en la red local: la primera de casa o de clase
 ## (192.168.x, 10.x, 172.16-31.x), sin la de bucle (127.x) ni las de sin red
-## (169.254.x). "" si no hay ninguna.
+## (169.254.x). Las de VirtualBox (VIRTUALES), solo si no hay otra: si no, en un
+## ordenador con VirtualBox el código llevaría a una red a la que nadie llega.
+## "" si no hay ninguna.
 static func ip_local() -> String:
 	var candidatas := []
+	var virtuales := []
 	for ip in IP.get_local_addresses():
-		if ip.count(".") == 3 and not ip.begins_with("127.") and not ip.begins_with("169.254."):
+		if ip.count(".") != 3 or ip.begins_with("127.") or ip.begins_with("169.254."):
+			continue
+		if VIRTUALES.any(func(prefijo): return ip.begins_with(prefijo)):
+			virtuales.append(ip)
+		else:
 			candidatas.append(ip)
 	for prefijo in ["192.168.", "10.", "172."]:
 		for ip in candidatas:
 			if ip.begins_with(prefijo):
 				return ip
-	return candidatas[0] if not candidatas.is_empty() else ""
+	if not candidatas.is_empty():
+		return candidatas[0]
+	return virtuales[0] if not virtuales.is_empty() else ""

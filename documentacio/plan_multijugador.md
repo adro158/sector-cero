@@ -250,7 +250,7 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    hacer daño (eso es de la partida del anfitrión). Probado con dos copias:
    misma vida y sitio en los dos, y el explosivo estalla en el cliente.
    Kernel Panic, también el 16/11: el anfitrión lo manda en el estado
-   (clave `k`: posición, vida, máxima, estado, hacia dónde mira y furia) y
+   (en la clave `a`, la lista `RAIZ` de `estado_red.gd`: posición, vida, máxima, estado, hacia dónde mira y furia) y
    en los clientes no persigue, no ataca ni recibe golpes; aparece con su
    aviso, pone sus poses, se enfurece a la vez y, al morir, el cliente
    también pasa a la fase 2 (el negro, la arena y la música). Su muerte no
@@ -258,7 +258,7 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    anfitrión. Probado con dos copias: misma vida, furia 1 y 2 y la fase 2
    en los dos.
    NÚCLEO CERO, también el 16/11: el anfitrión lo manda en el estado
-   (clave `n`: posición, vida, máxima, estado y forma) y en los clientes no
+   (también en la clave `a`: posición, vida, máxima, estado y forma) y en los clientes no
    se mueve, no ataca ni recibe golpes; aparece con su aviso, se transforma,
    se queda aturdido y muere como en el anfitrión. Al acabar de morir en un
    cliente no avisa de la victoria: el final llega del anfitrión («fin»), y
@@ -324,9 +324,37 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    dibuja) y `reglas_sala.gd` (quién entra y qué personaje lleva), y la
    conversión del final en `estado_red.gd`; `partida_red.gd` queda en 205
    líneas y `red.gd` en 219.
-   **Falta:** probarlo entre dos ordenadores de verdad (issue #15). La carga de la ulti en los clientes se cuenta con las muertes que
-   llegan: si se pierde algún estado puede ir un poco por detrás de la del
-   anfitrión, que es la que decide si se puede lanzar.
+   **Revisión del 17/11** (cuatro revisores y un verificador sobre el PR
+   #14: 23 fallos confirmados, todos arreglados y probados con dos o tres
+   copias):
+   - Salidas: si se iba un cliente mientras era el único que faltaba por
+     elegir mejora (o girando su ruleta), el anfitrión se quedaba en pausa
+     para siempre (ahora `SistemaNiveles.quitar()`); los que miraban no
+     volvían con el personaje que dejaba libre (`volver_espectadores()`
+     pública); los clientes no se enteraban de que se iba otro cliente (se
+     va quien no viene en el estado); un espectador podía «quedarse» con un
+     personaje al pulsar E (`cambiar()` no hace nada mirando); se podía
+     entrar con la partida empezada («La partida ya ha empezado»); al irse
+     el anfitrión, el cliente vuelve al menú con un aviso.
+   - Fase 2 en los clientes: `vaciar()` daba por muerta a toda la horda
+     (sus vidas allí son 0) y salían cientos de muertes falsas; y el cliente
+     repartía él los personajes de los que miraban (con tres, podía salir
+     cruzado): ahora lo dice el estado.
+   - Lo que no llegaba a los clientes: las ultis (la carga va en el estado;
+     el cliente pide la suya con la dirección a la que apunta y el anfitrión
+     avisa de cada una que lanza, suceso «ulti»), las mejoras aplicadas
+     (suceso «mejora»: las evoluciones, el alcance y la velocidad se ven),
+     el aviso rojo del troyano antes de embestir y los golpes al jugador
+     (su destello y su sonido).
+   - En red: sin estados, los jugadores ya no siguen andando solos; con el
+     menú de pausa abierto, el jugador de ese ordenador se queda quieto; el
+     F1 no se abre; el código de sala no usa las redes de VirtualBox si hay
+     otra; el foco del mando entra en la sala.
+   - `partida_red.gd` se parte otra vez: lo que pasa una vez (el final, las
+     mejoras, la ruleta, las ultis) va en `sucesos_red.gd`.
+   **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
+   (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
+   vida del ransomware no se ven en los clientes (sus vidas no viajan).
 6. La interfaz: el botón JUGAR EN RED del menú, el HUD de cada jugador y la
    pantalla final.
 7. La dificultad con varios jugadores, medida con el simulador.

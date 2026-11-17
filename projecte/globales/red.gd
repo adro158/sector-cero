@@ -24,7 +24,12 @@ const PUERTO := 7777
 static var actual: Node
 
 var _en_red := false
+## En el anfitrión: la partida ya ha empezado y no entra nadie más.
+var _empezada := false
 var _jugadores: Array = []
+## Lo que hay que contar al volver al menú (que el anfitrión ha cerrado la
+## partida): lo enseña la sala al crearse y lo deja vacío.
+var aviso := ""
 ## El nombre con el que se presenta al unirse a una sala.
 var _nombre := ""
 
@@ -92,6 +97,7 @@ func salir() -> void:
 		multiplayer.multiplayer_peer.close()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	_en_red = false
+	_empezada = false
 	_jugadores = []
 
 
@@ -107,7 +113,12 @@ func elegir_personaje(indice: int) -> void:
 func empezar() -> void:
 	if not es_anfitrion():
 		return
-	_mandar(["empieza", _jugadores])
+	_empezada = true
+	# Solo a los de la sala: uno que acaba de conectar y aún no ha saludado no
+	# está en la lista y no debe entrar en la partida.
+	for jugador in _jugadores:
+		if jugador.id != 1:
+			_mandar(["empieza", _jugadores], jugador.id)
 	BusEventos.partida_en_red_empieza.emit(_jugadores)
 
 
@@ -172,7 +183,7 @@ func _al_entrar_en_la_sala() -> void:
 func _al_saludar(id: int, nombre: String, version: String) -> void:
 	if not es_anfitrion():
 		return
-	var motivo := ReglasSala.motivo_rechazo(_jugadores, version)
+	var motivo := "La partida ya ha empezado." if _empezada else ReglasSala.motivo_rechazo(_jugadores, version)
 	if motivo != "":
 		_rechazar(id, motivo)
 		return
@@ -183,7 +194,11 @@ func _al_saludar(id: int, nombre: String, version: String) -> void:
 func _rechazar(id: int, texto: String) -> void:
 	_mandar(["rechazo", texto], id)
 	# Un momento después, para que le llegue el mensaje antes de cortar.
-	get_tree().create_timer(0.5).timeout.connect(func(): multiplayer.multiplayer_peer.disconnect_peer(id))
+	# Si ya se ha ido solo (lo normal al recibir el rechazo), nada: cortar a uno
+	# que no está da un error.
+	get_tree().create_timer(0.5).timeout.connect(func():
+		if multiplayer.multiplayer_peer is ENetMultiplayerPeer and id in multiplayer.get_peers():
+			multiplayer.multiplayer_peer.disconnect_peer(id))
 
 
 ## Si está libre (y existe), ese jugador pasa a llevarlo.

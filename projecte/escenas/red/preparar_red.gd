@@ -70,5 +70,7 @@ static func solo_dibujar(raiz: Node, por_id: Dictionary) -> void:
 	for ancla in raiz.get_node("JefeFinal/Escudo").get_children():
 		ancla.solo_dibujar = true
 	raiz.get_tree().get_first_node_in_group("pool_gemas").solo_dibujar = true
+	# Y las ultis: su carga llega del anfitrión y la propia se le pide a él.
 	for jugador in por_id.values():
 		jugador.por_red = true
+		jugador.get_node("Ultis").solo_dibujar = true

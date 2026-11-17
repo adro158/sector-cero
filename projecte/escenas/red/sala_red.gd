@@ -32,6 +32,7 @@ var _elegir: Array[Button] = []
 var _empezar: Button
 var _estado: Label
 var _volver: Button
+var _crear_sala: Button
 
 
 func _ready() -> void:
@@ -46,7 +47,8 @@ func _ready() -> void:
 	_inicio = VBoxContainer.new()
 	_inicio.add_theme_constant_override("separation", 10)
 	_nombre = _campo(_inicio, "Tu nombre en la sala", 14)
-	_inicio.add_child(EstiloInterfaz.boton("CREAR SALA", _crear, ANCHO))
+	_crear_sala = EstiloInterfaz.boton("CREAR SALA", _crear, ANCHO)
+	_inicio.add_child(_crear_sala)
 	var fila := HBoxContainer.new()
 	fila.add_theme_constant_override("separation", 10)
 	_codigo = _campo(fila, "Código de la sala (7 letras)", 9)
@@ -89,6 +91,12 @@ func _ready() -> void:
 	BusEventos.sala_cambiada.connect(_al_cambiar_sala)
 	BusEventos.partida_en_red_empieza.connect(_al_empezar)
 	BusEventos.jugador_desconectado.connect(_al_irse_alguien)
+	# Se vuelve de una partida en red que ha acabado mal (se ha ido el
+	# anfitrión): se abre la sala con el aviso, para que se sepa por qué.
+	if Red.actual.aviso != "":
+		abrir.call_deferred()
+		_al_fallar.call_deferred(Red.actual.aviso)
+		Red.actual.aviso = ""
 
 
 func abrir() -> void:
@@ -97,6 +105,12 @@ func abrir() -> void:
 	if _nombre.text == "":
 		_nombre.text = Cuenta.actual.nombre if Cuenta.actual.nombre != "" else "Jugador"
 	_mostrar()
+	# El foco, dentro: si no, con el mando se quedaba en los botones del menú
+	# de detrás, y A empezaba una partida con la sala abierta.
+	if _inicio.visible:
+		_crear_sala.grab_focus()
+	else:
+		_volver.grab_focus()
 
 
 func cerrar() -> void:

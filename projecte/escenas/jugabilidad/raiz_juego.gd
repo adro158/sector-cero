@@ -96,6 +96,12 @@ func _al_pausar(en_pausa: bool) -> void:
 	get_tree().paused = en_pausa
 
 
+## Si este ordenador es un cliente de una partida en red: la partida es la del
+## anfitrión y aquí solo se dibuja.
+func _en_cliente() -> bool:
+	return Red.actual != null and Red.actual.en_red() and not Red.actual.es_anfitrion()
+
+
 func usar_trucos() -> void:
 	_trucos = true
 
@@ -121,7 +127,11 @@ func _pasar_a_fase_2() -> void:
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
 	for gestor in get_tree().get_nodes_in_group("gestor_enemigos"):
 		gestor.vaciar()
-	$Jugador/CambioPersonaje.revivir_caidos(VIDA_AL_REVIVIR)
+	# En los clientes, quién vuelve y con qué personaje lo dice el anfitrión
+	# (estado_red.gd): si lo repartiera cada ordenador, con tres jugadores
+	# podía salir cruzado.
+	if not _en_cliente():
+		$Jugador/CambioPersonaje.revivir_caidos(VIDA_AL_REVIVIR)
 	# Emite fase_cambiada: la arena, el audio y el HUD cambian detrás del negro.
 	_director.empezar_fase_2()
 	await get_tree().create_timer(DURACION_TRANSICION * 0.5).timeout
