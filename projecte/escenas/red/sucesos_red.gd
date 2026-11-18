@@ -16,7 +16,7 @@ const EstadoRed := preload("res://escenas/red/estado_red.gd")
 var por_id := {}
 ## Si la partida ya se ha acabado (cada uno está en su pantalla final).
 var terminada := false
-## La interfaz de la partida en red (interfaz_red.gd): la mini ruleta del
+## La interfaz de la partida en red (interfaz_red.gd): la ruleta del
 ## cofre de un compañero. La pone partida_red.gd.
 var interfaz: Node
 ## Las mejoras de cada jugador, por id: mejora → veces que la ha cogido. Para
@@ -80,7 +80,7 @@ func _apuntar(id: int, mejora: DatosMejora) -> void:
 
 
 ## En el anfitrión: un cofre que ha recogido otro. Su ruleta va a todos: él la
-## gira y elige; los demás la ven en pequeño. Aquí también.
+## gira y elige; los demás la ven en grande, sin elegir. Aquí también.
 func _al_sortear_ruleta(jugador: Node, sectores: Array, premio: DatosMejora) -> void:
 	var id: int = por_id.find_key(jugador)
 	Red.actual.enviar_suceso("ruleta", [id, sectores.map(func(mejora): return mejora.resource_path), premio.resource_path])
@@ -92,11 +92,11 @@ func _al_abrir_ruleta_aqui(sectores: Array, premio: DatosMejora) -> void:
 	Red.actual.enviar_suceso("ruleta", [1, sectores.map(func(mejora): return mejora.resource_path), premio.resource_path])
 
 
-## La ruleta del cofre de un compañero, en pequeño y solo para mirarla.
+## La ruleta del cofre de un compañero, en grande y solo para mirarla.
 func _ver_ruleta(id: int, sectores: Array, premio: DatosMejora) -> void:
 	if por_id.has(id):
-		var personaje: DatosPersonaje = por_id[id].get_node("CambioPersonaje").personaje_actual()
-		interfaz.ruleta.mostrar(por_id[id].get_node("CambioPersonaje").nombre_red, personaje.color, sectores, premio)
+		var cambio: Node = por_id[id].get_node("CambioPersonaje")
+		interfaz.ruleta.mostrar(id, cambio.nombre_red, cambio.personaje_actual().color, sectores, premio, mejoras_de(id))
 
 
 ## En el anfitrión: una mejora aplicada a cualquiera, y la ulti que lanza
@@ -105,6 +105,7 @@ func _ver_ruleta(id: int, sectores: Array, premio: DatosMejora) -> void:
 func _al_aplicar_mejora(jugador: Node, mejora: DatosMejora) -> void:
 	if Red.actual.es_anfitrion() and por_id.find_key(jugador) != null:
 		_apuntar(por_id.find_key(jugador), mejora)
+		interfaz.ruleta.al_aplicar(por_id.find_key(jugador), mejora)
 		Red.actual.enviar_suceso("mejora", [por_id.find_key(jugador), mejora.resource_path])
 
 
@@ -124,6 +125,7 @@ func _al_recibir_suceso(suceso: String, datos: Array) -> void:
 		por_id[datos[0]].get_node("Ultis").mostrar_lanzada(datos[1], datos[2], datos[3])
 	elif suceso == "mejora" and por_id.has(datos[0]):
 		_apuntar(datos[0], load(datos[1]))
+		interfaz.ruleta.al_aplicar(datos[0], load(datos[1]))
 		niveles.aplicar_desde_red(por_id[datos[0]], load(datos[1]))
 	elif suceso == "ruleta" and datos[0] != Red.actual.mi_id():
 		var sectores: Array[DatosMejora] = []

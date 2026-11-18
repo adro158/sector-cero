@@ -70,6 +70,10 @@ func _process(delta: float) -> void:
 		# Sin pausa aquí (ya ha elegido) y sin estados: el anfitrión está parado.
 		visible = not get_tree().paused and _partida.sin_estados_ms() > SIN_ESTADO_MS
 		_aviso.text = "Esperando a los demás jugadores..."
+	# Mientras se ve el cofre de un compañero, ya dice ella quién falta.
+	var cofre := get_tree().get_first_node_in_group("cofre_companero")
+	if cofre != null and cofre.abierta():
+		visible = false
 	if not visible:
 		return
 	_tiempo += delta

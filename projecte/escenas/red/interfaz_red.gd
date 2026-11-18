@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 ## La interfaz propia de la partida en red, encima del HUD: la ficha de un
-## compañero, la mini ruleta de su cofre y la votación para parar. También
+## compañero, la ruleta de su cofre y la votación para parar. También
 ## en pausa (la votación se ve con la partida parada). Lo crea partida_red.gd.
 ##
 ## Sin class_name: lo crea partida_red.gd con preload.
