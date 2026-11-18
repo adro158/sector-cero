@@ -125,6 +125,9 @@ var _guardaespaldas_llamado := false
 var _furia := 0
 var _tiempo_rabia := 0.0
 var _jaula: Node2D
+## Multijugador: en los clientes no persigue, no ataca ni recibe golpes; está
+## donde dice el anfitrión (poner_desde_red).
+var solo_dibujar := false
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -169,8 +172,8 @@ func activo() -> bool:
 
 
 ## Misma forma que en los gestores de la horda: devuelve a cuántos alcanza.
-func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null) -> int:
-	if not _activo or global_position.distance_to(centro) > radio_golpe + radio:
+func danar_en_area(centro: Vector2, radio_golpe: float, cantidad: float, resistencia := 0.0, cono: RefCounted = null, _quien: Node2D = null) -> int:
+	if solo_dibujar or not _activo or global_position.distance_to(centro) > radio_golpe + radio:
 		return 0
 	if cono != null:
 		var factor: float = cono.factor(global_position, radio)
@@ -221,6 +224,12 @@ func mas_cercano(desde: Vector2, radio_busqueda: float) -> Vector2:
 
 func _physics_process(delta: float) -> void:
 	if not _activo:
+		return
+	# En los clientes, entre un estado y el siguiente, solo siguen sus poses.
+	if solo_dibujar:
+		_tiempo_estado += delta
+		_animar(delta)
+		queue_redraw()
 		return
 
 	_tiempo_estado += delta
@@ -344,7 +353,8 @@ func _llamar_guardaespaldas() -> void:
 ## mira si ha bajado de algún umbral de furia.
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
 	BusEventos.jefe_vida_cambiada.emit(actual, maxima)
-	if not _activo:
+	# En los clientes, la furia llega del anfitrión y no llama a nadie.
+	if not _activo or solo_dibujar:
 		return
 	var furia := 0
 	for umbral in UMBRALES_FURIA:
@@ -418,7 +428,9 @@ func _al_morir() -> void:
 	_jaula.terminar()
 	_rafaga.vaciar()
 	_aura.visible = false
-	BusEventos.enemigo_muerto.emit(global_position, "jefe")
+	# Su experiencia y la carga de las ultis, solo en la partida del anfitrión.
+	if not solo_dibujar:
+		BusEventos.enemigo_muerto.emit(global_position, "jefe")
 	_efectos.muerte()
 
 
@@ -426,3 +438,36 @@ func _al_morir() -> void:
 func _al_acabar_de_morir() -> void:
 	visible = false
 	derrotado.emit()
+
+
+## Multijugador. Lo que manda el anfitrión (estado_red.gd) mientras se ve:
+## [posición, vida, máxima, estado, hacia dónde mira, furia].
+func datos_red() -> Array:
+	if not visible:
+		return []
+	return [global_position, _salud.vida(), _salud.vida_maxima, _estado, _direccion, _furia]
+
+
+## ... y cómo lo pone un cliente: aparece, se enfurece y muere como en el
+## anfitrión, y al acabar de morir empieza su fase 2 (raiz_juego.gd).
+func poner_desde_red(datos: Array) -> void:
+	if datos.is_empty():
+		return
+	if not visible:
+		# Al acabar de morir aquí, el anfitrión aún puede mandarlo un momento.
+		if datos[1] <= 0.0:
+			return
+		aparecer(datos[0])
+	global_position = datos[0]
+	_direccion = datos[4]
+	if datos[3] != _estado:
+		_cambiar_estado(datos[3])
+	if datos[5] > _furia:
+		_enfurecer(datos[5])
+	var estaba_vivo := _salud.vida() > 0.0
+	if not is_equal_approx(_salud.vida(), datos[1]) or not is_equal_approx(_salud.vida_maxima, datos[2]):
+		if datos[1] < _salud.vida() and _estado == Estado.PERSEGUIR:
+			_sprite.destellar()
+		_salud.poner(datos[1], datos[2])
+	if estaba_vivo and datos[1] <= 0.0:
+		_al_morir()

@@ -1,0 +1,5 @@
+- En red: cuando un compañero abre un cofre, ves su ruleta en grande con «ESTÁ ABRIENDO UN COFRE», al mismo tiempo que él.
+- En red: la carga de la ulti es de cada personaje y la ven todos. La barra de encima de cada uno enseña la suya.
+- En red: el malware se adapta a la herramienta más usada de cada jugador, no solo a la del que más daño hace.
+- En red: los enemigos se mueven más fluidos en el ordenador del compañero.
+- En red: cuando cae el último del equipo, todos ven la animación de la derrota.

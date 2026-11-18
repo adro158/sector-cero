@@ -46,6 +46,9 @@ var _valores := PackedInt32Array()
 var _restantes := PackedFloat32Array()
 var _vivas := 0
 var _experiencia_por_tipo := {}
+## Multijugador: en los clientes no simula, dibuja los fragmentos que manda
+## el anfitrión (estado_red.gd).
+var solo_dibujar := false
 var _fotogramas: Array[Texture2D] = []
 ## Segundos que lleva la animación.
 var _tiempo := 0.0
@@ -89,7 +92,8 @@ func _preparar_multimesh() -> void:
 
 
 func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
-	if _vivas >= MAXIMO_GEMAS:
+	# En los clientes los fragmentos llegan del anfitrión con su estado.
+	if solo_dibujar or _vivas >= MAXIMO_GEMAS:
 		return
 
 	_posiciones[_vivas] = posicion
@@ -99,6 +103,9 @@ func _al_morir_enemigo(posicion: Vector2, tipo: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if solo_dibujar:
+		_volcar_al_multimesh()
+		return
 	# La experiencia es común (multijugador): cada fragmento va al jugador que
 	# tiene más cerca y lo recoge quien llegue.
 	var jugadores := Jugadores.posiciones(get_tree())
@@ -128,6 +135,36 @@ func _physics_process(delta: float) -> void:
 		i -= 1
 
 	_volcar_al_multimesh()
+
+
+## Multijugador: los fragmentos, para mandarlos (en el anfitrión)...
+func posiciones_vivas() -> PackedVector2Array:
+	return _posiciones.slice(0, _vivas)
+
+
+func valores_vivos() -> PackedInt32Array:
+	return _valores.slice(0, _vivas)
+
+
+## Los que están a menos de radio de centro, como [posiciones, valores]: a
+## cada cliente solo se le mandan los que tiene cerca (estado_red.gd).
+func datos_red(centro: Vector2, radio: float) -> Array:
+	var posiciones := PackedVector2Array()
+	var valores := PackedInt32Array()
+	for i in _vivas:
+		if _posiciones[i].distance_to(centro) < radio:
+			posiciones.append(_posiciones[i])
+			valores.append(_valores[i])
+	return [posiciones, valores]
+
+
+## ... y ponerlos (en los clientes), sin el parpadeo de caducar.
+func poner_desde_red(posiciones: PackedVector2Array, valores: PackedInt32Array) -> void:
+	_vivas = mini(posiciones.size(), MAXIMO_GEMAS)
+	for i in _vivas:
+		_posiciones[i] = posiciones[i]
+		_valores[i] = valores[i]
+		_restantes[i] = duracion
 
 
 func _eliminar(indice: int) -> void:

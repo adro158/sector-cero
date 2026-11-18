@@ -23,6 +23,8 @@ const ESPERA := preload("res://medios/interfaz/equipo_espera.png")
 const VIDA_MARCO := preload("res://medios/interfaz/equipo_vida_marco.png")
 const VIDA_RELLENO := preload("res://medios/interfaz/equipo_vida_relleno.png")
 const ICONOS_AVISO := preload("res://medios/interfaz/aviso_iconos.png")
+## En red: encima de la ranura del personaje que lleva otro jugador.
+const EN_USO := preload("res://medios/interfaz/red_en_uso.png")
 const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
 const Entrada := preload("res://globales/entrada.gd")
 ## El de las anclas en la tira de iconos de los avisos.
@@ -118,8 +120,12 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado:
 	var retrato := Color.WHITE if juega else Color(0.75, 0.75, 0.75)
 	if datos.caido:
 		retrato = Color(0.35, 0.35, 0.35)
+	# En red, el nombre del otro jugador que lo lleva (vacío si está libre).
+	var otro: String = datos.get("llevado_por", "")
+	if otro != "":
+		retrato = Color(0.5, 0.5, 0.5)
 	var carga := _ulti(indice)
-	var esperando: bool = not juega and not datos.caido and _espera > 0.0
+	var esperando: bool = not juega and not datos.caido and otro == "" and _espera > 0.0
 
 	# Las piezas de pixel art, a ESCALA: dentro de este bloque las medidas son
 	# las del dibujo de 72 px, como antes del 05/11.
@@ -139,6 +145,10 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado:
 	# Esperando el cambio: se oscurece desde arriba lo que falta.
 	if esperando:
 		draw_rect(Rect2(4.0, 4.0, 64.0, 64.0 * clampf(_espera / _espera_total, 0.0, 1.0)), Color(0.0, 0.0, 0.0, 0.6))
+	# Lo lleva otro: rayas de su color encima del retrato (se ve, pero no se
+	# puede coger).
+	if otro != "":
+		draw_texture(EN_USO, Vector2.ZERO, personaje.color)
 	# La vida, debajo.
 	var parte: float = clampf(datos.vida / datos.maxima, 0.0, 1.0)
 	draw_texture(VIDA_MARCO, Vector2(0.0, 78.0))
@@ -151,6 +161,10 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado:
 	var tamano := EstiloInterfaz.tamano_texto(11)
 	if datos.caido:
 		_texto(fuente, esquina + Vector2(-8.0, LADO / 2.0 + 4.0), "CAÍDO", tamano, EstiloInterfaz.DERROTA, LADO + 16.0)
+		return
+	# Lo lleva otro: su nombre encima, y sin teclas (no se puede pasar a él).
+	if otro != "":
+		_texto(fuente, esquina + Vector2(-8.0, LADO / 2.0 + 4.0), otro.to_upper(), tamano, personaje.color, LADO + 16.0)
 		return
 	if esperando:
 		draw_texture(ESPERA, esquina + Vector2(LADO / 2.0 - 8.0, 2.0))
@@ -194,11 +208,12 @@ func _texto(fuente: Font, donde: Vector2, texto: String, tamano: int, color: Col
 	draw_string(fuente, donde, texto, HORIZONTAL_ALIGNMENT_CENTER, ancho, tamano, color)
 
 
-## El primer personaje vivo desde el activo, en el sentido del paso.
+## El primer personaje vivo y libre desde el activo, en el sentido del paso
+## (en red, el que lleva otro jugador no cuenta: no se puede pasar a él).
 func _vivo_desde(paso: int) -> int:
 	for salto in range(1, _estado.size()):
 		var otro := posmod(_activo + paso * salto, _estado.size())
-		if not _estado[otro].caido:
+		if not _estado[otro].caido and _estado[otro].get("llevado_por", "") == "":
 			return otro
 	return _activo
 

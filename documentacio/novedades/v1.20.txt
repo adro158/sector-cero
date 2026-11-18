@@ -1,0 +1,8 @@
+- En red: el nombre de cada jugador encima de su personaje y, si un compañero no se ve, una flecha en el borde de la pantalla hacia él.
+- En red: haz click en un compañero para ver su ficha con sus mejoras.
+- En red: en la barra de abajo se ve qué personaje lleva otro jugador, y Q y E se lo saltan.
+- En red: cuando un compañero abre un cofre, ves su ruleta en pequeño.
+- En red: al pulsar Esc, los demás votan si se para la partida. Si todos dicen que sí, se para para todos.
+- En red: si ya has elegido tu mejora y otro aún no, sale «Esperando a que los demás jugadores elijan».
+- En red va más fluido: tu personaje se mueve en cuanto pulsas y cada ordenador recibe solo lo que tiene cerca.
+- Arreglado: en el ordenador del compañero, el golpe en cono del Espadachín apuntaba siempre recto y la resistencia del malware no subía.

@@ -28,10 +28,15 @@ var ultimo_cono: RefCounted
 ## 24/10 era siempre hacia donde miraba, y jugando casi nunca daba a nada
 ## (Adam). aura_arma.gd dibuja el contorno hacia aquí.
 var apuntando := Vector2.DOWN
+## Multijugador: en los clientes no se busca a quién apuntar (allí la horda
+## no se sabe dónde está para buscar): apuntando llega del anfitrión
+## (estado_red.gd).
+var solo_dibujar := false
 
 
 func _ready() -> void:
-	_jugador = get_tree().get_first_node_in_group("jugador")
+	# Su jugador (en red hay varios): las armas salen de él y le curan a él.
+	_jugador = get_parent()
 	_salud = _jugador.get_node("Salud")
 	_pool_proyectiles = get_tree().get_first_node_in_group("pool_proyectiles")
 	_resistencia_malware = get_tree().get_first_node_in_group("resistencia_malware")
@@ -53,7 +58,7 @@ func cambiar_arma(arma: DatosArma) -> void:
 
 func _physics_process(delta: float) -> void:
 	for i in armas.size():
-		if armas[i].angulo_cono > 0.0:
+		if armas[i].angulo_cono > 0.0 and not solo_dibujar:
 			_apuntar(armas[i].radio * multiplicador_alcance)
 		_tiempos[i] -= delta
 		if _tiempos[i] > 0.0:
@@ -80,7 +85,7 @@ func _atacar(arma: DatosArma) -> void:
 			var alcanzados := 0
 
 			for objetivo in _objetivos:
-				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia, cono)
+				alcanzados += objetivo.danar_en_area(_jugador.global_position, radio, dano_final, resistencia, cono, _jugador)
 
 			# En golpes enteros: en el cono, cada uno cuenta según su distancia.
 			var golpes: float = alcanzados if cono == null else cono.golpes
@@ -95,7 +100,7 @@ func _atacar(arma: DatosArma) -> void:
 		DatosArma.Tipo.PROYECTIL:
 			# El proyectil aplica la resistencia al impactar, no al salir: puede
 			# pasar un análisis mientras vuela.
-			_pool_proyectiles.lanzar(_jugador.global_position, arma, dano, radio)
+			_pool_proyectiles.lanzar(_jugador.global_position, arma, dano, radio, _jugador)
 
 
 ## Pone en apuntando la dirección al enemigo más cercano a menos de alcance (de

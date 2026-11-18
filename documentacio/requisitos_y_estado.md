@@ -280,6 +280,62 @@ Falta: los lotes del Espadachín y el Segador (solo sus `.tres` y su lista),
 la skin de cada uno en red (cuando `adam/red` esté en `main`) y, más
 adelante, la tienda, el gacha y el pase de la #16.
 
+### El multijugador en red local (en la v1.18, 17/11)
+
+Plan, decisiones y lo hecho punto por punto en
+`documentacio/plan_multijugador.md`. Al cerrar el 13/11:
+- **Fusionado y publicado en la v1.17** (por dentro, sin botón): la parte
+  de Adam, varios jugadores en la partida, el equipo compartido, las
+  mejoras por jugador, el espectador y la vida con más jugadores (PR #11);
+  y el contrato de la red en el bus (PR #9).
+- **La red, que era de Alan, pasó a Adam** el 13/11 (decisión de Adam,
+  PR #13). Hecha en `adam/red` con su PR (bitácora,
+  `bitacora/2026-11-13_adam_red.md`): la sala con su código, el botón EN
+  RED y la partida en red en dos tandas (los demás se mueven con lo que
+  pulsan y los clientes ven la partida del anfitrión). Alan hizo la prueba
+  de conexión.
+- **El 16/11, la tercera tanda entera** (misma rama y PR, bitácora
+  `bitacora/2026-11-16_adam_red-tercera-tanda.md`): en red no se pausa; el
+  final llega a todos y no cuenta para el ranking ni la cuenta; en los
+  clientes se ven los élites, los dos jefes con todos sus ataques, el
+  escudo y sus anclas, los premios, la ruleta (para quien recoge el
+  cofre), las caídas, las muertes y los números de daño. Arreglados: las
+  anclas miraban el personaje del anfitrión, las armas de los demás salían
+  del jugador local, y con el anfitrión mirando no llegaban las mejoras.
+- **El 17/11, revisado a fondo** (28 fallos arreglados: pausa eterna si se
+  iba un cliente, muertes falsas en la fase 2, ultis y mejoras en los
+  clientes...; `bitacora/2026-11-17_adam_revision-red-y-v1.18.md`) y
+  **publicado en la v1.18**.
+- **El 17/11 por la tarde, la v1.19**: en dos Linux de clase no se podía
+  entrar en la sala (el código llevaba la IP de una red virtual); ahora se
+  elige bien, la sala enseña su IP y se puede entrar escribiéndola. **Con
+  ella ya juegan Adam y Alan en dos ordenadores.** Sus peticiones, en la
+  issue #19; hechas en el PR #20 (sin fusionar): el triángulo del
+  Espadachín en los clientes, el aviso de espera, los nombres, la flecha
+  hacia los compañeros y menos lag (`bitacora/2026-11-17_adam_red-v1.19-y-mejoras.md`).
+- **El 18/11, lo que quedaba de la #19**, con las piezas de
+  `lote_red_interfaz.zip` (`bitacora/2026-11-18_adam_red-interfaz.md`):
+  - la resistencia del malware en los clientes
+  - la ficha del compañero con sus mejoras
+  - el personaje en uso en la barra
+  - la ruleta del compañero en pequeño
+  - votar para parar al pulsar Esc
+  - los iconos de red en la sala
+
+  Publicado en la v1.20 (PR #20 y #25).
+- **El 18/11, tras probar la v1.20 con Alan, la v1.21**
+  (`bitacora/2026-11-18_adam_red-arreglos-v1.21.md`):
+  - la ruleta del compañero en grande y con su aviso
+  - la carga de la ulti, del personaje y visible para todos
+  - el malware se adapta a una herramienta por jugador
+  - la horda fluida en los clientes y el estado comprimido
+  - la derrota animada en todos los ordenadores
+- **Falta:**
+  - probarlo con dos ordenadores
+  - apuntar en `contexto.md` la votación (en red ya se puede pausar)
+  - partir los scripts de red que pasan de 200 líneas
+  - medir la vida con varios bots
+
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
 Hecho en local:

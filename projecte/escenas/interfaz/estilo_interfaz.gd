@@ -27,6 +27,8 @@ const PANEL := preload("res://medios/interfaz/panel.png")
 const PANEL_EVOLUCION := preload("res://medios/interfaz/panel_evolucion.png")
 ## Cinco de 48x24, en el orden de Boton.
 const BOTONES := preload("res://medios/interfaz/botones.png")
+## La banda de los avisos (banda()).
+const BANDA_AVISO := preload("res://medios/interfaz/aviso_banda.png")
 enum Boton { NORMAL, ENCIMA, PULSADO, FOCO, DESACTIVADO }
 ## Dos de 32x24: seleccionada y sin seleccionar.
 const PESTANAS := preload("res://medios/interfaz/pestanas.png")
@@ -142,6 +144,25 @@ static func boton(texto: String, accion: Callable, ancho: float = 240.0) -> Butt
 ## Panel oscuro con borde del color dado, de 9 trozos.
 static func caja(color_borde: Color, margen: int = 20) -> StyleBoxTexture:
 	return _textura(PANEL, 0, Vector2(48, 48), 12, color_borde, margen)
+
+
+## La banda de los avisos (aviso_banda.png, 9 trozos de 64x32: márgenes 16 a
+## los lados y 8 arriba y abajo), teñida de ese color. La usan los avisos del
+## HUD y, en red, el aviso de espera y la votación. margen_lados y
+## margen_arriba: el hueco del contenido.
+static func banda(color: Color, margen_lados := 26.0, margen_arriba := 6.0) -> StyleBoxTexture:
+	var estilo := StyleBoxTexture.new()
+	estilo.texture = BANDA_AVISO
+	estilo.texture_margin_left = 16.0
+	estilo.texture_margin_right = 16.0
+	estilo.texture_margin_top = 8.0
+	estilo.texture_margin_bottom = 8.0
+	estilo.content_margin_left = margen_lados
+	estilo.content_margin_right = margen_lados
+	estilo.content_margin_top = margen_arriba
+	estilo.content_margin_bottom = margen_arriba
+	estilo.modulate_color = color
+	return estilo
 
 
 ## El panel de borde grueso de las evoluciones: normal o con el ratón encima.

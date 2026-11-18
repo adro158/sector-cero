@@ -31,6 +31,18 @@ func posiciones() -> Array[Vector2]:
 	return resultado
 
 
+## Multijugador: lo que manda el anfitrión (estado_red.gd)...
+func datos_red() -> Array:
+	return _zonas
+
+
+## ... y cómo lo pone un cliente. Ahí también ralentiza: así los jugadores
+## van entre un estado y el siguiente como en la del anfitrión.
+func poner_desde_red(zonas: Array) -> void:
+	_zonas = zonas
+	queue_redraw()
+
+
 func _physics_process(delta: float) -> void:
 	if _zonas.is_empty():
 		return

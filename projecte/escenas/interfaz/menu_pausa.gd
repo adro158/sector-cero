@@ -96,7 +96,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 ## Al cambiar de ventana (o de pestaña en la web) se pausa sola: si no, la
 ## horda seguía y, por ejemplo en la defensa, al enseñar el código el personaje
-## caía. Al volver no se quita: se sigue con Esc o con CONTINUAR.
+## caía. Al volver no se quita: se sigue con Esc o con CONTINUAR. En red solo
+## sale el menú: la partida es de todos y sigue (el personaje se queda quieto,
+## partida_red.gd), así que allí sí puede caer.
 func _notification(que: int) -> void:
 	if que == NOTIFICATION_APPLICATION_FOCUS_OUT and not _en_pausa:
 		_alternar_pausa()

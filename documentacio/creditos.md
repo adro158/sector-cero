@@ -274,6 +274,15 @@ scripts no forman parte del repositorio.
   de la ulti lista (6). Todo en grises para teñirlo, con la paleta del lote
   9 y del F3. Los dibujó Claude en el chat (claude.ai) con un script de
   Python (numpy y Pillow), y Adam los trajo en un zip (rama `zips-lotes`).
+- **La interfaz de la partida en red** (`medios/interfaz/red_*.png`,
+  18/11/2026): la ranura de una mejora en la ficha del compañero (normal,
+  evolución e insignia del número), las rayas del personaje que lleva otro
+  jugador, la flecha hacia un compañero que no se ve, la placa del nombre,
+  el reloj de arena de la espera (8 fotogramas), los votos (pendiente, sí y
+  no) y ocho iconos de red de 12x12. Todo en grises para teñirlo, con la
+  misma paleta. Los dibujó Claude en el chat (claude.ai) con un script de
+  Python (numpy y Pillow), y Adam los trajo en un zip
+  (`lote_red_interfaz.zip`, rama `zips-lotes`).
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

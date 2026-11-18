@@ -8,13 +8,14 @@ extends Control
 ## equipo, limpiar la horda y acelerar el juego.
 ##
 ## Está en todas las versiones (decisión de Adam). Por eso, en cuanto se abre,
-## la partida deja de contar para los récords y el ranking.
+## la partida deja de contar para los récords y el ranking. En red no se abre.
 ##
 ## Es una herramienta de depuración, como el panel técnico (F3): vive en la
 ## escena de la partida y usa los nodos de la jugabilidad directamente, por sus
 ## grupos y nombres, sin pasar por el bus.
 
 const ProgresoPorMinuto := preload("res://escenas/jugabilidad/depuracion/progreso_por_minuto.gd")
+const Red := preload("res://globales/red.gd")
 const COLOR := Color(1.0, 0.75, 0.2)
 ## Saltar de minuto recarga la partida. El salto se apunta en la raíz del
 ## árbol, que sigue ahí al recargar, y lo aplica el menú de la partida nueva.
@@ -136,7 +137,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _abrir_o_cerrar() -> void:
-	if _raiz.en_transicion():
+	# En red no se abre: pausaría la partida de todos, y saltar de minuto
+	# recarga la escena y saca a todos de la red.
+	if _raiz.en_transicion() or (Red.actual != null and Red.actual.en_red()):
 		return
 	_ventana.visible = not _ventana.visible
 	if _ventana.visible:

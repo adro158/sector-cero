@@ -115,7 +115,8 @@ func ranking() -> Array:
 
 ## Si la partida entraría en el ranking: para pedir el nombre solo entonces.
 func entra_en_ranking(estadisticas: Dictionary) -> bool:
-	if estadisticas.get("trucos", false):
+	# Las partidas en red tampoco (decisión de Adam, 13/11).
+	if estadisticas.get("trucos", false) or estadisticas.get("en_red", false):
 		return false
 	var lista := ranking()
 	return lista.size() < MAXIMO_RANKING or _va_antes(estadisticas, lista.back())
@@ -164,8 +165,9 @@ static func _va_antes(a: Dictionary, b: Dictionary) -> bool:
 
 
 func _al_terminar_partida(estadisticas: Dictionary) -> void:
-	# Con el menú de desarrollador se puede hacer cualquier cosa: no cuenta.
-	if estadisticas.get("trucos", false):
+	# Con el menú de desarrollador se puede hacer cualquier cosa: no cuenta. En
+	# red tampoco: la partida es de todos (decisión de Adam, 13/11).
+	if estadisticas.get("trucos", false) or estadisticas.get("en_red", false):
 		records_batidos.clear()
 		return
 	var habia_partidas := record("partidas") > 0
