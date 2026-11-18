@@ -1,8 +1,8 @@
 # 18/11/2026 — Alan — Las skins del Espadachín y el apartado SKINS
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar), junto con la de
-`2026-11-18_alan_skins-en-el-juego.md`, que es de la misma sesión.
+10). **Duración y horas:** las de la sesión del 18/11, apuntadas en
+`2026-11-18_alan_skins-en-el-juego.md` (2 h hoy, 4 h acumuladas).
 
 ## Qué se ha hecho
 

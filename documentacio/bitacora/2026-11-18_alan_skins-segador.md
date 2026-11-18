@@ -1,9 +1,8 @@
 # 18/11/2026 — Alan — Las skins del Segador: los tres con skins
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar), junto con las otras
-dos entradas de hoy (`2026-11-18_alan_skins-en-el-juego.md` y
-`2026-11-18_alan_skins-espadachin.md`), que son de la misma sesión.
+10). **Duración y horas:** las de la sesión del 18/11, apuntadas en
+`2026-11-18_alan_skins-en-el-juego.md` (2 h hoy, 4 h acumuladas).
 
 ## Qué se ha hecho
 
@@ -53,7 +52,10 @@ proponía el prompt (`"skins"` en cada jugador de la sala, en su
 
 ## Estado al cerrar
 
-Tres commits más en `alan/skins-espadachin-segador`, sin subir.
+Alan: «ya he acabado». Subidas `alan/skins-contrato` (PR #21), `alan/skins`
+(PR #22) y `alan/skins-espadachin-segador` con su PR, que se fusiona
+después del #22; en la #23, un comentario para Adam con lo tocado de sus
+ficheros.
 
 ## Siguiente paso
 
