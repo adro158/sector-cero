@@ -15,7 +15,7 @@ extends Node2D
 ## suelo y saca un anillo de horda a su alrededor:
 ## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
-## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
+## una jaula alrededor que el jugador no puede cruzar (jaula_jefe.gd). Y cada intervalo
 ## de ráfaga se para, late en morado y dispara 12 proyectiles en círculo; en la
 ## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd).
 ##
@@ -62,9 +62,9 @@ const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 ## Lo que dura el aviso (late en morado y se dibuja el círculo) antes de invocar.
 @export var duracion_invocacion: float = 1.0
 ## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
-## sin ella.
-@export var invocados_minimo: int = 8
-@export var invocados_maximo: int = 20
+## sin ella. Hasta el 18/11 eran de 8 a 20; Adam pidió más horda.
+@export var invocados_minimo: int = 12
+@export var invocados_maximo: int = 30
 @export var radio_invocacion: float = 140.0
 @export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
@@ -304,8 +304,7 @@ func _physics_process(delta: float) -> void:
 					_hasta_rafaga = intervalo_rafaga
 					_cambiar_estado(Estado.PERSEGUIR)
 
-	# Si está dentro de su jaula, tampoco sale él, ni embistiendo.
-	global_position = _jaula.mantener(global_position, radio)
+	# La jaula no le encierra a él: puede salir y entrar (Adam, 18/11).
 
 	var dano := dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto
 	for jugador in get_tree().get_nodes_in_group("jugador"):

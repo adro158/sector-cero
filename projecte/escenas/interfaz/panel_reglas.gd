@@ -182,7 +182,7 @@ func _enemigos() -> VBoxContainer:
 		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Con menos de la mitad de vida embiste tres veces seguidas, apuntándote cada vez."],
 		["efectos/invocacion_kernel_panic.png", 8, 6, "ANILLO DE MALWARE", "Cada 15 s se para, late en morado y dibuja un círculo de runas en el suelo; al cerrarse, saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda."],
 		["jefe/jefe_rafaga.png", 4, 0, "RÁFAGA DE DATOS", "Cada 9 s late en morado y dispara datos en círculo: pasa por los huecos. Con menos de la mitad de vida, dispara dos."],
-		["jefe/jefe_jaula.png", 4, 0, "PISOTÓN Y JAULA", "Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s nadie cruza la jaula, y si estabas dentro te quedas encerrado con él."],
+		["jefe/jefe_jaula.png", 4, 0, "PISOTÓN Y JAULA", "Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s no puedes cruzar la jaula. Él y la horda sí: si estabas dentro, te quedas encerrado y ellos entran y salen."],
 		["jefe/jefe_furia.png", 8, 3, "FURIAS", "Al bajarle al 66 % y al 33 % de vida se enfurece: va más rápido, pega más, ataca más seguido y saca más malware. En la última furia, arde. Al bajarle de la mitad, llama a un rootkit explosivo de guardaespaldas."],
 		["jefe/jefe_muerte.png", 12, 5, "AL DERROTARLO", "Empieza la fase 2, y los personajes que habían caído vuelven con la mitad de su vida."],
 	]:
