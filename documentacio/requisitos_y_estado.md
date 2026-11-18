@@ -275,17 +275,19 @@ en el chat) y las montó con su Claude Code (issue #16; bitácora,
   retratos en el HUD (barra y panel del equipo, ventana de caída y resumen
   final), el armario al pulsar un personaje en el menú y, en red, cada
   jugador con su skin (`bitacora/2026-11-18_alan_skins-en-el-juego.md`).
-- **`alan/skins-espadachin`** (18/11, sobre `alan/skins`): las 11 skins del
-  Espadachín (sin código: sus PNG, sus recursos y la lista en
-  `espadachin.tres`) y el apartado **SKINS** en el menú, con las pestañas
-  ARMARIO, PASE y TIENDA (las dos últimas apagadas, «pronto»)
-  (`bitacora/2026-11-18_alan_skins-espadachin.md`).
+- **`alan/skins-espadachin-segador`** (18/11, sobre `alan/skins`): las 11
+  skins del Espadachín y las 11 del Segador (sin código: sus PNG, sus
+  recursos y la lista en `espadachin.tres` y `segador.tres`), así que ya
+  tienen skins los tres (33), y el apartado **SKINS** en el menú, con las
+  pestañas ARMARIO, PASE y TIENDA (las dos últimas apagadas, «pronto»)
+  (`bitacora/2026-11-18_alan_skins-espadachin.md` y
+  `bitacora/2026-11-18_alan_skins-segador.md`).
 
-Falta: que Adam revise los PR #21 y #22 (y el del Espadachín) y
-fusionarlos en ese orden, el lote del Segador (solo sus PNG, sus `.tres`
-y su lista) y **decidir el pase de batalla**: Alan aún no sabe cómo será;
-las opciones (por partidas, por retos, mezcla o en la cuenta) están en esa
-bitácora. La tienda y el gacha de la #16, más adelante.
+Falta: que Adam revise los PR #21, #22 y el de las skins del Espadachín y
+el Segador, y fusionarlos en ese orden, y **decidir el pase de batalla**:
+Alan aún no sabe cómo será; las opciones (por partidas, por retos, mezcla
+o en la cuenta) están en `bitacora/2026-11-18_alan_skins-espadachin.md`.
+La tienda y el gacha de la #16, más adelante.
 
 ### El multijugador en red local (en la v1.18, 17/11)
 

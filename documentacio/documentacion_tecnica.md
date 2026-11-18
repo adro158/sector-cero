@@ -626,9 +626,9 @@ personaje), en su pestaña ARMARIO (`armario.gd`): las skins por categoría
 con su color, el personaje andando con la que se mira, su frase y
 PONÉRSELA. Las pestañas PASE y TIENDA están puestas pero apagadas hasta que
 se decida cómo funcionan; para encender una basta con darle su contenido.
-Tienen skins el Mago y, desde el 18/11, el Espadachín (11 cada uno); el
-Espadachín entró sin tocar código, solo con sus PNG, sus recursos y su
-lista. Su hoja de atacar corriendo mide 1536x576, como la original: 24
+Tienen skins los tres personajes, 11 cada uno (33): el Mago desde el
+17/11, y el Espadachín y el Segador desde el 18/11, que entraron sin tocar
+código, solo con sus PNG, sus recursos y su lista. Su hoja de atacar corriendo mide 1536x576, como la original: 24
 columnas, 4 bloques de 6 (el bloque es el fotograma del tajo y la columna
 dentro del bloque, el paso de las piernas), y el controlador saca las
 fases del ancho, así que la de la skin tiene que medir lo mismo. En red,

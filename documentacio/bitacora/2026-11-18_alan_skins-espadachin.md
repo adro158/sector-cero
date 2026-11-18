@@ -65,7 +65,7 @@ fusionado):
 
 ## Estado al cerrar
 
-Cuatro commits en `alan/skins-espadachin`, sin subir.
+Cuatro commits en `alan/skins-espadachin` (después, `alan/skins-espadachin-segador`), sin subir.
 
 ## Siguiente paso
 

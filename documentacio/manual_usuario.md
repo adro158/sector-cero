@@ -132,8 +132,9 @@ teclas al tocar el teclado o el ratón.
 - **Menú:** dificultad, jugar, reglas (qué hace cada personaje, mejora y
   enemigo, y cada ataque de los jefes), ranking, opciones y salir.
 - **Skins:** el botón SKINS del menú (o pulsar un personaje) abre el
-  armario, donde le cambias el aspecto a cada personaje. Cada uno tiene su
-  original y sus skins, ordenadas por categoría, de la C a la S+. Pincha una
+  armario, donde le cambias el aspecto a cada personaje. Cada uno de los
+  tres tiene su original y 11 skins, ordenadas por categoría, de la C a la
+  S+. Pincha una
   para verla andando y pulsa PONÉRSELA: la lleva en la partida, en el menú y
   en sus retratos, y en red los demás te ven con ella. Solo cambia el
   aspecto, no cómo juega. Se guarda sola (y en tu cuenta, si has entrado).
