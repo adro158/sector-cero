@@ -49,6 +49,8 @@ const MINI_RADIO := 80.0
 const MINI_DANO := 100.0
 const MINI_ALCANCE := 320.0
 
+## La carga de cada personaje. Es la lista de equipo.gd, la misma para todos
+## los jugadores: la carga es del personaje, no de quien lo lleva.
 var _cargas: Array[float] = []
 var _efecto := ""
 var _tiempo := 0.0
@@ -73,14 +75,20 @@ var solo_dibujar := false
 func _ready() -> void:
 	_equipo = get_parent().get_node("CambioPersonaje")
 	_armas = get_parent().get_node("GestorArmas")
-	for personaje in _equipo.personajes:
-		_cargas.append(0.0)
+	# CambioPersonaje va antes en la escena: el equipo ya está creado.
+	_cargas = _equipo._equipo.cargas
 	BusEventos.enemigo_muerto.connect(_al_morir_enemigo)
 	_avisar.call_deferred()
 
 
 func lista() -> bool:
 	return _cargas[_equipo.indice_actual()] >= CARGA_NECESARIA
+
+
+## De 0 a 1, la carga del personaje que lleva este jugador. Para su barra
+## (barra_vida.gd), que cada jugador lleva encima.
+func fraccion() -> float:
+	return _cargas[_equipo.indice_actual()] / CARGA_NECESARIA
 
 
 ## Para el menú de desarrollador.
@@ -90,12 +98,8 @@ func llenar_todas() -> void:
 	_avisar()
 
 
-## Multijugador: la carga de cada personaje, para mandarla (en el anfitrión)...
-func cargas() -> Array[float]:
-	return _cargas
-
-
-## ... y ponerla (en los clientes). Solo avisa a la interfaz si ha cambiado.
+## Multijugador: la carga de cada personaje llega en el estado del equipo
+## (estado_red.gd) y se pone aquí, en los clientes (en los clientes). Solo avisa a la interfaz si ha cambiado.
 func poner_cargas(cargas_anfitrion: Array) -> void:
 	var cambia := false
 	for i in mini(_cargas.size(), cargas_anfitrion.size()):
@@ -107,7 +111,8 @@ func poner_cargas(cargas_anfitrion: Array) -> void:
 
 
 func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:
-	if solo_dibujar or tipo == "jefe" or _efecto != "":
+	# Sin personaje (en red, mirando) no carga: el que tenía lo lleva otro.
+	if solo_dibujar or tipo == "jefe" or _efecto != "" or _equipo.espectador():
 		return
 	var i: int = _equipo.indice_actual()
 	_cargas[i] = minf(_cargas[i] + (CARGA_ELITE if tipo == "elite" else 1.0), CARGA_NECESARIA)
@@ -243,12 +248,11 @@ func _hacia_el_mas_cercano() -> Vector2:
 	return Vector2.RIGHT if mejor == Vector2.INF else (mejor - global_position).normalized()
 
 
+## Avisa la carga de todos los personajes, lo cambie el jugador que lo cambie
+## (son las mismas para todos), con el activo del jugador de este ordenador.
 func _avisar() -> void:
-	# Con varios jugadores, la interfaz enseña las del de este ordenador.
-	if not _equipo.es_local():
-		return
 	var fracciones := _cargas.map(func(carga): return carga / CARGA_NECESARIA)
-	BusEventos.ulti_cambiada.emit(fracciones, _equipo.indice_actual())
+	BusEventos.ulti_cambiada.emit(fracciones, _equipo._equipo.local.indice_actual())
 
 
 # --- Dibujo ---
