@@ -2,8 +2,9 @@ extends PanelContainer
 
 ## En la partida en red: la votación para parar la partida (petición de Adam,
 ## 17/11). Cuando uno pulsa Esc, los demás ven «Alan quiere parar la partida»
-## con SÍ y NO y, debajo, el voto de cada uno. Solo lo enseña: la lógica es de
-## pausa_red.gd, que le pasa los votos y escucha `votado`.
+## con SÍ y NO y, debajo, el voto de cada uno (pendiente, sí o no; el
+## anfitrión, con su corona). Solo lo enseña: la lógica es de pausa_red.gd,
+## que le pasa los votos y escucha `votado`.
 ##
 ## Sin class_name: lo crea interfaz_red.gd con preload.
 
@@ -11,10 +12,15 @@ signal votado(si: bool)
 
 enum Voto { PENDIENTE, SI, NO }
 
-## La banda de los avisos del HUD, con los márgenes de avisos_hud.gd.
-const BANDA := preload("res://medios/interfaz/aviso_banda.png")
-const TEXTOS_VOTO := ["...", "SÍ", "NO"]
+## 3 de 12x12, en el orden de Voto.
+const VOTOS := preload("res://medios/interfaz/red_voto.png")
+## 8 de 12x12: 0 en uso, 1 jugador, 2 anfitrión, 3 conexión, 4 espera, 5 sí,
+## 6 no y 7 pausa.
+const ICONOS := preload("res://medios/interfaz/red_iconos.png")
+const ICONO_ANFITRION := 2
+const ICONO_PAUSA := 7
 const COLORES_VOTO := [EstiloInterfaz.TEXTO_SUAVE, EstiloInterfaz.VICTORIA, EstiloInterfaz.DERROTA]
+const COLOR_ANFITRION := Color(1.0, 0.8, 0.2)
 ## Si alguien dice que no, el aviso se queda este rato y se va.
 const SEGUNDOS_RECHAZO := 2.5
 ## Lo que baja desde el borde de arriba: por debajo del reloj.
@@ -27,15 +33,18 @@ var _si: Button
 
 
 func _ready() -> void:
-	theme = EstiloInterfaz.tema()
-	add_theme_stylebox_override("panel", _banda(EstiloInterfaz.NEON))
+	add_theme_stylebox_override("panel", EstiloInterfaz.banda(EstiloInterfaz.NEON, 30.0, 12.0))
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var columna := VBoxContainer.new()
 	columna.add_theme_constant_override("separation", 10)
 	add_child(columna)
+	var cabecera := HBoxContainer.new()
+	cabecera.alignment = BoxContainer.ALIGNMENT_CENTER
+	cabecera.add_theme_constant_override("separation", 12)
+	cabecera.add_child(_icono(ICONOS, ICONO_PAUSA, EstiloInterfaz.NEON))
 	_titulo = EstiloInterfaz.etiqueta("", 22, EstiloInterfaz.NEON)
-	_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	columna.add_child(_titulo)
+	cabecera.add_child(_titulo)
+	columna.add_child(cabecera)
 	_lista = HBoxContainer.new()
 	_lista.alignment = BoxContainer.ALIGNMENT_CENTER
 	_lista.add_theme_constant_override("separation", 22)
@@ -58,9 +67,13 @@ func mostrar(titulo: String, votos: Array, puedo_votar: bool, rechazada := false
 	for hijo in _lista.get_children():
 		hijo.queue_free()
 	for datos in votos:
-		var corona := " (anfitrión)" if datos.anfitrion else ""
-		var etiqueta := EstiloInterfaz.etiqueta("%s %s%s" % [TEXTOS_VOTO[datos.voto], datos.nombre, corona], 16, COLORES_VOTO[datos.voto])
-		_lista.add_child(etiqueta)
+		var fila := HBoxContainer.new()
+		fila.add_theme_constant_override("separation", 6)
+		fila.add_child(_icono(VOTOS, datos.voto, COLORES_VOTO[datos.voto]))
+		if datos.anfitrion:
+			fila.add_child(_icono(ICONOS, ICONO_ANFITRION, COLOR_ANFITRION))
+		fila.add_child(EstiloInterfaz.etiqueta(datos.nombre, 16))
+		_lista.add_child(fila)
 	var ya_visible := visible and _botones.visible
 	_botones.visible = puedo_votar
 	visible = true
@@ -84,16 +97,15 @@ func _votar(si: bool) -> void:
 	votado.emit(si)
 
 
-func _banda(color: Color) -> StyleBoxTexture:
-	var banda := StyleBoxTexture.new()
-	banda.texture = BANDA
-	banda.texture_margin_left = 16.0
-	banda.texture_margin_right = 16.0
-	banda.texture_margin_top = 8.0
-	banda.texture_margin_bottom = 8.0
-	banda.content_margin_left = 30.0
-	banda.content_margin_right = 30.0
-	banda.content_margin_top = 12.0
-	banda.content_margin_bottom = 12.0
-	banda.modulate_color = color
-	return banda
+## Un icono de 12x12 de una tira, al doble y teñido.
+func _icono(tira: Texture2D, indice: int, color: Color) -> TextureRect:
+	var trozo := AtlasTexture.new()
+	trozo.atlas = tira
+	trozo.region = Rect2(indice * 12.0, 0.0, 12.0, 12.0)
+	var icono := TextureRect.new()
+	icono.texture = trozo
+	icono.custom_minimum_size = Vector2(24.0, 24.0)
+	icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icono.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icono.modulate = color
+	return icono

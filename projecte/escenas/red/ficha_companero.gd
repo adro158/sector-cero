@@ -16,15 +16,27 @@ extends PanelContainer
 const RADIO_CLICK := 30.0
 ## El centro del cuerpo, por encima de los pies (el sprite sube 22 px).
 const CENTRO := Vector2(0.0, -22.0)
-## Los iconos de las mejoras (16x16), al doble, como en la columna del HUD.
-const LADO := 32.0
-const SEPARACION := 6.0
+## Las piezas del lote de la interfaz de red: el marco del retrato pequeño
+## (32x32 en 4, 4) y la ranura de una mejora, 3 de 20x20: 0 normal, 1
+## evolución y 2 la insignia del número (va encima del icono).
+const MARCO := preload("res://medios/interfaz/equipo_retrato_marco.png")
+const RANURA := preload("res://medios/interfaz/red_mejora_ranura.png")
+const RETRATOS := {
+	"Espadachín": preload("res://medios/interfaz/retrato_mini_espadachin.png"),
+	"Mago": preload("res://medios/interfaz/retrato_mini_mago.png"),
+	"Segador": preload("res://medios/interfaz/retrato_mini_segador.png"),
+}
+## Las ranuras, al doble (40 px, como la columna de mejoras del HUD).
+const ESCALA := 2.0
+const LADO := 20.0 * ESCALA
+const SEPARACION := 4.0
 const POR_FILA := 6
 
 var _partida: Node
 ## El jugador del que se enseña la ficha (null si está cerrada).
 var _jugador: Node
-var _retrato: TextureRect
+var _retrato: Control
+var _textura_retrato: Texture2D
 var _nombre: Label
 var _personaje: Label
 var _rejilla: Control
@@ -53,10 +65,9 @@ func _ready() -> void:
 	var fila := HBoxContainer.new()
 	fila.add_theme_constant_override("separation", 12)
 	columna.add_child(fila)
-	_retrato = TextureRect.new()
-	_retrato.custom_minimum_size = Vector2(48, 48)
-	_retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_retrato = Control.new()
+	_retrato.custom_minimum_size = Vector2(40, 40)
+	_retrato.draw.connect(_dibujar_retrato)
 	fila.add_child(_retrato)
 	var textos := VBoxContainer.new()
 	fila.add_child(textos)
@@ -114,7 +125,8 @@ func _poner_al_dia() -> void:
 		numero += mejoras[mejora]
 	_color = personaje.color
 	add_theme_stylebox_override("panel", EstiloInterfaz.caja(_color, 12))
-	_retrato.texture = personaje.retrato
+	_textura_retrato = RETRATOS.get(personaje.nombre)
+	_retrato.queue_redraw()
 	_nombre.text = _jugador.get_node("CambioPersonaje").nombre_red
 	_nombre.add_theme_color_override("font_color", _color)
 	_personaje.text = "%s · %d mejoras" % [personaje.nombre, numero]
@@ -124,24 +136,32 @@ func _poner_al_dia() -> void:
 	_rejilla.queue_redraw()
 
 
-## Cada mejora, su icono en una casilla del color del personaje y, si la ha
-## cogido más de una vez, cuántas.
+func _dibujar_retrato() -> void:
+	_retrato.draw_texture(MARCO, Vector2.ZERO, _color)
+	if _textura_retrato != null:
+		_retrato.draw_texture(_textura_retrato, Vector2(4.0, 4.0))
+
+
+## Las ranuras, de izquierda a derecha y de arriba abajo, del color del
+## personaje (la de la evolución, con el borde grueso); el número de veces,
+## solo si la ha cogido más de una.
 func _dibujar_mejoras() -> void:
 	var fuente := EstiloInterfaz.fuente_pixel()
 	var i := 0
 	for mejora in _mejoras:
 		var esquina := Vector2(i % POR_FILA, floori(i / float(POR_FILA))) * (LADO + SEPARACION)
 		var casilla := Rect2(esquina, Vector2(LADO, LADO))
-		var evolucion: bool = mejora.efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA
-		_rejilla.draw_rect(casilla, Color(0.0, 0.0, 0.0, 0.5))
-		_rejilla.draw_rect(casilla, _color if evolucion else Color(_color, 0.5), false, 2.0 if evolucion else 1.0)
-		_rejilla.draw_texture_rect(mejora.icono, casilla, false)
+		var fotograma := 1 if mejora.efecto == DatosMejora.Efecto.EVOLUCIONAR_ARMA else 0
+		_rejilla.draw_texture_rect_region(RANURA, casilla, Rect2(fotograma * 20.0, 0.0, 20.0, 20.0), _color)
+		_rejilla.draw_texture_rect(mejora.icono, Rect2(esquina + Vector2(2.0, 2.0) * ESCALA, Vector2(16.0, 16.0) * ESCALA), false)
 		if _veces(mejora) > 1:
-			var texto := str(_veces(mejora))
-			_rejilla.draw_string_outline(fuente, esquina + Vector2(LADO - 12.0, LADO + 2.0), texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, 4, Color.BLACK)
-			_rejilla.draw_string(fuente, esquina + Vector2(LADO - 12.0, LADO + 2.0), texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color.WHITE)
+			_rejilla.draw_texture_rect_region(RANURA, casilla, Rect2(40.0, 0.0, 20.0, 20.0), _color)
+			# El hueco de la insignia mide 7x7 en (12, 12): un número de la
+			# fuente pixel a 22 lo llena justo; con dos cifras, a 11.
+			var tamano := 22 if _veces(mejora) < 10 else 11
+			var base := esquina + Vector2(12.0, 19.0) * ESCALA
+			_rejilla.draw_string(fuente, base, str(_veces(mejora)), HORIZONTAL_ALIGNMENT_CENTER, 7.0 * ESCALA, tamano, Color.WHITE)
 		i += 1
-
 
 ## Las veces que ha cogido esa mejora.
 func _veces(mejora: DatosMejora) -> int:

@@ -23,6 +23,8 @@ const ESPERA := preload("res://medios/interfaz/equipo_espera.png")
 const VIDA_MARCO := preload("res://medios/interfaz/equipo_vida_marco.png")
 const VIDA_RELLENO := preload("res://medios/interfaz/equipo_vida_relleno.png")
 const ICONOS_AVISO := preload("res://medios/interfaz/aviso_iconos.png")
+## En red: encima de la ranura del personaje que lleva otro jugador.
+const EN_USO := preload("res://medios/interfaz/red_en_uso.png")
 const TeclasDibujadas := preload("res://escenas/interfaz/teclas_dibujadas.gd")
 const Entrada := preload("res://globales/entrada.gd")
 ## El de las anclas en la tira de iconos de los avisos.
@@ -143,14 +145,10 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado:
 	# Esperando el cambio: se oscurece desde arriba lo que falta.
 	if esperando:
 		draw_rect(Rect2(4.0, 4.0, 64.0, 64.0 * clampf(_espera / _espera_total, 0.0, 1.0)), Color(0.0, 0.0, 0.0, 0.6))
-	# Lo lleva otro: oscurecido y con rayas de su color (se ve, pero no se
+	# Lo lleva otro: rayas de su color encima del retrato (se ve, pero no se
 	# puede coger).
 	if otro != "":
-		draw_rect(Rect2(4.0, 4.0, 64.0, 64.0), Color(0.0, 0.0, 0.0, 0.45))
-		for raya in range(8, 128, 12):
-			var desde := Vector2(4.0 + maxf(raya - 64.0, 0.0), 4.0 + minf(raya, 64.0))
-			var hasta := Vector2(4.0 + minf(raya, 64.0), 4.0 + maxf(raya - 64.0, 0.0))
-			draw_line(desde, hasta, Color(personaje.color, 0.45), 2.0)
+		draw_texture(EN_USO, Vector2.ZERO, personaje.color)
 	# La vida, debajo.
 	var parte: float = clampf(datos.vida / datos.maxima, 0.0, 1.0)
 	draw_texture(VIDA_MARCO, Vector2(0.0, 78.0))

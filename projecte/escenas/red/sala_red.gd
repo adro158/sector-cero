@@ -20,6 +20,12 @@ const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/segador.tres"),
 ]
 const ANCHO := 460.0
+## Iconos de red (lote de la interfaz de red), 8 de 12x12: 0 en uso, 1
+## jugador y 2 anfitrión son los de la sala.
+const ICONOS := preload("res://medios/interfaz/red_iconos.png")
+const ICONO_EN_USO := 0
+const ICONO_JUGADOR := 1
+const ICONO_ANFITRION := 2
 const PARTIDA := "res://escenas/juego.tscn"
 
 var _inicio: VBoxContainer
@@ -195,11 +201,32 @@ func _mostrar() -> void:
 		var personaje: DatosPersonaje = PERSONAJES[jugador.personaje]
 		ocupados.append(jugador.personaje)
 		var tu: String = "  (tú)" if jugador.id == red.mi_id() else ""
-		_lista.add_child(EstiloInterfaz.etiqueta("%s  ·  %s%s" % [jugador.nombre, personaje.nombre, tu], 16, personaje.color))
+		# Delante, la corona del anfitrión o el icono de jugador.
+		var fila := HBoxContainer.new()
+		fila.add_theme_constant_override("separation", 8)
+		var icono := TextureRect.new()
+		icono.texture = _icono(ICONO_ANFITRION if jugador.id == 1 else ICONO_JUGADOR)
+		icono.custom_minimum_size = Vector2(24.0, 24.0)
+		icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icono.modulate = personaje.color
+		fila.add_child(icono)
+		fila.add_child(EstiloInterfaz.etiqueta("%s  ·  %s%s" % [jugador.nombre, personaje.nombre, tu], 16, personaje.color))
+		_lista.add_child(fila)
+	# Los personajes que ya lleva alguien, apagados y con el candado.
 	for indice in _elegir.size():
 		_elegir[indice].disabled = indice in ocupados
+		_elegir[indice].icon = _icono(ICONO_EN_USO) if indice in ocupados else null
 	_empezar.visible = red.es_anfitrion()
 	_empezar.disabled = red.jugadores().size() < 2
+
+
+## Un icono de 12x12 de la tira de iconos de red.
+func _icono(indice: int) -> AtlasTexture:
+	var trozo := AtlasTexture.new()
+	trozo.atlas = ICONOS
+	trozo.region = Rect2(indice * 12.0, 0.0, 12.0, 12.0)
+	return trozo
 
 
 func _campo(padre: Control, ayuda: String, largo: int) -> LineEdit:
