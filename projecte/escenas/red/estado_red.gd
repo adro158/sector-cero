@@ -26,8 +26,8 @@ extends RefCounted
 ## Sin class_name: se carga con preload.
 
 ## Los nodos de RaizJuego que se mandan y se ponen igual, con datos_red() y
-## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques, y los premios
-## de los élites.
+## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques, los premios de
+## los élites y la resistencia del malware.
 ## A cada cliente solo se le manda la horda, los fragmentos, las muertes y los
 ## golpes a menos de esto de su jugador: se ve 1280x720, unos 734 px del centro
 ## a la esquina, y el resto es margen. Con toda la horda, un estado pasaba de 10
@@ -35,7 +35,7 @@ extends RefCounted
 ## tirones en la red de clase (17/11).
 const RADIO_VISTA := 1000.0
 const RAIZ := ["Jefe", "JefeFinal", "JaulaJefe", "Jefe/Rafaga", "JefeFinal/Ataques",
-	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite"]
+	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite", "ResistenciaMalware"]
 
 
 ## En el anfitrión, para el cliente cuyo jugador está en centro. reloj y
