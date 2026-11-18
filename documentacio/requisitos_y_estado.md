@@ -301,7 +301,14 @@ Plan, decisiones y lo hecho punto por punto en
   - votar para parar al pulsar Esc
   - los iconos de red en la sala
 
-  Está en los PR #20 y el de `adam/red-interfaz`, sin fusionar.
+  Publicado en la v1.20 (PR #20 y #25).
+- **El 18/11, tras probar la v1.20 con Alan, la v1.21**
+  (`bitacora/2026-11-18_adam_red-arreglos-v1.21.md`):
+  - la ruleta del compañero en grande y con su aviso
+  - la carga de la ulti, del personaje y visible para todos
+  - el malware se adapta a una herramienta por jugador
+  - la horda fluida en los clientes y el estado comprimido
+  - la derrota animada en todos los ordenadores
 - **Falta:**
   - probarlo con dos ordenadores
   - apuntar en `contexto.md` la votación (en red ya se puede pausar)
