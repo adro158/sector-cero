@@ -292,9 +292,21 @@ Plan, decisiones y lo hecho punto por punto en
   issue #19; hechas en el PR #20 (sin fusionar): el triángulo del
   Espadachín en los clientes, el aviso de espera, los nombres, la flecha
   hacia los compañeros y menos lag (`bitacora/2026-11-17_adam_red-v1.19-y-mejoras.md`).
-- **Falta:** lo que queda de la #19 (el personaje «en uso», la pausa por
-  votación, el cofre y las mejoras del compañero, la resistencia en los
-  clientes) y medir la vida con varios bots.
+- **El 18/11, lo que quedaba de la #19**, con las piezas de
+  `lote_red_interfaz.zip` (`bitacora/2026-11-18_adam_red-interfaz.md`):
+  - la resistencia del malware en los clientes
+  - la ficha del compañero con sus mejoras
+  - el personaje en uso en la barra
+  - la ruleta del compañero en pequeño
+  - votar para parar al pulsar Esc
+  - los iconos de red en la sala
+
+  Está en los PR #20 y el de `adam/red-interfaz`, sin fusionar.
+- **Falta:**
+  - probarlo con dos ordenadores
+  - apuntar en `contexto.md` la votación (en red ya se puede pausar)
+  - partir los scripts de red que pasan de 200 líneas
+  - medir la vida con varios bots
 
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
