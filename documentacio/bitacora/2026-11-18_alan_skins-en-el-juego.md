@@ -1,9 +1,10 @@
 # 18/11/2026 — Alan — Las skins en el juego (y en red)
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar). **Horas
-acumuladas:** las 2 h de la entrada anterior (`2026-11-17_alan_skins.md`)
-más las de hoy.
+10). **Duración:** 2 h toda la sesión del 18/11 (las dijo Alan), que también
+llevó `2026-11-18_alan_skins-espadachin.md` y
+`2026-11-18_alan_skins-segador.md`. **Horas acumuladas:** 4 h: las 2 de la
+entrada anterior (`2026-11-17_alan_skins.md`) más estas 2.
 
 ## Qué se ha hecho
 
