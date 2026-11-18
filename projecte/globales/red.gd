@@ -20,6 +20,9 @@ signal error_de_red(texto: String)
 const CodigoSala := preload("res://globales/codigo_sala.gd")
 const ReglasSala := preload("res://globales/reglas_sala.gd")
 const PUERTO := 7777
+## Lo más que puede ocupar un estado al descomprimirlo (uno con 600 enemigos
+## cerca ronda los 10 KB).
+const MAXIMO_ESTADO := 256 * 1024
 
 static var actual: Node
 
@@ -132,8 +135,12 @@ func enviar_entrada(entrada: Dictionary, fiable := false) -> void:
 
 ## Anfitrión → clientes, unas 20 veces por segundo: si se pierde uno, el
 ## siguiente ya trae lo de ahora, así que no hace falta que llegue.
+## Va comprimido: ocupa la mitad (con 50 enemigos cerca, de 1,9 KB a 0,7). Un
+## paquete de más de ~1,4 KB se parte en trozos y, si se pierde uno, se pierde
+## el estado entero: en la red de clase, eso eran tirones (18/11).
 func enviar_estado(estado: Dictionary, destino := 0) -> void:
-	_mandar(["estado", estado], destino, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED)
+	var comprimido := var_to_bytes(estado).compress(FileAccess.COMPRESSION_DEFLATE)
+	_mandar(["estado", comprimido], destino, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED)
 
 
 ## Anfitrión → clientes: algo que ha pasado, que sí tiene que llegar.
@@ -168,7 +175,10 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 		"entrada":
 			BusEventos.entrada_recibida.emit(id, mensaje[1])
 		"estado":
-			BusEventos.estado_recibido.emit(mensaje[1])
+			# Con un tope al descomprimir, por si llega algo que no es nuestro.
+			var estado: Variant = bytes_to_var(mensaje[1].decompress_dynamic(MAXIMO_ESTADO, FileAccess.COMPRESSION_DEFLATE))
+			if estado is Dictionary:
+				BusEventos.estado_recibido.emit(estado)
 		"suceso":
 			BusEventos.suceso_recibido.emit(mensaje[1], mensaje[2])
 
