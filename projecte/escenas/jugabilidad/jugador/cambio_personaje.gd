@@ -378,6 +378,18 @@ func _caer_en_red() -> void:
 	_aplicar()
 
 
+## Multijugador, en los clientes: el anfitrión avisa de que este ha sido el
+## último en caer (sucesos_red.gd). Se deshace con la animación de la derrota,
+## como allí; la pantalla final llega después, con el fin.
+func caer_el_ultimo() -> void:
+	_equipo.vidas[_indice] = 0.0
+	_equipo.caidos[_indice] = true
+	# La vida a 0 también aquí: el estado con el golpe no llega a salir.
+	_salud.poner(0.0, _salud.vida_maxima)
+	_sprite.visible = false
+	_efectos.caer(personajes[_indice].color, true)
+
+
 func _al_elegir_personaje(indice: int) -> void:
 	if not _eligiendo or _equipo.caidos[indice]:
 		return

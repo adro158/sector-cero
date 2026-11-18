@@ -24,6 +24,10 @@ var armas: Array[DatosArma] = []
 var vidas: Array[float] = []
 var maximas: Array[float] = []
 var caidos: Array[bool] = []
+## La carga de la ulti de cada personaje (ultis.gd la sube y la gasta). Es del
+## personaje y no del jugador: en red, todos ven la misma y, si uno deja un
+## personaje con la ulti cargada, el que lo coja la tiene (18/11).
+var cargas: Array[float] = []
 ## Quién lleva a cada uno: el cambio_personaje.gd de su jugador, o null si
 ## está libre (en el banquillo).
 var llevado_por: Array = []
@@ -45,6 +49,7 @@ func _init(lista: Array[DatosPersonaje]) -> void:
 		vidas.append(personaje.vida_maxima)
 		maximas.append(personaje.vida_maxima)
 		caidos.append(false)
+		cargas.append(0.0)
 		llevado_por.append(null)
 
 

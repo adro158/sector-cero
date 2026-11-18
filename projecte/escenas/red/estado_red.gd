@@ -8,13 +8,12 @@ extends RefCounted
 ##
 ## Las claves son cortas porque va muchas veces por segundo:
 ## - j: por id de la red, [posición, velocidad, personaje, vida, máxima, si
-##   está mirando sin personaje, la carga de las ultis de sus personajes,
-##   hacia dónde apunta su golpe en cono]
+##   está mirando sin personaje, hacia dónde apunta su golpe en cono]
 ## - h: por tipo de la horda (en el orden del grupo gestor_enemigos, el mismo
 ##   en todos los ordenadores), lo de gestor_enemigos.gd datos_red()
 ## - g: [posiciones, valores] de los fragmentos de datos
 ## - t: [segundos, duración] del reloj; x: [experiencia, necesaria, nivel]
-## - e: [vidas, máximas, caídos] del equipo (para el banquillo)
+## - e: [vidas, máximas, caídos, cargas de las ultis] del equipo
 ## - l: los élites (en el orden del grupo elites, el mismo en todos), cada uno
 ##   con lo de enemigo_elite.gd datos_red()
 ## - a: los jefes, sus ataques y los premios de los élites (los de RAIZ, en
@@ -49,8 +48,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		var salud: Salud = jugador.get_node("Salud")
 		jugadores[id] = [jugador.global_position, jugador.velocity, cambio.indice_actual(), salud.vida(),
-			salud.vida_maxima, cambio.espectador(), jugador.get_node("Ultis").cargas(),
-			jugador.get_node("GestorArmas").apuntando]
+			salud.vida_maxima, cambio.espectador(), jugador.get_node("GestorArmas").apuntando]
 		equipo = cambio._equipo
 	var horda := []
 	for gestor in arbol.get_nodes_in_group("gestor_enemigos"):
@@ -63,7 +61,7 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		"g": gemas.datos_red(centro, RADIO_VISTA),
 		"t": reloj,
 		"x": experiencia,
-		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
+		"e": [equipo.vidas, equipo.maximas, equipo.caidos, equipo.cargas],
 		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
 		"a": RAIZ.map(func(ruta): return raiz.get_node(ruta).datos_red()),
 		"m": muertes.filter(func(muerte): return muerte[0].distance_to(centro) < RADIO_VISTA),
@@ -112,8 +110,7 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary, lo
 		# esto no saldrían su destello, su temblor ni su sonido.
 		if cambio.indice_actual() == indice_antes and vida_antes - datos[3] >= 1.0:
 			salud.danado.emit(vida_antes - datos[3])
-		jugador.get_node("Ultis").poner_cargas(datos[6])
-		jugador.get_node("GestorArmas").apuntando = datos[7]
+		jugador.get_node("GestorArmas").apuntando = datos[6]
 	var gestores := arbol.get_nodes_in_group("gestor_enemigos")
 	for i in mini(gestores.size(), estado.h.size()):
 		gestores[i].poner_desde_red(estado.h[i])
@@ -138,6 +135,8 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary, lo
 		BusEventos.experiencia_cambiada.emit(estado.x[0], estado.x[1], estado.x[2])
 	equipo.vidas.assign(estado.e[0])
 	equipo.maximas.assign(estado.e[1])
+	# Las cargas son del equipo: con ponerlas una vez valen para todos.
+	local.get_node("Ultis").poner_cargas(estado.e[3])
 
 
 ## Las estadísticas del final (partida_terminada), para mandarlas: los

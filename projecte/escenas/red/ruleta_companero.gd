@@ -1,90 +1,84 @@
-extends PanelContainer
+extends "res://escenas/interfaz/panel_ruleta.gd"
 
-## En la partida en red: la ruleta del cofre que ha cogido un compañero, en
-## pequeño y solo para mirar (petición de Adam, 18/11). No pausa ni contesta
-## nada: gira hasta su premio (que llega ya sorteado, como en panel_ruleta.gd),
-## lo enseña un momento y se va. Es la misma ruleta a x1 en vez de a x3, en el
-## panel de siempre (EstiloInterfaz.caja) del color del compañero.
+## En la partida en red: la ruleta del cofre que ha cogido un compañero, solo
+## para mirar. Es la misma ruleta en grande (panel_ruleta.gd), con el mismo
+## tiempo, y arriba «ALAN ESTÁ ABRIENDO UN COFRE». No contesta nada: se queda
+## con el premio hasta que el compañero lo acepta y se va.
+##
+## Hasta el 18/11 era una ruleta pequeña que giraba sin la animación del
+## cofre: acababa antes que la del que lo abría y le chafaba la sorpresa
+## (Adam, 18/11).
 ##
 ## Sin class_name: lo crea interfaz_red.gd con preload.
 
-const RUEDA := preload("res://medios/sprites/ruleta_rueda.png")
-const MARCOS := [preload("res://medios/sprites/ruleta_marco_a.png"), preload("res://medios/sprites/ruleta_marco_b.png")]
-## Las mismas medidas que panel_ruleta.gd, en píxeles del dibujo.
-const RADIO_ICONOS := 31.0
-const SECTORES := 8
-const GRADOS_SECTOR := 360.0 / SECTORES
-const DURACION_GIRO := 3.5
-const PARPADEO := 0.15
-const SEGUNDOS_PREMIO := 2.0
+## Lo que se queda el premio a la vista después de que el compañero lo acepte,
+## si lo acepta antes de que aquí acabe de girar (llega con algo de retraso).
+const SEGUNDOS_PREMIO := 1.0
 
 var _titulo: Label
-var _premio: Label
-var _dibujo: Control
-var _opciones: Array = []
-## El giro del disco, en radianes (lo anima mostrar()).
-var _giro := 0.0
-var _tiempo := 0.0
-var _animacion: Tween
+## De quién es el cofre (id de la red) y su premio, para saber cuándo cerrar.
+var _id := -1
+var _premio_companero: DatosMejora
+var _girando := false
+## El compañero ya ha aceptado el premio.
+var _aceptada := false
 
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var columna := VBoxContainer.new()
-	columna.add_theme_constant_override("separation", 6)
-	add_child(columna)
-	_titulo = EstiloInterfaz.etiqueta("", 14)
+	super()
+	# La ruleta de este jugador ya la enseña la del HUD: esta solo se abre con
+	# mostrar().
+	BusEventos.ruleta_abierta.disconnect(_al_abrir)
+	BusEventos.jugador_desconectado.connect(func(id): if id == _id: cerrar())
+	add_to_group("cofre_companero")
+	_titulo = EstiloInterfaz.etiqueta("", 26)
 	_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	columna.add_child(_titulo)
-	_dibujo = Control.new()
-	_dibujo.custom_minimum_size = Vector2(112.0, 112.0)
-	_dibujo.draw.connect(_dibujar)
-	columna.add_child(_dibujo)
-	_premio = EstiloInterfaz.etiqueta("", 13)
-	_premio.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	columna.add_child(_premio)
-	visible = false
+	_titulo.set_anchors_preset(Control.PRESET_CENTER)
+	_titulo.offset_left = -400.0
+	_titulo.offset_right = 400.0
+	_titulo.offset_top = -240.0
+	_fondo.add_child(_titulo)
 
 
-func mostrar(nombre: String, color: Color, opciones: Array, premio: DatosMejora) -> void:
-	add_theme_stylebox_override("panel", EstiloInterfaz.caja(color, 10))
-	_titulo.text = "COFRE DE %s" % nombre.to_upper()
+## niveles_companero: sus mejoras (mejora → veces), para el texto del nivel.
+func mostrar(id: int, nombre: String, color: Color, opciones: Array, premio: DatosMejora, niveles_companero: Dictionary) -> void:
+	_id = id
+	_premio_companero = premio
+	_girando = true
+	_aceptada = false
+	niveles = niveles_companero
+	_titulo.text = "%s ESTÁ ABRIENDO UN COFRE" % nombre.to_upper()
 	_titulo.add_theme_color_override("font_color", color)
-	_premio.text = " "
-	_opciones = opciones
-	_giro = 0.0
-	visible = true
-	# A la izquierda y a media altura, a 16 px del borde: no tapa al jugador
-	# ni la columna de mejoras. Después de poner los textos, que cambian lo
-	# que mide.
-	set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT, Control.PRESET_MODE_MINSIZE, 16)
-	# Como en panel_ruleta.gd: acaba en el sector del premio, tras unas vueltas.
-	var final := deg_to_rad(-GRADOS_SECTOR * opciones.find(premio) - 360.0 * 3)
-	if _animacion != null:
-		_animacion.kill()
-	_animacion = create_tween()
-	_animacion.tween_property(self, "_giro", final, DURACION_GIRO).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	_animacion.tween_callback(func(): _premio.text = premio.nombre)
-	_animacion.tween_interval(SEGUNDOS_PREMIO)
-	_animacion.tween_callback(hide)
+	_al_abrir(opciones, premio)
 
 
-func _process(delta: float) -> void:
-	_tiempo += delta
-	if visible:
-		_dibujo.queue_redraw()
+func abierta() -> bool:
+	return _fondo.visible
 
 
-func _dibujar() -> void:
-	var centro := _dibujo.size / 2.0
-	_dibujo.draw_set_transform(centro, _giro)
-	_dibujo.draw_texture(RUEDA, -RUEDA.get_size() / 2.0)
-	_dibujo.draw_set_transform(Vector2.ZERO)
-	for i in _opciones.size():
-		var angulo := deg_to_rad(-90.0 + GRADOS_SECTOR * i) + _giro
-		var donde := centro + Vector2.from_angle(angulo) * RADIO_ICONOS
-		_dibujo.draw_texture(_opciones[i].icono, donde - Vector2(8.0, 8.0))
-	# El marco, encima, con las bombillas parpadeando.
-	var marco: Texture2D = MARCOS[int(_tiempo / PARPADEO) % 2]
-	_dibujo.draw_texture(marco, centro - marco.get_size() / 2.0)
+## Una mejora aplicada a un jugador (sucesos_red.gd): si es el premio de este
+## cofre, el compañero lo ha aceptado.
+func al_aplicar(id: int, mejora: DatosMejora) -> void:
+	if not abierta() or id != _id or mejora != _premio_companero:
+		return
+	_aceptada = true
+	if not _girando:
+		cerrar()
+
+
+func cerrar() -> void:
+	_id = -1
+	_fondo.visible = false
+	if _latido != null:
+		_latido.kill()
+
+
+func _al_parar(sector: int) -> void:
+	super(sector)
+	# Como la del HUD, pero sin aceptar: el premio es del compañero.
+	_parada = false
+	_ayuda.visible = false
+	_girando = false
+	if _aceptada:
+		# Si mientras tanto se abre otro cofre, _aceptada vuelve a ser false.
+		get_tree().create_timer(SEGUNDOS_PREMIO, true).timeout.connect(func(): if _aceptada: cerrar())

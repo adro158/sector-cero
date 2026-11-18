@@ -54,7 +54,7 @@ func _ready() -> void:
 	add_child(_sucesos)
 	add_child(AvisoEsperaRed.new(self))
 	add_child(IndicadorCompaneros.new(self))
-	# La ficha de un compañero, la mini ruleta de su cofre y la votación.
+	# La ficha de un compañero, la ruleta de su cofre y la votación.
 	var interfaz := InterfazRed.new(self)
 	add_child(interfaz)
 	_sucesos.interfaz = interfaz
