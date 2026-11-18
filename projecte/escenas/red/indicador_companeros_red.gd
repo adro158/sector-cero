@@ -10,7 +10,16 @@ extends Node2D
 const Red := preload("res://globales/red.gd")
 ## Separación de la flecha con el borde de la pantalla.
 const MARGEN := 36.0
-const TAMANO_FLECHA := 14.0
+## La flecha (16x16) está dibujada mirando a la derecha: se gira hacia él y
+## se dibuja al doble.
+const FLECHA := preload("res://medios/interfaz/red_flecha.png")
+const TAMANO_FLECHA := 32.0
+## La placa del nombre: 3 trozos de 8, 32 y 8 px, y 14 de alto. El nombre va
+## en la fuente pixel a 11, que cabe justo en su hueco de 10 px.
+const PLACA := preload("res://medios/interfaz/red_placa.png")
+const LADO_PLACA := 8.0
+const ALTO_PLACA := 14.0
+const TAMANO_NOMBRE := 11
 ## Lo que sube el nombre desde los pies del personaje (mide 72 px de alto).
 const ALTURA_NOMBRE := 78.0
 
@@ -26,6 +35,8 @@ func _ready() -> void:
 	# partida: así toda la interfaz (el HUD, las mejoras, la pausa) le tapa.
 	z_index = 50
 	z_as_relative = false
+	# La flecha y la placa son pixel art: sin suavizar.
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 func _process(_delta: float) -> void:
@@ -39,7 +50,7 @@ func _draw() -> void:
 	var pantalla := get_viewport_rect().size
 	var del_mundo := get_viewport().get_canvas_transform()
 	var a_mundo := del_mundo.affine_inverse()
-	var fuente := EstiloInterfaz.tema().default_font
+	var fuente := EstiloInterfaz.fuente_pixel()
 	for jugador in _partida.jugadores():
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		# Mirando no tiene personaje: no hay nada que señalar.
@@ -64,18 +75,29 @@ func _flecha(fuente: Font, nombre: String, donde: Vector2, pantalla: Vector2, co
 	# Lo que hay que alargar la dirección hasta tocar el borde (el lado más cercano).
 	var escala := minf(medio.x / maxf(absf(hacia.x), 0.001), medio.y / maxf(absf(hacia.y), 0.001))
 	var punta := centro + hacia * escala
-	var lado := hacia.orthogonal() * TAMANO_FLECHA * 0.6
-	var base := punta - hacia * TAMANO_FLECHA
-	draw_colored_polygon(PackedVector2Array([a_mundo * punta, a_mundo * (base + lado), a_mundo * (base - lado)]), color)
-	_texto(fuente, nombre, a_mundo * (punta - hacia * (TAMANO_FLECHA + 16.0)), color)
+	draw_set_transform(a_mundo * (punta - hacia * TAMANO_FLECHA / 2.0), hacia.angle(), Vector2(2.0, 2.0))
+	draw_texture(FLECHA, Vector2(-8.0, -8.0), color)
+	draw_set_transform(Vector2.ZERO)
+	_texto(fuente, nombre, a_mundo * (punta - hacia * (TAMANO_FLECHA + 12.0)), color)
 
 
-## Centrado en ese punto, con contorno oscuro para que se lea sobre la horda.
+## Centrado en ese punto (la línea de las letras), encima de su placa, que
+## hace de fondo oscuro para que se lea sobre la horda.
 func _texto(fuente: Font, texto: String, punto: Vector2, color: Color) -> void:
-	var ancho := fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
-	var esquina := punto - Vector2(ancho / 2.0, 0.0)
-	draw_string_outline(fuente, esquina, texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.02, 0.04, 0.07))
-	draw_string(fuente, esquina, texto, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, color)
+	var ancho := fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE).x
+	var caja := Rect2(punto - Vector2(ancho / 2.0 + LADO_PLACA + 1.0, 10.0), Vector2(ancho + LADO_PLACA * 2.0 + 2.0, ALTO_PLACA))
+	caja.position = caja.position.round()
+	_placa(caja, color)
+	draw_string(fuente, caja.position + Vector2(LADO_PLACA + 1.0, 10.0), texto, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE, color)
+
+
+## La placa de 3 trozos: los lados tal cual y el centro estirado a lo que mida
+## el nombre.
+func _placa(caja: Rect2, color: Color) -> void:
+	var medio := caja.size.x - LADO_PLACA * 2.0
+	draw_texture_rect_region(PLACA, Rect2(caja.position, Vector2(LADO_PLACA, ALTO_PLACA)), Rect2(0.0, 0.0, LADO_PLACA, ALTO_PLACA), color)
+	draw_texture_rect_region(PLACA, Rect2(caja.position + Vector2(LADO_PLACA, 0.0), Vector2(medio, ALTO_PLACA)), Rect2(LADO_PLACA, 0.0, 32.0, ALTO_PLACA), color)
+	draw_texture_rect_region(PLACA, Rect2(caja.position + Vector2(LADO_PLACA + medio, 0.0), Vector2(LADO_PLACA, ALTO_PLACA)), Rect2(40.0, 0.0, LADO_PLACA, ALTO_PLACA), color)
 
 
 ## El nombre con el que entró en la sala.
