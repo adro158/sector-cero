@@ -8,7 +8,8 @@ extends RefCounted
 ##
 ## Las claves son cortas porque va muchas veces por segundo:
 ## - j: por id de la red, [posición, velocidad, personaje, vida, máxima, si
-##   está mirando sin personaje, la carga de las ultis de sus personajes]
+##   está mirando sin personaje, la carga de las ultis de sus personajes,
+##   hacia dónde apunta su golpe en cono]
 ## - h: por tipo de la horda (en el orden del grupo gestor_enemigos, el mismo
 ##   en todos los ordenadores), lo de gestor_enemigos.gd datos_red()
 ## - g: [posiciones, valores] de los fragmentos de datos
@@ -25,15 +26,22 @@ extends RefCounted
 ## Sin class_name: se carga con preload.
 
 ## Los nodos de RaizJuego que se mandan y se ponen igual, con datos_red() y
-## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques, y los premios
-## de los élites.
+## poner_desde_red(): Kernel Panic, NÚCLEO CERO y sus ataques, los premios de
+## los élites y la resistencia del malware.
+## A cada cliente solo se le manda la horda, los fragmentos, las muertes y los
+## golpes a menos de esto de su jugador: se ve 1280x720, unos 734 px del centro
+## a la esquina, y el resto es margen. Con toda la horda, un estado pasaba de 10
+## KB (en trozos: si se pierde uno, se pierde entero) y al cliente le iba a
+## tirones en la red de clase (17/11).
+const RADIO_VISTA := 1000.0
 const RAIZ := ["Jefe", "JefeFinal", "JaulaJefe", "Jefe/Rafaga", "JefeFinal/Ataques",
-	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite"]
+	"JefeFinal/Ataques2", "JefeFinal/Escudo", "ZonasHielo", "PremiosElite", "ResistenciaMalware"]
 
 
-## En el anfitrión. reloj y experiencia: lo último que avisó el bus; muertes
-## y golpes: los apuntados desde el estado anterior (partida_red.gd).
-static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, experiencia: Array, muertes: Array, golpes: Array) -> Dictionary:
+## En el anfitrión, para el cliente cuyo jugador está en centro. reloj y
+## experiencia: lo último que avisó el bus; muertes y golpes: los apuntados
+## desde el estado anterior (partida_red.gd).
+static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, experiencia: Array, muertes: Array, golpes: Array, centro: Vector2) -> Dictionary:
 	var jugadores := {}
 	var equipo: RefCounted = null
 	for id in por_id:
@@ -41,29 +49,35 @@ static func del_anfitrion(arbol: SceneTree, por_id: Dictionary, reloj: Array, ex
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		var salud: Salud = jugador.get_node("Salud")
 		jugadores[id] = [jugador.global_position, jugador.velocity, cambio.indice_actual(), salud.vida(),
-			salud.vida_maxima, cambio.espectador(), jugador.get_node("Ultis").cargas()]
+			salud.vida_maxima, cambio.espectador(), jugador.get_node("Ultis").cargas(),
+			jugador.get_node("GestorArmas").apuntando]
 		equipo = cambio._equipo
 	var horda := []
 	for gestor in arbol.get_nodes_in_group("gestor_enemigos"):
-		horda.append(gestor.datos_red())
+		horda.append(gestor.datos_red(centro, RADIO_VISTA))
 	var gemas: Node = arbol.get_first_node_in_group("pool_gemas")
 	var raiz := arbol.current_scene.get_node("RaizJuego")
 	return {
 		"j": jugadores,
 		"h": horda,
-		"g": [gemas.posiciones_vivas(), gemas.valores_vivos()],
+		"g": gemas.datos_red(centro, RADIO_VISTA),
 		"t": reloj,
 		"x": experiencia,
 		"e": [equipo.vidas, equipo.maximas, equipo.caidos],
 		"l": arbol.get_nodes_in_group("elites").map(func(elite): return elite.datos_red()),
 		"a": RAIZ.map(func(ruta): return raiz.get_node(ruta).datos_red()),
-		"m": muertes,
-		"d": golpes,
+		"m": muertes.filter(func(muerte): return muerte[0].distance_to(centro) < RADIO_VISTA),
+		"d": golpes.filter(func(golpe): return golpe[0].distance_to(centro) < RADIO_VISTA),
 	}
 
 
-## En los clientes.
-static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) -> void:
+## Lo que se deja separar el jugador de este ordenador de donde dice el
+## anfitrión antes de ponerlo en su sitio de golpe (en aplicar).
+const CORREGIR_DESDE := 120.0
+
+
+## En los clientes. local: el jugador de este ordenador.
+static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary, local: Node2D) -> void:
 	# Los caídos, antes que los jugadores: así seguir_red sabe si el que lleva
 	# cada uno acaba de caer (y lo anima). Las vidas, al final: al cambiar de
 	# personaje, cambio_personaje.gd guarda la que tenía aquí.
@@ -74,9 +88,19 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		if jugador == null:
 			continue
 		var datos: Array = estado.j[id]
-		jugador.global_position = datos[0]
-		# Entre un estado y el siguiente sigue andando hacia donde iba.
-		jugador.direccion_red = (datos[1] / jugador.velocidad_maxima).limit_length(1.0)
+		if jugador == local:
+			# Este anda solo con lo que se pulsa aquí (partida_red.gd). Lo que
+			# dice el anfitrión llega con retraso: solo se corrige si se ha
+			# separado mucho (de golpe) o si está quieto (poco a poco).
+			var separado: float = jugador.global_position.distance_to(datos[0])
+			if separado > CORREGIR_DESDE:
+				jugador.global_position = datos[0]
+			elif jugador.direccion_red == Vector2.ZERO:
+				jugador.global_position = jugador.global_position.lerp(datos[0], 0.3)
+		else:
+			jugador.global_position = datos[0]
+			# Entre un estado y el siguiente sigue andando hacia donde iba.
+			jugador.direccion_red = (datos[1] / jugador.velocidad_maxima).limit_length(1.0)
 		var cambio: Node = jugador.get_node("CambioPersonaje")
 		var salud: Salud = jugador.get_node("Salud")
 		var indice_antes: int = cambio.indice_actual()
@@ -89,6 +113,7 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary) ->
 		if cambio.indice_actual() == indice_antes and vida_antes - datos[3] >= 1.0:
 			salud.danado.emit(vida_antes - datos[3])
 		jugador.get_node("Ultis").poner_cargas(datos[6])
+		jugador.get_node("GestorArmas").apuntando = datos[7]
 	var gestores := arbol.get_nodes_in_group("gestor_enemigos")
 	for i in mini(gestores.size(), estado.h.size()):
 		gestores[i].poner_desde_red(estado.h[i])

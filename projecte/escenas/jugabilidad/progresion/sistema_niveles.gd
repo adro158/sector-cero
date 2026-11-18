@@ -249,6 +249,12 @@ func elegir(jugador: Node, mejora: DatosMejora) -> void:
 		_siguiente()
 
 
+## Multijugador: si a ese jugador le falta elegir la mejora (o la ruleta) en
+## curso. Para el aviso de «esperando a los demás» (aviso_espera_red.gd).
+func elige(jugador: Node) -> bool:
+	return jugador in _por_elegir
+
+
 ## Multijugador: ese jugador ya no elige (se ha ido de la partida). Si era el
 ## último que faltaba, se sigue como si hubiera elegido: si no, la partida se
 ## quedaría en pausa para siempre esperándole.

@@ -280,14 +280,18 @@ func _physics_process(delta: float) -> void:
 		queue_redraw()
 
 
-## Multijugador: los vivos, para mandarlos (en el anfitrión): [posiciones, el
-## aviso rojo de embestida de cada uno (vacío si este tipo no embiste)]...
-func datos_red() -> Array:
+## Multijugador: los vivos a menos de radio de centro (a cada cliente, los que
+## tiene cerca), para mandarlos (en el anfitrión): [posiciones, el aviso rojo
+## de embestida de cada uno (vacío si este tipo no embiste)]...
+func datos_red(centro: Vector2, radio: float) -> Array:
+	var posiciones := PackedVector2Array()
 	var avisos := PackedFloat32Array()
-	if _embestida != null:
-		for i in _vivos:
-			avisos.append(_embestida.avisando(i))
-	return [_posiciones.slice(0, _vivos), avisos]
+	for i in _vivos:
+		if _posiciones[i].distance_to(centro) < radio:
+			posiciones.append(_posiciones[i])
+			if _embestida != null:
+				avisos.append(_embestida.avisando(i))
+	return [posiciones, avisos]
 
 
 ## ... y ponerlos (en los clientes). El aviso hace falta para poder esquivar

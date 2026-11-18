@@ -366,6 +366,41 @@ Adam decidió el 13/11 hacerla él, con su Claude, para acabar el online
    (`adam/red-conexion`): `ip_local()` mira el adaptador de cada IP y se
    salta los virtuales; la sala enseña la IP debajo del código; se puede
    escribir la IP en vez del código; y el aviso de fallo dice qué mirar.
+   **Con la v1.19 ya conecta entre dos ordenadores** (Adam y Alan, 17/11).
+   Peticiones de Adam tras jugar, en la issue #19. Hechas el 17/11
+   (`adam/red-mejoras`): el triángulo del Espadachín salía recto en el
+   cliente (allí no se puede buscar al enemigo más cercano: ahora hacia dónde
+   apunta cada uno va en el estado) y el aviso «Esperando a que los demás
+   jugadores elijan» (`aviso_espera_red.gd`). Y además: el nombre encima de
+   cada jugador y una flecha en el borde hacia los compañeros que no se ven
+   (`indicador_companeros_red.gd`); y contra el lag de Alan, a cada cliente
+   solo se le manda lo que tiene cerca (`RADIO_VISTA`, 1000 px: con 600
+   enemigos lejos, el estado pasa de 6,5 KB a 1,5 KB) y su jugador se mueve
+   en cuanto pulsa, sin esperar al anfitrión (se corrige si se separa más de
+   120 px o, quieto, poco a poco).
+   **El 18/11, lo que quedaba de la #19** (también en `adam/red-mejoras`):
+   - La resistencia del malware en los clientes: no subía (allí las armas
+     no pegan); ahora va en el estado (`ResistenciaMalware` en la lista
+     `RAIZ`) y los clientes no analizan.
+   - La ficha del compañero (`ficha_companero.gd`): click en él y salen sus
+     mejoras con las veces de cada una (las apunta `sucesos_red.gd`). Gana
+     a la ficha del enemigo: un compañero se pincha a propósito y casi
+     siempre tiene horda alrededor.
+   - El personaje «en uso»: el estado del equipo lleva el nombre del otro
+     jugador que lo lleva (`llevado_por`), y la barra de abajo lo pinta
+     oscurecido con su nombre; Q y E se lo saltan.
+   - La ruleta del compañero (`ruleta_companero.gd`): el suceso «ruleta»
+     va a todos, y los que no la giran la ven en pequeño a la izquierda.
+   - **Votar para parar** (`pausa_red.gd` y `votacion_red.gd`): cambia la
+     decisión del 13/11 de que en red no se pausa. Esc pide parar; los
+     demás votan SÍ o NO; con todos que sí se para para todos, y se sigue
+     cuando quien la pidió pulsa CONTINUAR; con un no, sigue sin parar. Lo
+     lleva el anfitrión (suceso «votacion»). Falta apuntarlo en
+     `contexto.md` (fichero de paso, en un PR pequeño).
+   - Por ahora con lo que ya había (textos, el panel y la ruleta de
+     siempre); las piezas del lote `lote_red_interfaz.zip` van después.
+   - Probado con dos copias: las mejoras en la ficha, el personaje en uso y
+     Q/E, las dos ruletas, el sí, el CONTINUAR y el no; capturas con ventana.
    **Falta:** probarlo entre dos ordenadores de verdad (issue #15); `red.gd`
    (234 líneas) y `sala_red.gd` (217) pasan un poco de ~200; las barras de
    vida del ransomware no se ven en los clientes (sus vidas no viajan).

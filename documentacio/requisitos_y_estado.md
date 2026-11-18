@@ -285,8 +285,16 @@ Plan, decisiones y lo hecho punto por punto en
   iba un cliente, muertes falsas en la fase 2, ultis y mejoras en los
   clientes...; `bitacora/2026-11-17_adam_revision-red-y-v1.18.md`) y
   **publicado en la v1.18**.
-- **Falta:** probarlo entre dos ordenadores de verdad (issue #15) y medir
-  la vida con varios bots.
+- **El 17/11 por la tarde, la v1.19**: en dos Linux de clase no se podía
+  entrar en la sala (el código llevaba la IP de una red virtual); ahora se
+  elige bien, la sala enseña su IP y se puede entrar escribiéndola. **Con
+  ella ya juegan Adam y Alan en dos ordenadores.** Sus peticiones, en la
+  issue #19; hechas en el PR #20 (sin fusionar): el triángulo del
+  Espadachín en los clientes, el aviso de espera, los nombres, la flecha
+  hacia los compañeros y menos lag (`bitacora/2026-11-17_adam_red-v1.19-y-mejoras.md`).
+- **Falta:** lo que queda de la #19 (el personaje «en uso», la pausa por
+  votación, el cofre y las mejoras del compañero, la resistencia en los
+  clientes) y medir la vida con varios bots.
 
 ### Adam y Alan, cada uno con su Claude Code (preparado el 05/11)
 
