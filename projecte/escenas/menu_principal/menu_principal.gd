@@ -16,7 +16,7 @@ const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd
 const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const SalaRed := preload("res://escenas/red/sala_red.gd")
-const Armario := preload("res://escenas/skins/armario.gd")
+const VentanaSkins := preload("res://escenas/skins/ventana_skins.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
 ## panel de cuatro líneas, y el menú era casi todo texto.
@@ -29,8 +29,9 @@ var _versiones: PanelVersiones
 var _cuenta: Control
 ## La sala del multijugador (13/11, sala_red.gd).
 var _sala: Control
-## El armario, donde se elige la skin (escenas/skins/armario.gd, de Alan).
-var _armario: Control
+## Las skins: el armario y, más adelante, el pase y la tienda
+## (escenas/skins/ventana_skins.gd, de Alan).
+var _skins: Control
 ## «Juegas como invitado» o el nombre de la cuenta (05/11).
 var _quien: Label
 ## La bienvenida de las cuentas sale una vez al abrir el juego, no cada vez
@@ -85,19 +86,22 @@ func _ready() -> void:
 	# botones van sin tecla.
 	var jugar := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", _jugar, 180), "JUGAR  [Enter]", "JUGAR") as Button
 	_jugar_boton = jugar
-	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 160)
-	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 160)
-	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 160)
+	var reglas := EstiloInterfaz.boton("REGLAS", _abrir_reglas, 140)
+	var ranking := EstiloInterfaz.boton("RANKING", _abrir_ranking, 140)
+	var opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones, 140)
 	var cuenta := EstiloInterfaz.boton("CUENTA", func(): _cuenta.abrir(), 150)
 	# El multijugador en red local. En la web no: ENet no funciona en el
 	# navegador (plan_multijugador.md).
 	var en_red := EstiloInterfaz.boton("EN RED", func(): _sala.abrir(), 130)
 	en_red.visible = not OS.has_feature("web")
-	for boton in [jugar, en_red, reglas, ranking, opciones, cuenta]:
+	# Las skins (de Alan, 18/11). Para que quepa en los 1280 px, REGLAS,
+	# RANKING, OPCIONES y SALIR pasan de 160 a 140.
+	var skins := EstiloInterfaz.boton("SKINS", func(): _skins.abrir(), 120)
+	for boton in [jugar, en_red, skins, reglas, ranking, opciones, cuenta]:
 		botones.add_child(boton)
 	# En el navegador no se puede cerrar el juego.
 	if not OS.has_feature("web"):
-		botones.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", get_tree().quit, 160), "SALIR  [Esc]", "SALIR"))
+		botones.add_child(EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", get_tree().quit, 140), "SALIR  [Esc]", "SALIR"))
 	caja.add_child(botones)
 	_crear_version(caja)
 
@@ -117,10 +121,10 @@ func _ready() -> void:
 	_sala = SalaRed.new()
 	_sala.cerrado.connect(en_red.grab_focus)
 	add_child(_sala)
-	_armario = Armario.new()
-	_armario.cerrado.connect(jugar.grab_focus)
-	personajes.elegido.connect(_armario.abrir)
-	add_child(_armario)
+	_skins = VentanaSkins.new()
+	_skins.cerrado.connect(skins.grab_focus)
+	personajes.elegido.connect(_skins.abrir)
+	add_child(_skins)
 	# Sin una sesión guardada, al abrir el juego: entrar, registrarse o jugar
 	# sin cuenta. Con las cuentas sin activar (sin proyecto de Supabase), no.
 	if not _bienvenida_vista and Cuenta.actual.activada() and Cuenta.actual.nombre == "":
@@ -221,7 +225,7 @@ func _abrir_ranking() -> void:
 
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible or _sala.visible or _armario.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible or _sala.visible or _skins.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return
