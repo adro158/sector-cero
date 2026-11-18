@@ -18,6 +18,8 @@ const PrepararRed := preload("res://escenas/red/preparar_red.gd")
 const SucesosRed := preload("res://escenas/red/sucesos_red.gd")
 const AvisoEsperaRed := preload("res://escenas/red/aviso_espera_red.gd")
 const IndicadorCompaneros := preload("res://escenas/red/indicador_companeros_red.gd")
+const InterfazRed := preload("res://escenas/red/interfaz_red.gd")
+const PausaRed := preload("res://escenas/red/pausa_red.gd")
 const MENU := "res://escenas/menu_principal/menu_principal.tscn"
 ## El estado, cada 3 pasos de física: 20 veces por segundo.
 const CADA := 3
@@ -44,6 +46,7 @@ var _ultimo_estado := 0
 ## El menú de pausa está abierto (en red no pausa: _al_pausar).
 var _menu_abierto := false
 var _sucesos: Node
+var _pausa: Node
 
 
 func _ready() -> void:
@@ -51,6 +54,12 @@ func _ready() -> void:
 	add_child(_sucesos)
 	add_child(AvisoEsperaRed.new(self))
 	add_child(IndicadorCompaneros.new(self))
+	# La ficha de un compañero, la mini ruleta de su cofre y la votación.
+	var interfaz := InterfazRed.new(self)
+	add_child(interfaz)
+	_sucesos.interfaz = interfaz
+	_pausa = PausaRed.new(self, interfaz.votacion)
+	add_child(_pausa)
 	_preparar.call_deferred()
 	BusEventos.entrada_recibida.connect(_al_recibir_entrada)
 	BusEventos.estado_recibido.connect(_al_recibir_estado)
@@ -78,6 +87,19 @@ func jugadores() -> Array:
 
 func id_de(jugador: Node) -> int:
 	return _por_id.find_key(jugador)
+
+
+## Para la interfaz de red (pausa_red.gd y ficha_companero.gd).
+func ids() -> Array:
+	return _por_id.keys()
+
+
+func nombre_de_id(id: int) -> String:
+	return _por_id[id].get_node("CambioPersonaje").nombre_red if _por_id.has(id) else ""
+
+
+func mejoras_de(jugador: Node) -> Dictionary:
+	return _sucesos.mejoras_de(id_de(jugador))
 
 
 ## Al salir de la partida (al menú), también de la red: si no, se seguiría
@@ -144,6 +166,10 @@ func _al_recibir_entrada(id: int, entrada: Dictionary) -> void:
 		return
 	if entrada.has("mejora"):
 		get_parent().get_node("SistemaNiveles").elegir(jugador, load(entrada.mejora))
+		return
+	# Pedir parar, seguir o votar (pausa_red.gd).
+	if entrada.has("pausa") or entrada.has("voto"):
+		_pausa.entrada(id, entrada)
 		return
 	# La ulti, con la dirección que ha apuntado allí (cero: al más cercano).
 	if entrada.has("ulti"):
@@ -225,6 +251,8 @@ func _al_irse(id: int) -> void:
 		return
 	jugador.get_node("CambioPersonaje").irse()
 	_por_id.erase(id)
+	# Si se votaba para parar, su voto ya no cuenta.
+	_pausa.quitar(id)
 	# Si estaba eligiendo mejora (o girando su ruleta), ya no se le espera:
 	# si no, la partida se quedaría en pausa para siempre.
 	get_parent().get_node("SistemaNiveles").quitar(jugador)

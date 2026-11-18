@@ -24,6 +24,7 @@ static func jugadores(raiz: Node, red: Node) -> Dictionary:
 	for jugador in red.jugadores():
 		if jugador.id == red.mi_id():
 			por_id[jugador.id] = local
+			local.get_node("CambioPersonaje").nombre_red = jugador.nombre
 			local.get_node("CambioPersonaje").tomar(jugador.personaje)
 	var orden := 1
 	for jugador in red.jugadores():
@@ -44,6 +45,7 @@ static func jugadores(raiz: Node, red: Node) -> Dictionary:
 		otro.get_node("Salud").multiplicador_dano = Dificultad.dato("dano")
 		otro.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 		otro.reset_physics_interpolation()
+		otro.get_node("CambioPersonaje").nombre_red = jugador.nombre
 		otro.get_node("CambioPersonaje").tomar(jugador.personaje)
 		por_id[jugador.id] = otro
 	# Los jugadores no chocan entre ellos: si no, al pasar uno al lado del

@@ -83,6 +83,12 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _elegir(punto: Vector2) -> void:
+	# En red, un compañero gana a los enemigos: se pincha a propósito y casi
+	# siempre tiene horda alrededor. Lo enseña su ficha (ficha_companero.gd).
+	for ficha in get_tree().get_nodes_in_group("ficha_companero"):
+		if ficha.abrir_en(punto):
+			_cerrar()
+			return
 	var mejor := {}
 	for objetivo in get_tree().get_nodes_in_group("objetivos"):
 		var candidata: Dictionary = objetivo.ficha_en(punto, RADIO_CLICK)
@@ -94,6 +100,8 @@ func _elegir(punto: Vector2) -> void:
 	_id = mejor.id
 	_mostrar(mejor)
 	visible = true
+	# Las dos van en el mismo sitio: la del compañero, fuera.
+	get_tree().call_group("ficha_companero", "cerrar")
 
 
 func _process(_delta: float) -> void:

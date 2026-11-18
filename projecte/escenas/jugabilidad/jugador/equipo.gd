@@ -87,8 +87,9 @@ func curar_banquillo(delta: float, por_segundo: float) -> bool:
 
 
 ## Cómo está cada personaje, para la interfaz: un diccionario por personaje
-## con personaje, arma, vida, maxima y caido. La vida del que lleva un
-## jugador es la de su Salud.
+## con personaje, arma, vida, maxima, caido y llevado_por (en red, el nombre
+## del otro jugador que lo lleva; vacío si está libre o lo lleva el de este
+## ordenador). La vida del que lleva un jugador es la de su Salud.
 func estado() -> Array:
 	var lista := []
 	for i in personajes.size():
@@ -100,5 +101,6 @@ func estado() -> Array:
 			"vida": quien.salud().vida() if activo else vidas[i],
 			"maxima": quien.salud().vida_maxima if activo else maximas[i],
 			"caido": caidos[i],
+			"llevado_por": quien.nombre_red if quien != null and quien != local else "",
 		})
 	return lista

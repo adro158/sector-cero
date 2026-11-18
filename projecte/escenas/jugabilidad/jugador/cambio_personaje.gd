@@ -54,6 +54,9 @@ var _equipo: Equipo
 var _eligiendo := false
 ## Sin personaje (multijugador): mira la partida hasta la fase 2.
 var _espectador := false
+## Multijugador: el nombre de su jugador en la sala (lo pone preparar_red.gd),
+## para enseñar en la barra del equipo quién lleva cada personaje.
+var nombre_red := ""
 
 @onready var _salud: Salud = get_parent().get_node("Salud")
 @onready var _sprite: Sprite2D = get_parent().get_node("Sprite")
