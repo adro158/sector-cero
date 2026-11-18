@@ -275,10 +275,17 @@ en el chat) y las montó con su Claude Code (issue #16; bitácora,
   retratos en el HUD (barra y panel del equipo, ventana de caída y resumen
   final), el armario al pulsar un personaje en el menú y, en red, cada
   jugador con su skin (`bitacora/2026-11-18_alan_skins-en-el-juego.md`).
+- **`alan/skins-espadachin`** (18/11, sobre `alan/skins`): las 11 skins del
+  Espadachín (sin código: sus PNG, sus recursos y la lista en
+  `espadachin.tres`) y el apartado **SKINS** en el menú, con las pestañas
+  ARMARIO, PASE y TIENDA (las dos últimas apagadas, «pronto»)
+  (`bitacora/2026-11-18_alan_skins-espadachin.md`).
 
-Falta: que Adam revise los PR #21 y #22 y fusionarlos (primero el #21),
-los lotes del Espadachín y el Segador (solo sus `.tres` y su lista) y, más
-adelante, la tienda, el gacha y el pase de la #16.
+Falta: que Adam revise los PR #21 y #22 (y el del Espadachín) y
+fusionarlos en ese orden, el lote del Segador (solo sus PNG, sus `.tres`
+y su lista) y **decidir el pase de batalla**: Alan aún no sabe cómo será;
+las opciones (por partidas, por retos, mezcla o en la cuenta) están en esa
+bitácora. La tienda y el gacha de la #16, más adelante.
 
 ### El multijugador en red local (en la v1.18, 17/11)
 
