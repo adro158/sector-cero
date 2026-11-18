@@ -155,9 +155,10 @@ func mis_estadisticas() -> Dictionary:
 	return {}
 
 
-## Las partidas con trucos (F1) no cuentan, como en los récords.
+## Las partidas con trucos (F1) no cuentan, como en los récords; las de red
+## tampoco (decisión de Adam, 13/11).
 func _al_terminar_partida(estadisticas: Dictionary) -> void:
-	if nombre == "" or estadisticas.get("trucos", false):
+	if nombre == "" or estadisticas.get("trucos", false) or estadisticas.get("en_red", false):
 		return
 	_pendientes.append({
 		"usuario": _usuario,

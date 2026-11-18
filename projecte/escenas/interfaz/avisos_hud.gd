@@ -8,12 +8,12 @@ extends PanelContainer
 ## Con el juego en pausa se quedan como estén.
 ##
 ## Desde el lote 9 van sobre una banda de 9 trozos con flechas en las puntas,
-## teñida con el color del aviso, y con un icono a la izquierda (el jefe, la
+## teñida con el color del aviso (EstiloInterfaz.banda, que usan también los
+## avisos de la partida en red), y con un icono a la izquierda (el jefe, la
 ## evolución, la fase 2, el élite, el escudo o el malware que se adapta).
 ##
 ## Lo crea hud.gd. Sin class_name: se carga con preload.
 
-const BANDA := preload("res://medios/interfaz/aviso_banda.png")
 const ICONOS := preload("res://medios/interfaz/aviso_iconos.png")
 const ICONO_MALWARE := preload("res://medios/interfaz/resistencia_icono.png")
 ## El orden de la tira de iconos (aviso_iconos.png).
@@ -33,21 +33,12 @@ const ANCHO_MAXIMO := 760.0
 var _cola: Array = []
 ## Segundos que lleva el aviso de ahora (-1 si no hay ninguno).
 var _tiempo := -1.0
-var _banda := StyleBoxTexture.new()
+var _banda := EstiloInterfaz.banda(Color.WHITE)
 var _icono := TextureRect.new()
 var _texto := Label.new()
 
 
 func _ready() -> void:
-	_banda.texture = BANDA
-	_banda.texture_margin_left = 16.0
-	_banda.texture_margin_right = 16.0
-	_banda.texture_margin_top = 8.0
-	_banda.texture_margin_bottom = 8.0
-	_banda.content_margin_left = 26.0
-	_banda.content_margin_right = 26.0
-	_banda.content_margin_top = 6.0
-	_banda.content_margin_bottom = 6.0
 	add_theme_stylebox_override("panel", _banda)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

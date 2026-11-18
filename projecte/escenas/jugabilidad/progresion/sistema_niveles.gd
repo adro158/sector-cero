@@ -1,5 +1,16 @@
 extends Node
 
+## Al sortear las opciones de cada jugador en una subida de nivel. Para la red
+## (partida_red.gd), que manda las suyas a los demás: salta siempre, también
+## si el de este ordenador se ha quedado mirando y no elige.
+signal opciones_sorteadas
+## La ruleta de un cofre que ha recogido un jugador de otro ordenador: la red
+## se la manda a él (partida_red.gd).
+signal ruleta_sorteada(jugador: Node, sectores: Array, premio: DatosMejora)
+## Al aplicar una mejora a un jugador: la red la manda a los clientes, que la
+## aplican también para que se vea (la evolución, el alcance, la velocidad).
+signal mejora_aplicada(jugador: Node, mejora: DatosMejora)
+
 const OPCIONES_POR_NIVEL := 3
 ## Sectores de la ruleta del cofre.
 const SECTORES_RULETA := 8
@@ -36,6 +47,9 @@ var _por_elegir: Array = []
 var _opciones := {}
 var _resistencia: Node
 var _pool_gemas: Node
+var _premios: Node
+## Quién recogió cada cofre por elegir, en orden: su premio es suyo.
+var _cofres: Array = []
 
 
 func _ready() -> void:
@@ -44,10 +58,11 @@ func _ready() -> void:
 	_cambio_personaje = _jugador.get_node("CambioPersonaje")
 	_resistencia = get_tree().get_first_node_in_group("resistencia_malware")
 	_pool_gemas = get_tree().get_first_node_in_group("pool_gemas")
+	_premios = get_parent().get_node("PremiosElite")
 
 	BusEventos.experiencia_ganada.connect(_al_ganar_experiencia)
 	BusEventos.mejora_seleccionada.connect(_al_elegir_mejora)
-	BusEventos.cofre_recogido.connect(_anadir_pendiente.bind("cofre"))
+	BusEventos.cofre_recogido.connect(_al_recoger_cofre)
 	# Diferido para que la interfaz, que está lista después, ya esté conectada.
 	_avisar_experiencia.call_deferred()
 
@@ -74,6 +89,11 @@ func _al_ganar_experiencia(cantidad: int) -> void:
 		_anadir_pendiente("nivel")
 
 	_avisar_experiencia()
+
+
+func _al_recoger_cofre() -> void:
+	_cofres.append(_premios.ultimo_cofre_de)
+	_anadir_pendiente("cofre")
 
 
 ## Apunta una mejora por elegir. Si no había ninguna, se ofrece ya; si no,
@@ -135,17 +155,25 @@ func _ofrecer_mejoras() -> void:
 	# solo tiene que mostrar las opciones y avisar de la elegida.
 	get_tree().paused = true
 	if _pendientes[0] == "cofre":
-		# El premio del cofre es uno: lo recibe el de este ordenador (en red,
-		# el que lo recoge, punto 5).
-		_por_elegir = [_jugador]
+		# El premio del cofre es uno: lo recibe quien lo recogió. Si ya no
+		# juega (se ha quedado mirando o se ha ido), el de este ordenador.
+		var quien: Node = _cofres.pop_front()
+		if not is_instance_valid(quien) or not quien.is_in_group("jugador"):
+			quien = _jugador
+		_por_elegir = [quien]
 		var sectores := _sortear_sectores()
-		BusEventos.ruleta_abierta.emit(sectores, sectores.pick_random())
+		var premio: DatosMejora = sectores.pick_random()
+		if quien == _jugador:
+			BusEventos.ruleta_abierta.emit(sectores, premio)
+		else:
+			ruleta_sorteada.emit(quien, sectores, premio)
 	else:
 		# Cada jugador elige la suya, de su propio sorteo.
 		_por_elegir = get_tree().get_nodes_in_group("jugador")
 		_opciones.clear()
 		for jugador in _por_elegir:
 			_opciones[jugador] = _sortear_opciones(jugador)
+		opciones_sorteadas.emit()
 		if _jugador in _opciones:
 			BusEventos.jugador_subio_nivel.emit(_opciones[_jugador])
 
@@ -217,10 +245,36 @@ func elegir(jugador: Node, mejora: DatosMejora) -> void:
 	_por_elegir.erase(jugador)
 	# Los que se han quedado sin personaje mientras tanto ya no eligen.
 	_por_elegir = _por_elegir.filter(func(otro): return otro.is_in_group("jugador"))
-	if not _por_elegir.is_empty():
-		return
-	_pendientes.pop_front()
+	if _por_elegir.is_empty():
+		_siguiente()
 
+
+## Multijugador: si a ese jugador le falta elegir la mejora (o la ruleta) en
+## curso. Para el aviso de «esperando a los demás» (aviso_espera_red.gd).
+func elige(jugador: Node) -> bool:
+	return jugador in _por_elegir
+
+
+## Multijugador: ese jugador ya no elige (se ha ido de la partida). Si era el
+## último que faltaba, se sigue como si hubiera elegido: si no, la partida se
+## quedaría en pausa para siempre esperándole.
+func quitar(jugador: Node) -> void:
+	if _pendientes.is_empty() or jugador not in _por_elegir:
+		return
+	_por_elegir.erase(jugador)
+	if _por_elegir.is_empty():
+		_siguiente()
+
+
+## Multijugador, en los clientes: la mejora que el anfitrión ha aplicado a ese
+## jugador. Allí no se elige (elegir() no hace nada): se aplica para que se vea.
+func aplicar_desde_red(jugador: Node, mejora: DatosMejora) -> void:
+	_aplicar(mejora, jugador)
+
+
+## Han elegido todos: la siguiente pendiente o, si no hay, fuera la pausa.
+func _siguiente() -> void:
+	_pendientes.pop_front()
 	if not _pendientes.is_empty():
 		_ofrecer_mejoras()
 	else:
@@ -260,3 +314,4 @@ func _aplicar(mejora: DatosMejora, jugador: Node) -> void:
 			cambio_personaje.reducir_espera(mejora.valor)
 		DatosMejora.Efecto.RADIO_IMAN:
 			_pool_gemas.radio_iman *= 1.0 + mejora.valor
+	mejora_aplicada.emit(jugador, mejora)

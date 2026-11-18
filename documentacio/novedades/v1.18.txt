@@ -1,0 +1,4 @@
+- Nuevo: JUGAR EN RED, de 2 a 3 jugadores en la misma red (la de clase o la de casa). Uno crea la sala con el botón EN RED y dicta su código; los demás se unen con él y cada uno elige personaje.
+- En red, cada uno lleva su personaje y elige sus mejoras; el que recoge un cofre gira su ruleta. Si cae tu personaje pasas al que quede libre, y si no queda ninguno miras la partida hasta la fase 2.
+- En red la partida no se pausa (el menú sale, pero los demás siguen) y no cuenta para los récords, el ranking ni la cuenta.
+- Con más jugadores, los enemigos tienen más vida.

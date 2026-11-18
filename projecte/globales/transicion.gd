@@ -10,6 +10,7 @@ extends CanvasLayer
 const IconoLinux := preload("res://globales/icono_linux.gd")
 const Entrada := preload("res://globales/entrada.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
+const Red := preload("res://globales/red.gd")
 const DURACION := 0.25
 
 var _velo: ColorRect
@@ -33,6 +34,8 @@ func _ready() -> void:
 	add_child(Entrada.new())
 	# Las cuentas de jugador (cuenta.gd), por lo mismo.
 	add_child(Cuenta.new())
+	# La red del multijugador (red.gd, 13/11), por lo mismo.
+	add_child(Red.new())
 
 	# El juego también se abre con un fundido desde negro.
 	create_tween().tween_property(_velo, "modulate:a", 0.0, DURACION * 2.0)

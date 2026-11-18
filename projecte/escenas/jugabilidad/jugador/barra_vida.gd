@@ -20,12 +20,13 @@ const ESQUINA := Vector2(-22.0, -2.0)
 var _proporcion := 1.0
 var _ulti := 0.0
 var _tiempo := 0.0
+var _ultis: Node
 
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	get_parent().get_node("Salud").vida_cambiada.connect(_al_cambiar_vida)
-	BusEventos.ulti_cambiada.connect(_al_cambiar_ulti)
+	_ultis = get_parent().get_node("Ultis")
 
 
 func _al_cambiar_vida(actual: float, maxima: float) -> void:
@@ -33,13 +34,16 @@ func _al_cambiar_vida(actual: float, maxima: float) -> void:
 	queue_redraw()
 
 
-func _al_cambiar_ulti(cargas: Array, activo: int) -> void:
-	_ulti = cargas[activo]
-	queue_redraw()
-
-
 func _process(delta: float) -> void:
-	# Solo hace falta redibujar sin parar para el parpadeo de la ulti llena.
+	# La carga del personaje que lleva este jugador, mirada en cada fotograma:
+	# en red cada uno tiene su barra encima, y la señal ulti_cambiada trae el
+	# activo del de este ordenador (hasta el 18/11, el compañero salía con la
+	# carga de quien miraba). Se redibuja solo si cambia.
+	var ulti: float = _ultis.fraccion()
+	if ulti != _ulti:
+		_ulti = ulti
+		queue_redraw()
+	# Y sin parar para el parpadeo de la ulti llena.
 	if _ulti >= 1.0:
 		_tiempo += delta
 		queue_redraw()

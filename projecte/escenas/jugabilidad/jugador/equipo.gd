@@ -24,12 +24,19 @@ var armas: Array[DatosArma] = []
 var vidas: Array[float] = []
 var maximas: Array[float] = []
 var caidos: Array[bool] = []
+## La carga de la ulti de cada personaje (ultis.gd la sube y la gasta). Es del
+## personaje y no del jugador: en red, todos ven la misma y, si uno deja un
+## personaje con la ulti cargada, el que lo coja la tiene (18/11).
+var cargas: Array[float] = []
 ## Quién lleva a cada uno: el cambio_personaje.gd de su jugador, o null si
 ## está libre (en el banquillo).
 var llevado_por: Array = []
 ## Los cambio_personaje.gd de todos los jugadores, también los que se han
 ## quedado sin personaje (para que vuelvan en la fase 2).
 var miembros: Array = []
+## El cambio_personaje.gd del jugador de este ordenador (el de la escena): la
+## interfaz enseña su personaje.
+var local: Node = null
 ## Para curar el banquillo una sola vez por fotograma, aunque lo pidan todos
 ## los jugadores.
 var _ultimo_fotograma := -1
@@ -42,6 +49,7 @@ func _init(lista: Array[DatosPersonaje]) -> void:
 		vidas.append(personaje.vida_maxima)
 		maximas.append(personaje.vida_maxima)
 		caidos.append(false)
+		cargas.append(0.0)
 		llevado_por.append(null)
 
 
@@ -84,8 +92,9 @@ func curar_banquillo(delta: float, por_segundo: float) -> bool:
 
 
 ## Cómo está cada personaje, para la interfaz: un diccionario por personaje
-## con personaje, arma, vida, maxima y caido. La vida del que lleva un
-## jugador es la de su Salud.
+## con personaje, arma, vida, maxima, caido y llevado_por (en red, el nombre
+## del otro jugador que lo lleva; vacío si está libre o lo lleva el de este
+## ordenador). La vida del que lleva un jugador es la de su Salud.
 func estado() -> Array:
 	var lista := []
 	for i in personajes.size():
@@ -97,5 +106,6 @@ func estado() -> Array:
 			"vida": quien.salud().vida() if activo else vidas[i],
 			"maxima": quien.salud().vida_maxima if activo else maximas[i],
 			"caido": caidos[i],
+			"llevado_por": quien.nombre_red if quien != null and quien != local else "",
 		})
 	return lista

@@ -55,6 +55,12 @@ func _ready() -> void:
 		objetivo.enemigo_danado.connect(_al_danar_enemigo)
 
 
+## Multijugador: en los clientes los enemigos no reciben golpes; los números
+## son los que manda el anfitrión (estado_red.gd).
+func mostrar(posicion: Vector2, cantidad: float, resistencia: float) -> void:
+	_al_danar_enemigo(posicion, cantidad, resistencia)
+
+
 func _al_danar_enemigo(posicion: Vector2, cantidad: float, resistencia: float) -> void:
 	# Al llenarse se descartan los nuevos. Con un arma de área golpeando a
 	# decenas de enemigos a la vez, el tope evita llenar la pantalla de texto.
