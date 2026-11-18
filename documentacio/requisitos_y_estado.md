@@ -146,6 +146,15 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
 
 ### Siguiente
 
+- **El balance de los jefes (issue #27, pedido por Adam el 18/11):** hecha la
+  primera parte en el PR #29, sin fusionar
+  (`bitacora/2026-11-18_adam_balance-jefes.md`):
+  - el rebote del Ping ya no vuelve al jefe que acaba de golpear
+  - más horda al invocar
+  - la jaula solo encierra al jugador
+
+  Faltan la vida de las anclas y que la embestida de Kernel Panic escale con
+  la velocidad del jugador.
 - **El panel técnico (F3) con sprites:** rematado el 02/11 (sesión 20),
   sin publicar todavía. Falta verlo en casa, con la GPU de verdad: que la
   escala de los fps se ajuste bien a 1000-2500 fps. Las vistas previas y
