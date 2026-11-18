@@ -46,6 +46,8 @@ static func jugadores(raiz: Node, red: Node) -> Dictionary:
 		otro.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 		otro.reset_physics_interpolation()
 		otro.get_node("CambioPersonaje").nombre_red = jugador.nombre
+		# Con las skins que eligió en su ordenador (las del de aquí, de su opción).
+		otro.get_node("CambioPersonaje").poner_skins(jugador.get("skins", {}))
 		otro.get_node("CambioPersonaje").tomar(jugador.personaje)
 		por_id[jugador.id] = otro
 	# Los jugadores no chocan entre ellos: si no, al pasar uno al lado del

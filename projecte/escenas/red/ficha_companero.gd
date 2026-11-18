@@ -125,7 +125,9 @@ func _poner_al_dia() -> void:
 		numero += mejoras[mejora]
 	_color = personaje.color
 	add_theme_stylebox_override("panel", EstiloInterfaz.caja(_color, 12))
-	_textura_retrato = RETRATOS.get(personaje.nombre)
+	# El mini de su skin (la que eligió en su ordenador); con la original, el de siempre.
+	var aspecto: Resource = _jugador.get_node("CambioPersonaje").aspecto_de(personaje)
+	_textura_retrato = aspecto.retrato_mini if aspecto != personaje else RETRATOS.get(personaje.nombre)
 	_retrato.queue_redraw()
 	_nombre.text = _jugador.get_node("CambioPersonaje").nombre_red
 	_nombre.add_theme_color_override("font_color", _color)
