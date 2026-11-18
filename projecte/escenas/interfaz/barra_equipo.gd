@@ -131,8 +131,10 @@ func _dibujar_ranura(indice: int, esquina: Vector2, teclas: Array[String], lado:
 	# las del dibujo de 72 px, como antes del 05/11.
 	draw_set_transform(esquina, 0.0, Vector2(ESCALA, ESCALA))
 	draw_texture(RANURA, Vector2.ZERO, color)
-	if personaje.retrato != null:
-		draw_texture(personaje.retrato, Vector2(4.0, 4.0), retrato)
+	# El retrato de la skin que lleva puesta (o el suyo, si es la original).
+	var aspecto: Resource = datos.get("aspecto", personaje)
+	if aspecto.retrato != null:
+		draw_texture(aspecto.retrato, Vector2(4.0, 4.0), retrato)
 	# La carga de la ulti: un borde que se llena, y en bucle cuando está lista.
 	var fotograma := -1
 	if carga >= 1.0:

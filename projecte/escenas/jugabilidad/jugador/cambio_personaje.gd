@@ -23,6 +23,7 @@ signal equipo_derrotado
 const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antiguas.gd")
 const Equipo := preload("res://escenas/jugabilidad/jugador/equipo.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
+const DatosSkin := preload("res://recursos/skins/datos_skin.gd")
 ## Las partes del jugador que se apagan y se esconden sin personaje.
 const PARTES_ESPECTADOR := ["GestorArmas", "AuraArma", "Ultis", "BarraVida"]
 
@@ -57,6 +58,10 @@ var _espectador := false
 ## Multijugador: el nombre de su jugador en la sala (lo pone preparar_red.gd),
 ## para enseñar en la barra del equipo quién lleva cada personaje.
 var nombre_red := ""
+## Multijugador: las skins de su jugador ({"Mago": 12}), las que mandó al
+## entrar en la sala (poner_skins). Sin red, las de este ordenador.
+var _skins := {}
+var _skins_de_red := false
 
 @onready var _salud: Salud = get_parent().get_node("Salud")
 @onready var _sprite: Sprite2D = get_parent().get_node("Sprite")
@@ -137,6 +142,23 @@ func tomar(indice: int) -> void:
 		return
 	_entrar(indice)
 	_aplicar()
+
+
+## Multijugador (preparar_red.gd): las skins que eligió este jugador en su
+## ordenador, que llegan con la sala. Se vuelven a poner las hojas.
+func poner_skins(skins: Dictionary) -> void:
+	_skins = skins
+	_skins_de_red = true
+	_aplicar()
+
+
+## Lo que lleva puesto este jugador con ese personaje: su skin o el propio
+## personaje (datos_skin.gd). Sin red, la opción de este ordenador; en red,
+## la que eligió su jugador, así cada uno ve a los demás con la suya.
+func aspecto_de(personaje: DatosPersonaje) -> Resource:
+	if _skins_de_red:
+		return personaje.skin(int(_skins.get(personaje.nombre, 1)))
+	return DatosSkin.elegida(personaje)
 
 
 ## Multijugador: se ha ido de la partida (se ha desconectado). Su personaje
@@ -423,10 +445,12 @@ func _aplicar() -> void:
 	# Con la herramienta evolucionada, la hoja con el arma nueva. Vale también
 	# para el que evolucionó en el banquillo: sale con ella al entrar.
 	var evolucionada := _equipo.armas[_indice] != personaje.arma and personaje.hoja_evolucion != null
+	# Las hojas, de la skin que lleva puesta (la 1 es la original).
+	var aspecto := aspecto_de(personaje)
 	if evolucionada:
-		get_parent().poner_hojas(personaje.hoja_evolucion, personaje.hoja_ataque_evolucion, personaje.hoja_correr_ataque_evolucion, personaje.hoja_reposo_evolucion, personaje.segundos_ataque)
+		get_parent().poner_hojas(aspecto.hoja_evolucion, aspecto.hoja_ataque_evolucion, aspecto.hoja_correr_ataque_evolucion, aspecto.hoja_reposo_evolucion, personaje.segundos_ataque)
 	else:
-		get_parent().poner_hojas(personaje.hoja, personaje.hoja_ataque, personaje.hoja_correr_ataque, personaje.hoja_reposo, personaje.segundos_ataque)
+		get_parent().poner_hojas(aspecto.hoja, aspecto.hoja_ataque, aspecto.hoja_correr_ataque, aspecto.hoja_reposo, personaje.segundos_ataque)
 	get_parent().get_node("GestorArmas").cambiar_arma(_equipo.armas[_indice])
 	_avisar_cambio()
 	_avisar_equipo.call_deferred()

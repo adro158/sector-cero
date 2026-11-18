@@ -92,9 +92,10 @@ func curar_banquillo(delta: float, por_segundo: float) -> bool:
 
 
 ## Cómo está cada personaje, para la interfaz: un diccionario por personaje
-## con personaje, arma, vida, maxima, caido y llevado_por (en red, el nombre
+## con personaje, arma, vida, maxima, caido, llevado_por (en red, el nombre
 ## del otro jugador que lo lleva; vacío si está libre o lo lleva el de este
-## ordenador). La vida del que lleva un jugador es la de su Salud.
+## ordenador) y aspecto (su skin). La vida del que lleva un jugador es la de
+## su Salud.
 func estado() -> Array:
 	var lista := []
 	for i in personajes.size():
@@ -107,5 +108,15 @@ func estado() -> Array:
 			"maxima": quien.salud().vida_maxima if activo else maximas[i],
 			"caido": caidos[i],
 			"llevado_por": quien.nombre_red if quien != null and quien != local else "",
+			# Su aspecto (la skin de quien lo lleva o, libre, la de este
+			# ordenador): para los retratos de la barra, el panel y la caída.
+			"aspecto": _aspecto(i, quien),
 		})
 	return lista
+
+
+## La skin con la que se ve ese personaje: la de quien lo lleva o, si está
+## libre, la de este ordenador (cambio_personaje.gd, aspecto_de).
+func _aspecto(indice: int, quien) -> Resource:
+	var mira = quien if quien != null else local
+	return mira.aspecto_de(personajes[indice]) if mira != null else personajes[indice]

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://drnre5tlbfi1u" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones.png" id="2_hoja"]
@@ -11,6 +11,18 @@
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones_evolucion_correr_ataque.png" id="9_correr_ataque_evolucion"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones_reposo.png" id="10_reposo"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/antivirus_8_direcciones_evolucion_reposo.png" id="11_reposo_evolucion"]
+
+[ext_resource type="Resource" path="res://recursos/skins/mago/02_ambar_crt.tres" id="s02"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/03_matrix.tres" id="s03"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/04_sangre.tres" id="s04"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/05_cristal.tres" id="s05"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/06_tormenta.tres" id="s06"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/07_circuito.tres" id="s07"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/08_pantallazo_azul.tres" id="s08"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/09_firewall_dorado.tres" id="s09"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/10_hacker.tres" id="s10"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/11_glitch.tres" id="s11"]
+[ext_resource type="Resource" path="res://recursos/skins/mago/12_singularidad.tres" id="s12"]
 
 [resource]
 script = ExtResource("1_personaje")
@@ -32,3 +44,4 @@ nombre_ulti = "Rayo de datos"
 descripcion_ulti = "Un rayo morado enorme que atraviesa todo lo que encuentra. Con el teclado, R para apuntar con el ratón y click para lanzarlo (click derecho o R cancelan); con el mando, va solo al enemigo más cercano."
 color = Color(0.75, 0.45, 1, 1)
 retrato = ExtResource("4_retrato")
+skins = Array[Resource]([ExtResource("s02"), ExtResource("s03"), ExtResource("s04"), ExtResource("s05"), ExtResource("s06"), ExtResource("s07"), ExtResource("s08"), ExtResource("s09"), ExtResource("s10"), ExtResource("s11"), ExtResource("s12")])
