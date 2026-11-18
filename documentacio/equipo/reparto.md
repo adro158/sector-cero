@@ -62,8 +62,10 @@ original), y la elegida se guarda en la opción `"skins"` de
 - **En ficheros de Adam, en el PR de contrato** (`alan/skins-contrato`):
   `DatosPersonaje` gana `skins` y `skin(numero)`, y `GestorGuardado` la
   opción `"skins"`. La elegida la da `DatosSkin.elegida(personaje)`, de Alan.
-- **Lo que se pide a Adam** (issue aparte, con el parche propuesto): la
-  lista de skins en el `.tres` de cada personaje, las hojas de la skin en
-  `cambio_personaje.gd` (`_aplicar`), los retratos de la skin en el HUD y
-  abrir el armario desde el menú. En red (cuando esté `adam/red` en `main`),
-  que cada jugador mande su número de skin al entrar en la sala.
+- **En ficheros de Adam, con su sí** (issue #23, 18/11; los hizo Alan en
+  `alan/skins`): la lista de skins en el `.tres` de cada personaje, las hojas
+  de la skin en `cambio_personaje.gd` (`aspecto_de`), el aspecto en
+  `equipo.gd` (`estado()`) para los retratos del HUD, abrir el armario desde
+  el menú y, en red, las skins de cada jugador en la sala (`red.gd`,
+  `preparar_red.gd`, la ficha del compañero). Siguen siendo de Adam: los
+  revisa en el PR.
