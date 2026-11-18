@@ -37,6 +37,9 @@ var _esperas := PackedFloat32Array()
 var _armas: Array[DatosArma] = []
 # Y qué jugador: las anclas del jefe final miran el personaje que lleva.
 var _jugadores: Array[Node2D] = []
+## El último objetivo de un solo cuerpo que ha golpeado cada uno (un jefe, un
+## élite, un ancla), o null: no le vuelve a pegar hasta golpear a otro.
+var _ultimos: Array = []
 var _activos := 0
 var _objetivos: Array = []
 var _resistencia_malware: Node
@@ -63,6 +66,7 @@ func _ready() -> void:
 	_esperas.resize(MAXIMO_PROYECTILES)
 	_armas.resize(MAXIMO_PROYECTILES)
 	_jugadores.resize(MAXIMO_PROYECTILES)
+	_ultimos.resize(MAXIMO_PROYECTILES)
 
 	# La horda y el jefe: todo lo que tiene danar_en_area y mas_cercano.
 	_objetivos = get_tree().get_nodes_in_group("objetivos")
@@ -109,6 +113,7 @@ func lanzar(origen: Vector2, arma: DatosArma, dano: float, radio: float, quien: 
 	_esperas[_activos] = 0.0
 	_armas[_activos] = arma
 	_jugadores[_activos] = quien
+	_ultimos[_activos] = null
 	_activos += 1
 
 
@@ -137,12 +142,25 @@ func _impactar(indice: int) -> bool:
 	var resistencia: float = _resistencia_malware.resistencia(arma)
 	var dano := _danos[indice] * (1.0 - resistencia)
 	var alcanzados := 0
+	# Un objetivo de un solo cuerpo (un jefe, un élite, un ancla) no recibe dos
+	# golpes seguidos del mismo proyectil, ni al rebotar ni al salir de él. Si
+	# no, lo más cercano para rebotar era el mismo jefe, y cada proyectil le
+	# pegaba una vez por rebote: 6 veces el Ping de inundación (Adam, 18/11:
+	# el Mago les quitaba la vida rapidísimo). En la horda sí puede volver: es
+	# un gestor con cientos.
+	var golpeado: Node = null
 
 	for objetivo in _objetivos:
-		alcanzados += objetivo.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia, null, _jugadores[indice])
+		if objetivo == _ultimos[indice]:
+			continue
+		var en_este: int = objetivo.danar_en_area(_posiciones[indice], _radios[indice], dano, resistencia, null, _jugadores[indice])
+		alcanzados += en_este
+		if en_este > 0 and not objetivo.is_in_group("gestor_enemigos"):
+			golpeado = objetivo
 
 	if alcanzados == 0:
 		return false
+	_ultimos[indice] = golpeado
 
 	_impactos.append([_posiciones[indice], 0.0])
 	_resistencia_malware.registrar_dano(arma, alcanzados * dano)
@@ -150,7 +168,7 @@ func _impactar(indice: int) -> bool:
 	if _rebotes[indice] <= 0:
 		return true
 
-	var siguiente := _buscar_objetivo(_posiciones[indice], radio_busqueda_rebote)
+	var siguiente := _buscar_objetivo(_posiciones[indice], radio_busqueda_rebote, golpeado)
 	if siguiente == Vector2.INF:
 		return true
 
@@ -160,11 +178,14 @@ func _impactar(indice: int) -> bool:
 	return false
 
 
-func _buscar_objetivo(desde: Vector2, radio: float) -> Vector2:
+## excluido: el que acaba de golpear, para no rebotar contra él.
+func _buscar_objetivo(desde: Vector2, radio: float, excluido: Node = null) -> Vector2:
 	var mejor := Vector2.INF
 	var mejor_distancia := radio
 
 	for objetivo in _objetivos:
+		if objetivo == excluido:
+			continue
 		var candidato: Vector2 = objetivo.mas_cercano(desde, radio)
 		if candidato == Vector2.INF:
 			continue
@@ -189,6 +210,7 @@ func _eliminar(indice: int) -> void:
 	_esperas[indice] = _esperas[_activos]
 	_armas[indice] = _armas[_activos]
 	_jugadores[indice] = _jugadores[_activos]
+	_ultimos[indice] = _ultimos[_activos]
 
 
 func _volcar_al_multimesh() -> void:
