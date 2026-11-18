@@ -40,6 +40,9 @@ func conectar(raiz: Node) -> void:
 	if Red.actual.es_anfitrion():
 		for id in por_id:
 			por_id[id].get_node("Ultis").lanzada.connect(_al_lanzar_ulti.bind(id))
+			# Después que cambio_personaje.gd, que la conecta en su _ready: al
+			# llegar aquí ya ha apuntado al caído y se sabe si era el último.
+			por_id[id].get_node("Salud").murio.connect(_al_caer.bind(id))
 		# La ruleta del cofre del anfitrión: también a los demás, para que la vean.
 		BusEventos.ruleta_abierta.connect(_al_abrir_ruleta_aqui)
 	else:
@@ -109,6 +112,15 @@ func _al_aplicar_mejora(jugador: Node, mejora: DatosMejora) -> void:
 		Red.actual.enviar_suceso("mejora", [por_id.find_key(jugador), mejora.resource_path])
 
 
+## En el anfitrión: ha caído el último del equipo. Aquí se para todo y se
+## deshace con la animación de la derrota (cambio_personaje.gd); sin avisar,
+## en los demás todo se quedaba congelado, con el caído aún de pie, hasta la
+## pantalla final (Adam, 18/11).
+func _al_caer(id: int) -> void:
+	if por_id[id].get_node("CambioPersonaje")._equipo.todos_caidos():
+		Red.actual.enviar_suceso("derrota", [id])
+
+
 func _al_lanzar_ulti(direccion: Vector2, mini: Array, indice: int, id: int) -> void:
 	Red.actual.enviar_suceso("ulti", [id, direccion, mini, indice])
 
@@ -121,6 +133,10 @@ func _al_recibir_suceso(suceso: String, datos: Array) -> void:
 		# Como en la de un jugador, con el juego en pausa.
 		get_tree().paused = true
 		BusEventos.partida_terminada.emit(EstadoRed.fin_desde_red(datos[0]))
+	elif suceso == "derrota" and por_id.has(datos[0]):
+		# Como en el anfitrión: todo parado y el último se deshace.
+		get_tree().paused = true
+		por_id[datos[0]].get_node("CambioPersonaje").caer_el_ultimo()
 	elif suceso == "ulti" and por_id.has(datos[0]):
 		por_id[datos[0]].get_node("Ultis").mostrar_lanzada(datos[1], datos[2], datos[3])
 	elif suceso == "mejora" and por_id.has(datos[0]):

@@ -69,6 +69,11 @@ var _avisos_red := PackedFloat32Array()
 var _velocidades_red := PackedVector2Array()
 var _antes_red := {}
 var _paso_red := 0
+## Segundos desde el último estado. Si el anfitrión se para (eligiendo una
+## mejora, en la derrota), los estados dejan de llegar: pasado este rato, la
+## horda se para también en vez de seguir andando sola.
+var _desde_estado_red := 0.0
+const SIGUE_ANDANDO_RED := 0.15
 
 @onready var _horda: MultiMeshInstance2D = $Horda
 
@@ -269,8 +274,10 @@ func _preparar_multimesh() -> void:
 
 func _physics_process(delta: float) -> void:
 	if solo_dibujar:
-		for i in _vivos:
-			_posiciones[i] += _velocidades_red[i] * delta
+		_desde_estado_red += delta
+		if _desde_estado_red < SIGUE_ANDANDO_RED:
+			for i in _vivos:
+				_posiciones[i] += _velocidades_red[i] * delta
 		_volcar_al_multimesh(delta)
 		return
 	# Primero se retiran los muertos y después se reconstruye la rejilla. Al
@@ -317,6 +324,7 @@ func poner_desde_red(datos_anfitrion: Array) -> void:
 	var ids: PackedInt32Array = datos_anfitrion[2]
 	var segundos: float = (datos_anfitrion[3] - _paso_red) / float(Engine.physics_ticks_per_second)
 	_paso_red = datos_anfitrion[3]
+	_desde_estado_red = 0.0
 	var antes := _antes_red
 	_antes_red = {}
 	_vivos = mini(posiciones.size(), MAXIMO_ENEMIGOS)
