@@ -2,12 +2,13 @@ extends Node2D
 
 ## El pisotón del jefe del minuto 10: un aviso (un anillo rojo que se cierra)
 ## y, al acabar, el golpe contra el suelo y la jaula, un muro de datos alrededor
-## de donde pisó. Mientras está cerrada nadie cruza el muro: el jugador y el
-## jefe que están dentro no salen, y la horda que está fuera no entra. Después
+## de donde pisó. Mientras está cerrada el jugador no cruza el muro: si está
+## dentro no sale, y si está fuera no entra. El jefe y la horda sí lo cruzan
+## (hasta el 18/11 tampoco; Adam pidió que pudieran salir). Después
 ## se rompe.
 ##
 ## Cuándo pisa lo decide el jefe (jefe.gd), que llama a empezar(). Aquí se
-## llevan el tiempo, el dibujo y el muro. La horda pregunta con mantener().
+## llevan el tiempo, el dibujo y el muro.
 ##
 ## Va en RaizJuego después de Explosiones y antes del Jugador: así queda encima
 ## del suelo y debajo del jugador y de la horda (con z_index negativo quedaría

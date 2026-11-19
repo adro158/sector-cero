@@ -62,7 +62,7 @@ func _al_cambiar_anclas(personajes: Array) -> void:
 
 func _al_atacar_jefe(ataque: String) -> void:
 	if ataque == "pisoton":
-		_dar("jaula", "Nadie cruza la jaula hasta que se rompe: esquiva a Kernel Panic dentro.")
+		_dar("jaula", "No puedes cruzar la jaula hasta que se rompa, pero Kernel Panic y la horda sí: esquívalos dentro.")
 
 
 ## Cada consejo, una vez por partida.

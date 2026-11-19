@@ -15,7 +15,7 @@ extends Node2D
 ## suelo y saca un anillo de horda a su alrededor:
 ## cuanta menos vida le queda, más enemigos. Cada intervalo de pisotón se para,
 ## avisa con un anillo rojo en el suelo y pisa: durante unos segundos queda
-## una jaula alrededor que nadie puede cruzar (jaula_jefe.gd). Y cada intervalo
+## una jaula alrededor que el jugador no puede cruzar (jaula_jefe.gd). Y cada intervalo
 ## de ráfaga se para, late en morado y dispara 12 proyectiles en círculo; en la
 ## segunda mitad de su vida, dos ráfagas seguidas (rafaga_jefe.gd).
 ##
@@ -62,9 +62,9 @@ const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 ## Lo que dura el aviso (late en morado y se dibuja el círculo) antes de invocar.
 @export var duracion_invocacion: float = 1.0
 ## Enemigos de cada anillo: los primeros con toda la vida, los últimos casi
-## sin ella.
-@export var invocados_minimo: int = 8
-@export var invocados_maximo: int = 20
+## sin ella. Hasta el 18/11 eran de 8 a 20; Adam pidió más horda.
+@export var invocados_minimo: int = 12
+@export var invocados_maximo: int = 30
 @export var radio_invocacion: float = 140.0
 @export var color_invocacion: Color = Color(0.75, 0.3, 1.0, 1.0)
 
@@ -92,6 +92,13 @@ const VELOCIDAD_FURIA: Array[float] = [1.0, 1.15, 1.3]
 ## y casi todas las derrotas eran contra él o al salir de él con poca vida.
 const DANO_FURIA: Array[float] = [1.0, 1.15, 1.3]
 const RITMO_FURIA: Array[float] = [1.0, 1.25, 1.5]
+## Contra un jugador rápido (con mejoras de velocidad), la embestida va más
+## deprisa y dura más, en la misma proporción en que él es más rápido que al
+## empezar (los 240 de controlador_jugador.gd), hasta este tope: si no, se le
+## escapaba siempre (Adam, 18/11, issue #27). Con el tope, llega a 2,25 veces
+## más lejos.
+const VELOCIDAD_INICIAL_JUGADOR := 240.0
+const EMBESTIDA_MAXIMA := 1.5
 
 const FOTOGRAMAS_RABIA := 4
 const SEGUNDOS_POR_FOTOGRAMA_RABIA := 0.1
@@ -120,6 +127,8 @@ var _rafagas_toca := 1
 ## Lo mismo con las embestidas: las que lleva y las que le tocan (1 o 3).
 var _embestidas_hechas := 0
 var _embestidas_toca := 1
+## Cuánto más rápida y larga es la embestida de ahora (EMBESTIDA_MAXIMA).
+var _escala_embestida := 1.0
 var _guardaespaldas_llamado := false
 ## 0 sin furia; 1 y 2 al bajar de cada umbral.
 var _furia := 0
@@ -261,6 +270,8 @@ func _physics_process(delta: float) -> void:
 			elif _tiempo_estado >= intervalo_embestida / _ritmo():
 				_embestidas_hechas = 0
 				_embestidas_toca = embestidas_herido if _salud.vida() < _salud.vida_maxima / 2.0 else 1
+				var rapidez: float = objetivo.get("velocidad_maxima")
+				_escala_embestida = clampf(rapidez / VELOCIDAD_INICIAL_JUGADOR, 1.0, EMBESTIDA_MAXIMA)
 				_cambiar_estado(Estado.AVISO)
 		Estado.AVISO:
 			# Quieto y mirando al jugador: la embestida irá hacia donde esté
@@ -270,8 +281,8 @@ func _physics_process(delta: float) -> void:
 			if _tiempo_estado >= _duracion_aviso():
 				_cambiar_estado(Estado.EMBESTIDA)
 		Estado.EMBESTIDA:
-			global_position += _direccion * velocidad_embestida * delta
-			if _tiempo_estado >= duracion_embestida:
+			global_position += _direccion * velocidad_embestida * _escala_embestida * delta
+			if _tiempo_estado >= duracion_embestida * _escala_embestida:
 				_embestidas_hechas += 1
 				# Herido, encadena otra: vuelve a avisar (más corto) y a apuntar.
 				_cambiar_estado(Estado.AVISO if _embestidas_hechas < _embestidas_toca else Estado.PERSEGUIR)
@@ -304,8 +315,7 @@ func _physics_process(delta: float) -> void:
 					_hasta_rafaga = intervalo_rafaga
 					_cambiar_estado(Estado.PERSEGUIR)
 
-	# Si está dentro de su jaula, tampoco sale él, ni embistiendo.
-	global_position = _jaula.mantener(global_position, radio)
+	# La jaula no le encierra a él: puede salir y entrar (Adam, 18/11).
 
 	var dano := dano_embestida if _estado == Estado.EMBESTIDA else dano_contacto
 	for jugador in get_tree().get_nodes_in_group("jugador"):
@@ -390,7 +400,7 @@ func _animar(delta: float) -> void:
 	if _estado == Estado.PERSEGUIR:
 		_tiempo_andando += delta * VELOCIDAD_FURIA[_furia]
 	elif _estado == Estado.EMBESTIDA:
-		_tiempo_andando += delta * velocidad_embestida / velocidad
+		_tiempo_andando += delta * velocidad_embestida * _escala_embestida / velocidad
 	var columna := int(_tiempo_andando * fotogramas_por_segundo) % FOTOGRAMAS_ANDAR
 	# Cargando un ataque o pisando, sus poses (poses_jefe.gd); si no, andando.
 	var fila := Direcciones8.fila(_direccion)
@@ -413,7 +423,7 @@ func _draw() -> void:
 	# Avisando de la embestida, la franja con flechas del rayo de NÚCLEO CERO:
 	# hacia dónde y hasta dónde va a ir, del ancho de lo que pega.
 	if _estado == Estado.AVISO:
-		DibujoJefeFinal.aviso_linea(self, Vector2.ZERO, _direccion, velocidad_embestida * duracion_embestida,
+		DibujoJefeFinal.aviso_linea(self, Vector2.ZERO, _direccion, velocidad_embestida * duracion_embestida * _escala_embestida * _escala_embestida,
 			(radio + 16.0) * 2.0, _tiempo_estado)
 	# El círculo de la invocación se va dibujando en el suelo, debajo de él (este
 	# _draw va antes que el Sprite), hasta cerrarse donde saldrán los enemigos.
@@ -445,7 +455,7 @@ func _al_acabar_de_morir() -> void:
 func datos_red() -> Array:
 	if not visible:
 		return []
-	return [global_position, _salud.vida(), _salud.vida_maxima, _estado, _direccion, _furia]
+	return [global_position, _salud.vida(), _salud.vida_maxima, _estado, _direccion, _furia, _escala_embestida]
 
 
 ## ... y cómo lo pone un cliente: aparece, se enfurece y muere como en el
@@ -460,6 +470,8 @@ func poner_desde_red(datos: Array) -> void:
 		aparecer(datos[0])
 	global_position = datos[0]
 	_direccion = datos[4]
+	# Para dibujar el aviso de la embestida tan largo como allí.
+	_escala_embestida = datos[6]
 	if datos[3] != _estado:
 		_cambiar_estado(datos[3])
 	if datos[5] > _furia:
