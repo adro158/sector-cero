@@ -2,7 +2,8 @@ extends Control
 
 ## El apartado de skins (de Alan, 18/11): la ventana que abre el botón SKINS
 ## del menú, o pulsar un personaje. Arriba, los bits que se tienen; debajo, las
-## pestañas: ARMARIO (armario.gd, la skin de cada personaje), MISIONES
+## pestañas: ARMARIO (armario.gd, la skin de cada personaje), PERFIL
+## (pestana_perfil.gd: título, marco, estela, icono y tema), MISIONES
 ## (pestana_misiones.gd), PASE (pestana_pase.gd), LOGROS (pestana_logros.gd) y
 ## TIENDA (pestana_tienda.gd). Una pestaña nueva se enciende poniéndola en
 ## _secciones.
@@ -16,9 +17,10 @@ const PestanaMisiones := preload("res://escenas/skins/pestana_misiones.gd")
 const PestanaPase := preload("res://escenas/skins/pestana_pase.gd")
 const PestanaLogros := preload("res://escenas/skins/pestana_logros.gd")
 const PestanaTienda := preload("res://escenas/skins/pestana_tienda.gd")
+const PestanaPerfil := preload("res://escenas/skins/pestana_perfil.gd")
 const Cartera := preload("res://globales/cartera.gd")
 ## Las pestañas, en orden. Las que no tienen contenido salen apagadas.
-const PESTANAS := ["ARMARIO", "MISIONES", "PASE", "LOGROS", "TIENDA"]
+const PESTANAS := ["ARMARIO", "PERFIL", "MISIONES", "PASE", "LOGROS", "TIENDA"]
 const BITS := Color("#00E5FF")
 
 var _armario: VBoxContainer
@@ -41,14 +43,14 @@ func _ready() -> void:
 	caja.add_child(cabecera)
 
 	_armario = Armario.new()
-	_secciones = {"ARMARIO": _armario, "MISIONES": PestanaMisiones.new(), "PASE": PestanaPase.new(),
+	_secciones = {"ARMARIO": _armario, "PERFIL": PestanaPerfil.new(), "MISIONES": PestanaMisiones.new(), "PASE": PestanaPase.new(),
 		"LOGROS": PestanaLogros.new(), "TIENDA": PestanaTienda.new()}
 	var fila := HBoxContainer.new()
 	fila.alignment = BoxContainer.ALIGNMENT_CENTER
 	fila.add_theme_constant_override("separation", 6)
 	for nombre in PESTANAS:
 		var existe: bool = nombre in _secciones
-		var boton := EstiloInterfaz.boton(nombre if existe else nombre + " · PRONTO", _ver.bind(nombre), 150)
+		var boton := EstiloInterfaz.boton(nombre if existe else nombre + " · PRONTO", _ver.bind(nombre), 130)
 		if not existe:
 			boton.disabled = true
 			boton.tooltip_text = "Todavía no está."

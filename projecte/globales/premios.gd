@@ -102,3 +102,65 @@ static func skins_conseguidas(fichero: ConfigFile) -> int:
 	for suyas in fichero.get_value("skins", "tengo", {}).values():
 		total += suyas.size()
 	return total
+
+
+# --- Lo que se lleva puesto (la opción "perfil" de GestorGuardado) ---
+
+
+## Los tipos que se pueden llevar, en el orden de la pestaña PERFIL.
+const DE_PERFIL := ["titulo", "marco", "estela", "icono", "tema"]
+
+
+## Lo que lleva puesto el jugador de este ordenador, solo si lo tiene:
+## {titulo, marco, estela, icono, tema} (vacío lo que no lleva). El icono es
+## «Personaje:número», el retrato mini de una skin que se tiene (o la original).
+static func perfil(cartera: Node) -> Dictionary:
+	var puesto: Dictionary = GestorGuardado.opcion("perfil")
+	var valido := {}
+	for tipo in DE_PERFIL:
+		var id: String = str(puesto.get(tipo, ""))
+		valido[tipo] = id if id != "" and _lo_tiene(cartera, tipo, id) else ""
+	return valido
+
+
+static func _lo_tiene(cartera: Node, tipo: String, id: String) -> bool:
+	if cartera == null:
+		return false
+	if tipo == "icono":
+		var partes := id.split(":")
+		return partes.size() == 2 and cartera.tiene_skin(partes[0], int(partes[1]))
+	return id in cartera.conseguidos(tipo)
+
+
+## El retrato mini de un icono («Mago:10»), o null si no vale.
+static func textura_icono(id: String) -> Texture2D:
+	var partes := id.split(":")
+	if partes.size() != 2:
+		return null
+	var ruta := "res://recursos/personajes/datos/%s.tres" % _fichero_de(partes[0])
+	if not ResourceLoader.exists(ruta):
+		return null
+	var personaje: DatosPersonaje = load(ruta)
+	var aspecto: Resource = personaje.skin(int(partes[1]))
+	if aspecto == personaje:
+		return load("res://medios/interfaz/retrato_mini_%s.png" % _fichero_de(partes[0]))
+	return aspecto.retrato_mini
+
+
+## El color de un marco, una estela o un tema (o el que se pasa si no hay;
+## los títulos son solo texto, sin color).
+static func color(tipo: String, id: String, si_no: Color) -> Color:
+	var datos: Variant = LISTAS.get(tipo, {}).get(id, {})
+	return datos.get("color", si_no) if datos is Dictionary else si_no
+
+
+## El perfil que llega en el saludo de la sala (red.gd), con solo lo que tiene
+## sentido: los tipos de perfil, con un id de texto. Lo que no se conoce se
+## dibuja como nada (color() y textura_icono() tienen su «si no»).
+static func perfil_de_red(valor: Variant) -> Dictionary:
+	var limpio := {}
+	if valor is Dictionary:
+		for tipo in DE_PERFIL:
+			if valor.get(tipo, "") is String:
+				limpio[tipo] = valor.get(tipo, "")
+	return limpio
