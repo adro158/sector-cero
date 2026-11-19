@@ -1,9 +1,8 @@
 # 19/11/2026 — Alan — Las skins en main y los dos detalles de Adam
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar). **Horas
-acumuladas:** las 4 h de la última entrada
-(`2026-11-18_alan_skins-en-el-juego.md`) más las de hoy.
+10). **Duración:** 2 h (las dijo Alan). **Horas acumuladas:** 6 h: las 4 de la
+última entrada (`2026-11-18_alan_skins-en-el-juego.md`) más estas 2.
 
 ## Qué se ha hecho
 
@@ -46,7 +45,8 @@ acumuladas:** las 4 h de la última entrada
 
 ## Estado al cerrar
 
-Dos commits en `alan/skins-detalles`, sin subir.
+Alan: «ya he acabado». Subida `alan/skins-detalles` con su PR, para que lo
+revise Adam.
 
 ## Siguiente paso
 
