@@ -177,7 +177,9 @@ func _resumen_equipo() -> Array:
 		for arma in danos:
 			if arma == estado.personaje.arma or arma == estado.arma:
 				dano += danos[arma]
-		equipo.append({"personaje": estado.personaje, "caido": estado.caido, "dano": dano})
+		# skin: la de quien lo llevó (1, la original): el resumen la enseña.
+		var skin: int = 1 if estado.aspecto == estado.personaje else estado.aspecto.numero
+		equipo.append({"personaje": estado.personaje, "caido": estado.caido, "dano": dano, "skin": skin})
 	return equipo
 
 
