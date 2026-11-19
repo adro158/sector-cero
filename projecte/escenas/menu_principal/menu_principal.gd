@@ -16,6 +16,7 @@ const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd
 const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const SalaRed := preload("res://escenas/red/sala_red.gd")
+const Armario := preload("res://escenas/skins/armario.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
 ## panel de cuatro líneas, y el menú era casi todo texto.
@@ -28,6 +29,8 @@ var _versiones: PanelVersiones
 var _cuenta: Control
 ## La sala del multijugador (13/11, sala_red.gd).
 var _sala: Control
+## El armario, donde se elige la skin (escenas/skins/armario.gd, de Alan).
+var _armario: Control
 ## «Juegas como invitado» o el nombre de la cuenta (05/11).
 var _quien: Label
 ## La bienvenida de las cuentas sale una vez al abrir el juego, no cada vez
@@ -58,7 +61,9 @@ func _ready() -> void:
 	lema.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(lema)
 
-	caja.add_child(PersonajesMenu.new())
+	# Al pulsar un personaje se abre el armario (las skins, de Alan, 17/11).
+	var personajes := PersonajesMenu.new()
+	caja.add_child(personajes)
 	var resumen := EstiloInterfaz.etiqueta(RESUMEN, 15)
 	resumen.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(resumen)
@@ -112,6 +117,10 @@ func _ready() -> void:
 	_sala = SalaRed.new()
 	_sala.cerrado.connect(en_red.grab_focus)
 	add_child(_sala)
+	_armario = Armario.new()
+	_armario.cerrado.connect(jugar.grab_focus)
+	personajes.elegido.connect(_armario.abrir)
+	add_child(_armario)
 	# Sin una sesión guardada, al abrir el juego: entrar, registrarse o jugar
 	# sin cuenta. Con las cuentas sin activar (sin proyecto de Supabase), no.
 	if not _bienvenida_vista and Cuenta.actual.activada() and Cuenta.actual.nombre == "":
@@ -212,7 +221,7 @@ func _abrir_ranking() -> void:
 
 func _unhandled_input(evento: InputEvent) -> void:
 	# Con una ventana abierta, Enter y Esc son de ella.
-	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible or _sala.visible:
+	if _reglas.visible or _opciones.visible or _ranking.visible or _versiones.visible or _cuenta.visible or _sala.visible or _armario.visible:
 		return
 	if not evento is InputEventKey or not evento.pressed:
 		return

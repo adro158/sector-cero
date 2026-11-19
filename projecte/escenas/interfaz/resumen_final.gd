@@ -9,6 +9,7 @@ extends RefCounted
 
 const Dificultad := preload("res://globales/dificultad.gd")
 const FilaPartida := preload("res://escenas/interfaz/fila_partida.gd")
+const DatosSkin := preload("res://recursos/skins/datos_skin.gd")
 ## Normal y la del récord, de 48x48 y márgenes 12.
 const TARJETA := preload("res://medios/interfaz/final_tarjeta.png")
 const ANCHO_TARJETA := 132.0
@@ -88,7 +89,7 @@ static func equipo(personajes: Array) -> HBoxContainer:
 		var columna := VBoxContainer.new()
 		columna.add_theme_constant_override("separation", 4)
 		var retrato := TextureRect.new()
-		retrato.texture = personaje.retrato
+		retrato.texture = DatosSkin.elegida(personaje).retrato
 		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		retrato.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 		retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE

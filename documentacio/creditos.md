@@ -31,6 +31,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Hojas de atacar corriendo de los tres personajes y ataque del Mago con el bastón | Hechas con IA (Claude, con un script de Python) | Ver más abajo |
 | Efectos de la partida (caída, derrota, golpe, escudo, evolución, partícula, muerte del élite, mecha, invocación, barras de vida, mira del Mago, Ping y fragmentos animados) | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
+| Skins del Mago (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -289,6 +290,19 @@ scripts no forman parte del repositorio.
   el de la web; `icono.ico` lleva 16, 32, 48, 64, 128 y 256 píxeles, con los
   cuatro pequeños dibujados a mano para que se lean en la barra de tareas, y
   es el del `.exe` y la ventana en Windows.
+- **Skins del Mago** (`medios/sprites/skins/mago/`, 17/11/2026): 11 skins,
+  de la 02 a la 12, en cinco categorías: C (Ámbar CRT, Matrix, Sangre),
+  B (Cristal, Tormenta, Circuito), A (Pantallazo azul, Firewall dorado),
+  S (Hacker, Glitch) y S+ (Singularidad). Cada una tiene los 10 PNG del
+  Mago (las 8 hojas y los dos retratos), con los mismos tamaños, rejilla y
+  poses que los originales. Las hizo Claude en el chat (claude.ai), con IA,
+  con scripts de Python (numpy, Pillow, scipy y matplotlib) a partir de los
+  sprites originales del Mago: reconocen en cada fotograma sus partes (cara,
+  ojos, calavera, metal, túnica y el morado) y les cambian la paleta y les
+  dibujan encima patrones, detalles y efectos animados. Por encargo de Alan,
+  que los trajo en un zip (`lote_skins_mago.zip`). Los scripts no se suben
+  al repositorio. El morado del Mago está en todas, para reconocerlo en
+  cooperativo.
 
 ### Sprites de los personajes y del jefe
 

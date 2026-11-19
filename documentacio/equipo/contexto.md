@@ -207,6 +207,12 @@ elegido el jugador de este ordenador, guardada en la opción `"skins"` de
 el retrato a lo que devuelven, sin saber si es una skin. El color del
 personaje no cambia con la skin. `DatosPersonaje` no lee la opción: con
 `--script` (el simulador) se compila antes que los autoloads.
+En la partida, cada jugador da su aspecto con
+`CambioPersonaje.aspecto_de(personaje)`: sin red, la opción de este
+ordenador; en red, las skins que mandó su jugador al entrar en la sala (el
+campo `skins` de cada jugador, `{id, nombre, personaje, skins}`). Los
+retratos del HUD salen de `aspecto` en el estado del equipo
+(`equipo_cambiado`, `personaje_caido`): la skin de quien lleva cada uno.
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,

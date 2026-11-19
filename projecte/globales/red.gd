@@ -9,7 +9,8 @@ extends Node
 ## Cada mensaje es un Array [tipo, datos] pasado a bytes con var_to_bytes y
 ## mandado con send_bytes (sin RPC): lo mismo que la prueba de conexión de
 ## Alan (escenas/red/prueba_conexion.gd). Un jugador es {id, nombre,
-## personaje}: personaje, su índice en el equipo (0, 1 o 2).
+## personaje, skins}: personaje, su índice en el equipo (0, 1 o 2), y skins,
+## las que eligió en su ordenador ({"Mago": 12}, desde el 18/11).
 ##
 ## Lo crea Transicion al arrancar, como cuenta.gd: sin autoload nuevo, sin
 ## tocar project.godot ni subir EJECUTABLE_MINIMO. Sin class_name.
@@ -74,7 +75,7 @@ func crear_sala(nombre: String) -> String:
 		return ""
 	multiplayer.multiplayer_peer = peer
 	_en_red = true
-	_jugadores = [{"id": 1, "nombre": nombre, "personaje": 0}]
+	_jugadores = [{"id": 1, "nombre": nombre, "personaje": 0, "skins": _mis_skins()}]
 	BusEventos.sala_cambiada.emit(_jugadores)
 	return CodigoSala.de_ip(CodigoSala.ip_local())
 
@@ -160,7 +161,9 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 		return
 	match mensaje[0]:
 		"hola":
-			_al_saludar(id, mensaje[1], mensaje[2])
+			# Las skins, desde el 18/11: de otra versión no llegan (se rechaza igual).
+			var skins: Variant = mensaje[3] if mensaje.size() > 3 else {}
+			_al_saludar(id, mensaje[1], mensaje[2], skins if skins is Dictionary else {})
 		"rechazo":
 			salir()
 			error_de_red.emit(mensaje[1])
@@ -183,21 +186,21 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 			BusEventos.suceso_recibido.emit(mensaje[1], mensaje[2])
 
 
-## Al conectar, el cliente se presenta con su nombre y su versión.
+## Al conectar, el cliente se presenta con su nombre, su versión y sus skins.
 func _al_entrar_en_la_sala() -> void:
-	_mandar(["hola", _nombre, Version.ACTUAL], 1)
+	_mandar(["hola", _nombre, Version.ACTUAL, _mis_skins()], 1)
 
 
 ## En el anfitrión: entra si tiene la misma versión y queda sitio, con el
 ## primer personaje libre (reglas_sala.gd).
-func _al_saludar(id: int, nombre: String, version: String) -> void:
+func _al_saludar(id: int, nombre: String, version: String, skins: Dictionary) -> void:
 	if not es_anfitrion():
 		return
 	var motivo := "La partida ya ha empezado." if _empezada else ReglasSala.motivo_rechazo(_jugadores, version)
 	if motivo != "":
 		_rechazar(id, motivo)
 		return
-	_jugadores.append({"id": id, "nombre": nombre, "personaje": ReglasSala.primer_personaje_libre(_jugadores)})
+	_jugadores.append({"id": id, "nombre": nombre, "personaje": ReglasSala.primer_personaje_libre(_jugadores), "skins": skins})
 	_avisar_sala()
 
 
@@ -242,3 +245,10 @@ func _al_fallar() -> void:
 func _al_perder_al_anfitrion() -> void:
 	salir()
 	BusEventos.jugador_desconectado.emit(1)
+
+
+## Las skins que ha elegido el jugador de este ordenador ({"Mago": 12}), para
+## que los demás le vean con ellas (preparar_red.gd). Sin las texturas: todos
+## tienen los mismos PNG, porque la sala solo deja entrar a la misma versión.
+func _mis_skins() -> Dictionary:
+	return GestorGuardado.opcion("skins").duplicate()

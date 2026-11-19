@@ -130,7 +130,10 @@ func _dibujar_ficha(esquina: Vector2, i: int, fuente: Font) -> void:
 	# en gris y con la grieta y el glitch encima, en rojo.
 	var marco := esquina + Vector2(9, 11)
 	draw_texture(MARCO, marco, color)
-	draw_texture(RETRATOS.get(personaje.nombre, personaje.retrato), marco + Vector2(4, 4), Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE)
+	# El mini de la skin que lleva puesta; con la original, el de siempre.
+	var aspecto: Resource = datos.get("aspecto", personaje)
+	var mini: Texture2D = aspecto.retrato_mini if aspecto != personaje else RETRATOS.get(personaje.nombre, personaje.retrato)
+	draw_texture(mini, marco + Vector2(4, 4), Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE)
 	if estado == Estado.ACTIVO:
 		var fotograma := int(_segundos / 0.1) % 4
 		draw_texture_rect_region(ACTIVO, Rect2(marco - Vector2(2, 2), Vector2(44, 44)), Rect2(fotograma * 44, 0, 44, 44), color)

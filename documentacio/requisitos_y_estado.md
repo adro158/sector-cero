@@ -259,6 +259,27 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
+### Las skins (Alan, 17 y 18/11, en sus ramas)
+
+Alan trajo las 11 skins del Mago (`lote_skins_mago.zip`, hechas con Claude
+en el chat) y las montó con su Claude Code (issue #16; bitácora,
+`bitacora/2026-11-17_alan_skins.md`). Con la forma del lote y no la de la
+#16 (decisión de Alan): cada skin por su número y la elegida en la opción
+`"skins"`.
+- **PR de contrato** (`alan/skins-contrato`): `datos_skin.gd`,
+  `DatosPersonaje.skin()`, la opción `"skins"`, y en `reparto.md` las skins
+  pasan a Alan.
+- **`alan/skins`:** los PNG, las 11 skins del Mago y el armario.
+- **En ficheros de Adam, con su sí** (issue #23, 18/11, en `alan/skins`):
+  la lista de skins en `mago.tres`, las hojas de la skin en la partida, los
+  retratos en el HUD (barra y panel del equipo, ventana de caída y resumen
+  final), el armario al pulsar un personaje en el menú y, en red, cada
+  jugador con su skin (`bitacora/2026-11-18_alan_skins-en-el-juego.md`).
+
+Falta: que Adam revise los PR #21 y #22 y fusionarlos (primero el #21),
+los lotes del Espadachín y el Segador (solo sus `.tres` y su lista) y, más
+adelante, la tienda, el gacha y el pase de la #16.
+
 ### El multijugador en red local (en la v1.18, 17/11)
 
 Plan, decisiones y lo hecho punto por punto en
