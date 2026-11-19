@@ -51,6 +51,11 @@ const OPCIONES_POR_DEFECTO := {
 	"avisar_versiones": true,
 	# Se elige en el menú principal (globales/dificultad.gd).
 	"dificultad": "media",
+	# La skin que lleva cada personaje, por su nombre: {"Mago": 12}. Sin él, la
+	# original (1). La elige el armario (escenas/skins/, de Alan) y la lee
+	# recursos/skins/datos_skin.gd, elegida(). Como las demás, se sube a la
+	# cuenta.
+	"skins": {},
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves
