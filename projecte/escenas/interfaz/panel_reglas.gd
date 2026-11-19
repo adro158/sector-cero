@@ -179,7 +179,7 @@ func _enemigos() -> VBoxContainer:
 	lista.add_child(_fila(_primer_fotograma(load(HOJA_JEFE), 12, 8), "KERNEL PANIC (jefe)", EstiloInterfaz.DERROTA,
 		"Llega a los 10 minutos y ya no sale más horda: la que queda sigue (en fácil huye toda y en media, la mitad). Mientras está, el reloj se para. El Ping y el Escáner le pegan sin acercarse."))
 	for ataque in [
-		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Con menos de la mitad de vida embiste tres veces seguidas, apuntándote cada vez."],
+		["jefe_final/jefe_final_aviso_linea.png", 4, 0, "EMBESTIDA", "Cada 6 s marca una franja roja con flechas y embiste en línea recta hacia donde estabas: apártate, que embistiendo pega mucho. Con menos de la mitad de vida embiste tres veces seguidas, apuntándote cada vez. Si eres muy rápido, embiste más rápido y más lejos."],
 		["efectos/invocacion_kernel_panic.png", 8, 6, "ANILLO DE MALWARE", "Cada 15 s se para, late en morado y dibuja un círculo de runas en el suelo; al cerrarse, saca un anillo de malware a su alrededor, más grande cuanto menos vida le queda."],
 		["jefe/jefe_rafaga.png", 4, 0, "RÁFAGA DE DATOS", "Cada 9 s late en morado y dispara datos en círculo: pasa por los huecos. Con menos de la mitad de vida, dispara dos."],
 		["jefe/jefe_jaula.png", 4, 0, "PISOTÓN Y JAULA", "Cada 20 s marca un anillo rojo en el suelo y pisa: durante 4 s no puedes cruzar la jaula. Él y la horda sí: si estabas dentro, te quedas encerrado y ellos entran y salen."],
