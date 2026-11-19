@@ -10,8 +10,8 @@ Soy Adam. @documentacio/equipo/adam.md
 
 - Respóndele en castellano y en tono informal. Si pide algo corto, que sea
   corto.
-- Es dueño de casi todo el juego (`reparto.md`) y quien **publica las
-  versiones** (`/publicar`).
+- Es dueño de casi todo el juego (`reparto.md`). **Publica las versiones**
+  (`/publicar`), y desde el 19/11 también Alan (`flujo_de_trabajo.md`).
 - Trabaja desde dos sitios (instituto y casa): todo lo que se decida tiene que
   quedar en el repositorio, en commits y en la bitácora.
 
