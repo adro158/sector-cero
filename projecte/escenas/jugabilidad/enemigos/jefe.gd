@@ -39,6 +39,7 @@ const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_deste
 const DibujoJefeFinal := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const PosesJefe := preload("res://escenas/jugabilidad/enemigos/poses_jefe.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
+const MovimientoRed := preload("res://escenas/red/movimiento_red.gd")
 
 @export var velocidad: float = 90.0
 @export var radio: float = 40.0
@@ -137,6 +138,8 @@ var _jaula: Node2D
 ## Multijugador: en los clientes no persigue, no ataca ni recibe golpes; está
 ## donde dice el anfitrión (poner_desde_red).
 var solo_dibujar := false
+## En los clientes, cómo va hacia donde dice el anfitrión (movimiento_red.gd).
+var _movimiento_red := MovimientoRed.new()
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -236,6 +239,7 @@ func _physics_process(delta: float) -> void:
 		return
 	# En los clientes, entre un estado y el siguiente, solo siguen sus poses.
 	if solo_dibujar:
+		global_position = _movimiento_red.mover(global_position, delta)
 		_tiempo_estado += delta
 		_animar(delta)
 		queue_redraw()
@@ -468,7 +472,7 @@ func poner_desde_red(datos: Array) -> void:
 		if datos[1] <= 0.0:
 			return
 		aparecer(datos[0])
-	global_position = datos[0]
+	global_position = _movimiento_red.seguir(global_position, datos[0])
 	_direccion = datos[4]
 	# Para dibujar el aviso de la embestida tan largo como allí.
 	_escala_embestida = datos[6]

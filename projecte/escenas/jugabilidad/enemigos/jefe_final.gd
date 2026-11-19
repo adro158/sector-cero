@@ -23,6 +23,7 @@ enum Estado { OCULTO, LUCHANDO, TRANSFORMANDO, ATURDIDO, MURIENDO }
 const Dificultad := preload("res://globales/dificultad.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
+const MovimientoRed := preload("res://escenas/red/movimiento_red.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 
 ## Una entrada por forma: 0 rootkit gigante, 1 núcleo armado y 2 amalgama.
@@ -78,6 +79,8 @@ var _por_lanzar: Array = []
 ## Multijugador: en los clientes no se mueve, no ataca ni recibe golpes; está
 ## donde dice el anfitrión (poner_desde_red).
 var solo_dibujar := false
+## En los clientes, cómo va hacia donde dice el anfitrión (movimiento_red.gd).
+var _movimiento_red := MovimientoRed.new()
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -196,6 +199,7 @@ func _physics_process(delta: float) -> void:
 	# En los clientes solo se anima. Al acabar de morir no avisa: el final de
 	# la partida llega del anfitrión (partida_red.gd).
 	if solo_dibujar:
+		global_position = _movimiento_red.mover(global_position, delta)
 		if _estado == Estado.MURIENDO and _tiempo_estado >= MUERTE:
 			_estado = Estado.OCULTO
 			visible = false
@@ -361,7 +365,7 @@ func poner_desde_red(datos: Array) -> void:
 		if datos[1] <= 0.0:
 			return
 		aparecer(datos[0])
-	global_position = datos[0]
+	global_position = _movimiento_red.seguir(global_position, datos[0])
 	var estaba_vivo := _salud.vida() > 0.0
 	if not is_equal_approx(_salud.vida(), datos[1]) or not is_equal_approx(_salud.vida_maxima, datos[2]):
 		if datos[1] < _salud.vida():
