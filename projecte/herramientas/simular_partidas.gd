@@ -112,6 +112,7 @@ func _initialize() -> void:
 	var guardado := root.get_node("GestorGuardado")
 	_bus.partida_terminada.disconnect.call_deferred(guardado._al_terminar_partida)
 	_apartar_cuenta.call_deferred()
+	_apartar_cartera.call_deferred()
 	_bus.jugador_subio_nivel.connect(_al_subir_nivel)
 	# La ruleta del cofre no se elige: se acepta el premio que ha tocado.
 	_bus.ruleta_abierta.connect(func(_opciones, premio): _elegir.call_deferred(premio))
@@ -141,6 +142,15 @@ func _apartar_cuenta() -> void:
 	_bus.partida_terminada.disconnect(cuenta._al_terminar_partida)
 	cuenta._url = ""
 	cuenta.nombre = ""
+
+
+## La cartera (bits, misiones y pase) tampoco: las partidas simuladas no dan
+## nada. Hoy no escucha el bus (fase 1 de plan_tienda.md); cuando lo haga, se
+## desconecta aquí.
+func _apartar_cartera() -> void:
+	var cartera: Node = load("res://globales/cartera.gd").actual
+	if cartera != null and _bus.partida_terminada.is_connected(cartera._al_terminar_partida):
+		_bus.partida_terminada.disconnect(cartera._al_terminar_partida)
 
 
 func _empezar_partida() -> void:

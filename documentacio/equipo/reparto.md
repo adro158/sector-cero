@@ -19,6 +19,7 @@ dueño. Se actualiza cada vez que se reparte algo nuevo (en un PR, como todo).
 | Multijugador: la red y la sala (06/11, `plan_multijugador.md`) | `globales/red.gd`, `escenas/red/` | Adam (desde el 13/11; antes Alan, que hizo la prueba de conexión) |
 | Multijugador: el juego con varios jugadores | lo de Adam de arriba (jugador, enemigos, interfaz...) | Adam |
 | Skins: los datos, sus PNG y el armario (17/11, issue #16) | `recursos/skins/`, `medios/sprites/skins/`, `escenas/skins/` | Alan |
+| La cartera: bits, misiones, pase de batalla, logros y tienda (19/11, issue #16, `plan_tienda.md`) | `globales/cartera.gd`, `globales/misiones.gd`, `globales/pase_batalla.gd`, `globales/logros.gd`, `medios/sprites/bits/`, `documentacio/plan_tienda.md` (y sus pestañas en `escenas/skins/`) | Alan |
 | Documentos de Alan | `documentacio/assets.md`, `documentacio/propuesta.md` | Alan |
 | Entregables y seguimiento | `documentacio/` (el resto) | Adam |
 
