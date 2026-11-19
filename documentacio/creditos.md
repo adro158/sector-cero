@@ -32,6 +32,8 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Efectos de la partida (caída, derrota, golpe, escudo, evolución, partícula, muerte del élite, mecha, invocación, barras de vida, mira del Mago, Ping y fragmentos animados) | Hechos con IA (Claude, con un script de Python) | Ver más abajo |
 | Icono del juego (`.exe`, ventana y web) | Hecho con IA (Claude) | Ver más abajo |
 | Skins del Mago (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
+| Skins del Espadachín (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
+| Skins del Segador (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -303,6 +305,25 @@ scripts no forman parte del repositorio.
   que los trajo en un zip (`lote_skins_mago.zip`). Los scripts no se suben
   al repositorio. El morado del Mago está en todas, para reconocerlo en
   cooperativo.
+- **Skins del Espadachín** (`medios/sprites/skins/espadachin/`, 18/11/2026):
+  11 skins, de la 02 a la 12: C (Hielo, Neón rosa, Retro 8 bits), B (Oro
+  real, Tóxico, Chrome), A (Plasma, Virus), S (Holograma, Overclock) y S+
+  (Supernova). Cada una con los 10 PNG del Espadachín, con los mismos
+  tamaños, rejilla y poses que los originales (también la de atacar
+  corriendo, de 24 columnas). Las hizo Claude en el chat, con IA, con
+  scripts de Python a partir de los sprites originales del Espadachín, de
+  la misma forma que las del Mago, por encargo de Alan
+  (`lote_skins_espadachin.zip`). Los scripts no se suben. La hoja de la
+  espada es verde (#66FF80) en todas, el color del Espadachín.
+- **Skins del Segador** (`medios/sprites/skins/segador/`, 18/11/2026): 11
+  skins, de la 02 a la 12: C (Ceniza, Ártico, Pantano), B (Obsidiana, Cobre
+  oxidado, Hueso), A (Ransomware, Kernel Panic), S (Espectro, Fuego fatuo)
+  y S+ (Luna de sangre). Cada una con los 10 PNG del Segador, con los
+  mismos tamaños, rejilla y poses que los originales. Las hizo Claude en el
+  chat, con IA, con scripts de Python a partir de los sprites originales
+  del Segador, de la misma forma que las del Mago y el Espadachín, por
+  encargo de Alan (`lote_skins_completo.zip`, que trae también las de los
+  otros dos, iguales a las de sus lotes). Los scripts no se suben.
 
 ### Sprites de los personajes y del jefe
 

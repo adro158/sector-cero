@@ -1,15 +1,14 @@
-extends Control
+extends VBoxContainer
 
-## El armario: donde se elige la skin de cada personaje (de Alan, 17/11). Una
+## El armario: donde se elige la skin de cada personaje (de Alan, 17/11). Es
+## la pestaña ARMARIO de la ventana SKINS (ventana_skins.gd, 18/11). Una
 ## pestaña por personaje; a la izquierda, el personaje andando con la skin que
 ## se está mirando (vista_skin.gd); a la derecha, todas sus skins por
 ## categoría, la original primero. Pinchar una la enseña; PONÉRSELA la guarda
 ## en la opción "skins" (GestorGuardado), que es la que leen la partida y la
 ## interfaz (datos_skin.gd, elegida).
 ##
-## Sin class_name: lo crea el menú con preload, como sala_red.gd.
-
-signal cerrado
+## Sin class_name: lo crea ventana_skins.gd con preload.
 
 const DatosSkin := preload("res://recursos/skins/datos_skin.gd")
 const VistaSkin := preload("res://escenas/skins/vista_skin.gd")
@@ -39,12 +38,7 @@ var _botones: Array = []
 
 
 func _ready() -> void:
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("ARMARIO", 36, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
+	add_theme_constant_override("separation", 14)
 	var pestanas := HBoxContainer.new()
 	pestanas.alignment = BoxContainer.ALIGNMENT_CENTER
 	pestanas.add_theme_constant_override("separation", 8)
@@ -53,7 +47,7 @@ func _ready() -> void:
 		boton.add_theme_color_override("font_color", PERSONAJES[indice].color)
 		_pestanas.append(boton)
 		pestanas.add_child(boton)
-	caja.add_child(pestanas)
+	add_child(pestanas)
 
 	var cuerpo := HBoxContainer.new()
 	cuerpo.add_theme_constant_override("separation", 28)
@@ -69,31 +63,14 @@ func _ready() -> void:
 	_lista.add_theme_constant_override("separation", 6)
 	desplazar.add_child(_lista)
 	cuerpo.add_child(desplazar)
-	caja.add_child(cuerpo)
-
-	var volver := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]") as Button
-	volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	caja.add_child(volver)
-	add_child(EstiloInterfaz.ventana_centrada(caja))
-	visible = false
+	add_child(cuerpo)
 
 
-## Abre el armario en ese personaje (su índice en PERSONAJES).
-func abrir(indice := 0) -> void:
-	visible = true
+## Enseña ese personaje (su índice en PERSONAJES), con el foco en su pestaña
+## para el mando. Lo llama la ventana al abrirse.
+func mostrar(indice := 0) -> void:
 	_elegir_personaje(indice)
 	_pestanas[indice].grab_focus()
-
-
-func cerrar() -> void:
-	visible = false
-	cerrado.emit()
-
-
-func _unhandled_input(evento: InputEvent) -> void:
-	if visible and evento.is_action_pressed("ui_cancel"):
-		cerrar()
-		get_viewport().set_input_as_handled()
 
 
 ## Si este jugador tiene esa skin. De momento todas: más adelante lo dirán el

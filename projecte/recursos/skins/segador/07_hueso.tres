@@ -1,0 +1,31 @@
+[gd_resource type="Resource" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://recursos/skins/datos_skin.gd" id="1_skin"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones.png" id="2_hoja"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_evolucion.png" id="3_hoja_evolucion"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_ataque.png" id="4_hoja_ataque"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_evolucion_ataque.png" id="5_hoja_ataque_evolucion"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_correr_ataque.png" id="6_hoja_correr_ataque"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_evolucion_correr_ataque.png" id="7_hoja_correr_ataque_evolucion"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_reposo.png" id="8_hoja_reposo"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/segador_ciber_8_direcciones_evolucion_reposo.png" id="9_hoja_reposo_evolucion"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/retrato_segador.png" id="10_retrato"]
+[ext_resource type="Texture2D" path="res://medios/sprites/skins/segador/07_hueso/retrato_mini_segador.png" id="11_retrato_mini"]
+
+[resource]
+script = ExtResource("1_skin")
+personaje = "Segador"
+numero = 7
+nombre = "Hueso"
+categoria = "B"
+descripcion = "Túnica de marfil con costillas y esternón en el pecho, pistas sepia y el visor rojo."
+hoja = ExtResource("2_hoja")
+hoja_evolucion = ExtResource("3_hoja_evolucion")
+hoja_ataque = ExtResource("4_hoja_ataque")
+hoja_ataque_evolucion = ExtResource("5_hoja_ataque_evolucion")
+hoja_correr_ataque = ExtResource("6_hoja_correr_ataque")
+hoja_correr_ataque_evolucion = ExtResource("7_hoja_correr_ataque_evolucion")
+hoja_reposo = ExtResource("8_hoja_reposo")
+hoja_reposo_evolucion = ExtResource("9_hoja_reposo_evolucion")
+retrato = ExtResource("10_retrato")
+retrato_mini = ExtResource("11_retrato_mini")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="DatosPersonaje" load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://recursos/personajes/datos_personaje.gd" id="1_personaje"]
 [ext_resource type="Texture2D" uid="uid://cid6kbgkbttd4" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones.png" id="2_hoja"]
@@ -11,6 +11,18 @@
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_evolucion_correr_ataque.png" id="9_correr_ataque_evolucion"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_reposo.png" id="10_reposo"]
 [ext_resource type="Texture2D" path="res://escenas/jugabilidad/jugador/ciberespadachin_8_direcciones_evolucion_reposo.png" id="11_reposo_evolucion"]
+
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/02_hielo.tres" id="s02"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/03_neon_rosa.tres" id="s03"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/04_retro_8_bits.tres" id="s04"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/05_oro_real.tres" id="s05"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/06_toxico.tres" id="s06"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/07_chrome.tres" id="s07"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/08_plasma.tres" id="s08"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/09_virus.tres" id="s09"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/10_holograma.tres" id="s10"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/11_overclock.tres" id="s11"]
+[ext_resource type="Resource" path="res://recursos/skins/espadachin/12_supernova.tres" id="s12"]
 
 [resource]
 script = ExtResource("1_personaje")
@@ -32,3 +44,4 @@ nombre_ulti = "Torbellino"
 descripcion_ulti = "Gira con sus hojas de luz durante un segundo y medio y destroza todo lo que tiene alrededor."
 color = Color(0.4, 1, 0.5, 1)
 retrato = ExtResource("4_retrato")
+skins = Array[Resource]([ExtResource("s02"), ExtResource("s03"), ExtResource("s04"), ExtResource("s05"), ExtResource("s06"), ExtResource("s07"), ExtResource("s08"), ExtResource("s09"), ExtResource("s10"), ExtResource("s11"), ExtResource("s12")])
