@@ -14,13 +14,16 @@ Alan trabaja con Claude Code desde el 05/11/2026 (antes, con Gemini).
 - Respóndele en castellano.
 - Es dueño de los sistemas que tiene apuntados en `reparto.md`. Lo demás es de
   Adam: si hace falta tocarlo, se pide con una issue o un comentario en el PR.
-- No publica versiones: cuando su PR está fusionado, se lo dice a Adam.
+- También publica versiones (`/publicar`, desde el 19/11 con el sí de Adam):
+  cuando ha acabado y todo lo suyo está fusionado en `main`. Antes de subir la
+  etiqueta, avisa a Adam con el número que toca (`flujo_de_trabajo.md`).
 
 ## Sus frases clave
 
 - **«Empezamos»** (o «es un día nuevo») → `/dia-nuevo`.
 - **«Ya he acabado»** → `/cerrar`, sin preguntar: autoriza el push de su rama
   y abrir o poner al día su PR. Pregunta las horas de la sesión.
+- **«Publica la vX»** → `/publicar`.
 
 ## Sus máquinas
 

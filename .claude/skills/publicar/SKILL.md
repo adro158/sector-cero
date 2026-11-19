@@ -1,12 +1,13 @@
 ---
 name: publicar
-description: Publicar una versión nueva de Sector Cero (novedades, etiqueta y comprobar la release). Úsalo solo cuando quien publica (Adam, según su ficha) diga «publica la vX».
+description: Publicar una versión nueva de Sector Cero (novedades, etiqueta y comprobar la release). Úsalo cuando Adam o Alan (los dos publican, según sus fichas) digan «publica la vX».
 ---
 
 # Publicar una versión
 
-Solo lo hace quien publica según `documentacio/equipo/` (Adam). Si lo pide
-otra persona, decírselo y no seguir.
+Lo hacen Adam o Alan (`documentacio/equipo/`, desde el 19/11). Antes de la
+etiqueta, avisar al otro con el número que toca (`flujo_de_trabajo.md`). Si
+lo pide otra persona, decírselo y no seguir.
 
 1. **Desde `main` al día** (`git switch main`, `git pull --ff-only`) y sin PR
    a medio fusionar que deba entrar.
