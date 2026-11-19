@@ -24,6 +24,8 @@ const TeclasAntiguas := preload("res://escenas/jugabilidad/jugador/teclas_antigu
 const Equipo := preload("res://escenas/jugabilidad/jugador/equipo.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 const DatosSkin := preload("res://recursos/skins/datos_skin.gd")
+const Estela := preload("res://escenas/skins/estela.gd")
+const Premios := preload("res://globales/premios.gd")
 ## Las partes del jugador que se apagan y se esconden sin personaje.
 const PARTES_ESPECTADOR := ["GestorArmas", "AuraArma", "Ultis", "BarraVida"]
 
@@ -93,6 +95,10 @@ func _ready() -> void:
 	BusEventos.personaje_elegido.connect(_al_elegir_personaje)
 	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
 	_aplicar()
+	# La estela del perfil (premios.gd). El de este ordenador, aquí; los de los
+	# demás, con la sala (poner_perfil).
+	if _equipo.local == self:
+		poner_estela.call_deferred(Premios.perfil(load("res://globales/cartera.gd").actual).estela)
 
 
 func _physics_process(delta: float) -> void:
@@ -150,6 +156,27 @@ func poner_skins(skins: Dictionary) -> void:
 	_skins = skins
 	_skins_de_red = true
 	_aplicar()
+
+
+## Multijugador (preparar_red.gd): lo que lleva puesto del pase su jugador
+## (título, marco, estela...); aquí solo hace falta la estela.
+func poner_perfil(perfil: Dictionary) -> void:
+	poner_estela(str(perfil.get("estela", "")))
+
+
+## Su estela (escenas/skins/estela.gd, un premio del pase): la de ese id, o
+## ninguna.
+func poner_estela(id: String) -> void:
+	var anterior := get_parent().get_node_or_null("Estela")
+	if anterior != null:
+		get_parent().remove_child(anterior)
+		anterior.queue_free()
+	if id == "":
+		return
+	var estela := Estela.new()
+	estela.name = "Estela"
+	estela.color = Premios.color("estela", id, Color.WHITE)
+	get_parent().add_child(estela)
 
 
 ## Lo que lleva puesto este jugador con ese personaje: su skin o el propio

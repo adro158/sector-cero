@@ -56,6 +56,10 @@ const OPCIONES_POR_DEFECTO := {
 	# recursos/skins/datos_skin.gd, elegida(). Como las demás, se sube a la
 	# cuenta.
 	"skins": {},
+	# Lo que lleva puesto del pase y los logros (de Alan, 19/11): título, marco,
+	# estela, icono y tema del CRT, por su id (premios.gd). Lo lee
+	# globales/premios.gd, perfil(), que solo deja lo que se tiene.
+	"perfil": {},
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves

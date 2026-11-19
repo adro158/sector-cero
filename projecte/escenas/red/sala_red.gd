@@ -13,6 +13,7 @@ signal cerrado
 const Red := preload("res://globales/red.gd")
 const CodigoSala := preload("res://globales/codigo_sala.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
+const Premios := preload("res://globales/premios.gd")
 ## En el orden del equipo (cambio_personaje.gd): el índice es el personaje.
 const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/espadachin.tres"),
@@ -211,7 +212,15 @@ func _mostrar() -> void:
 		icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		icono.modulate = personaje.color
 		fila.add_child(icono)
-		fila.add_child(EstiloInterfaz.etiqueta("%s  ·  %s%s" % [jugador.nombre, personaje.nombre, tu], 16, personaje.color))
+		# Su icono y su título del pase, si los lleva (premios.gd).
+		var perfil: Dictionary = jugador.get("perfil", {})
+		if Premios.textura_icono(perfil.get("icono", "")) != null:
+			var retrato := TextureRect.new()
+			retrato.texture = Premios.textura_icono(perfil.icono)
+			retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			fila.add_child(retrato)
+		var titulo: String = "  «%s»" % Premios.TITULOS[perfil.titulo] if perfil.get("titulo", "") in Premios.TITULOS else ""
+		fila.add_child(EstiloInterfaz.etiqueta("%s%s  ·  %s%s" % [jugador.nombre, titulo, personaje.nombre, tu], 16, personaje.color))
 		_lista.add_child(fila)
 	# Los personajes que ya lleva alguien, apagados y con el candado.
 	for indice in _elegir.size():

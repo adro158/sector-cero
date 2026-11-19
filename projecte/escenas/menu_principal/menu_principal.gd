@@ -17,6 +17,7 @@ const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const SalaRed := preload("res://escenas/red/sala_red.gd")
 const VentanaSkins := preload("res://escenas/skins/ventana_skins.gd")
+const Premios := preload("res://globales/premios.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
 ## panel de cuatro líneas, y el menú era casi todo texto.
@@ -123,6 +124,8 @@ func _ready() -> void:
 	add_child(_sala)
 	_skins = VentanaSkins.new()
 	_skins.cerrado.connect(skins.grab_focus)
+	# Al cerrar, el título del pase puede haber cambiado.
+	_skins.cerrado.connect(_al_cerrar_skins)
 	personajes.elegido.connect(_skins.abrir)
 	add_child(_skins)
 	# Sin una sesión guardada, al abrir el juego: entrar, registrarse o jugar
@@ -209,6 +212,10 @@ func _texto_record() -> String:
 
 func _escribir_quien(nombre: String) -> void:
 	_quien.text = "Juegas como invitado: con CUENTA, tus partidas se guardan en internet" if nombre == "" else "Cuenta: %s  ·  tus partidas se guardan en internet" % nombre
+	# Y el título del pase que lleva puesto, si lleva (premios.gd, de Alan).
+	var titulo: String = Premios.perfil(load("res://globales/cartera.gd").actual).titulo
+	if titulo != "":
+		_quien.text += "  ·  «%s»" % Premios.TITULOS[titulo]
 
 
 func _abrir_reglas() -> void:
@@ -239,3 +246,7 @@ func _jugar() -> void:
 	if _jugar_boton.disabled:
 		return
 	Transicion.cambiar_a(PARTIDA)
+
+
+func _al_cerrar_skins() -> void:
+	_escribir_quien(Cuenta.actual.nombre)

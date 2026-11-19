@@ -8,6 +8,7 @@ extends Node2D
 ## Sin class_name: lo crea partida_red.gd con preload.
 
 const Red := preload("res://globales/red.gd")
+const Premios := preload("res://globales/premios.gd")
 ## Separación de la flecha con el borde de la pantalla.
 const MARGEN := 36.0
 ## La flecha (16x16) está dibujada mirando a la derecha: se gira hacia él y
@@ -61,7 +62,14 @@ func _draw() -> void:
 		var donde: Vector2 = del_mundo * jugador.global_position
 		var dentro := Rect2(Vector2.ZERO, pantalla).grow(-MARGEN).has_point(donde)
 		if dentro:
-			_texto(fuente, nombre, jugador.global_position - Vector2(0.0, ALTURA_NOMBRE), color)
+			# El marco y el título, del perfil del pase de ese jugador (premios.gd).
+			var perfil := _perfil(jugador)
+			var punto: Vector2 = jugador.global_position - Vector2(0.0, ALTURA_NOMBRE)
+			_texto(fuente, nombre, punto, color, Premios.color("marco", perfil.get("marco", ""), color))
+			if perfil.get("titulo", "") in Premios.TITULOS:
+				var titulo: String = Premios.TITULOS[perfil.titulo]
+				var ancho := fuente.get_string_size(titulo, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE).x
+				draw_string(fuente, (punto + Vector2(-ancho / 2.0, 14.0)).round(), titulo, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE, color.darkened(0.2))
 		elif jugador != local:
 			_flecha(fuente, nombre, donde, pantalla, color, a_mundo)
 
@@ -78,16 +86,16 @@ func _flecha(fuente: Font, nombre: String, donde: Vector2, pantalla: Vector2, co
 	draw_set_transform(a_mundo * (punta - hacia * TAMANO_FLECHA / 2.0), hacia.angle(), Vector2(2.0, 2.0))
 	draw_texture(FLECHA, Vector2(-8.0, -8.0), color)
 	draw_set_transform(Vector2.ZERO)
-	_texto(fuente, nombre, a_mundo * (punta - hacia * (TAMANO_FLECHA + 12.0)), color)
+	_texto(fuente, nombre, a_mundo * (punta - hacia * (TAMANO_FLECHA + 12.0)), color, color)
 
 
 ## Centrado en ese punto (la línea de las letras), encima de su placa, que
 ## hace de fondo oscuro para que se lea sobre la horda.
-func _texto(fuente: Font, texto: String, punto: Vector2, color: Color) -> void:
+func _texto(fuente: Font, texto: String, punto: Vector2, color: Color, color_placa: Color) -> void:
 	var ancho := fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE).x
 	var caja := Rect2(punto - Vector2(ancho / 2.0 + LADO_PLACA + 1.0, 10.0), Vector2(ancho + LADO_PLACA * 2.0 + 2.0, ALTO_PLACA))
 	caja.position = caja.position.round()
-	_placa(caja, color)
+	_placa(caja, color_placa)
 	draw_string(fuente, caja.position + Vector2(LADO_PLACA + 1.0, 10.0), texto, HORIZONTAL_ALIGNMENT_LEFT, -1, TAMANO_NOMBRE, color)
 
 
@@ -107,3 +115,12 @@ func _nombre(jugador: Node) -> String:
 		if datos.id == id:
 			return datos.nombre
 	return ""
+
+
+## Lo que lleva puesto del pase ese jugador ({titulo, marco...}), de la sala.
+func _perfil(jugador: Node) -> Dictionary:
+	var id: int = _partida.id_de(jugador)
+	for datos in Red.actual.jugadores():
+		if datos.id == id:
+			return datos.get("perfil", {})
+	return {}
