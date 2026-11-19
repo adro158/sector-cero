@@ -223,7 +223,11 @@ contar lo ganado; con `trucos`, no da nada. Sus avisos son señales del propio
 nodo (`bits_cambiados`, `mision_completada`, `pase_cambiado`,
 `premio_conseguido`), no del bus: solo las escuchan las pantallas de Alan. La
 pantalla final lee `Cartera.actual.ultima_ganancia()`. El simulador la aparta
-del bus (`_apartar_cartera`), como a la cuenta.
+del bus (`_apartar_cartera`), como a la cuenta. Lo que se lleva puesto del pase
+(título, marco, estela, icono y tema) va en la opción `"perfil"` de
+`GestorGuardado`, y `Premios.perfil(cartera)` lo da solo si se tiene; en red
+viaja en el saludo de la sala (el campo `perfil` de cada jugador) y
+`CambioPersonaje.poner_perfil` le pone su estela a cada uno.
 
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,

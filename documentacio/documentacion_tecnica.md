@@ -643,6 +643,32 @@ simulador) las clases globales se compilan antes que los autoloads. Sin
 headless comprueba que cada skin tiene sus 10 imágenes con las medidas del
 original y que en la partida el Mago sale con la elegida.
 
+**La cartera: bits, misiones, pase y tienda** (19/11, de Alan; el plan y
+los números en `plan_tienda.md`). Un nodo (`globales/cartera.gd`, lo crea
+`Transicion`) guarda en su propio fichero (`user://cartera.cfg`) los bits,
+las misiones, el pase, los logros y lo conseguido. Al acabar cada partida
+(`partida_terminada`) cobra: los bits de la partida (2 por minuto, más por
+llegar a la fase 2 y por ganar, según la dificultad), la racha, las misiones
+cumplidas, los niveles nuevos del pase con su premio (se dan solos) y los
+logros; con el menú F1, nada. Lo que solo se ve durante la partida (cofres,
+ultis, cambios, evoluciones, Kernel Panic y lo eliminado con cada personaje)
+lo cuenta su hijo `contador_partida.gd` escuchando el bus: no toca ningún
+fichero de la partida. Las misiones se sortean con la fecha como semilla y su
+propio `RandomNumberGenerator` (el global lo fija el simulador): todos tienen
+las mismas el mismo día, sin servidor. El pase tiene 30 niveles de 300
+puntos; las skins S y S+ solo salen ahí y las C, B y A se compran en la tienda
+o salen en los paquetes cifrados (C 60 %, B 30 %, A 10 %, a la vista). Lo
+que se lleva puesto del pase (título, marco, estela, icono y tema) va en la
+opción `"perfil"`: el título y el marco salen en la placa del nombre en red,
+la estela es un rastro detrás del jugador (`estela.gd`) y el tema tiñe el
+filtro CRT (un tinte nuevo en `crt.gdshader`). En red, cada jugador manda su
+perfil en el saludo de la sala. Todo en local: el jugador es dueño de su
+ordenador y podría trucar el fichero o la hora; lo que tuviera valor de
+verdad se validaría en el servidor. Las pruebas en headless (que copian
+`cartera.cfg` y lo dejan como estaba) miran los números, el sorteo, el cobro,
+la racha, el pase, la tienda, las probabilidades de 2000 paquetes y, con dos
+copias en red, que llegue el perfil del otro.
+
 **La resistencia a la vista** (26/10, lote 9). Arriba a la derecha, el
 medidor (`medidor_resistencia.gd`, hijo del HUD) enseña lo que resiste el
 malware a la herramienta que se lleva: un escudo, una barra que se llena al
