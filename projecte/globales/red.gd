@@ -250,5 +250,12 @@ func _al_perder_al_anfitrion() -> void:
 ## Las skins que ha elegido el jugador de este ordenador ({"Mago": 12}), para
 ## que los demás le vean con ellas (preparar_red.gd). Sin las texturas: todos
 ## tienen los mismos PNG, porque la sala solo deja entrar a la misma versión.
+## Solo las que se tienen (cartera.gd, desde la tienda del 19/11).
 func _mis_skins() -> Dictionary:
-	return GestorGuardado.opcion("skins").duplicate()
+	var cartera: Node = load("res://globales/cartera.gd").actual
+	var mias := {}
+	for nombre in GestorGuardado.opcion("skins"):
+		var numero := int(GestorGuardado.opcion("skins")[nombre])
+		if cartera == null or cartera.tiene_skin(nombre, numero):
+			mias[nombre] = numero
+	return mias
