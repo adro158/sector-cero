@@ -139,7 +139,9 @@ Detalles que la interfaz tiene que respetar:
   mando) pasa al siguiente y `personaje_anterior` (Q) vuelve al anterior.
 - **Ulti.** Cada personaje carga la suya matando; `ulti_cambiada` trae la carga
   de los tres (de 0 a 1) y el activo, y `ulti_lanzada` avisa al lanzarla. La
-  acción de input es `ulti` (R y B del mando).
+  acción de input es `ulti` (R y B del mando). La carga es del personaje, no
+  del jugador (vive en el equipo, `equipo.gd`). En red la ven todos igual, y
+  el activo que trae la señal es el del jugador de ese ordenador.
 - **Menú de desarrollador (F1).** Vive en la partida (`depuracion/`), no en la
   interfaz. Las mejoras que regala llegan a la interfaz con `mejora_regalada`.
   Si se ha abierto, `partida_terminada` trae `trucos: true` y la partida no
@@ -147,9 +149,12 @@ Detalles que la interfaz tiene que respetar:
 - **Pausa.** El menú de pausa emite `juego_pausado(true/false)` y es la
   jugabilidad quien pausa el árbol. Se ignora mientras se elige mejora o
   personaje, o tras el fin de partida. La acción de input es `pausar` (Esc, P y
-  Start del mando). **En red no se pausa** (la partida es de todos): el menú
-  sale, el árbol sigue y el jugador de ese ordenador se queda quieto mientras
-  está abierto.
+  Start del mando). **En red se para votando** (desde el 18/11,
+  `escenas/red/pausa_red.gd`): quien pulsa Esc pide parar y los demás votan
+  SÍ o NO. Si dicen todos que sí, se para para todos, y se sigue cuando
+  quien la pidió pulsa CONTINUAR. Si alguien dice que no, el menú sale pero
+  el árbol sigue, y el jugador de ese ordenador se queda quieto mientras está
+  abierto.
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
@@ -232,8 +237,9 @@ icono de la ventana) y `EfectoCRT` (filtro de pantalla).
 - `elites` — los élites, ocultos hasta que el director los activa.
 - `zonas_hielo` — el nodo que lleva las zonas de hielo del jefe final (las
   crea al caer sus cristales).
-- `jaula_jefe` — la jaula del pisotón del jefe del minuto 10. La usan el jefe
-  y los gestores de la horda, que no cruzan su muro mientras está cerrada.
+- `jaula_jefe` — la jaula del pisotón del jefe del minuto 10. La usa el jefe
+  para pisar. Mientras está cerrada solo el jugador no cruza su muro; el jefe
+  y la horda sí, desde el balance de la #27 (PR #29).
 
 El código los busca con `get_tree().get_first_node_in_group(...)`, así que solo
 importa el nombre del grupo, no dónde estén colocados.
