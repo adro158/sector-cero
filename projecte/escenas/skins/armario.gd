@@ -12,6 +12,8 @@ extends VBoxContainer
 
 const DatosSkin := preload("res://recursos/skins/datos_skin.gd")
 const VistaSkin := preload("res://escenas/skins/vista_skin.gd")
+const Cartera := preload("res://globales/cartera.gd")
+const Tienda := preload("res://globales/tienda.gd")
 ## En el mismo orden que el menú (personajes_menu.gd).
 const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/mago.tres"),
@@ -73,11 +75,10 @@ func mostrar(indice := 0) -> void:
 	_pestanas[indice].grab_focus()
 
 
-## Si este jugador tiene esa skin. De momento todas: más adelante lo dirán el
-## pase y el inventario de la cuenta (plan_cuentas.md), y aquí solo cambiará
-## esta función.
-func disponible(_de: DatosPersonaje, _numero: int) -> bool:
-	return true
+## Si este jugador tiene esa skin (cartera.gd: la original, y las del pase, la
+## tienda o un paquete). Las que no, se pueden mirar pero no ponérselas.
+func disponible(de: DatosPersonaje, numero: int) -> bool:
+	return Cartera.actual.tiene_skin(de.nombre, numero)
 
 
 func _elegir_personaje(indice: int) -> void:
@@ -115,7 +116,10 @@ func _anadir_categoria(titulo: String, color: Color, aspectos: Array) -> void:
 		boton.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		boton.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		boton.pressed.connect(_mirar.bind(aspecto))
-		boton.disabled = not disponible(_personaje, _numero_de(aspecto))
+		# Las que no se tienen, oscurecidas: se miran, pero no se ponen.
+		if not disponible(_personaje, _numero_de(aspecto)):
+			boton.modulate = Color(0.45, 0.45, 0.5)
+			boton.tooltip_text += " · " + Tienda.donde(_personaje.nombre, _numero_de(aspecto))
 		_botones.append([boton, aspecto, color])
 		fila.add_child(boton)
 	_lista.add_child(fila)
@@ -128,7 +132,7 @@ func _mirar(aspecto: Resource) -> void:
 	_vista.mirar(aspecto.hoja, _nombre_de(aspecto),
 		"ORIGINAL" if original else "CATEGORÍA " + aspecto.categoria,
 		EstiloInterfaz.TEXTO if original else CATEGORIAS[aspecto.categoria],
-		"El %s de siempre." % _personaje.nombre if original else aspecto.descripcion,
+		"El %s de siempre." % _personaje.nombre if original else _frase(aspecto),
 		_numero_de(aspecto) == DatosSkin.numero_elegido(_personaje),
 		disponible(_personaje, _numero_de(aspecto)))
 	# El borde de la que se mira, encendido; el de las demás, apagado.
@@ -153,3 +157,17 @@ func _nombre_de(aspecto: Resource) -> String:
 	return "Original" if aspecto == _personaje else aspecto.nombre
 
 
+
+
+## La frase de una skin y, si no se tiene, dónde se consigue.
+func _frase(aspecto: Resource) -> String:
+	if disponible(_personaje, aspecto.numero):
+		return aspecto.descripcion
+	return "%s\n%s" % [aspecto.descripcion, Tienda.donde(_personaje.nombre, aspecto.numero)]
+
+
+## La ventana la llama al volver a la pestaña: puede haber skins nuevas
+## (compradas, del pase o de un paquete).
+func poner_al_dia() -> void:
+	if _personaje != null:
+		_elegir_personaje(PERSONAJES.find(_personaje))
