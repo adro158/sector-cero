@@ -13,6 +13,7 @@ const Premios := preload("res://globales/premios.gd")
 const ANCHO := 720.0
 const BITS := Color("#00E5FF")
 const HECHO := Color("#4DFF99")
+const ICONO_GRANDE := preload("res://medios/sprites/bits/bits_icono_grande.png")
 
 var _nivel: Label
 var _barra: ProgressBar
@@ -67,9 +68,9 @@ func _fila(nivel: int, actual: int) -> PanelContainer:
 	var numero := EstiloInterfaz.etiqueta("%2d" % nivel, 18, color)
 	numero.custom_minimum_size.x = 40
 	fila.add_child(numero)
-	if premio.tipo == "skin":
+	if premio.tipo == "skin" or premio.tipo == "bits":
 		var retrato := TextureRect.new()
-		retrato.texture = _personaje(premio.personaje).skin(premio.numero).retrato_mini
+		retrato.texture = ICONO_GRANDE if premio.tipo == "bits" else _personaje(premio.personaje).skin(premio.numero).retrato_mini
 		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		fila.add_child(retrato)
 	var texto := EstiloInterfaz.etiqueta(Premios.nombre(premio), 15, EstiloInterfaz.TEXTO if conseguido or nivel == actual + 1 else EstiloInterfaz.TEXTO_SUAVE)

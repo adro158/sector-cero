@@ -18,6 +18,7 @@ const PERSONAJES: Array[DatosPersonaje] = [
 const ANCHO := 720.0
 const BITS := Color("#00E5FF")
 const TUYA := Color("#4DFF99")
+const ICONO := preload("res://medios/sprites/bits/bits_icono.png")
 
 var _abrir: Button
 var _resultado: Label
@@ -54,7 +55,8 @@ func _ready() -> void:
 
 func poner_al_dia() -> void:
 	var gratis: int = Cartera.actual.paquetes()
-	_abrir.text = "ABRIR (GRATIS: %d)" % gratis if gratis > 0 else "ABRIR POR %d BITS" % Tienda.PRECIO_PAQUETE
+	_abrir.text = "ABRIR (GRATIS: %d)" % gratis if gratis > 0 else "ABRIR POR %d" % Tienda.PRECIO_PAQUETE
+	_abrir.icon = null if gratis > 0 else ICONO
 	_abrir.disabled = gratis == 0 and Cartera.actual.bits() < Tienda.PRECIO_PAQUETE
 	for hijo in _lista.get_children():
 		hijo.queue_free()
@@ -88,7 +90,8 @@ func _tarjeta(personaje: DatosPersonaje, skin: Resource) -> PanelContainer:
 	if tiene:
 		caja.add_child(_centrada("TUYA", 14, TUYA))
 	elif precio > 0:
-		var comprar := EstiloInterfaz.boton("%d BITS" % precio, _comprar.bind(personaje.nombre, skin.numero), 120)
+		var comprar := EstiloInterfaz.boton("%d" % precio, _comprar.bind(personaje.nombre, skin.numero), 120)
+		comprar.icon = ICONO
 		comprar.disabled = precio > Cartera.actual.bits()
 		caja.add_child(comprar)
 	else:
