@@ -97,7 +97,12 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.17** (13/11: el arreglo del cierre al
+**Publicado:** la última es la **v1.22** (23/11, la primera que publica
+Alan: las 33 skins, 11 por personaje, con el botón SKINS del menú, y el
+balance de los jefes; novedades en `documentacio/novedades/v1.22.txt`). La
+cartera, los bits y el #30 van en la v1.23, cuando Adam los revise. Entre
+medias, de la v1.18 a la v1.21, cada una con sus novedades en
+`documentacio/novedades/`. Antes, la **v1.17** (13/11: el arreglo del cierre al
 cambiar opciones en la pausa, el panel del equipo con sprites y la versión
 en el ranking; lleva también por dentro la parte de Adam del multijugador,
 que con un jugador no cambia nada; novedades en
