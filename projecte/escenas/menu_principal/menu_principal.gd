@@ -17,6 +17,7 @@ const PanelCuenta := preload("res://escenas/interfaz/panel_cuenta.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const SalaRed := preload("res://escenas/red/sala_red.gd")
 const VentanaSkins := preload("res://escenas/skins/ventana_skins.gd")
+const ContadorBits := preload("res://escenas/skins/contador_bits.gd")
 const Premios := preload("res://globales/premios.gd")
 
 ## Cómo se juega, en una línea: lo demás está en REGLAS. Hasta el 24/10 era un
@@ -76,6 +77,10 @@ func _ready() -> void:
 	_quien = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_quien.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(_quien)
+	# Los bits que se tienen: la moneda girando y el número (de Alan, 23/11).
+	var bits := ContadorBits.new()
+	bits.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	caja.add_child(bits)
 	_escribir_quien(Cuenta.actual.nombre)
 	BusEventos.sesion_cambiada.connect(_escribir_quien)
 	caja.add_child(SelectorDificultad.new())
