@@ -276,10 +276,13 @@ fases, cada una en su rama y su PR, que se fusionan en orden:
 5. `alan/cartera-premios`: el perfil (títulos, marcos, estelas, iconos y
    temas), con la pestaña PERFIL, la placa en red y el tinte del CRT.
 
+6. `alan/bits` (23/11): la moneda (`lote_bits.zip`) girando en el contador
+   de la ventana SKINS y del menú, y sus iconos en la pantalla final, las
+   misiones, el pase y la tienda.
+
 Probado en headless (37 comprobaciones de la cartera, el perfil en red con
-dos copias) y con capturas; el simulador, igual que siempre. Falta: el asset
-de la moneda (`lote_bits.zip`), que Adam lo revise y fusionarlo, y medir
-los números jugando.
+dos copias) y con capturas; el simulador, igual que siempre. Falta: que Adam
+lo revise y fusionarlo, y medir los números jugando.
 
 ### Las skins (Alan, 17 y 18/11, en sus ramas)
 

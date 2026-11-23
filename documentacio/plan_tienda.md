@@ -245,5 +245,7 @@ placa), `sala_red.gd` (icono y título), `menu_principal.gd` (el título) y
 - **Modo demostración** para la defensa (D17): con `cartera=demo`, solo en
   depuración, otro fichero con 20 000 bits y el pase en el nivel 28.
 
-**Falta:** el asset de la moneda (`lote_bits.zip`, se lo pide Alan a Claude
-en el chat): hasta entonces los bits salen como texto («1240 BITS»).
+**La moneda** (`lote_bits.zip`, 23/11, rama `alan/bits`, encima de
+`alan/cartera-premios`): `escenas/skins/contador_bits.gd` (la moneda
+girando y los bits, con el destello al subir) en la ventana SKINS y en el
+menú, y los iconos en la pantalla final, las misiones, el pase y la tienda.
