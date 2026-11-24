@@ -163,7 +163,7 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 		"hola":
 			# Las skins, desde el 18/11: de otra versión no llegan (se rechaza igual).
 			var skins: Variant = mensaje[3] if mensaje.size() > 3 else {}
-			_al_saludar(id, mensaje[1], mensaje[2], skins if skins is Dictionary else {})
+			_al_saludar(id, mensaje[1], mensaje[2], ReglasSala.skins_validas(skins))
 		"rechazo":
 			salir()
 			error_de_red.emit(mensaje[1])
@@ -252,3 +252,4 @@ func _al_perder_al_anfitrion() -> void:
 ## tienen los mismos PNG, porque la sala solo deja entrar a la misma versión.
 func _mis_skins() -> Dictionary:
 	return GestorGuardado.opcion("skins").duplicate()
+

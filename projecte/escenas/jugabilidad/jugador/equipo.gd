@@ -31,6 +31,9 @@ var cargas: Array[float] = []
 ## Quién lleva a cada uno: el cambio_personaje.gd de su jugador, o null si
 ## está libre (en el banquillo).
 var llevado_por: Array = []
+## El último jugador que llevó a cada uno (aunque ahora esté libre o caído): su
+## skin es la que sale en sus retratos y en el resumen del final (18/11).
+var ultimo_en_llevarlo: Array = []
 ## Los cambio_personaje.gd de todos los jugadores, también los que se han
 ## quedado sin personaje (para que vuelvan en la fase 2).
 var miembros: Array = []
@@ -51,6 +54,7 @@ func _init(lista: Array[DatosPersonaje]) -> void:
 		caidos.append(false)
 		cargas.append(0.0)
 		llevado_por.append(null)
+		ultimo_en_llevarlo.append(null)
 
 
 ## El primer personaje vivo y libre a partir de desde, avanzando de paso en
@@ -115,8 +119,11 @@ func estado() -> Array:
 	return lista
 
 
-## La skin con la que se ve ese personaje: la de quien lo lleva o, si está
-## libre, la de este ordenador (cambio_personaje.gd, aspecto_de).
+## La skin con la que se ve ese personaje: la de quien lo lleva, la del último
+## que lo llevó (si está libre o ha caído) o, si nadie lo ha llevado, la de este
+## ordenador (cambio_personaje.gd, aspecto_de).
 func _aspecto(indice: int, quien) -> Resource:
-	var mira = quien if quien != null else local
+	var mira = quien
+	if mira == null:
+		mira = ultimo_en_llevarlo[indice] if is_instance_valid(ultimo_en_llevarlo[indice]) else local
 	return mira.aspecto_de(personajes[indice]) if mira != null else personajes[indice]

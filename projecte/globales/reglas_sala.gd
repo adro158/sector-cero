@@ -39,3 +39,17 @@ static func poner_personaje(jugadores: Array, id: int, indice: int) -> bool:
 		if jugador.id == id:
 			jugador.personaje = indice
 	return true
+
+
+## De las skins que llegan en un saludo (red.gd), solo las que tienen
+## sentido: el nombre de un personaje y un número ({"Mago": 12}). Así algo
+## raro (de otra versión o mal escrito) no puede romper aspecto_de, que hace
+## int() del número.
+static func skins_validas(valor: Variant) -> Dictionary:
+	var validas := {}
+	if valor is Dictionary:
+		for nombre in valor:
+			var numero: Variant = valor[nombre]
+			if nombre is String and (numero is int or numero is float):
+				validas[nombre] = int(numero)
+	return validas

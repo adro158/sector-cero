@@ -160,8 +160,9 @@ Detalles que la interfaz tiene que respetar:
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
   para el ranking), `trucos` (bool, si se usó el menú de desarrollador),
   `dificultad` (String: `facil`, `media` o `dificil`), `equipo` (Array: por
-  personaje, un diccionario con `personaje`, `caido` y `dano`, el daño de su
-  herramienta en la partida), `donde` (String: dónde acabó) y `en_red` (bool,
+  personaje, un diccionario con `personaje`, `caido`, `dano`, el daño de su
+  herramienta en la partida, y `skin`, el número de la skin de quien lo llevó
+  por última vez, para su retrato), `donde` (String: dónde acabó) y `en_red` (bool,
   si se jugó en red: entonces no cuenta para los récords, el ranking ni la
   cuenta). `equipo` y `donde` son para el resumen de la pantalla final; el
   ranking no las guarda. En una partida en red, en los clientes llega el
