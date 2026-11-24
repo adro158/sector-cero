@@ -4,7 +4,8 @@ extends Control
 ## partida junto. Dos tarjetas para el modo (SOLO, y EN RED, que lleva a la
 ## sala: sala_red.gd), tres para la dificultad (hasta entonces,
 ## selector_dificultad.gd; se guarda en las opciones igual), «¿Cómo se juega?»
-## (las reglas) y EMPEZAR. Enter es EMPEZAR y Esc cierra.
+## (las reglas) y EMPEZAR. Enter es EMPEZAR y Esc cierra. Si hay una partida
+## dejada a medias (partida_guardada.gd), arriba sale la tarjeta CONTINUAR.
 ##
 ## Sin class_name: lo crea el menú con preload.
 
@@ -19,6 +20,7 @@ const Piezas := preload("res://escenas/menu_principal/piezas_menu.gd")
 const TarjetaMenu := preload("res://escenas/menu_principal/tarjeta_menu.gd")
 const Dificultad := preload("res://globales/dificultad.gd")
 const TarjetaNovedades := preload("res://escenas/menu_principal/tarjeta_novedades.gd")
+const PartidaGuardada := preload("res://escenas/jugabilidad/partida_guardada.gd")
 const AMARILLO := Color(1.0, 0.85, 0.25)
 ## Por dificultad: la línea de su tarjeta y su color (la explicación larga, en
 ## dificultad.gd, sale al dejar el ratón encima).
@@ -36,6 +38,9 @@ var _solo: Button
 var _red: Button
 var _dificultades := {}
 var _empezar: Button
+## CONTINUAR, con el resumen de la partida guardada (solo si hay una).
+var _continuar: Button
+var _guardada := {}
 
 
 func _ready() -> void:
@@ -43,6 +48,15 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var caja := VBoxContainer.new()
 	caja.custom_minimum_size.x = 700.0
+
+	# La partida que se dejó a medias. Una tarjeta que no se queda elegida: al
+	# pulsarla, se sigue.
+	_continuar = TarjetaMenu.new(Piezas.dibujo(Piezas.ICONOS, Piezas.Icono.JUGAR, Vector2(16, 16), 2.0, EstiloInterfaz.VICTORIA),
+		"CONTINUAR", "", EstiloInterfaz.VICTORIA, false, null)
+	_continuar.toggle_mode = false
+	_continuar.pressed.connect(_continuar_partida)
+	_continuar.visible = false
+	caja.add_child(_continuar)
 
 	caja.add_child(EstiloInterfaz.etiqueta("MODO", 13, EstiloInterfaz.TEXTO_SUAVE))
 	var modos := HBoxContainer.new()
@@ -104,6 +118,32 @@ func abrir() -> void:
 	_dificultades[Dificultad.actual()].button_pressed = true
 	visible = true
 	_empezar.grab_focus()
+	# La guardada puede estar en la cuenta (otro ordenador): llega después.
+	_mostrar_guardada(await PartidaGuardada.cargar())
+
+
+## Con una guardada, CONTINUAR con su resumen y el foco: con el mando, A la
+## sigue (Enter sigue siendo EMPEZAR, una partida nueva).
+func _mostrar_guardada(guardada: Dictionary) -> void:
+	_guardada = guardada
+	_continuar.visible = not guardada.is_empty()
+	if guardada.is_empty():
+		return
+	_continuar.poner_detalle(PartidaGuardada.resumen(guardada))
+	if visible:
+		_continuar.grab_focus()
+
+
+## La guardada, con su dificultad (la partida la lee al empezar), y fuera de
+## donde estaba: no se puede seguir la misma dos veces.
+func _continuar_partida() -> void:
+	if _empezar.disabled or _guardada.is_empty():
+		return
+	TarjetaNovedades.marcar_vistas()
+	GestorGuardado.cambiar_opcion("dificultad", _guardada.dificultad)
+	get_tree().root.set_meta(PartidaGuardada.CONTINUAR, _guardada)
+	PartidaGuardada.borrar()
+	Transicion.cambiar_a(PARTIDA)
 
 
 func cerrar() -> void:

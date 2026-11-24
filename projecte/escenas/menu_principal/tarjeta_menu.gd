@@ -11,6 +11,8 @@ extends Button
 
 const Piezas := preload("res://escenas/menu_principal/piezas_menu.gd")
 
+var _detalle: Label
+
 
 func _init(dibujo: TextureRect, titulo: String, detalle: String, color: Color, vertical: bool, grupo: ButtonGroup) -> void:
 	toggle_mode = true
@@ -36,11 +38,17 @@ func _init(dibujo: TextureRect, titulo: String, detalle: String, color: Color, v
 	var textos := VBoxContainer.new()
 	textos.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var nombre := EstiloInterfaz.etiqueta(titulo, 22, color)
-	var linea := EstiloInterfaz.etiqueta(detalle, 13 if vertical else 14, EstiloInterfaz.TEXTO_SUAVE)
-	for etiqueta in [nombre, linea]:
+	_detalle = EstiloInterfaz.etiqueta(detalle, 13 if vertical else 14, EstiloInterfaz.TEXTO_SUAVE)
+	for etiqueta in [nombre, _detalle]:
 		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if vertical else HORIZONTAL_ALIGNMENT_LEFT
 		etiqueta.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		textos.add_child(etiqueta)
 	caja.add_child(textos)
 	# El botón no mide su contenido solo: lo que pida la caja, más el borde.
 	custom_minimum_size = Vector2(0.0, 118.0 if vertical else 72.0)
+
+
+## Cambia la línea de debajo del título (CONTINUAR la pone con el resumen de
+## la partida guardada, que llega después).
+func poner_detalle(texto: String) -> void:
+	_detalle.text = texto
