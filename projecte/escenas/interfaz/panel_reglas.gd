@@ -58,9 +58,6 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("REGLAS DEL JUEGO", 32, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
 
 	_pestanas = TabContainer.new()
 	_pestanas.custom_minimum_size = Vector2(920, 440)
@@ -79,7 +76,7 @@ func _ready() -> void:
 	volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(volver)
 
-	_ventana = EstiloInterfaz.ventana_centrada(caja)
+	_ventana = EstiloInterfaz.ventana_centrada(caja, EstiloInterfaz.NEON, "REGLAS DEL JUEGO")
 	add_child(_ventana)
 	visible = false
 
