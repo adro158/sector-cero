@@ -394,6 +394,11 @@ Falta:
   `sala_red.gd`
 - partir `estilo_interfaz.gd`, que pasa de las 200 líneas
 
+Arreglado después de la v1.23 (rama `adam/arreglos-web-movil`, sin publicar
+hasta la versión siguiente): la cuenta en la web, que no bajaba nada (gzip);
+las letras de las tarjetas en la web; la pantalla completa en la web, y en
+táctil elegir personaje tocando su retrato y un botón para ver el equipo.
+
 ### Para la entrega
 
 **Decisión de Adam (05/11):** el vídeo y el ensayo de la defensa son lo

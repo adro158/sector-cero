@@ -48,8 +48,10 @@ func _ready() -> void:
 		texto.custom_minimum_size.x = ANCHO - 36.0
 		texto.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		textos.add_child(texto)
-	textos.reset_size()
-	custom_minimum_size = Vector2(ANCHO, textos.size.y + 32.0)
+	# Mide lo de dentro cada vez que cambia, no solo al crearla: en la web
+	# (sin Consolas) la letra acaba ocupando más y el texto se salía por abajo.
+	textos.minimum_size_changed.connect(_medir.bind(textos))
+	_medir(textos)
 	# La pestaña «NOVEDADES», 10 px por encima del marco y 8 a la derecha de
 	# su esquina (sus 2 filas de abajo tapan el borde).
 	_pestana = Control.new()
@@ -58,6 +60,12 @@ func _ready() -> void:
 	_pestana.draw.connect(_dibujar_pestana)
 	add_child(_pestana)
 	pressed.connect(marcar_vistas)
+
+
+## Lo que piden los textos, más el borde. Crece hacia arriba (está en la
+## esquina de abajo, menu_principal.gd).
+func _medir(textos: Control) -> void:
+	custom_minimum_size = Vector2(ANCHO, textos.get_combined_minimum_size().y + 32.0)
 
 
 ## Las primeras líneas del fichero, sin el «- » del principio.

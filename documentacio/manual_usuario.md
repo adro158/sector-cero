@@ -40,6 +40,13 @@ navegador, en [adro158.github.io/sector-cero](https://adro158.github.io/sector-c
 | Panel técnico | F3 | — |
 | Menú de desarrollador (la partida deja de contar) | F1 | — |
 
+**En el móvil** (la versión web): te mueves con el joystick que sale donde
+pongas el dedo en la mitad izquierda. A la derecha, de arriba abajo: pausa,
+el equipo, la ulti y el personaje siguiente. Para pasar a un personaje
+concreto, toca su retrato en la barra de abajo. La pantalla completa está en
+OPCIONES; en el iPhone, Safari no la deja: añade la página a la pantalla de
+inicio y se abre sin las barras del navegador.
+
 ## Cómo se juega
 
 Antes de jugar, en la ventana **JUGAR** del menú principal, elige si juegas
