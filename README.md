@@ -17,3 +17,4 @@ Orden para pasárselos a Claude Code, de uno en uno:
 10. `lote_f3_panel_tecnico.zip` (el panel técnico, F3, con sprites y gráficas)
 11. `lote_equipo_panel.zip` (el panel del equipo, tecla C, con fichas y sprites)
 12. `lote_red_interfaz.zip` (la interfaz de la partida en red: ficha del compañero, en uso, flecha y nombres, espera, votación y mini ruleta)
+13. `lote_menu.zip` (el menú principal nuevo: botón grande, iconos, tarjetas de JUGAR, peanas, cartel, novedades y ventana)
