@@ -100,6 +100,7 @@ signal anclas_pendientes(personajes: Array)
 signal escudo_final(suceso: String)
 signal partida_terminada(estadisticas: Dictionary)
 signal juego_pausado(en_pausa: bool)
+signal guardar_partida_pedido
 signal dispositivo_cambiado(con_mando: bool)
 signal sesion_cambiada(nombre: String)
 # Multijugador en red (13/11, documentacio/plan_multijugador.md)
@@ -155,6 +156,13 @@ Detalles que la interfaz tiene que respetar:
   quien la pidió pulsa CONTINUAR. Si alguien dice que no, el menú sale pero
   el árbol sigue, y el jugador de ese ordenador se queda quieto mientras está
   abierto.
+- **Dejar la partida a medias** (desde el 24/11, solo con un jugador). El
+  menú de pausa emite `guardar_partida_pedido` (GUARDAR Y SALIR); la
+  jugabilidad guarda la partida (`escenas/jugabilidad/partida_guardada.gd`:
+  en `user://` y, con cuenta, en Supabase) y vuelve al menú, sin
+  `partida_terminada`. Desde JUGAR se continúa: empieza en ese minuto con el
+  nivel, las mejoras, el equipo y la resistencia que había. La horda vuelve a
+  salir y, si había un jefe, su combate empieza de nuevo.
 - **Fin de partida.** `partida_terminada` llega con el juego ya pausado. Claves
   del diccionario: `victoria` (bool), `tiempo` (float, en segundos), `nivel`
   (int), `eliminados` (int), `personaje` (String, el que llevaba al acabar;
