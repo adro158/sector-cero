@@ -88,10 +88,24 @@ En varias ramas, de la primera a la última:
 - **Partida guardada:** se guarda, se continúa y se compara. Las reglas de
   la tabla, probadas en una transacción deshecha.
 
+## Después: la partida guardada encima y la v1.23
+
+Adam: «Si rehazlo. Y una vez este hecho haz la nueva version para jugarlo y
+deja todo apuntado para que alan pueda aplicar bien lo que tiene que hacer
+el con la nueva version».
+
+- La partida guardada se trae a `adam/menu-nuevo` (los ficheros de la rama
+  vieja, que solo tocaban la pausa y la partida) y CONTINUAR pasa a ser una
+  tarjeta arriba de JUGAR, con el resumen (minuto, nivel y dificultad). Sale
+  después de abrir la ventana, porque la de la cuenta llega de Supabase.
+- Repetida la prueba de guardar y seguir sobre el menú nuevo: todo igual.
+- El contrato (`guardar_partida_pedido`, PR #36) entra primero, como fichero
+  de paso; después el menú (PR #37) y la v1.23.
+- Lo que tiene que hacer Alan con la v1.23, en las issues #34 y #35.
+
 ## Estado al cerrar y siguiente paso
 
-- `adam/menu-nuevo`: commits sin subir; el PR, al decir «ya he acabado».
-- Después, rehacer `adam/partida-guardada` encima: CONTINUAR como tarjeta en
-  JUGAR. Y subir `adam/partir-red` y `adam/contrato-guardar` con sus PR.
-- Faltan partir `estilo_interfaz.gd` (ya pasaba de las 200 líneas) y jugarlo
-  a mano con el mando y en táctil.
+- En `main` y publicado en la v1.23: el menú nuevo y la partida guardada.
+- Pendiente: `adam/partir-red` (su PR, con los conflictos del menú en
+  `sala_red.gd`), partir `estilo_interfaz.gd`, jugarlo con el mando y en
+  táctil, y probar la partida guardada en la nube con una cuenta.
