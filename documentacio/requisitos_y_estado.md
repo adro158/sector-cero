@@ -390,6 +390,9 @@ Falta:
 - la misión de hoy y el aviso de COLECCIÓN, cuando Alan tenga las misiones
   y el pase (issue #35)
 - probar la partida guardada en la nube con una cuenta de verdad
+- `adam/partir-red`: abrir su PR y arreglar el choque con el menú en
+  `sala_red.gd`
+- partir `estilo_interfaz.gd`, que pasa de las 200 líneas
 
 ### Para la entrega
 
