@@ -37,6 +37,10 @@ const INTERRUPTOR := preload("res://medios/interfaz/interruptor.png")
 const AGARRE := preload("res://medios/interfaz/deslizador_agarre.png")
 ## Tres de 8x24: carril, agarre y agarre encima.
 const DESPLAZAMIENTO := preload("res://medios/interfaz/desplazamiento.png")
+## El fondo de todas las ventanas (64x64, 9 trozos de 16) y la banda de su
+## título (64x20, 9 trozos de 8), del lote del menú (24/11).
+const VENTANA := preload("res://medios/interfaz/ventana.png")
+const VENTANA_TITULO := preload("res://medios/interfaz/ventana_titulo.png")
 ## La fuente pixel art (lote 9): letras de 5x7 hechas de cuadrados, 11 píxeles
 ## de alto con las tildes y los rabitos. Solo la llevan los textos grandes
 ## (TAMANO_PIXEL o más: títulos, reloj, avisos): a 13 o 14 px los píxeles no
@@ -187,6 +191,17 @@ static func _textura(tira: Texture2D, fotograma: int, lado: Vector2, margen_text
 	return estilo
 
 
+## Como _textura, pero con cada lado a su medida: margenes (de la textura) y
+## contenido van en el orden izquierda, arriba, derecha y abajo. Para las
+## piezas del menú, que no tienen los cuatro bordes iguales.
+static func estilo_trozos(tira: Texture2D, fotograma: int, lado: Vector2, margenes: Array, contenido: Array, color: Color) -> StyleBoxTexture:
+	var estilo := _textura(tira, fotograma, lado, 0, color)
+	for i in 4:
+		estilo.set_texture_margin(i, margenes[i])
+		estilo.set_content_margin(i, contenido[i])
+	return estilo
+
+
 static func _trozo(tira: Texture2D, fotograma: int, lado: Vector2) -> AtlasTexture:
 	var trozo := AtlasTexture.new()
 	trozo.atlas = tira
@@ -242,9 +257,12 @@ static func tamano_texto(tamano: int) -> int:
 	return roundi(tamano * ESCALA_TEXTO_GRANDE) if GestorGuardado.opcion("texto_grande") else tamano
 
 
-## Fondo que oscurece lo que hay detrás y centra un panel encima. Devuelve el
-## fondo; el contenido va dentro de la caja vertical que se pasa.
-static func ventana_centrada(caja_vertical: VBoxContainer, color_borde: Color = NEON) -> ColorRect:
+## Fondo que oscurece lo que hay detrás y centra una ventana encima (desde el
+## 24/11, con el marco del lote del menú, ventana.png). Con titulo, la banda
+## del título va sobre el borde de arriba, con su icono si lo hay; sin él, el
+## título lo lleva la ventana dentro. Devuelve el fondo; el contenido va dentro
+## de la caja vertical que se pasa.
+static func ventana_centrada(caja_vertical: VBoxContainer, color_borde: Color = NEON, titulo := "", icono: Texture2D = null) -> ColorRect:
 	var fondo := ColorRect.new()
 	fondo.color = Color(0.0, 0.0, 0.0, 0.65)
 	fondo.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -252,11 +270,59 @@ static func ventana_centrada(caja_vertical: VBoxContainer, color_borde: Color = 
 	var centro := CenterContainer.new()
 	centro.set_anchors_preset(Control.PRESET_FULL_RECT)
 	fondo.add_child(centro)
+	# La banda y la ventana, una encima de otra y solapadas 10 px: la banda
+	# queda a caballo del borde. Delante, con z_index.
+	var pila := VBoxContainer.new()
+	pila.add_theme_constant_override("separation", -10)
+	centro.add_child(pila)
+	if titulo != "":
+		pila.add_child(_banda_titulo(titulo, icono, color_borde))
 
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", caja(color_borde, 28))
-	centro.add_child(panel)
+	panel.add_theme_stylebox_override("panel", estilo_trozos(VENTANA, 0, Vector2(64, 64), [16, 16, 16, 16], [32, 30 if titulo == "" else 36, 32, 26], color_borde))
+	pila.add_child(panel)
 
 	caja_vertical.add_theme_constant_override("separation", 14)
 	panel.add_child(caja_vertical)
+	# Cada vez que aparece, entra (24/11). Es una lambda y no un método porque
+	# esta función es estática; solo usa el fondo y la pila, que van con ella.
+	fondo.visibility_changed.connect(func(): if fondo.is_visible_in_tree(): _entrar(fondo, pila))
 	return fondo
+
+
+static func _banda_titulo(titulo: String, icono: Texture2D, color: Color) -> PanelContainer:
+	var banda := PanelContainer.new()
+	banda.add_theme_stylebox_override("panel", estilo_trozos(VENTANA_TITULO, 0, Vector2(64, 20), [8, 8, 8, 8], [22, 4, 22, 4], color))
+	banda.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	banda.z_index = 1
+	var fila := HBoxContainer.new()
+	fila.add_theme_constant_override("separation", 10)
+	if icono != null:
+		var dibujo := TextureRect.new()
+		dibujo.texture = icono
+		dibujo.modulate = color
+		dibujo.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		fila.add_child(dibujo)
+	fila.add_child(etiqueta(titulo, 22, color))
+	banda.add_child(fila)
+	return banda
+
+
+## La entrada de una ventana: el fondo se oscurece y el panel crece desde el
+## 90 % con un pequeño rebote (TRANS_BACK), en unos 0,2 s. El tween va con el
+## fondo, así que en una ventana que funciona en pausa, también.
+static func _entrar(fondo: Control, panel: Control) -> void:
+	fondo.modulate.a = 0.0
+	panel.scale = Vector2(0.9, 0.9)
+	# Dos fotogramas sin verse: el CenterContainer aún no ha colocado el panel
+	# y salía un instante arriba a la izquierda. Después, desde su centro.
+	var arbol := fondo.get_tree()
+	await arbol.process_frame
+	await arbol.process_frame
+	# Si mientras tanto se ha ido la ventana (se ha cambiado de escena), nada.
+	if not is_instance_valid(fondo):
+		return
+	panel.pivot_offset = panel.size / 2.0
+	var entrada := fondo.create_tween().set_parallel()
+	entrada.tween_property(fondo, "modulate:a", 1.0, 0.15)
+	entrada.tween_property(panel, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

@@ -371,6 +371,26 @@ Subido y fusionado con la v1.15 (05/11). Con el sí de Adam, borrada
 (`flujo_de_trabajo.md`). El 09/11 Alan creó su `CLAUDE.local.md` y rellenó
 su ficha con el ordenador del instituto (falta el de casa).
 
+### El menú principal nuevo (24/11, PR #37, en la v1.23)
+
+Con las piezas de `lote_menu.zip` y su maqueta
+(`bitacora/2026-11-24_adam_menu-nuevo.md`):
+- cuatro botones: **JUGAR** (el modo, la dificultad en tarjetas, las reglas
+  y EMPEZAR), **COLECCIÓN** (las skins de Alan), **PERFIL** (la cuenta, los
+  récords, las partidas y el ranking) y **OPCIONES** (con la pestaña Versión)
+- los personajes en sus peanas, con su cartel
+- la cuenta, SALIR y las novedades en las esquinas
+- el marco nuevo en todas las ventanas
+- **dejar la partida a medias**: GUARDAR Y SALIR en la pausa (solo con un
+  jugador) y CONTINUAR en JUGAR; en `user://` y, con cuenta, en Supabase
+  (tabla `partida_guardada`)
+
+Falta:
+- jugarlo a mano con el mando y en táctil
+- la misión de hoy y el aviso de COLECCIÓN, cuando Alan tenga las misiones
+  y el pase (issue #35)
+- probar la partida guardada en la nube con una cuenta de verdad
+
 ### Para la entrega
 
 **Decisión de Adam (05/11):** el vídeo y el ensayo de la defensa son lo
