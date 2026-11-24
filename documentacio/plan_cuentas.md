@@ -196,6 +196,29 @@ create policy "cambiar mis opciones" on public.opciones for update
   to authenticated using (usuario = (select auth.uid()))
   with check (usuario = (select auth.uid()));
 
+-- La partida que el jugador ha dejado a medias (24/11, partida_guardada.gd),
+-- para seguirla en cualquier ordenador. Una por cuenta: guardar otra la
+-- sustituye; al continuarla se borra. Solo la suya. Creada el 24/11 con el
+-- conector (migración partida_guardada).
+create table public.partida_guardada (
+  usuario uuid primary key default auth.uid() references public.perfiles (id) on delete cascade,
+  -- Minuto, nivel, mejoras, equipo, resistencias...: unos 2 KB; 16 KB de tope.
+  datos jsonb not null check (pg_column_size(datos) < 16384),
+  guardada timestamptz not null default now()
+);
+alter table public.partida_guardada enable row level security;
+create policy "leer mi partida guardada" on public.partida_guardada for select
+  to authenticated using (usuario = (select auth.uid()));
+create policy "guardar mi partida" on public.partida_guardada for insert
+  to authenticated with check (usuario = (select auth.uid()));
+create policy "cambiar mi partida guardada" on public.partida_guardada for update
+  to authenticated using (usuario = (select auth.uid()))
+  with check (usuario = (select auth.uid()));
+create policy "borrar mi partida guardada" on public.partida_guardada for delete
+  to authenticated using (usuario = (select auth.uid()));
+revoke all on public.partida_guardada from anon, authenticated;
+grant select, insert, update, delete on public.partida_guardada to authenticated;
+
 -- Para las skins, más adelante: lo que tiene cada jugador. Se puede leer
 -- lo propio, pero no hay regla para añadir: las skins solo las podrá dar el
 -- servidor (una Edge Function), para que no se puedan trucar desde el juego.
