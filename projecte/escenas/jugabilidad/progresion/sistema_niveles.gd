@@ -129,6 +129,16 @@ func opciones_de(jugador: Node) -> Array:
 	return _opciones.get(jugador, [])
 
 
+## Para guardar la partida (partida_guardada.gd): la experiencia de la barra y
+## cuántas veces se ha cogido cada mejora.
+func experiencia() -> int:
+	return _experiencia
+
+
+func veces_por_mejora() -> Dictionary:
+	return _veces
+
+
 ## Cuántas mejoras se han aplicado en la partida, contando las repetidas.
 func mejoras_aplicadas() -> int:
 	var total := 0
@@ -137,11 +147,12 @@ func mejoras_aplicadas() -> int:
 	return total
 
 
-## Para el menú de desarrollador: pone ese nivel con la barra de experiencia
-## vacía, sin abrir paneles. Las mejoras se dan aparte, con regalar().
-func poner_nivel(nuevo: int) -> void:
+## Para el menú de desarrollador y al continuar una partida guardada: pone ese
+## nivel con esa experiencia (vacía, si no), sin abrir paneles. Las mejoras se
+## dan aparte, con regalar().
+func poner_nivel(nuevo: int, experiencia := 0) -> void:
 	_nivel = nuevo
-	_experiencia = 0
+	_experiencia = experiencia
 	_objetivo = int(experiencia_primer_nivel * pow(incremento_por_nivel, _nivel - 1))
 	_avisar_experiencia()
 
