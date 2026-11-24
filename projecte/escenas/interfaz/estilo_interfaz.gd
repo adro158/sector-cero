@@ -259,4 +259,23 @@ static func ventana_centrada(caja_vertical: VBoxContainer, color_borde: Color = 
 
 	caja_vertical.add_theme_constant_override("separation", 14)
 	panel.add_child(caja_vertical)
+	# Cada vez que aparece, entra (24/11). Es una lambda y no un método porque
+	# esta función es estática; solo usa el fondo y el panel, que van con ella.
+	fondo.visibility_changed.connect(func(): if fondo.is_visible_in_tree(): _entrar(fondo, panel))
 	return fondo
+
+
+## La entrada de una ventana: el fondo se oscurece y el panel crece desde el
+## 90 % con un pequeño rebote (TRANS_BACK), en unos 0,2 s. El tween va con el
+## fondo, así que en una ventana que funciona en pausa, también.
+static func _entrar(fondo: Control, panel: Control) -> void:
+	fondo.modulate.a = 0.0
+	panel.scale = Vector2(0.9, 0.9)
+	# Dos fotogramas sin verse: el CenterContainer aún no ha colocado el panel
+	# y salía un instante arriba a la izquierda. Después, desde su centro.
+	await fondo.get_tree().process_frame
+	await fondo.get_tree().process_frame
+	panel.pivot_offset = panel.size / 2.0
+	var entrada := fondo.create_tween().set_parallel()
+	entrada.tween_property(fondo, "modulate:a", 1.0, 0.15)
+	entrada.tween_property(panel, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
