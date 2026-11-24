@@ -273,8 +273,12 @@ static func _entrar(fondo: Control, panel: Control) -> void:
 	panel.scale = Vector2(0.9, 0.9)
 	# Dos fotogramas sin verse: el CenterContainer aún no ha colocado el panel
 	# y salía un instante arriba a la izquierda. Después, desde su centro.
-	await fondo.get_tree().process_frame
-	await fondo.get_tree().process_frame
+	var arbol := fondo.get_tree()
+	await arbol.process_frame
+	await arbol.process_frame
+	# Si mientras tanto se ha ido la ventana (se ha cambiado de escena), nada.
+	if not is_instance_valid(fondo):
+		return
 	panel.pivot_offset = panel.size / 2.0
 	var entrada := fondo.create_tween().set_parallel()
 	entrada.tween_property(fondo, "modulate:a", 1.0, 0.15)
