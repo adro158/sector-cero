@@ -58,6 +58,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	# Para el control táctil, que no sabe dónde está la barra.
+	add_to_group("barra_equipo")
 	set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	offset_left = -260.0
 	offset_right = 260.0
@@ -218,6 +220,25 @@ func _vivo_desde(paso: int) -> int:
 		if not _estado[otro].caido and _estado[otro].get("llevado_por", "") == "":
 			return otro
 	return _activo
+
+
+## Con el móvil (control_tactil.gd, 24/11): tocar el retrato de un lado es
+## pasar a ese personaje. Devuelve -1 si es al que lleva Q, 1 si es al de E y
+## 0 si no toca ninguno al que se pueda pasar. posicion: la del toque en la
+## pantalla. Vale toda la ranura y algo más: con el dedo son pequeñas.
+func paso_tocado(posicion: Vector2) -> int:
+	if not is_visible_in_tree() or _estado.is_empty():
+		return 0
+	var aqui := get_global_transform_with_canvas().affine_inverse() * posicion
+	var desde_el_centro := aqui.x - size.x / 2.0
+	if aqui.y < ARRIBA - 10.0 or absf(desde_el_centro) < LADO / 2.0 or absf(desde_el_centro) > SEPARACION + LADO:
+		return 0
+	var tocado := posmod(_activo + signi(int(desde_el_centro)), _estado.size())
+	if tocado == _vivo_desde(-1):
+		return -1
+	if tocado == _vivo_desde(1):
+		return 1
+	return 0
 
 
 func _ulti(indice: int) -> float:

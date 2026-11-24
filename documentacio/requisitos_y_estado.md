@@ -390,6 +390,14 @@ Falta:
 - la misión de hoy y el aviso de COLECCIÓN, cuando Alan tenga las misiones
   y el pase (issue #35)
 - probar la partida guardada en la nube con una cuenta de verdad
+- `adam/partir-red`: abrir su PR y arreglar el choque con el menú en
+  `sala_red.gd`
+- partir `estilo_interfaz.gd`, que pasa de las 200 líneas
+
+Arreglado después de la v1.23 (rama `adam/arreglos-web-movil`, sin publicar
+hasta la versión siguiente): la cuenta en la web, que no bajaba nada (gzip);
+las letras de las tarjetas en la web; la pantalla completa en la web, y en
+táctil elegir personaje tocando su retrato y un botón para ver el equipo.
 
 ### Para la entrega
 

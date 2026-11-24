@@ -282,6 +282,10 @@ func _pedir(metodo: HTTPClient.Method, ruta: String, cuerpo: Variant, preferenci
 		cabeceras.append("Prefer: " + preferencia)
 	var peticion := HTTPRequest.new()
 	peticion.timeout = 10.0
+	# En la web el navegador ya descomprime la respuesta, pero Supabase deja
+	# ver su cabecera Content-Encoding: gzip y Godot la descomprimiría otra
+	# vez y fallaría. Sin esto, la cuenta en la web no bajaba nada (24/11).
+	peticion.accept_gzip = not OS.has_feature("web")
 	add_child(peticion)
 	var texto := "" if cuerpo == null else JSON.stringify(cuerpo)
 	if peticion.request(_url + ruta, cabeceras, metodo, texto) != OK:

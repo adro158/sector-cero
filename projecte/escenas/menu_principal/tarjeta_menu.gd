@@ -44,8 +44,16 @@ func _init(dibujo: TextureRect, titulo: String, detalle: String, color: Color, v
 		etiqueta.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		textos.add_child(etiqueta)
 	caja.add_child(textos)
-	# El botón no mide su contenido solo: lo que pida la caja, más el borde.
-	custom_minimum_size = Vector2(0.0, 118.0 if vertical else 72.0)
+	# El botón no mide su contenido solo: lo que pida la caja, más el borde, y
+	# cada vez que cambie. En la web (sin Consolas) la letra ocupa más que al
+	# crearla, y con una altura fija el texto se salía por abajo.
+	var alto := 118.0 if vertical else 72.0
+	caja.minimum_size_changed.connect(_medir.bind(caja, alto))
+	_medir(caja, alto)
+
+
+func _medir(caja: Control, alto: float) -> void:
+	custom_minimum_size = Vector2(0.0, maxf(alto, caja.get_combined_minimum_size().y + 28.0))
 
 
 ## Cambia la línea de debajo del título (CONTINUAR la pone con el resumen de

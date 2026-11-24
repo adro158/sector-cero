@@ -51,7 +51,10 @@ func _ready() -> void:
 	_casilla(sonido, "Silencio al cambiar de ventana", "silenciar_sin_foco")
 
 	var pantalla := _pestana("Pantalla")
-	_casilla(pantalla, "Pantalla completa", "pantalla_completa")
+	# En la web, solo si el navegador sabe ponerla: Safari del iPhone no (allí
+	# se juega a pantalla completa añadiendo la página a la pantalla de inicio).
+	if not OS.has_feature("web") or bool(JavaScriptBridge.eval("!!(document.fullscreenEnabled || document.webkitFullscreenEnabled)")):
+		_casilla(pantalla, "Pantalla completa", "pantalla_completa")
 	_casilla(pantalla, "Filtro CRT", "crt")
 	# En la web manda el navegador: el límite no haría nada.
 	if not OS.has_feature("web"):

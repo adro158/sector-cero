@@ -246,6 +246,8 @@ icono de la ventana) y `EfectoCRT` (filtro de pantalla).
 - `elites` — los élites, ocultos hasta que el director los activa.
 - `zonas_hielo` — el nodo que lleva las zonas de hielo del jefe final (las
   crea al caer sus cristales).
+- `barra_equipo` — la barra del equipo del HUD. La usa el control táctil
+  para saber qué retrato se ha tocado (`paso_tocado`), desde el 24/11.
 - `jaula_jefe` — la jaula del pisotón del jefe del minuto 10. La usa el jefe
   para pisar. Mientras está cerrada solo el jugador no cruza su muro; el jefe
   y la horda sí, desde el balance de la #27 (PR #29).

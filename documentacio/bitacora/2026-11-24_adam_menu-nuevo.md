@@ -109,3 +109,53 @@ el con la nueva version».
 - Pendiente: `adam/partir-red` (su PR, con los conflictos del menú en
   `sala_red.gd`), partir `estilo_interfaz.gd`, jugarlo con el mando y en
   táctil, y probar la partida guardada en la nube con una cuenta.
+
+## Después de la v1.23: la web y el móvil (rama `adam/arreglos-web-movil`)
+
+Adam probó la v1.23 desde la web y el móvil: «si juego desde la aplicacion
+web e inicio mi cuenta no me tiene ni las partidas que tengo a medias ni las
+skins guardadas ni nada», letras desplazadas hacia abajo en la dificultad, la
+pantalla completa que no hace nada, y en táctil «no me deja elegir a que
+personaje cambiar, y no hay tecla para ver el equipo». Decisión de Adam: se
+deja arreglado, **sin publicar**; la versión siguiente sale cuando Alan acabe
+lo suyo.
+
+- **La cuenta en la web no bajaba nada.** Los registros de Supabase dicen que
+  el servidor sí mandaba las opciones, las partidas y la partida guardada
+  (`content_range` 0-0, 0-2). Supabase comprime con gzip y deja ver al
+  navegador la cabecera `Content-Encoding`; el navegador ya lo descomprime y
+  Godot lo intentaba otra vez y fallaba (`RESULT_BODY_DECOMPRESS_FAILED`, que
+  `cuenta.gd` tomaba como «sin respuesta»). El login sí iba porque esa parte
+  de Supabase no deja ver esa cabecera. Arreglo: `accept_gzip = false` en la
+  web (`cuenta.gd`). En el escritorio no pasaba.
+- **Las letras desplazadas:** en la web no hay Consolas y la letra que queda
+  (Open Sans) ocupa más; las tarjetas de JUGAR tenían el alto fijo y el texto
+  se salía por abajo. Ahora miden lo que tienen dentro cada vez que cambia
+  (`tarjeta_menu.gd` y, por lo mismo, `tarjeta_novedades.gd`).
+- **La pantalla completa en la web:** el navegador solo la deja poner justo
+  después de un toque, y Safari del iPhone no la deja nunca a una página. Al
+  arrancar en la web la opción vuelve a «no» (la página siempre empieza en su
+  ventana, y la casilla decía que sí sin estarlo), y donde el navegador no
+  sabe ponerla la casilla no sale. Para el iPhone, la etiqueta
+  `apple-mobile-web-app-capable`: añadida a la pantalla de inicio, se abre sin
+  las barras de Safari.
+- **Un fallo escondido:** `JavaScriptBridge.eval` devuelve los booleanos de
+  JavaScript como número; comparar con `true` daba error (ya pasaba con
+  `?tactil` en `control_tactil.gd`).
+- **Táctil:** tocar el retrato de un lado en la barra del equipo pasa a ese
+  personaje (lo mismo que Q y E; `barra_equipo.gd` dice qué retrato se ha
+  tocado, con el grupo nuevo `barra_equipo`), y un botón del equipo (el panel
+  de la C) debajo del de pausa.
+
+### Métodos de test
+
+- La web exportada aquí, servida en `localhost` y abierta en el navegador
+  con tamaño de móvil (812x375): las tarjetas de dificultad, las novedades,
+  OPCIONES y los botones táctiles en la partida (`?tactil`), con capturas.
+- Un script en headless: tocar el retrato izquierdo da -1, el derecho 1, el
+  centro y fuera 0; `personaje_anterior` cambia de personaje y `ver_equipo`
+  abre el panel.
+- `/validar` y el simulador (minuto 10: 600 s, 71 eliminados, como antes).
+- **Sin probar:** la pantalla completa (el navegador de pruebas no la deja ni
+  con un toque de verdad) y la cuenta en la web con una cuenta real: se
+  comprueban en el móvil cuando salga la versión.

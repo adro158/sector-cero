@@ -8,7 +8,9 @@ extends CanvasLayer
 ## cambiar_personaje y pausar), así que el resto del juego no se entera.
 ## Joystick flotante en la mitad izquierda de la pantalla, botón de cambio de
 ## personaje abajo a la derecha, el de la ulti encima de él y el de pausa
-## arriba a la derecha.
+## arriba a la derecha. Desde el 24/11, también el del equipo (ver_equipo, el
+## panel de la C), debajo del de pausa, y tocar el retrato de un lado
+## en la barra del equipo pasa a ese personaje (Q y E, barra_equipo.gd).
 ##
 ## Los botones y el joystick son dibujos del lote 9, en grises y teñidos (antes
 ## eran círculos hechos por código): el botón, normal y pulsado, mide 96x96
@@ -17,6 +19,9 @@ extends CanvasLayer
 const BOTON := preload("res://medios/interfaz/tactil_boton.png")
 ## Cambiar, ulti y pausa, de 48x48.
 const ICONOS := preload("res://medios/interfaz/tactil_iconos.png")
+## El del equipo, de 12x12, de la tira del panel del equipo (el último).
+const ICONOS_EQUIPO := preload("res://medios/interfaz/equipo_iconos.png")
+const ICONO_EQUIPO := 7
 const BASE := preload("res://medios/interfaz/tactil_joystick.png")
 const PALANCA := preload("res://medios/interfaz/tactil_palanca.png")
 const RADIO_JOYSTICK := 80.0
@@ -33,6 +38,7 @@ var _vector := Vector2.ZERO
 var _boton_cambiar := Vector2.ZERO
 var _boton_pausa := Vector2.ZERO
 var _boton_ulti := Vector2.ZERO
+var _boton_equipo := Vector2.ZERO
 ## Lo que le queda a cada acción de verse pulsada.
 var _pulsado := {}
 
@@ -58,7 +64,8 @@ func _hay_pantalla_tactil() -> bool:
 		return false
 	if DisplayServer.is_touchscreen_available():
 		return true
-	return JavaScriptBridge.eval("new URLSearchParams(location.search).has('tactil')") == true
+	# eval devuelve el booleano de JavaScript como número (1 o 0).
+	return bool(JavaScriptBridge.eval("new URLSearchParams(location.search).has('tactil')"))
 
 
 ## Los controles solo se ven durante la partida y sin pausa.
@@ -73,6 +80,7 @@ func _process(delta: float) -> void:
 	_boton_cambiar = pantalla - Vector2(MARGEN, MARGEN)
 	_boton_pausa = Vector2(pantalla.x - MARGEN, MARGEN)
 	_boton_ulti = pantalla - Vector2(MARGEN, MARGEN * 2.4)
+	_boton_equipo = Vector2(pantalla.x - MARGEN, MARGEN * 2.2)
 	if not _jugando() and _dedo != -1:
 		_soltar()
 	_dibujo.visible = _jugando()
@@ -99,10 +107,23 @@ func _al_tocar(evento: InputEventScreenTouch) -> void:
 		_pulsar("pausar")
 	elif evento.position.distance_to(_boton_ulti) <= RADIO_BOTON * 1.3:
 		_pulsar("ulti")
+	elif evento.position.distance_to(_boton_equipo) <= RADIO_BOTON * 1.3:
+		_pulsar("ver_equipo")
+	elif _paso_en_la_barra(evento.position) == -1:
+		_pulsar("personaje_anterior")
+	elif _paso_en_la_barra(evento.position) == 1:
+		_pulsar("cambiar_personaje")
 	elif _dedo == -1 and evento.position.x < get_viewport().get_visible_rect().size.x * 0.5:
 		_dedo = evento.index
 		_centro = evento.position
 		_vector = Vector2.ZERO
+
+
+## Si el toque cae en un retrato de la barra del equipo: -1 el de Q, 1 el de E
+## y 0 si no.
+func _paso_en_la_barra(posicion: Vector2) -> int:
+	var barra := get_tree().get_first_node_in_group("barra_equipo")
+	return 0 if barra == null else barra.paso_tocado(posicion)
 
 
 func _soltar() -> void:
@@ -146,12 +167,19 @@ func _pintar() -> void:
 	_boton(_boton_cambiar, "cambiar_personaje", 0, color)
 	_boton(_boton_ulti, "ulti", 1, Color(1.0, 0.8, 0.2))
 	_boton(_boton_pausa, "pausar", 2, color)
+	_boton(_boton_equipo, "ver_equipo", -1, color)
 
 
-## El botón de una acción con su icono (el número en la tira de iconos), y
+## El botón de una acción con su icono (el número en la tira de iconos, o -1
+## para el del equipo), y
 ## pulsado justo después de tocarlo.
 func _boton(centro: Vector2, accion: String, icono: int, color: Color) -> void:
 	var pulsado: bool = _pulsado.get(accion, 0.0) > 0.0
 	var esquina := centro - Vector2(RADIO_BOTON, RADIO_BOTON)
 	_dibujo.draw_texture_rect_region(BOTON, Rect2(esquina, Vector2(96.0, 96.0)), Rect2(96.0 if pulsado else 0.0, 0.0, 96.0, 96.0), Color(color, 0.85))
-	_dibujo.draw_texture_rect_region(ICONOS, Rect2(centro - Vector2(24.0, 24.0), Vector2(48.0, 48.0)), Rect2(icono * 48.0, 0.0, 48.0, 48.0), Color.WHITE if pulsado else color)
+	var tinte := Color.WHITE if pulsado else color
+	if icono == -1:
+		# El del equipo, de 12 px, a x3: 36, con los píxeles enteros.
+		_dibujo.draw_texture_rect_region(ICONOS_EQUIPO, Rect2(centro - Vector2(18.0, 18.0), Vector2(36.0, 36.0)), Rect2(ICONO_EQUIPO * 12.0, 0.0, 12.0, 12.0), tinte)
+	else:
+		_dibujo.draw_texture_rect_region(ICONOS, Rect2(centro - Vector2(24.0, 24.0), Vector2(48.0, 48.0)), Rect2(icono * 48.0, 0.0, 48.0, 48.0), tinte)

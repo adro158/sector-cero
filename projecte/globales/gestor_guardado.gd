@@ -86,6 +86,11 @@ func _ready() -> void:
 	# La primera vez el fichero no existe y load devuelve un error: no pasa
 	# nada, se usan los valores por defecto hasta que se guarde algo.
 	_fichero.load(RUTA)
+	# En la web la página siempre empieza en su ventana: el navegador solo deja
+	# poner la pantalla completa justo después de un toque o un clic. Si se
+	# quedara marcada, la casilla diría que sí sin estarlo (24/11).
+	if OS.has_feature("web"):
+		_fichero.set_value("opciones", "pantalla_completa", false)
 	for clave in OPCIONES_POR_DEFECTO:
 		_aplicar(clave, opcion(clave))
 	BusEventos.partida_terminada.connect(_al_terminar_partida)
