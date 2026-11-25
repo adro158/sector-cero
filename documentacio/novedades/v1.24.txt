@@ -1,0 +1,8 @@
+- Bits: la moneda del juego. Se ganan jugando (más cuanto más aguantas) y con las misiones. Nada de dinero real.
+- Las skins ahora se consiguen: en la tienda, en los paquetes cifrados o en el pase de batalla. Si llevabas una que no tienes, vuelves al original.
+- Misiones: 3 diarias y 3 semanales. Puedes cambiar una diaria al día. La primera partida de cada día da bits de más por los días seguidos.
+- Pase de batalla, Temporada 1: 30 niveles con bits, paquetes, títulos, marcos, estelas, temas y las skins S y S+.
+- Logros: retos que no caducan, cada uno con su título.
+- Tienda: compra las skins C, B y A con bits, o abre un paquete cifrado y mira cómo se descifra tu skin.
+- Perfil: ponte un título, un marco, una estela, un icono y un color para el filtro CRT. En red, los demás los ven.
+- Lo ganado en cada partida sale en la pantalla final.
