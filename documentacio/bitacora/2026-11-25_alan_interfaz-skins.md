@@ -133,3 +133,32 @@ fila de la cartera) va en esta rama.
 - **Adam revisa los PR #40 a #45 y el de esta rama.** Se fusionan en orden
   y, con todo en `main`, se publica la **v1.24** (`/publicar`, con sus
   novedades: la cartera, la moneda y la interfaz de skins).
+
+## Publicada la v1.24 (25/11)
+
+Adam dio el visto bueno a Alan, en persona, a los PR #40 a #46. Queda
+apuntado en el #40. Alan pidió publicar.
+
+- **Novedades:** `documentacio/novedades/v1.24.txt`, en el #46: los bits,
+  las skins que hay que conseguir, las misiones, el pase, los logros, la
+  tienda con la apertura de paquetes, el perfil y lo ganado en la pantalla
+  final.
+- **Fusión, en orden y con squash, del #40 al #46.** Antes de cada uno, el
+  PR pasó a `main`, se trajo `main` a su rama y se esperó la comprobación en
+  verde. Las ramas se borraron al final: borrar la base de un PR abierto
+  podría cerrarlo.
+  - **Un problema:** al traer `main` con `-X ours`, en `alan/bits` se coló
+    una línea vieja de `ventana_skins.gd` y la comprobación del #45 falló.
+  - **La solución:** se quitó la línea y, para lo que quedaba, se usó
+    `-s ours`. Es correcto porque `main` solo tenía los squash de los PR
+    anteriores, que cada rama ya llevaba.
+  - **Comprobado:** `main` quedó exactamente igual que la rama de cada PR
+    fusionado.
+- **`/validar` en `main` (c921de4):** sin errores, 16 clases y el simulador
+  igual. `project.godot` no cambia desde la v1.23, así que no hace falta
+  subir `EJECUTABLE_MINIMO`.
+- **Aviso a Adam** con el número, en el #46. Después, `git tag v1.24` y
+  `git push origin v1.24`.
+- **La release:** la Action «Publicar release» acabó bien (run 45659078629).
+  La release «Sector Cero v1.24» tiene sus 7 ficheros (los cuatro `.pck`,
+  el instalador de Windows, el zip del lanzador de Linux y `version.json`).
