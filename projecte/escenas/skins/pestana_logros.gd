@@ -11,6 +11,8 @@ const Premios := preload("res://globales/premios.gd")
 const ANCHO := 720.0
 const AVANCE := Color("#00E5FF")
 const HECHO := Color("#4DFF99")
+const Piezas := preload("res://escenas/skins/piezas_cartera.gd")
+const MEDALLA := preload("res://medios/sprites/cartera/general/medalla.png")
 
 var _lista: VBoxContainer
 
@@ -40,6 +42,10 @@ func _fila(logro: Dictionary) -> PanelContainer:
 	panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(HECHO if logro.hecho else EstiloInterfaz.TEXTO_SUAVE.darkened(0.3), 8))
 	var fila := HBoxContainer.new()
 	fila.add_theme_constant_override("separation", 12)
+	# La medalla (lote de la interfaz de skins): apagada o conseguida.
+	var medalla := Piezas.dibujo(Piezas.fotograma(MEDALLA, 1 if logro.hecho else 0, Vector2(32, 32)), 2)
+	medalla.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	fila.add_child(medalla)
 	var izquierda := VBoxContainer.new()
 	izquierda.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	izquierda.add_child(EstiloInterfaz.etiqueta(logro.texto, 16, EstiloInterfaz.TEXTO))

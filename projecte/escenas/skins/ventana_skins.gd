@@ -21,6 +21,7 @@ const PestanaPerfil := preload("res://escenas/skins/pestana_perfil.gd")
 ## Las pestañas, en orden. Las que no tienen contenido salen apagadas.
 const PESTANAS := ["ARMARIO", "PERFIL", "MISIONES", "PASE", "LOGROS", "TIENDA"]
 const ContadorBits := preload("res://escenas/skins/contador_bits.gd")
+const Piezas := preload("res://escenas/skins/piezas_cartera.gd")
 
 var _armario: VBoxContainer
 ## El contenido de cada pestaña que ya existe, por su nombre.
@@ -32,6 +33,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var caja := VBoxContainer.new()
+	caja.add_theme_constant_override("separation", 14)
 	var cabecera := HBoxContainer.new()
 	var titulo := EstiloInterfaz.etiqueta("SKINS", 36, EstiloInterfaz.NEON)
 	titulo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -49,6 +51,7 @@ func _ready() -> void:
 	for nombre in PESTANAS:
 		var existe: bool = nombre in _secciones
 		var boton := EstiloInterfaz.boton(nombre if existe else nombre + " · PRONTO", _ver.bind(nombre), 130)
+		boton.icon = Piezas.icono_pestana(nombre)
 		if not existe:
 			boton.disabled = true
 			boton.tooltip_text = "Todavía no está."
@@ -62,7 +65,15 @@ func _ready() -> void:
 	var volver := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]") as Button
 	volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(volver)
-	add_child(EstiloInterfaz.ventana_centrada(caja))
+	# Detrás de todo, la rejilla de circuito del lote (piezas_cartera.gd): el
+	# PanelContainer pone sus hijos uno encima de otro, del tamaño de la caja.
+	var con_fondo := PanelContainer.new()
+	con_fondo.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	con_fondo.add_child(Piezas.fondo())
+	con_fondo.add_child(caja)
+	var exterior := VBoxContainer.new()
+	exterior.add_child(con_fondo)
+	add_child(EstiloInterfaz.ventana_centrada(exterior))
 	visible = false
 
 
@@ -84,6 +95,7 @@ func _ver(nombre: String) -> void:
 	for otra in _secciones:
 		_secciones[otra].visible = otra == nombre
 		_botones[otra].add_theme_color_override("font_color", EstiloInterfaz.NEON if otra == nombre else EstiloInterfaz.TEXTO_SUAVE)
+		_botones[otra].add_theme_color_override("icon_normal_color", EstiloInterfaz.NEON if otra == nombre else EstiloInterfaz.TEXTO_SUAVE)
 	if _secciones[nombre].has_method("poner_al_dia"):
 		_secciones[nombre].poner_al_dia()
 
