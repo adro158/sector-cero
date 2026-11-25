@@ -1,8 +1,10 @@
 # 19/11/2026 — Alan — La cartera: bits, misiones, pase, tienda y perfil
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar); es de la misma
-sesión que `2026-11-19_alan_cartera-contrato.md`.
+10). **Duración:** 2 h (las dijo Alan al cerrar, el 24/11: «2 h cada día»), con
+la del contrato (`2026-11-19_alan_cartera-contrato.md`). **Horas
+acumuladas:** 8 h: las 6 de `2026-11-19_alan_skins-fusion-y-detalles.md`
+más estas 2.
 
 ## Qué se ha hecho
 
