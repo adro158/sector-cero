@@ -1,8 +1,8 @@
 # 25/11/2026 — Alan — La interfaz de skins: apertura de paquetes y pase en pista
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar). **Horas
-acumuladas:** las 12 de `2026-11-23_alan_bits.md` más las de hoy.
+10). **Duración:** 2 h (las dijo Alan al cerrar). **Horas acumuladas:** 14 h:
+las 12 de `2026-11-23_alan_bits.md` más estas 2.
 
 ## Qué se ha hecho
 
@@ -120,12 +120,16 @@ el prompt.
 
 ## Estado al cerrar
 
-Commits en `alan/interfaz-skins`, sin subir: los PNG, el código y la
-documentación. La línea de `reparto.md` (`medios/sprites/cartera/` en la
+Commits en `alan/interfaz-skins`, subida con su PR encima del #45. Alan
+pidió también publicar la versión nueva: no se puede todavía, porque la
+cartera (#40 a #45) no tiene la revisión de Adam ni está en `main`, y
+`main` está igual que la v1.23. La línea de `reparto.md` (`medios/sprites/cartera/` en la
 fila de la cartera) va en esta rama.
 
 ## Siguiente paso
 
 - **Alan prueba la apertura y el pase jugando.** Con `cartera=demo` hay bits
   para abrir paquetes.
-- **«Ya he acabado»:** subir la rama y abrir su PR, encima del #45.
+- **Adam revisa los PR #40 a #45 y el de esta rama.** Se fusionan en orden
+  y, con todo en `main`, se publica la **v1.24** (`/publicar`, con sus
+  novedades: la cartera, la moneda y la interfaz de skins).
