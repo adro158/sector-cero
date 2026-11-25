@@ -164,7 +164,7 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 		"hola":
 			# Las skins, desde el 18/11: de otra versión no llegan (se rechaza igual).
 			var skins: Variant = mensaje[3] if mensaje.size() > 3 else {}
-			_al_saludar(id, mensaje[1], mensaje[2], skins if skins is Dictionary else {})
+			_al_saludar(id, mensaje[1], mensaje[2], ReglasSala.skins_validas(skins))
 			# Y el perfil (título, marco, estela...), desde el 19/11.
 			_poner_perfil(id, mensaje[4] if mensaje.size() > 4 else {})
 		"rechazo":

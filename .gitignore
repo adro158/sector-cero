@@ -12,3 +12,7 @@ CLAUDE.local.md
 # OS junk files
 .DS_Store
 Thumbs.db
+
+# Las novedades de la versión dentro del juego: las copia la Action al publicar
+# (publicar_release.yml), no se commitean.
+projecte/novedades.txt

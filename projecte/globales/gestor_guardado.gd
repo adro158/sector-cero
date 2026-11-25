@@ -60,6 +60,9 @@ const OPCIONES_POR_DEFECTO := {
 	# estela, icono y tema del CRT, por su id (premios.gd). Lo lee
 	# globales/premios.gd, perfil(), que solo deja lo que se tiene.
 	"perfil": {},
+	# La última versión cuyas novedades se han visto en el menú
+	# (tarjeta_novedades.gd): mientras no sea la de ahora, sale NUEVO.
+	"novedades_vistas": "",
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves

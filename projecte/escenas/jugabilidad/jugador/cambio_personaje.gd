@@ -89,6 +89,7 @@ func _ready() -> void:
 	# primero, como siempre.
 	_indice = _equipo.primero_libre()
 	_equipo.llevado_por[_indice] = self
+	_equipo.ultimo_en_llevarlo[_indice] = self
 	TeclasAntiguas.configurar()
 	_salud.vida_cambiada.connect(func(_actual, _maxima): _avisar_equipo())
 	_salud.murio.connect(_al_caer)
@@ -302,6 +303,7 @@ func volver(indice: int) -> void:
 	_poner_espectador(false)
 	_indice = indice
 	_equipo.llevado_por[_indice] = self
+	_equipo.ultimo_en_llevarlo[_indice] = self
 	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
 	_salud.proteger(proteccion_al_entrar)
 	_efectos.escudo(personajes[_indice].color, proteccion_al_entrar)
@@ -459,6 +461,7 @@ func _entrar(indice: int) -> void:
 	_equipo.llevado_por[_indice] = null
 	_indice = indice
 	_equipo.llevado_por[_indice] = self
+	_equipo.ultimo_en_llevarlo[_indice] = self
 	_salud.poner(_equipo.vidas[_indice], _equipo.maximas[_indice])
 
 

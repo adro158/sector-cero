@@ -1,0 +1,7 @@
+- Menú principal nuevo: JUGAR, COLECCIÓN, PERFIL y OPCIONES, con los personajes en sus peanas.
+- JUGAR: elige el modo (solo o en red) y la dificultad, y EMPIEZA.
+- PERFIL: tu cuenta, tus récords, tus partidas y el ranking, todo junto.
+- Las novedades de cada versión, en el menú.
+- Deja la partida a medias: GUARDAR Y SALIR en la pausa, y CONTINUAR en JUGAR. Con cuenta, la sigues desde otro ordenador.
+- Ventanas con marco nuevo y botones que suenan al pasar por encima.
+- El resumen final enseña a cada personaje con la skin de quien lo llevó.
