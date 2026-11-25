@@ -1,8 +1,8 @@
 # 19/11/2026 — Alan — El contrato de la cartera (bits, misiones y pase)
 
 **Participantes:** Alan (con Claude Code), en el instituto (VM con Windows
-10). **Duración:** por apuntar (se pregunta al cerrar); es de la misma
-sesión que `2026-11-19_alan_skins-fusion-y-detalles.md`.
+10). **Duración:** la de la sesión de la cartera, apuntada en
+`2026-11-19_alan_cartera.md` (2 h).
 
 ## Qué se ha hecho
 
