@@ -143,6 +143,13 @@ func pase() -> Dictionary:
 	return PaseBatalla.estado(_fichero)
 
 
+## La pestaña PASE ya ha enseñado hasta ese nivel: el destello de nivel
+## subido sale una vez.
+func ver_pase(nivel: int) -> void:
+	_fichero.set_value("pase", "visto", nivel)
+	_guardar()
+
+
 ## Los logros: [{id, texto, titulo, progreso, objetivo, hecho}].
 func logros() -> Array:
 	return Logros.lista(_fichero)
