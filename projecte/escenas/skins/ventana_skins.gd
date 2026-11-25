@@ -4,8 +4,8 @@ extends Control
 ## del menú, o pulsar un personaje. Arriba, los bits que se tienen; debajo, las
 ## pestañas: ARMARIO (armario.gd, la skin de cada personaje), MISIONES
 ## (pestana_misiones.gd), PASE (pestana_pase.gd), LOGROS (pestana_logros.gd) y
-## la que viene (TIENDA, apagada con «pronto» hasta su fase de plan_tienda.md).
-## Para encender una, basta con ponerla en _secciones.
+## TIENDA (pestana_tienda.gd). Una pestaña nueva se enciende poniéndola en
+## _secciones.
 ##
 ## Sin class_name: lo crea el menú con preload, como sala_red.gd.
 
@@ -15,6 +15,7 @@ const Armario := preload("res://escenas/skins/armario.gd")
 const PestanaMisiones := preload("res://escenas/skins/pestana_misiones.gd")
 const PestanaPase := preload("res://escenas/skins/pestana_pase.gd")
 const PestanaLogros := preload("res://escenas/skins/pestana_logros.gd")
+const PestanaTienda := preload("res://escenas/skins/pestana_tienda.gd")
 const Cartera := preload("res://globales/cartera.gd")
 ## Las pestañas, en orden. Las que no tienen contenido salen apagadas.
 const PESTANAS := ["ARMARIO", "MISIONES", "PASE", "LOGROS", "TIENDA"]
@@ -41,7 +42,7 @@ func _ready() -> void:
 
 	_armario = Armario.new()
 	_secciones = {"ARMARIO": _armario, "MISIONES": PestanaMisiones.new(), "PASE": PestanaPase.new(),
-		"LOGROS": PestanaLogros.new()}
+		"LOGROS": PestanaLogros.new(), "TIENDA": PestanaTienda.new()}
 	var fila := HBoxContainer.new()
 	fila.alignment = BoxContainer.ALIGNMENT_CENTER
 	fila.add_theme_constant_override("separation", 6)

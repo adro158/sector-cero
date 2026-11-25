@@ -39,8 +39,15 @@ extends Resource
 ## El número de la skin que ha elegido el jugador de este ordenador para ese
 ## personaje (opción "skins" de GestorGuardado, {"Mago": 12}; sin elegir, la
 ## 1). Con int(): las opciones que bajan de la cuenta llegan del JSON como 12.0.
+## Desde la tienda (19/11) solo vale una skin que se tenga (cartera.gd): si no,
+## la original. load() y no preload(): así una skin no arrastra la cartera (y
+## todos sus scripts) al cargarse.
 static func numero_elegido(personaje: DatosPersonaje) -> int:
-	return int(GestorGuardado.opcion("skins").get(personaje.nombre, 1))
+	var numero := int(GestorGuardado.opcion("skins").get(personaje.nombre, 1))
+	var cartera: Node = load("res://globales/cartera.gd").actual
+	if cartera != null and not cartera.tiene_skin(personaje.nombre, numero):
+		return 1
+	return numero
 
 
 ## Lo que lleva puesto ese personaje en este ordenador: su skin elegida o el
