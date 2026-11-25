@@ -7,6 +7,7 @@ extends Control
 ## de 15 minutos (mejoras propuestas, interfaz 7 y jugabilidad 13).
 
 const MENU_PRINCIPAL := "res://escenas/menu_principal/menu_principal.tscn"
+const Red := preload("res://globales/red.gd")
 
 var _en_pausa := false
 var _terminada := false
@@ -38,6 +39,11 @@ func _ready() -> void:
 	caja.add_child(boton_reglas)
 	var boton_opciones := EstiloInterfaz.boton("OPCIONES", _abrir_opciones)
 	caja.add_child(boton_opciones)
+	# Dejar la partida a medias (24/11): la jugabilidad la guarda y vuelve al
+	# menú; se sigue desde JUGAR. En red no: la partida es de todos.
+	var guardar := EstiloInterfaz.boton("GUARDAR Y SALIR", BusEventos.guardar_partida_pedido.emit)
+	guardar.visible = Red.actual == null or not Red.actual.en_red()
+	caja.add_child(guardar)
 	var boton_menu := EstiloInterfaz.boton("MENÚ PRINCIPAL", _preguntar_si_salir)
 	caja.add_child(boton_menu)
 

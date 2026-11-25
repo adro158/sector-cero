@@ -27,6 +27,7 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const SpriteDestello := preload("res://escenas/jugabilidad/enemigos/sprite_destello.gd")
 const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_elite.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
+const MovimientoRed := preload("res://escenas/red/movimiento_red.gd")
 
 @export var datos: DatosTipoEnemigo
 @export var distancia_reciclaje: float = 1200.0
@@ -48,6 +49,8 @@ var _encima: Node2D
 ## Multijugador: en los clientes no persigue ni recibe golpes; está donde
 ## dice el anfitrión (poner_desde_red).
 var solo_dibujar := false
+## En los clientes, cómo va hacia donde dice el anfitrión (movimiento_red.gd).
+var _movimiento_red := MovimientoRed.new()
 
 @onready var _sprite: SpriteDestello = $Sprite
 @onready var _salud: Salud = $Salud
@@ -168,6 +171,8 @@ func _physics_process(delta: float) -> void:
 		if _cuenta_atras <= 0.0:
 			_explotar()
 		return
+	if solo_dibujar and _activo:
+		global_position = _movimiento_red.mover(global_position, delta)
 	if not _activo or solo_dibujar:
 		return
 
@@ -255,7 +260,8 @@ func poner_desde_red(datos_anfitrion: Array) -> void:
 			_activo = false
 			_empezar_muerte()
 		return
-	global_position = datos_anfitrion[0]
+	# Al activarse, de golpe; después, hacia allí (movimiento_red.gd).
+	global_position = _movimiento_red.seguir(global_position, datos_anfitrion[0], not _activo)
 	if not _activo:
 		_afijos.assign(datos_anfitrion[3].map(func(ruta): return load(ruta)))
 		_tiempo = fmod(absf(global_position.x + global_position.y), Dibujo.VUELTA)

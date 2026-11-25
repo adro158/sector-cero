@@ -1,0 +1,7 @@
+- Skins: 11 por personaje, 33 en total. Elígelas en el nuevo botón SKINS del menú o pulsando un personaje. Se ven en la partida, en el HUD y en red.
+- Kernel Panic y NÚCLEO CERO invocan más horda.
+- Kernel Panic: su jaula ya solo te encierra a ti. Él y la horda entran y salen.
+- Kernel Panic: si eres muy rápido, embiste más rápido y más lejos.
+- NÚCLEO CERO: las anclas de su escudo aguantan más.
+- Arreglado: los proyectiles del Mago rebotaban contra el mismo jefe y le quitaban la vida demasiado rápido.
+- En red: los élites y los jefes se mueven sin tirones en el ordenador del compañero.

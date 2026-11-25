@@ -56,6 +56,9 @@ const OPCIONES_POR_DEFECTO := {
 	# recursos/skins/datos_skin.gd, elegida(). Como las demás, se sube a la
 	# cuenta.
 	"skins": {},
+	# La última versión cuyas novedades se han visto en el menú
+	# (tarjeta_novedades.gd): mientras no sea la de ahora, sale NUEVO.
+	"novedades_vistas": "",
 }
 
 ## Los récords que se comparan al terminar cada partida. Son las mismas claves

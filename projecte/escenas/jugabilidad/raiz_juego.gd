@@ -4,6 +4,8 @@ const Dificultad := preload("res://globales/dificultad.gd")
 const TiempoGolpe := preload("res://escenas/jugabilidad/efectos/tiempo_golpe.gd")
 const Red := preload("res://globales/red.gd")
 const PartidaRed := preload("res://escenas/red/partida_red.gd")
+const PartidaGuardada := preload("res://escenas/jugabilidad/partida_guardada.gd")
+const MENU := "res://escenas/menu_principal/menu_principal.tscn"
 ## Segundos de negro entre la fase 1 y la 2.
 const DURACION_TRANSICION := 3.0
 ## La parte de su vida con la que vuelven los caídos al pasar a la fase 2.
@@ -47,6 +49,13 @@ func _ready() -> void:
 	# (partida_red.gd, multijugador).
 	if Red.actual != null and Red.actual.en_red():
 		add_child(PartidaRed.new())
+	# Dejar la partida a medias y seguirla (partida_guardada.gd, 24/11).
+	BusEventos.guardar_partida_pedido.connect(_guardar_y_salir)
+	if get_tree().root.has_meta(PartidaGuardada.CONTINUAR):
+		var guardada: Dictionary = get_tree().root.get_meta(PartidaGuardada.CONTINUAR)
+		get_tree().root.remove_meta(PartidaGuardada.CONTINUAR)
+		# Un fotograma después: así ya está todo listo (el equipo, el HUD).
+		(func(): PartidaGuardada.continuar(self, guardada)).call_deferred()
 
 
 ## La física va a 60 pasos por segundo: en una pantalla de 144 o 240 Hz, el
@@ -104,6 +113,29 @@ func _en_cliente() -> bool:
 
 func usar_trucos() -> void:
 	_trucos = true
+
+
+## Para guardar la partida y seguirla (partida_guardada.gd).
+func con_trucos() -> bool:
+	return _trucos
+
+
+func eliminados() -> int:
+	return _eliminados
+
+
+func poner_eliminados(cuantos: int) -> void:
+	_eliminados = cuantos
+
+
+## GUARDAR Y SALIR en la pausa: se guarda y se vuelve al menú, sin pantalla
+## final (la partida no ha acabado). En red no: la partida es de todos.
+func _guardar_y_salir() -> void:
+	if _terminada or (Red.actual != null and Red.actual.en_red()):
+		return
+	PartidaGuardada.guardar(PartidaGuardada.datos(self))
+	get_tree().paused = false
+	Transicion.cambiar_a(MENU)
 
 
 ## Para el menú de desarrollador, que no se abre durante el negro: al acabar,
@@ -177,7 +209,9 @@ func _resumen_equipo() -> Array:
 		for arma in danos:
 			if arma == estado.personaje.arma or arma == estado.arma:
 				dano += danos[arma]
-		equipo.append({"personaje": estado.personaje, "caido": estado.caido, "dano": dano})
+		# skin: la de quien lo llevó (1, la original): el resumen la enseña.
+		var skin: int = 1 if estado.aspecto == estado.personaje else estado.aspecto.numero
+		equipo.append({"personaje": estado.personaje, "caido": estado.caido, "dano": dano, "skin": skin})
 	return equipo
 
 
