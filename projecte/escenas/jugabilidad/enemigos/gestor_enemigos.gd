@@ -55,9 +55,6 @@ var _huida := 0.0
 ## Por enemigo, 1 si huye y 0 si se queda: según la dificultad huye toda la
 ## horda, la mitad o nadie.
 var _huye := PackedByteArray()
-## La jaula del pisotón del jefe (jaula_jefe.gd): mientras está cerrada, la
-## horda no cruza su muro.
-var _jaula: Node2D
 ## Multijugador: en los clientes no simula, dibuja la horda que manda el
 ## anfitrión (estado_red.gd).
 var solo_dibujar := false
@@ -79,7 +76,6 @@ const SIGUE_ANDANDO_RED := 0.15
 
 
 func _ready() -> void:
-	_jaula = get_tree().get_first_node_in_group("jaula_jefe")
 	_vida_dificultad = Dificultad.dato("vida")
 	_posiciones.resize(MAXIMO_ENEMIGOS)
 	_vidas.resize(MAXIMO_ENEMIGOS)
@@ -287,7 +283,6 @@ func _physics_process(delta: float) -> void:
 	_retirar_muertos()
 	_reconstruir_rejilla()
 	_mover(delta)
-	_respetar_jaula()
 	if _huida > 0.0:
 		_avanzar_huida(delta)
 	_danar_jugador()
@@ -392,14 +387,6 @@ func _mover(delta: float) -> void:
 		if _huyendo(i):
 			hacia_jugador *= -2.0
 		_posiciones[i] += (hacia_jugador + empuje) * datos.velocidad * delta
-
-
-## La de dentro se queda dentro y la de fuera se amontona contra el muro.
-func _respetar_jaula() -> void:
-	if _jaula == null or not _jaula.cerrada():
-		return
-	for i in _vivos:
-		_posiciones[i] = _jaula.mantener(_posiciones[i], datos.tamano * 0.5)
 
 
 ## Al acabar la huida, desaparecen los que huían. Hacia atrás, como al retirar

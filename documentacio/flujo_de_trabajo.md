@@ -153,7 +153,12 @@ Las tareas se apuntan como **issues** de GitHub, asignadas a quien las hace.
    aparte, que se fusionan antes que el resto.
 4. **Ramas cortas.** Cuanto más tiempo pasa una rama sin juntarse con `main`,
    más duele hacerlo: mejor varios PR pequeños que uno enorme.
-5. **Las versiones las publica una sola persona** (Adam), desde `main`.
+5. **Las versiones las publican Adam o Alan** (desde el 19/11; antes, solo
+   Adam), quien haya acabado, siempre desde `main` con todo lo suyo
+   fusionado. Antes de subir la etiqueta se avisa al otro con el número que
+   toca (la siguiente al último `git tag`), por si tiene algo a punto de
+   entrar: así no se publica dos veces el mismo número ni una versión sin lo
+   del otro.
 
 ## Sobre la autoría
 

@@ -89,7 +89,8 @@ static func equipo(personajes: Array) -> HBoxContainer:
 		var columna := VBoxContainer.new()
 		columna.add_theme_constant_override("separation", 4)
 		var retrato := TextureRect.new()
-		retrato.texture = DatosSkin.elegida(personaje).retrato
+		# La skin de quien lo llevó (en red, puede ser la de un compañero).
+		retrato.texture = personaje.skin(int(datos.get("skin", DatosSkin.numero_elegido(personaje)))).retrato
 		retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		retrato.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 		retrato.modulate = Color(0.45, 0.45, 0.45) if datos.caido else Color.WHITE

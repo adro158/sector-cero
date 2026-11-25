@@ -31,9 +31,6 @@ func _ready() -> void:
 
 	var caja := VBoxContainer.new()
 	caja.add_theme_constant_override("separation", 12)
-	var titulo := EstiloInterfaz.etiqueta("VERSIONES", 32, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
 	_estado = EstiloInterfaz.etiqueta("", 14, EstiloInterfaz.TEXTO_SUAVE)
 	_estado.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(_estado)
@@ -51,7 +48,7 @@ func _ready() -> void:
 	_volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_volver)
 
-	add_child(EstiloInterfaz.ventana_centrada(caja))
+	add_child(EstiloInterfaz.ventana_centrada(caja, EstiloInterfaz.NEON, "VERSIONES"))
 	visible = false
 
 

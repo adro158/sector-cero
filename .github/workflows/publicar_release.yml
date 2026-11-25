@@ -52,6 +52,11 @@ jobs:
           MINIMO=$(sed -n 's/^const EJECUTABLE_MINIMO := "\(.*\)"$/\1/p' projecte/globales/version.gd)
           echo "{\"version\": \"$VERSION\", \"ejecutable_minimo\": \"$MINIMO\"}" > version.json
           cat version.json
+          # Las novedades, también dentro del juego: las enseña la tarjeta del
+          # menú (tarjeta_novedades.gd). Va en el .pck por el include_filter
+          # de export_presets.cfg (un .txt no se exporta solo).
+          NOTAS="documentacio/novedades/${GITHUB_REF_NAME}.txt"
+          if [ -f "$NOTAS" ]; then cp "$NOTAS" projecte/novedades.txt; fi
 
       - name: Exportar
         run: |

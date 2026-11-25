@@ -144,12 +144,14 @@ static func aplicar(arbol: SceneTree, por_id: Dictionary, estado: Dictionary, lo
 static func fin_para_red(estadisticas: Dictionary) -> Dictionary:
 	var datos := estadisticas.duplicate(true)
 	datos.equipo = estadisticas.equipo.map(func(personaje): return {
-		"personaje": personaje.personaje.resource_path, "caido": personaje.caido, "dano": personaje.dano})
+		"personaje": personaje.personaje.resource_path, "caido": personaje.caido, "dano": personaje.dano,
+		"skin": personaje.get("skin", 1)})
 	return datos
 
 
 ## ... y como las espera la pantalla final, en los clientes.
 static func fin_desde_red(datos: Dictionary) -> Dictionary:
 	datos.equipo = datos.equipo.map(func(personaje): return {
-		"personaje": load(personaje.personaje), "caido": personaje.caido, "dano": personaje.dano})
+		"personaje": load(personaje.personaje), "caido": personaje.caido, "dano": personaje.dano,
+		"skin": personaje.get("skin", 1)})
 	return datos
