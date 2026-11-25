@@ -48,8 +48,9 @@ const MINI_RADIO := 32.0
 const MINI_CADA := 0.08
 const PORTAL_DURACION := 2.6
 const PORTAL_DISTANCIA := 150.0
-## Cada portal saca un enemigo cada tanto mientras está abierto.
-const PORTAL_SALIDA := 0.3
+## Cada portal saca un enemigo cada tanto mientras está abierto: unos 13 en
+## sus 2,6 s. Hasta el 18/11 era 0,3 (unos 8); Adam pidió más horda.
+const PORTAL_SALIDA := 0.2
 ## Lo que tarda en invocar: después el jefe sigue y los portales se quedan.
 const INVOCAR_DURACION := 0.6
 const CRISTAL_VUELO := 0.45

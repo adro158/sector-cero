@@ -32,6 +32,8 @@ func _initialize() -> void:
 	_efectos_evoluciones()
 	_musica_fase2()
 	_musica_jefe_final()
+	# Lo del 24/11 (el menú nuevo), al final por lo mismo.
+	_efectos_menu()
 	print("audio generado")
 	quit()
 
@@ -174,6 +176,13 @@ func _efectos_ultis() -> void:
 
 
 ## Las herramientas evolucionadas, con su propio sonido: la base con algo más.
+## Al pasar por un botón (con el ratón, o al llegar con el mando o el
+## teclado): un tic más agudo, más corto y más bajo que el clic de pulsarlo,
+## para que se note sin cansar.
+func _efectos_menu() -> void:
+	_guardar("encima", _nota(1800, 1700, 0.02, "triangulo", 0.12))
+
+
 func _efectos_evoluciones() -> void:
 	_guardar("firewall_perimetral", _mezclar([_nota(170, 50, 0.16, "seno", 0.5), _nota(0, 0, 0.1, "ruido", 0.15)]))
 	_guardar("analisis_heuristico", _mezclar([_nota(500, 2000, 0.25, "triangulo", 0.3), _nota(1000, 3000, 0.25, "seno", 0.12)]))

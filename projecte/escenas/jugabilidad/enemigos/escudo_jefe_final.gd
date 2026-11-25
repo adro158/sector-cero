@@ -24,8 +24,9 @@ const Dibujo := preload("res://escenas/jugabilidad/enemigos/dibujo_jefe_final.gd
 const Ancla := preload("res://escenas/jugabilidad/enemigos/ancla_escudo.gd")
 const Jugadores := preload("res://escenas/jugabilidad/jugadores.gd")
 ## Vida de cada ancla antes de la dificultad: se multiplica por su
-## vida_anclas.
-const VIDA_ANCLA := 300.0
+## vida_anclas. Hasta el 19/11 era 300: Adam las rompía rapidísimo (issue #27).
+## Con el cambio sin espera, el escudo dura más pero se puede ir a por todas.
+const VIDA_ANCLA := 450.0
 ## Lo que hay para romper la siguiente desde que se rompe una.
 const TIEMPO_PARA_ROMPER := 30.0
 ## De quién es cada ancla, por su posición en la lista de personajes vivos:
