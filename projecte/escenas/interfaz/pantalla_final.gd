@@ -14,6 +14,8 @@ const ROTULO_VICTORIA := preload("res://medios/interfaz/rotulo_victoria.png")
 const ROTULO_DERROTA := preload("res://medios/interfaz/rotulo_derrota.png")
 const Entrada := preload("res://globales/entrada.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
+const Cartera := preload("res://globales/cartera.gd")
+const ResumenCartera := preload("res://escenas/skins/resumen_cartera.gd")
 
 var _ventana: ColorRect
 var _estadisticas: Dictionary
@@ -68,6 +70,10 @@ func _mostrar(estadisticas: Dictionary) -> void:
 	var en_red: bool = estadisticas.get("en_red", false)
 	if en_red:
 		caja.add_child(EstiloInterfaz.etiqueta("Partida en red: no cuenta para los récords, el ranking ni la cuenta", 13, EstiloInterfaz.TEXTO_SUAVE))
+	# Lo ganado: bits, pase y misiones (cartera.gd y resumen_cartera.gd, de Alan,
+	# 19/11). La cartera ya lo ha contado: esto va en diferido.
+	if Cartera.actual != null:
+		caja.add_child(ResumenCartera.crear(Cartera.actual.ultima_ganancia()))
 
 	_estadisticas = estadisticas
 	# Con cuenta ya se sabe el nombre: se guarda solo (decisión de Adam,
