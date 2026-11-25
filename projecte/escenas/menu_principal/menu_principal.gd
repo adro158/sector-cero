@@ -17,6 +17,7 @@ const InstaladorJuego := preload("res://globales/instalador_juego.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const SalaRed := preload("res://escenas/red/sala_red.gd")
 const VentanaSkins := preload("res://escenas/skins/ventana_skins.gd")
+const ContadorBits := preload("res://escenas/skins/contador_bits.gd")
 const LogoGlitch := preload("res://escenas/menu_principal/logo_glitch.gd")
 const PersonajesMenu := preload("res://escenas/menu_principal/personajes_menu.gd")
 const VentanaJugar := preload("res://escenas/menu_principal/ventana_jugar.gd")
@@ -156,6 +157,12 @@ func _crear_esquinas() -> void:
 		salir.icon = Piezas.icono(Piezas.Icono.SALIR)
 		_poner_en_esquina(salir, false, true)
 	_poner_en_esquina(TarjetaNovedades.new(), true, true)
+	# Los bits que se tienen, debajo de la cuenta: la moneda girando y el
+	# número (contador_bits.gd, de Alan).
+	var bits := ContadorBits.new()
+	_poner_en_esquina(bits, true, false)
+	bits.offset_top += 30.0
+	bits.offset_bottom += 30.0
 
 
 ## En una esquina, a BORDE de los lados, y debajo de las ventanas en el árbol.

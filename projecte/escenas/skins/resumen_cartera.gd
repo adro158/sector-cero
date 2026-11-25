@@ -9,6 +9,7 @@ extends RefCounted
 
 const BITS := Color("#00E5FF")
 const HECHA := Color("#4DFF99")
+const ICONO := preload("res://medios/sprites/bits/bits_icono.png")
 
 
 static func crear(ganancia: Dictionary) -> VBoxContainer:
@@ -20,7 +21,12 @@ static func crear(ganancia: Dictionary) -> VBoxContainer:
 	var texto := "+%d bits  ·  +%d puntos del pase" % [ganancia.bits, ganancia.puntos]
 	if ganancia.get("racha", 0) > 0:
 		texto += "  (racha: +%d)" % ganancia.racha
-	caja.add_child(_linea(texto, 16, BITS))
+	# Con la moneda delante, a x2 (lote_bits).
+	var fila := HBoxContainer.new()
+	fila.alignment = BoxContainer.ALIGNMENT_CENTER
+	fila.add_child(_icono(ICONO, 2.0))
+	fila.add_child(_linea(texto, 16, BITS))
+	caja.add_child(fila)
 	for mision in ganancia.get("misiones", []):
 		caja.add_child(_linea("Misión cumplida: %s (+%d bits)" % [mision.texto, mision.bits], 14, HECHA))
 	for nivel in ganancia.get("niveles", []):
@@ -34,3 +40,13 @@ static func _linea(texto: String, tamano: int, color: Color) -> Label:
 	var etiqueta := EstiloInterfaz.etiqueta(texto, tamano, color)
 	etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	return etiqueta
+
+
+## Una imagen de píxel duro a escala entera (sin suavizar).
+static func _icono(textura: Texture2D, escala: float) -> TextureRect:
+	var icono := TextureRect.new()
+	icono.texture = textura
+	icono.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icono.custom_minimum_size = textura.get_size() * escala
+	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	return icono

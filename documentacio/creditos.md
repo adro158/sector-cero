@@ -34,6 +34,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Skins del Mago (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | Skins del Espadachín (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | Skins del Segador (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
+| La moneda «bits» (iconos de 16 y 32, giro y destello) | Hecha con IA (Claude, con scripts de Python píxel a píxel), por encargo de Alan | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -335,6 +336,12 @@ scripts no forman parte del repositorio.
   del Segador, de la misma forma que las del Mago y el Espadachín, por
   encargo de Alan (`lote_skins_completo.zip`, que trae también las de los
   otros dos, iguales a las de sus lotes). Los scripts no se suben.
+- **La moneda «bits»** (`medios/sprites/bits/`, 23/11/2026): el icono de
+  16x16 y el de 32x32 (un chip de neón cian con una «b»), la moneda girando
+  (8 fotogramas de 16x16) y el destello al ganar bits (4 fotogramas de
+  24x24). Los hizo Claude en el chat (claude.ai), con IA, con scripts de
+  Python (numpy y Pillow) píxel a píxel, con la paleta de los iconos del
+  juego, por encargo de Alan (`lote_bits.zip`). Los scripts no se suben.
 
 ### Sprites de los personajes y del jefe
 

@@ -12,6 +12,7 @@ const Recompensa := preload("res://globales/recompensa.gd")
 const ANCHO := 720.0
 const BITS := Color("#00E5FF")
 const HECHA := Color("#4DFF99")
+const ICONO_GRANDE := preload("res://medios/sprites/bits/bits_icono_grande.png")
 
 var _lista: VBoxContainer
 var _racha: Label
@@ -74,6 +75,12 @@ func _fila(mision: Dictionary) -> PanelContainer:
 	izquierda.add_child(barra)
 	izquierda.add_child(EstiloInterfaz.etiqueta("%d / %d" % [mision.progreso, mision.objetivo], 12, EstiloInterfaz.TEXTO_SUAVE))
 	fila.add_child(izquierda)
+	# La moneda grande (lote_bits) delante de lo que da.
+	var moneda := TextureRect.new()
+	moneda.texture = ICONO_GRANDE
+	moneda.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	moneda.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	fila.add_child(moneda)
 	var premio := EstiloInterfaz.etiqueta("+%d bits\n+%d pase" % [mision.bits, mision.puntos], 14, BITS)
 	premio.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	fila.add_child(premio)

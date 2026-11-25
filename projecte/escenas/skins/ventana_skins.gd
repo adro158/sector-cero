@@ -18,16 +18,14 @@ const PestanaPase := preload("res://escenas/skins/pestana_pase.gd")
 const PestanaLogros := preload("res://escenas/skins/pestana_logros.gd")
 const PestanaTienda := preload("res://escenas/skins/pestana_tienda.gd")
 const PestanaPerfil := preload("res://escenas/skins/pestana_perfil.gd")
-const Cartera := preload("res://globales/cartera.gd")
 ## Las pestañas, en orden. Las que no tienen contenido salen apagadas.
 const PESTANAS := ["ARMARIO", "PERFIL", "MISIONES", "PASE", "LOGROS", "TIENDA"]
-const BITS := Color("#00E5FF")
+const ContadorBits := preload("res://escenas/skins/contador_bits.gd")
 
 var _armario: VBoxContainer
 ## El contenido de cada pestaña que ya existe, por su nombre.
 var _secciones := {}
 var _botones := {}
-var _bits: Label
 
 
 func _ready() -> void:
@@ -38,8 +36,8 @@ func _ready() -> void:
 	var titulo := EstiloInterfaz.etiqueta("SKINS", 36, EstiloInterfaz.NEON)
 	titulo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cabecera.add_child(titulo)
-	_bits = EstiloInterfaz.etiqueta("", 22, BITS)
-	cabecera.add_child(_bits)
+	# Los bits que se tienen: la moneda girando y el número (contador_bits.gd).
+	cabecera.add_child(ContadorBits.new())
 	caja.add_child(cabecera)
 
 	_armario = Armario.new()
@@ -66,14 +64,12 @@ func _ready() -> void:
 	caja.add_child(volver)
 	add_child(EstiloInterfaz.ventana_centrada(caja))
 	visible = false
-	Cartera.actual.bits_cambiados.connect(_al_cambiar_bits)
 
 
 ## Abre las skins en el armario, con ese personaje (su índice en el armario;
 ## el del menú es el mismo orden).
 func abrir(indice := 0) -> void:
 	visible = true
-	_al_cambiar_bits(Cartera.actual.bits())
 	_ver("ARMARIO")
 	_armario.mostrar(indice)
 
@@ -90,10 +86,6 @@ func _ver(nombre: String) -> void:
 		_botones[otra].add_theme_color_override("font_color", EstiloInterfaz.NEON if otra == nombre else EstiloInterfaz.TEXTO_SUAVE)
 	if _secciones[nombre].has_method("poner_al_dia"):
 		_secciones[nombre].poner_al_dia()
-
-
-func _al_cambiar_bits(total: int) -> void:
-	_bits.text = "%d BITS" % total
 
 
 func _unhandled_input(evento: InputEvent) -> void:
