@@ -296,6 +296,17 @@ fases, cada una en su rama y su PR, que se fusionan en orden:
 6. `alan/bits` (23/11): la moneda (`lote_bits.zip`) girando en el contador
    de la ventana SKINS y del menú, y sus iconos en la pantalla final, las
    misiones, el pase y la tienda.
+7. `alan/interfaz-skins` (25/11): el lote de la interfaz de skins
+   (`lote_interfaz_skins.zip`). Trae:
+   - la animación al abrir un paquete (`apertura_paquete.gd` y
+     `carta_revelada.gd`);
+   - el pase como pista horizontal (`pista_pase.gd`), con el destello de
+     nivel subido;
+   - la tienda nueva;
+   - en las demás pestañas, marcos, chapitas, candados, iconos, el sello y
+     las medallas.
+
+   Bitácora: `2026-11-25_alan_interfaz-skins.md`.
 
 Probado en headless (37 comprobaciones de la cartera, el perfil en red con
 dos copias) y con capturas; el simulador, igual que siempre. Falta: que Adam

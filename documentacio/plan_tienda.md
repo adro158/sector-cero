@@ -249,3 +249,34 @@ placa), `sala_red.gd` (icono y título), `menu_principal.gd` (el título) y
 `alan/cartera-premios`): `escenas/skins/contador_bits.gd` (la moneda
 girando y los bits, con el destello al subir) en la ventana SKINS y en el
 menú, y los iconos en la pantalla final, las misiones, el pase y la tienda.
+
+**La interfaz de skins** (`lote_interfaz_skins.zip`, 24/11, rama
+`alan/interfaz-skins`, encima de `alan/bits`; PNG en
+`medios/sprites/cartera/`). Lo que se ve distinto:
+- **Abrir un paquete tiene animación.** Primero se abre de verdad
+  (`abrir_paquete()`), y luego `apertura_paquete.gd` enseña lo que ha tocado,
+  en su `CanvasLayer` (capa 100, por debajo del CRT):
+  1. la carga, con las grietas del color de la categoría;
+  2. el estallido;
+  3. los rayos;
+  4. la carta, que se descifra de arriba abajo (`carta_revelada.gd`);
+  5. el nombre, letra a letra;
+  6. las chispas.
+
+  Una C dura unos 2 s y una A unos 2,6 s. Un clic salta al final.
+- **El pase es una pista horizontal** (`pista_pase.gd`), centrada en el
+  siguiente nivel. Las casillas S, S+ y la del 30 son especiales.
+- **El destello de nivel subido** sale una vez por nivel. Para eso, la
+  cartera guarda en `[pase] visto` el último nivel enseñado (`ver_pase()`).
+- **La tienda** va como en el montaje del lote: el paquete a la izquierda y
+  las cartas por personaje a la derecha.
+- **Las demás pestañas** llevan:
+  - el marco de carta y las chapitas en el armario;
+  - el candado en las skins que no se tienen;
+  - los iconos de las pestañas;
+  - el fondo de la ventana;
+  - los iconos de misión y el sello de «hecha»;
+  - las medallas de los logros.
+
+Las piezas comunes están en `escenas/skins/piezas_cartera.gd`. No se tocan
+ficheros de Adam.
