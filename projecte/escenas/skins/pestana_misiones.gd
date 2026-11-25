@@ -13,6 +13,9 @@ const ANCHO := 720.0
 const BITS := Color("#00E5FF")
 const HECHA := Color("#4DFF99")
 const ICONO_GRANDE := preload("res://medios/sprites/bits/bits_icono_grande.png")
+const Piezas := preload("res://escenas/skins/piezas_cartera.gd")
+const ICONOS := preload("res://medios/sprites/cartera/general/iconos_mision.png")
+const SELLO := preload("res://medios/sprites/cartera/general/sello_hecha.png")
 
 var _lista: VBoxContainer
 var _racha: Label
@@ -61,6 +64,11 @@ func _fila(mision: Dictionary) -> PanelContainer:
 	panel.add_theme_stylebox_override("panel", EstiloInterfaz.caja(HECHA if mision.hecha else EstiloInterfaz.TEXTO_SUAVE.darkened(0.3), 8))
 	var fila := HBoxContainer.new()
 	fila.add_theme_constant_override("separation", 12)
+	# El sol de las diarias o el calendario de las semanales (lote de la
+	# interfaz de skins), en neón; en verde si ya está hecha.
+	var icono := Piezas.dibujo(Piezas.fotograma(ICONOS, 0 if mision.tipo == "diaria" else 1, Vector2(16, 16)), 2, HECHA if mision.hecha else EstiloInterfaz.NEON)
+	icono.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	fila.add_child(icono)
 	var izquierda := VBoxContainer.new()
 	izquierda.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	izquierda.add_child(EstiloInterfaz.etiqueta(mision.texto, 16, EstiloInterfaz.TEXTO))
@@ -85,7 +93,9 @@ func _fila(mision: Dictionary) -> PanelContainer:
 	premio.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	fila.add_child(premio)
 	if mision.hecha:
-		fila.add_child(EstiloInterfaz.etiqueta("HECHA", 16, HECHA))
+		var sello := Piezas.dibujo(SELLO, 1)
+		sello.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		fila.add_child(sello)
 	elif mision.tipo == "diaria":
 		var cambiar := EstiloInterfaz.boton("CAMBIAR", _cambiar.bind(mision.id), 120)
 		cambiar.disabled = not Cartera.actual.puede_cambiar()

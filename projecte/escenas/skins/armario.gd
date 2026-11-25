@@ -20,14 +20,10 @@ const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/espadachin.tres"),
 	preload("res://recursos/personajes/datos/segador.tres"),
 ]
-## De la menos a la más trabajada, con su color (propuesta del lote del Mago).
-const CATEGORIAS := {
-	"C": Color("#8A97A6"),
-	"B": Color("#59D98C"),
-	"A": Color("#4DA6FF"),
-	"S": Color("#FFC23D"),
-	"S+": Color("#FF4DD2"),
-}
+const Piezas := preload("res://escenas/skins/piezas_cartera.gd")
+const CANDADO := preload("res://medios/sprites/cartera/general/candado_grande.png")
+## De la menos a la más trabajada, con su color (piezas_cartera.gd).
+const CATEGORIAS := Piezas.CATEGORIAS
 
 var _personaje: DatosPersonaje
 ## Lo que se está mirando: una skin o, si es la original, el propio personaje.
@@ -35,7 +31,7 @@ var _aspecto: Resource
 var _pestanas: Array[Button] = []
 var _vista: VBoxContainer
 var _lista: VBoxContainer
-## Los botones de la lista: [botón, aspecto, color de su categoría].
+## Los botones de la lista: [botón, aspecto, color y letra de su categoría].
 var _botones: Array = []
 
 
@@ -95,15 +91,23 @@ func _rehacer_lista() -> void:
 	for hijo in _lista.get_children():
 		hijo.queue_free()
 	_botones.clear()
-	_anadir_categoria("ORIGINAL", EstiloInterfaz.TEXTO, [_personaje])
+	_anadir_categoria("ORIGINAL", "", EstiloInterfaz.TEXTO, [_personaje])
 	for categoria in CATEGORIAS:
 		var suyas := _personaje.skins.filter(func(skin): return skin.categoria == categoria)
 		if not suyas.is_empty():
-			_anadir_categoria("CATEGORÍA " + categoria, CATEGORIAS[categoria], suyas)
+			_anadir_categoria("CATEGORÍA " + categoria, categoria, CATEGORIAS[categoria], suyas)
 
 
-func _anadir_categoria(titulo: String, color: Color, aspectos: Array) -> void:
-	_lista.add_child(EstiloInterfaz.etiqueta(titulo, 14, color))
+## Una categoría: su chapita y su nombre, y debajo sus skins (categoria: la
+## letra, o "" para la original).
+func _anadir_categoria(titulo: String, categoria: String, color: Color, aspectos: Array) -> void:
+	var cabecera := HBoxContainer.new()
+	if categoria != "":
+		var chapita := Piezas.chapita(categoria)
+		chapita.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		cabecera.add_child(chapita)
+	cabecera.add_child(EstiloInterfaz.etiqueta(titulo, 14, color))
+	_lista.add_child(cabecera)
 	var fila := HFlowContainer.new()
 	fila.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fila.add_theme_constant_override("h_separation", 6)
@@ -116,11 +120,15 @@ func _anadir_categoria(titulo: String, color: Color, aspectos: Array) -> void:
 		boton.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		boton.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		boton.pressed.connect(_mirar.bind(aspecto))
-		# Las que no se tienen, oscurecidas: se miran, pero no se ponen.
+		# Las que no se tienen, oscurecidas y con el candado: se miran, pero no
+		# se ponen. El candado es hijo del botón, que lo deja donde se pone.
 		if not disponible(_personaje, _numero_de(aspecto)):
-			boton.modulate = Color(0.45, 0.45, 0.5)
+			boton.self_modulate = Color(0.45, 0.45, 0.5)
+			var candado := Piezas.dibujo(CANDADO, 1)
+			candado.position = Vector2(42, 42)
+			boton.add_child(candado)
 			boton.tooltip_text += " · " + Tienda.donde(_personaje.nombre, _numero_de(aspecto))
-		_botones.append([boton, aspecto, color])
+		_botones.append([boton, aspecto, color, categoria if categoria != "" else "C"])
 		fila.add_child(boton)
 	_lista.add_child(fila)
 
@@ -138,7 +146,7 @@ func _mirar(aspecto: Resource) -> void:
 	# El borde de la que se mira, encendido; el de las demás, apagado.
 	for datos in _botones:
 		var color: Color = datos[2] if datos[1] == aspecto else datos[2].darkened(0.55)
-		datos[0].add_theme_stylebox_override("normal", EstiloInterfaz.caja(color, 6))
+		datos[0].add_theme_stylebox_override("normal", Piezas.marco_carta(datos[3], color, 6))
 
 
 func _ponersela() -> void:

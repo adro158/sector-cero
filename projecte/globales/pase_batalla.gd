@@ -66,14 +66,16 @@ static func es_del_pase(personaje: String, numero: int) -> bool:
 	return false
 
 
-## Cómo va, para la pestaña: {nivel, puntos, en_el_nivel, necesarios, maximo}.
-## en_el_nivel: los puntos que lleva hacia el siguiente.
+## Cómo va, para la pestaña: {nivel, puntos, en_el_nivel, necesarios, maximo,
+## visto}. en_el_nivel: los puntos que lleva hacia el siguiente; visto: el
+## último nivel que se ha enseñado (para el destello de nivel subido).
 static func estado(fichero: ConfigFile) -> Dictionary:
 	var puntos: int = fichero.get_value("pase", "puntos", 0)
 	var actual := nivel(puntos)
 	return {"nivel": actual, "puntos": puntos, "maximo": NIVELES,
 		"en_el_nivel": 0 if actual == NIVELES else puntos % PUNTOS_POR_NIVEL,
-		"necesarios": 0 if actual == NIVELES else PUNTOS_POR_NIVEL}
+		"necesarios": 0 if actual == NIVELES else PUNTOS_POR_NIVEL,
+		"visto": fichero.get_value("pase", "visto", 0)}
 
 
 ## Suma puntos y devuelve los niveles nuevos cuyo premio aún no se ha dado
@@ -82,6 +84,7 @@ static func sumar(fichero: ConfigFile, puntos: int) -> Array:
 	if fichero.get_value("pase", "temporada", TEMPORADA) != TEMPORADA:
 		fichero.set_value("pase", "puntos", 0)
 		fichero.set_value("pase", "nivel_dado", 0)
+		fichero.set_value("pase", "visto", 0)
 	fichero.set_value("pase", "temporada", TEMPORADA)
 	fichero.set_value("pase", "puntos", fichero.get_value("pase", "puntos", 0) + puntos)
 	var dado: int = fichero.get_value("pase", "nivel_dado", 0)

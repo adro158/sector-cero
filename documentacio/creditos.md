@@ -35,6 +35,7 @@ licencias. Este fichero recoge **todo** lo que usa el juego, sea propio o no.
 | Skins del Espadachín (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | Skins del Segador (11, de la categoría C a la S+) | Hechas con IA (Claude, con scripts de Python a partir de los sprites originales), por encargo de Alan | Ver más abajo |
 | La moneda «bits» (iconos de 16 y 32, giro y destello) | Hecha con IA (Claude, con scripts de Python píxel a píxel), por encargo de Alan | Ver más abajo |
+| La interfaz de skins (apertura del paquete, pase en pista y piezas de las pestañas) | Hecha con IA (Claude, con scripts de Python píxel a píxel), por encargo de Alan | Ver más abajo |
 | Sprites del jugador (3 personajes, también con el arma evolucionada) y del jefe | Hechos con IA (Gemini para la idea, Claude para las hojas de sprites) a partir de un ejemplo del profesor | Ver más abajo |
 | Música y efectos de sonido | Propios, sintetizados por código | Del proyecto |
 | Tipografía | Fuente monoespaciada del sistema (Consolas, Cascadia Mono, DejaVu Sans Mono o Liberation Mono) | No se distribuye con el juego |
@@ -342,6 +343,18 @@ scripts no forman parte del repositorio.
   24x24). Los hizo Claude en el chat (claude.ai), con IA, con scripts de
   Python (numpy y Pillow) píxel a píxel, con la paleta de los iconos del
   juego, por encargo de Alan (`lote_bits.zip`). Los scripts no se suben.
+- **La interfaz de skins** (`medios/sprites/cartera/`, 24/11/2026): 35 PNG
+  en tres carpetas. `paquete/`: el sobre de datos en reposo, la carga con su
+  capa de grietas, el estallido, los rayos, los cinco marcos de revelación
+  (C a S+), las chispas y las chapitas NUEVA y REPETIDA. `pase/`: las
+  casillas (normal, S, S+ y la del 30), el conector, los iconos de premio,
+  la cabecera de la temporada, la barra, el candado, el check y el destello
+  de nivel subido. `general/`: los iconos de las pestañas, las chapitas de
+  categoría, el marco de carta, el candado grande, el fondo de la ventana,
+  los iconos de misión, el sello de «hecha» y la medalla. Los hizo Claude en
+  el chat (claude.ai), con IA, con scripts de Python (numpy y Pillow) píxel a
+  píxel, con la paleta del juego, por encargo de Alan
+  (`lote_interfaz_skins.zip`). Los scripts no se suben.
 
 ### Sprites de los personajes y del jefe
 
