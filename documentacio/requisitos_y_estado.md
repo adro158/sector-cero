@@ -97,10 +97,12 @@ Puesto al día el 27/10, al cerrar la sesión 18 (36 h de 60), y el 29/10, al
 cerrar la sesión 19 (38 h de 60; las horas de la nube, sin apuntar). Lo hecho está en la bitácora, en la sesión
 que se indica; aquí solo queda lo que falta y lo necesario para hacerlo.
 
-**Publicado:** la última es la **v1.23** (24/11, de Adam: el menú
-principal nuevo, dejar la partida a medias y el #30; novedades en
-`documentacio/novedades/v1.23.txt`). La cartera y los bits van en la
-**v1.24**, cuando Adam revise sus PR. Antes, la **v1.22** (23/11, la primera
+**Publicado:** la última es la **v1.24** (25/11, de Alan: la cartera, con
+los bits, las misiones, el pase, los logros, la tienda y el perfil, y la
+interfaz de skins; PR #40 a #46; novedades en
+`documentacio/novedades/v1.24.txt`). Antes, la **v1.23** (24/11, de Adam:
+el menú principal nuevo, dejar la partida a medias y el #30; novedades en
+`documentacio/novedades/v1.23.txt`). Antes, la **v1.22** (23/11, la primera
 que publica Alan: las 33 skins, 11 por personaje, con el botón SKINS del
 menú, y el balance de los jefes; novedades en
 `documentacio/novedades/v1.22.txt`). Entre
