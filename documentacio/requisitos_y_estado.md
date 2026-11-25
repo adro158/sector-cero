@@ -268,6 +268,28 @@ que el del 05/11) y del mismo tamaño con «Texto grande», como la barra del
 equipo y el F3. Falta el PR (al decir Adam «ya he acabado») y verlo
 jugando.
 
+### La cartera: bits, misiones, pase de batalla y tienda (Alan, 19/11, en sus ramas)
+
+El plan de Adam del 19/11 (issue #16: misiones diarias y semanales, la
+moneda «bits» y el pase), con lo que eligió Alan (misiones de personaje,
+cambiar una al día, doble en red, logros, temas del CRT y una racha suave).
+Todo en `documentacio/plan_tienda.md`; bitácoras
+`2026-11-19_alan_cartera-contrato.md` y `2026-11-19_alan_cartera.md`. Cinco
+fases, cada una en su rama y su PR, que se fusionan en orden:
+1. `alan/cartera-contrato`: el plan y el esqueleto de `cartera.gd`.
+2. `alan/cartera-misiones`: los bits, las misiones, la racha, la pestaña
+   MISIONES y lo ganado en la pantalla final.
+3. `alan/cartera-pase`: el pase (30 niveles) y los logros, con sus pestañas.
+4. `alan/cartera-tienda`: la tienda, los paquetes y que solo se puedan poner
+   las skins que se tienen.
+5. `alan/cartera-premios`: el perfil (títulos, marcos, estelas, iconos y
+   temas), con la pestaña PERFIL, la placa en red y el tinte del CRT.
+
+Probado en headless (37 comprobaciones de la cartera, el perfil en red con
+dos copias) y con capturas; el simulador, igual que siempre. Falta: el asset
+de la moneda (`lote_bits.zip`), que Adam lo revise y fusionarlo, y medir
+los números jugando.
+
 ### Las skins (Alan, 17 y 18/11, en sus ramas)
 
 Alan trajo las 11 skins del Mago (`lote_skins_mago.zip`, hechas con Claude

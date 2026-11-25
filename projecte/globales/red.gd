@@ -20,6 +20,7 @@ signal error_de_red(texto: String)
 
 const CodigoSala := preload("res://globales/codigo_sala.gd")
 const ReglasSala := preload("res://globales/reglas_sala.gd")
+const Premios := preload("res://globales/premios.gd")
 const PUERTO := 7777
 ## Lo más que puede ocupar un estado al descomprimirlo (uno con 600 enemigos
 ## cerca ronda los 10 KB).
@@ -75,7 +76,7 @@ func crear_sala(nombre: String) -> String:
 		return ""
 	multiplayer.multiplayer_peer = peer
 	_en_red = true
-	_jugadores = [{"id": 1, "nombre": nombre, "personaje": 0, "skins": _mis_skins()}]
+	_jugadores = [{"id": 1, "nombre": nombre, "personaje": 0, "skins": _mis_skins(), "perfil": _mi_perfil()}]
 	BusEventos.sala_cambiada.emit(_jugadores)
 	return CodigoSala.de_ip(CodigoSala.ip_local())
 
@@ -164,6 +165,8 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 			# Las skins, desde el 18/11: de otra versión no llegan (se rechaza igual).
 			var skins: Variant = mensaje[3] if mensaje.size() > 3 else {}
 			_al_saludar(id, mensaje[1], mensaje[2], ReglasSala.skins_validas(skins))
+			# Y el perfil (título, marco, estela...), desde el 19/11.
+			_poner_perfil(id, mensaje[4] if mensaje.size() > 4 else {})
 		"rechazo":
 			salir()
 			error_de_red.emit(mensaje[1])
@@ -188,7 +191,7 @@ func _al_recibir(id: int, bytes: PackedByteArray) -> void:
 
 ## Al conectar, el cliente se presenta con su nombre, su versión y sus skins.
 func _al_entrar_en_la_sala() -> void:
-	_mandar(["hola", _nombre, Version.ACTUAL, _mis_skins()], 1)
+	_mandar(["hola", _nombre, Version.ACTUAL, _mis_skins(), _mi_perfil()], 1)
 
 
 ## En el anfitrión: entra si tiene la misma versión y queda sitio, con el
@@ -259,3 +262,20 @@ func _mis_skins() -> Dictionary:
 		if cartera == null or cartera.tiene_skin(nombre, numero):
 			mias[nombre] = numero
 	return mias
+
+
+## Lo que lleva puesto del pase el jugador de este ordenador (premios.gd):
+## título, marco, estela, icono y tema, solo lo que tiene.
+func _mi_perfil() -> Dictionary:
+	return Premios.perfil(load("res://globales/cartera.gd").actual)
+
+
+## En el anfitrión: el perfil de uno que acaba de entrar, con solo lo que
+## tiene sentido (premios.gd), y la sala a todos.
+func _poner_perfil(id: int, valor: Variant) -> void:
+	if not es_anfitrion():
+		return
+	for jugador in _jugadores:
+		if jugador.id == id:
+			jugador.perfil = Premios.perfil_de_red(valor)
+			_avisar_sala()

@@ -142,14 +142,27 @@ teclas al tocar el teclado o el ratón.
     la cuenta) y el ranking del ordenador.
   - **OPCIONES:** sonido, pantalla y accesibilidad, y en el menú también la
     versión, para actualizar o elegir otra.
-- **Skins:** el botón COLECCIÓN del menú (o pulsar un personaje) abre el
-  armario, donde le cambias el aspecto a cada personaje. Cada uno de los
-  tres tiene su original y 11 skins, ordenadas por categoría, de la C a la
-  S+. Pincha una
-  para verla andando y pulsa PONÉRSELA: la lleva en la partida, en el menú y
-  en sus retratos, y en red los demás te ven con ella. Solo cambia el
-  aspecto, no cómo juega. Se guarda sola (y en tu cuenta, si has entrado).
-  El pase y la tienda salen como «pronto»: aún no están.
+- **Skins** (el botón COLECCIÓN del menú, o pulsar un personaje), en seis
+  pestañas. Arriba, los **bits** que tienes: la moneda del juego, que se gana
+  jugando y con las misiones (nada de dinero real).
+  - **Armario:** el aspecto de cada personaje. Cada uno tiene su original y
+    11 skins, de la categoría C a la S+. Pincha una para verla andando y pulsa
+    PONÉRSELA (si la tienes; si no, dice dónde se consigue). Solo cambia el
+    aspecto, no cómo juega, y en red los demás te ven con ella.
+  - **Perfil:** tu título, el marco de tu placa en red, tu estela, tu icono y
+    el tema de color del filtro CRT, de lo que hayas conseguido.
+  - **Misiones:** 3 diarias y 3 semanales (una de un personaje), con su
+    progreso y lo que dan. Puedes cambiar una diaria al día. La primera
+    partida de cada día da unos bits más por los días seguidos (la racha).
+  - **Pase:** la Temporada 1, 30 niveles. Sube con lo que aguantas en cada
+    partida (el doble en red) y con las misiones; cada nivel da su premio
+    solo. Las skins S y S+ solo salen aquí.
+  - **Logros:** retos que no caducan, cada uno con su título.
+  - **Tienda:** las skins C, B y A por bits y los paquetes cifrados (una
+    skin al azar, con las probabilidades a la vista).
+
+  Lo ganado en cada partida sale en la pantalla final. Con el menú de
+  desarrollador (F1) no se gana nada.
 - **Pausa:** continuar, reglas, opciones y volver al menú (pregunta antes de
   abandonar la partida, que no cuenta para el ranking).
 - **Ranking** (en PERFIL): las 10 mejores partidas del ordenador, con la dificultad de

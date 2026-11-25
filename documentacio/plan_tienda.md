@@ -201,3 +201,49 @@ en `partida_terminada` llegaría antes de que existiera la ventana.
 En cada fase: `/validar` (el simulador igual que siempre y 16 clases), una
 prueba en headless que copia y deja como estaba `user://cartera.cfg`, y
 capturas con ventana de lo que se vea.
+
+## Estado (19/11, al acabar las cinco fases)
+
+Hechas las cinco, cada una en su rama y su PR, una encima de otra:
+`alan/cartera-contrato` → `alan/cartera-misiones` → `alan/cartera-pase` →
+`alan/cartera-tienda` → `alan/cartera-premios`. Se fusionan en ese orden.
+
+**Los ficheros de Alan** (todos sin `class_name`):
+- `globales/cartera.gd`: el estado, el guardado y lo que usan los demás.
+- `globales/contador_partida.gd`: lo contado durante la partida (hijo de la
+  cartera; empieza de cero al entrar una `RaizJuego`).
+- `globales/misiones.gd`, `pase_batalla.gd`, `logros.gd`, `tienda.gd`,
+  `premios.gd`, `recompensa.gd` y `cobro.gd`: sin nodo, cargados con
+  `preload`. Repartidos así para que ninguno pase de ~200 líneas.
+- `escenas/skins/`: la ventana SKINS con sus seis pestañas (ARMARIO, PERFIL,
+  MISIONES, PASE, LOGROS y TIENDA), `resumen_cartera.gd` (lo ganado, en la
+  pantalla final) y `estela.gd`.
+
+**Lo hecho en ficheros de Adam** (con su sí, como en la #23; cada fase en su
+commit aparte para revisarlo): `transicion.gd` (crea la cartera),
+`simular_partidas.gd` (la aparta), `pantalla_final.gd` (lo ganado),
+`gestor_guardado.gd` (la opción `"perfil"`), `cambio_personaje.gd` (la
+estela), `red.gd` y `preparar_red.gd` (el perfil en la sala y solo las
+skins que se tienen), `indicador_companeros_red.gd` (marco y título en la
+placa), `sala_red.gd` (icono y título), `menu_principal.gd` (el título) y
+`efecto_crt.gd` y `crt.gdshader` (el tinte del tema).
+
+**Diferencias con lo planeado arriba, y por qué:**
+- **Los iconos de perfil** son los retratos de las skins que se tienen (y
+  los originales), no un premio del pase: así no hace falta otro lote de
+  arte.
+- **Los temas de color** tiñen el filtro CRT, no `EstiloInterfaz`, cuyos
+  colores son constantes usadas en todo el juego: cambiarlos sería tocar
+  toda la interfaz.
+- **Los paquetes** también se pueden comprar (250 bits), además de los del
+  pase, para que el gacha sirva antes del nivel 3.
+- **El título no sale en el ranking**: habría que guardarlo con cada
+  partida (el ranking es de Adam). Sale en la placa en red, en la sala y en
+  el menú.
+- **Una skin puesta que no se tiene** (de cuando todas eran gratis) sale como
+  la original, y en red no se manda.
+- **Modo demostración** para la defensa (D17): con `cartera=demo`, solo en
+  depuración, otro fichero con 20 000 bits y el pase en el nivel 28.
+
+**Falta:** el asset de la moneda (`lote_bits.zip`, se lo pide Alan a Claude
+en el chat): hasta entonces los bits salen como texto («1240 BITS»).

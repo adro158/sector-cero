@@ -76,7 +76,7 @@ ENet. Se hablan por el bus y por estas funciones de `red.gd`:
 func es_anfitrion() -> bool
 func en_red() -> bool                 # false en una partida de un jugador
 func mi_id() -> int
-func jugadores() -> Array             # [{id, nombre, personaje, skins}]
+func jugadores() -> Array             # [{id, nombre, personaje, skins, perfil}]
 
 # Del juego a la red
 func enviar_entrada(entrada: Dictionary)   # cliente → anfitrión, cada fotograma
@@ -86,7 +86,8 @@ func enviar_suceso(suceso: String, datos: Array)  # anfitrión → clientes
 
 Señales nuevas del bus, **añadidas el 13/11** en `globales/bus_eventos.gd`
 (PR pequeño `adam/contrato-red`) y apuntadas en `equipo/contexto.md`. Un
-jugador es `{id, nombre, personaje, skins}`: `id` el de la red (1 es el
+jugador es `{id, nombre, personaje, skins, perfil}` (perfil: lo que lleva
+puesto del pase, desde el 19/11): `id` el de la red (1 es el
 anfitrión), `personaje` su índice en el equipo (0, 1 o 2) y `skins` las que
 eligió en su ordenador (`{"Mago": 12}`, desde el 18/11, de Alan):
 
