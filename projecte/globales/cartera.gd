@@ -25,13 +25,15 @@ signal premio_conseguido(premio: Dictionary)
 
 const Misiones := preload("res://globales/misiones.gd")
 const ContadorPartida := preload("res://globales/contador_partida.gd")
+const PaseBatalla := preload("res://globales/pase_batalla.gd")
+const Logros := preload("res://globales/logros.gd")
+const Premios := preload("res://globales/premios.gd")
+const Recompensa := preload("res://globales/recompensa.gd")
+## Si el pase da una skin que ya se tenía (comprada), se devuelve en bits.
+const BITS_POR_REPETIDA := 300
 const RUTA := "user://cartera.cfg"
 ## Si cambia lo que se guarda, sube y _leer convierte lo viejo.
 const FORMATO := 1
-## La racha: bits por cada día seguido jugado, hasta un tope (decisión de
-## Alan, 19/11: sin perder nada si se falla un día, la racha solo empieza otra vez).
-const RACHA_POR_DIA := 10
-const RACHA_MAXIMA := 50
 
 static var actual: Node
 
@@ -64,6 +66,11 @@ func tiene_skin(_personaje: String, _numero: int) -> bool:
 	return true
 
 
+## Si la ha conseguido de verdad (del pase, la tienda o un paquete).
+func tiene_skin_de_verdad(personaje: String, numero: int) -> bool:
+	return numero == 1 or numero in _fichero.get_value("skins", "tengo", {}).get(personaje, [])
+
+
 ## Las misiones de ahora (3 diarias y 3 semanales), renovadas si ha cambiado
 ## el día o la semana: [{id, texto, tipo, progreso, objetivo, bits, puntos, hecha}].
 func misiones() -> Array:
@@ -87,14 +94,19 @@ func cambiar_mision(id: String) -> bool:
 	return true
 
 
-## Cómo va el pase: {nivel, puntos, necesarios, maximo}. Fase 3.
+## Cómo va el pase: {nivel, puntos, en_el_nivel, necesarios, maximo}.
 func pase() -> Dictionary:
-	return {"nivel": 0, "puntos": 0, "necesarios": 0, "maximo": 0}
+	return PaseBatalla.estado(_fichero)
 
 
-## Los logros: [{id, texto, titulo, progreso, objetivo, hecho}]. Fase 3.
+## Los logros: [{id, texto, titulo, progreso, objetivo, hecho}].
 func logros() -> Array:
-	return []
+	return Logros.lista(_fichero)
+
+
+## Los títulos, marcos, estelas o temas que se tienen (sus ids).
+func conseguidos(tipo: String) -> Array:
+	return Premios.conseguidos(_fichero, tipo)
 
 
 ## Lo ganado en la última partida, para la pantalla final (la lee en su
@@ -104,26 +116,9 @@ func ultima_ganancia() -> Dictionary:
 	return _ultima if not _ultima.is_empty() else _ganancia_vacia()
 
 
-## Los bits y los puntos del pase de una partida, sin estado: así se prueba
-## sin nodo y el simulador la usa para calibrar los números (plan_tienda.md).
+## Los bits y los puntos del pase de una partida (recompensa.gd), sin estado.
 static func recompensa(estadisticas: Dictionary) -> Dictionary:
-	if estadisticas.get("trucos", false):
-		return {"bits": 0, "puntos": 0}
-	var tiempo: float = estadisticas.get("tiempo", 0.0)
-	var victoria: bool = estadisticas.get("victoria", false)
-	var minutos := int(tiempo / 60.0)
-	var bits := 2.0 * minutos
-	# Llegar a la fase 2 (derrotar a Kernel Panic) y ganar dan un poco más.
-	if tiempo > 600.0 or victoria:
-		bits += 10.0
-	if victoria:
-		bits += 25.0
-	bits *= {"facil": 0.75, "dificil": 1.5}.get(estadisticas.get("dificultad", "media"), 1.0)
-	var puntos := 10 * minutos
-	# En red los puntos del pase valen el doble (decisión de Alan, 19/11).
-	if estadisticas.get("en_red", false):
-		puntos *= 2
-	return {"bits": roundi(bits), "puntos": puntos}
+	return Recompensa.de_partida(estadisticas)
 
 
 func hoy() -> String:
@@ -139,33 +134,46 @@ func _al_terminar_partida(estadisticas: Dictionary) -> void:
 	var ganado := recompensa(estadisticas)
 	_ultima.bits = ganado.bits
 	_ultima.puntos = ganado.puntos
-	_ultima.racha = _contar_racha()
+	_ultima.racha = Recompensa.contar_racha(_fichero, hoy())
 	_ultima.bits += _ultima.racha
+	var partida: Dictionary = _contador.resumen(estadisticas)
 	Misiones.renovar(_fichero, hoy())
-	for mision in Misiones.contar(_fichero, _contador.resumen(estadisticas)):
+	for mision in Misiones.contar(_fichero, partida):
 		_ultima.bits += mision.bits
 		_ultima.puntos += mision.puntos
 		_ultima.misiones.append(mision)
 		mision_completada.emit(mision)
 	_sumar_bits(_ultima.bits)
+	# El pase: cada nivel nuevo da su premio solo.
+	for nivel in PaseBatalla.sumar(_fichero, _ultima.puntos):
+		_ultima.niveles.append(nivel)
+		_dar(PaseBatalla.premio(nivel))
+	var estado := pase()
+	pase_cambiado.emit(estado.nivel, estado.en_el_nivel, estado.necesarios)
+	for logro in Logros.contar(_fichero, partida, racha(), Premios.skins_conseguidas(_fichero)):
+		_ultima.premios.append({"nombre": "Logro: %s" % logro.texto})
+		_dar({"tipo": "titulo", "id": logro.titulo})
 	_guardar()
 
 
-## Los días seguidos jugando (0 si se ha roto: el último no es hoy ni ayer).
+## Da un premio del pase o de un logro y lo apunta para la pantalla final.
+## Una skin que ya se tenía (comprada antes) se devuelve en bits.
+func _dar(premio: Dictionary) -> void:
+	if premio.tipo == "skin" and tiene_skin_de_verdad(premio.personaje, premio.numero):
+		premio = {"tipo": "bits", "cantidad": BITS_POR_REPETIDA}
+	if premio.tipo == "bits":
+		_sumar_bits(premio.cantidad)
+	else:
+		Premios.dar(_fichero, premio)
+	var conseguido := premio.duplicate()
+	conseguido.nombre = Premios.nombre(premio)
+	_ultima.premios.append(conseguido)
+	premio_conseguido.emit(conseguido)
+
+
+## Los días seguidos jugando (0 si se ha roto).
 func racha() -> int:
-	var ultimo: String = _fichero.get_value("racha", "ultimo_dia", "")
-	return _fichero.get_value("racha", "dias", 0) if ultimo == hoy() or ultimo == Misiones.ayer_de(hoy()) else 0
-
-
-## Unos bits más por la primera partida de cada día, según los días seguidos.
-func _contar_racha() -> int:
-	var ultimo: String = _fichero.get_value("racha", "ultimo_dia", "")
-	if ultimo == hoy():
-		return 0
-	var dias: int = _fichero.get_value("racha", "dias", 0) + 1 if ultimo == Misiones.ayer_de(hoy()) else 1
-	_fichero.set_value("racha", "ultimo_dia", hoy())
-	_fichero.set_value("racha", "dias", dias)
-	return mini(RACHA_POR_DIA * dias, RACHA_MAXIMA)
+	return Recompensa.racha(_fichero, hoy())
 
 
 func _sumar_bits(cantidad: int) -> void:

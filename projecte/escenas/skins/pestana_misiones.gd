@@ -8,6 +8,7 @@ extends VBoxContainer
 ## Sin class_name: la crea ventana_skins.gd con preload.
 
 const Cartera := preload("res://globales/cartera.gd")
+const Recompensa := preload("res://globales/recompensa.gd")
 const ANCHO := 720.0
 const BITS := Color("#00E5FF")
 const HECHA := Color("#4DFF99")
@@ -45,7 +46,7 @@ func poner_al_dia() -> void:
 		_lista.add_child(_fila(mision))
 	var dias: int = Cartera.actual.racha()
 	_racha.text = "Racha: %d %s. La primera partida de cada día da +%d bits por día seguido (hasta +%d); fallar un día no quita nada." % [
-		dias, "día" if dias == 1 else "días", Cartera.RACHA_POR_DIA, Cartera.RACHA_MAXIMA]
+		dias, "día" if dias == 1 else "días", Recompensa.RACHA_POR_DIA, Recompensa.RACHA_MAXIMA]
 
 
 func _titulo(texto: String) -> void:
