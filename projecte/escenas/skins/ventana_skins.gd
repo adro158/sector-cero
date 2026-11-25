@@ -64,6 +64,7 @@ func _ready() -> void:
 	caja.add_child(volver)
 	add_child(EstiloInterfaz.ventana_centrada(caja))
 	visible = false
+	Cartera.actual.bits_cambiados.connect(_al_cambiar_bits)
 
 
 ## Abre las skins en el armario, con ese personaje (su índice en el armario;
