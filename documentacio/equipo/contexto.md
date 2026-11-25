@@ -228,6 +228,17 @@ campo `skins` de cada jugador, `{id, nombre, personaje, skins}`). Los
 retratos del HUD salen de `aspecto` en el estado del equipo
 (`equipo_cambiado`, `personaje_caido`): la skin de quien lleva cada uno.
 
+**La cartera** (`globales/cartera.gd`, desde el 19/11, de Alan; lo crea
+`Transicion`; plan y números en `documentacio/plan_tienda.md`): los bits, las
+misiones diarias y semanales, el pase de batalla, los logros y lo conseguido.
+Se guarda en `user://cartera.cfg`, aparte de las opciones. Escucha
+`partida_terminada` (y, durante la partida, otras señales del bus) para
+contar lo ganado; con `trucos`, no da nada. Sus avisos son señales del propio
+nodo (`bits_cambiados`, `mision_completada`, `pase_cambiado`,
+`premio_conseguido`), no del bus: solo las escuchan las pantallas de Alan. La
+pantalla final lee `Cartera.actual.ultima_ganancia()`. El simulador la aparta
+del bus (`_apartar_cartera`), como a la cuenta.
+
 Autoloads registrados: `Actualizador` (tiene que ser el primero: carga la
 actualización descargada antes que nada), `BusEventos`, `GestorGuardado`,
 `GestorAudio`, `Transicion` (fundido entre escenas; al arrancar pone también el
