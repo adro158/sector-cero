@@ -28,7 +28,7 @@ porque cada uno lleva una herramienta distinta.
 ### Las escenas
 
 ```
-menu_principal.tscn          Menú: reglas, ranking, opciones y récord
+menu_principal.tscn          Menú: JUGAR, COLECCIÓN, PERFIL y OPCIONES (24/11)
 juego.tscn                   La partida, que junta tres piezas:
 ├── Arena                    El suelo infinito
 ├── RaizJuego                Toda la jugabilidad
@@ -535,6 +535,31 @@ la horda, que cambia de posición en la lista cuando muere otro, cada uno lleva
 un número único. La barra de experiencia se llena con un `Tween` y destella al
 subir de nivel; como al subir de nivel el juego ya está en pausa, sus `Tween`
 siguen corriendo en pausa (`TWEEN_PAUSE_PROCESS`).
+
+**El menú principal** (24/11, con las piezas del lote del menú). Tenía ocho
+botones en fila, la dificultad, la mejor partida y una línea de cómo se
+juega; ahora son cuatro botones grandes (JUGAR, COLECCIÓN, PERFIL y OPCIONES)
+y lo demás está agrupado en ventanas, cada una en su script con `preload` y
+sin `class_name`:
+- `ventana_jugar.gd`: tarjetas para el modo y la dificultad (`tarjeta_menu.gd`,
+  un `Button` de alternar en un `ButtonGroup`), las reglas y EMPEZAR.
+- `panel_perfil.gd`: la cuenta, los récords y, en pestañas, las partidas de
+  la cuenta y el ranking.
+- `pestana_version.gd`: la versión, ACTUALIZAR y VERSIONES, en las opciones
+  del menú.
+- `personajes_menu.gd`: los personajes en sus peanas, con un cartel al pasar
+  el ratón o el foco.
+- `tarjeta_novedades.gd`: el texto de la versión, que la Action copia a
+  `res://novedades.txt` al publicar, con NUEVO hasta que se ve (la opción
+  `novedades_vistas`).
+
+`menu_principal.gd` solo crea las ventanas, las conecta y coloca las cosas
+respecto al centro de la pantalla (con el `aspect` «expand», en una pantalla
+más ancha el viewport crece de lado). Las piezas son `StyleBoxTexture` de 9
+trozos con un margen distinto por lado (`EstiloInterfaz.estilo_trozos`), en
+`piezas_menu.gd`. `ventana_centrada()` usa el marco nuevo en todas las
+ventanas del juego y, con título, monta su banda sobre el borde de arriba,
+solapada con una separación negativa.
 
 **La sensación de juego** (24/10). La cámara solo se mueve desde `sacudir` del
 jugador: un «trauma» que sube con cada golpe y se apaga solo, con un azar

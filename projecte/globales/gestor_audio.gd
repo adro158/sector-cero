@@ -15,7 +15,7 @@ const MUSICA_POR_ESCENA := {
 ## Todos los efectos, por el nombre de su fichero en medios/audio/.
 const EFECTOS := [
 	"muerte", "gema", "subir_nivel", "elegir", "dano", "victoria", "derrota",
-	"pausa", "clic", "cambio", "evolucion", "explosion", "firewall", "ping",
+	"pausa", "clic", "encima", "cambio", "evolucion", "explosion", "firewall", "ping",
 	"escaner", "alarma_jefe", "alarma_elite",
 	# Del 27/10: el escudo de NÚCLEO CERO, las ultis y las evoluciones.
 	"ancla_bloqueada", "ancla_rota", "escudo_roto", "ulti_rayo", "ulti_giro",
@@ -178,6 +178,21 @@ func _al_cambiar_escena() -> void:
 func _al_anadir_nodo(nodo: Node) -> void:
 	if nodo is BaseButton:
 		nodo.pressed.connect(sonar.bind("clic"))
+		# Y un tic al pasar por encima o al llegar con el mando (24/11).
+		nodo.mouse_entered.connect(_al_pasar.bind(nodo))
+		nodo.focus_entered.connect(_al_enfocar.bind(nodo))
+
+
+func _al_pasar(boton: BaseButton) -> void:
+	if not boton.disabled:
+		sonar("encima")
+
+
+## Al pulsar con el ratón, el botón también coge el foco: ahí no, que ya ha
+## sonado al pasar por encima y ahora suena el clic.
+func _al_enfocar(boton: BaseButton) -> void:
+	if not boton.is_hovered():
+		_al_pasar(boton)
 
 
 func _al_morir_enemigo(_posicion: Vector2, tipo: String) -> void:

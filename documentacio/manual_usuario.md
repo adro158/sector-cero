@@ -42,8 +42,8 @@ navegador, en [adro158.github.io/sector-cero](https://adro158.github.io/sector-c
 
 ## Cómo se juega
 
-Antes de jugar, elige la **dificultad** en el menú principal (se queda
-guardada para la próxima vez):
+Antes de jugar, en la ventana **JUGAR** del menú principal, elige si juegas
+solo o en red y la **dificultad** (se queda guardada para la próxima vez):
 
 - **Fácil:** comparado con la media, el malware hace un 30 % menos de daño y
   tiene algo menos de vida, y cuando llega el jefe huye toda la horda.
@@ -129,9 +129,20 @@ teclas al tocar el teclado o el ratón.
 
 ## Pantallas
 
-- **Menú:** dificultad, jugar, reglas (qué hace cada personaje, mejora y
-  enemigo, y cada ataque de los jefes), ranking, opciones y salir.
-- **Skins** (el botón SKINS del menú, o pulsar un personaje), en seis
+- **Menú** (rehecho el 24/11): cuatro botones a la izquierda y, en medio,
+  los tres personajes en sus peanas. Al pasar el ratón (o el mando) por un
+  personaje, sale su cartel con su herramienta y su ulti. Arriba a la
+  derecha, tu cuenta; abajo, SALIR y las novedades de la versión (con NUEVO
+  hasta que las ves o juegas). Enter abre JUGAR y Esc sale.
+  - **JUGAR:** SOLO o EN RED (lleva a la sala), la dificultad, «¿Cómo se
+    juega?» (las reglas: qué hace cada personaje, mejora y enemigo, y cada
+    ataque de los jefes) y EMPEZAR. Enter empieza.
+  - **COLECCIÓN:** las skins (abajo).
+  - **PERFIL:** tu cuenta y tus récords, y en pestañas tus partidas (las de
+    la cuenta) y el ranking del ordenador.
+  - **OPCIONES:** sonido, pantalla y accesibilidad, y en el menú también la
+    versión, para actualizar o elegir otra.
+- **Skins** (el botón COLECCIÓN del menú, o pulsar un personaje), en seis
   pestañas. Arriba, los **bits** que tienes: la moneda del juego, que se gana
   jugando y con las misiones (nada de dinero real).
   - **Armario:** el aspecto de cada personaje. Cada uno tiene su original y
@@ -154,14 +165,15 @@ teclas al tocar el teclado o el ratón.
   desarrollador (F1) no se gana nada.
 - **Pausa:** continuar, reglas, opciones y volver al menú (pregunta antes de
   abandonar la partida, que no cuenta para el ranking).
-- **Ranking:** las 10 mejores partidas del ordenador, con la dificultad de
+- **Ranking** (en PERFIL): las 10 mejores partidas del ordenador, con la dificultad de
   cada una. Si tu partida entra, al acabar te pide un nombre.
 - **Cuenta** (opcional): al abrir el juego te pide entrar o crear una cuenta,
   con solo un usuario y una contraseña; también puedes jugar sin cuenta. Con
   ella se guardan en internet tus partidas, tus récords y tus opciones, y
   la próxima vez entras solo. Si no hay conexión, las partidas esperan y se
-  suben más tarde. Se cambia o se cierra con el botón CUENTA del menú.
-- **Opciones**, en tres pestañas. Se guardan solas.
+  suben más tarde. Se cambia o se cierra con tu nombre, arriba a la derecha
+  del menú, o desde PERFIL.
+- **Opciones**, en tres pestañas (en el menú, cuatro: también la versión). Se guardan solas.
   - **Sonido:** volumen general, de la música y de los efectos, y silencio
     al cambiar de ventana.
   - **Pantalla:** pantalla completa (también con F11), filtro CRT, límite

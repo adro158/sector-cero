@@ -14,6 +14,7 @@ const Red := preload("res://globales/red.gd")
 const CodigoSala := preload("res://globales/codigo_sala.gd")
 const Cuenta := preload("res://globales/cuenta.gd")
 const Premios := preload("res://globales/premios.gd")
+const Piezas := preload("res://escenas/menu_principal/piezas_menu.gd")
 ## En el orden del equipo (cambio_personaje.gd): el índice es el personaje.
 const PERSONAJES: Array[DatosPersonaje] = [
 	preload("res://recursos/personajes/datos/espadachin.tres"),
@@ -46,9 +47,6 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("JUGAR EN RED", 36, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
 	caja.add_child(_parrafo("De 2 a 3 jugadores en la misma red (la de clase o la de casa). Uno crea la sala y los demás se unen con su código.", EstiloInterfaz.TEXTO_SUAVE))
 
 	_inicio = VBoxContainer.new()
@@ -90,7 +88,7 @@ func _ready() -> void:
 	_volver.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	caja.add_child(_volver)
 
-	add_child(EstiloInterfaz.ventana_centrada(caja))
+	add_child(EstiloInterfaz.ventana_centrada(caja, EstiloInterfaz.NEON, "JUGAR EN RED", Piezas.icono(Piezas.Icono.EN_RED)))
 	visible = false
 	# Métodos y no lambdas: la red y el bus viven todo el juego y este panel
 	# no (el error del 13/11 con la ventana de opciones).

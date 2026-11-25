@@ -1,7 +1,8 @@
 extends RefCounted
 
-## Una partida en una fila: la usan el ranking (panel_ranking.gd) y «tus
-## últimas partidas» de la cuenta (panel_cuenta.gd), para que se vean igual.
+## Una partida en una fila: la usan el ranking y las partidas del perfil
+## (panel_perfil.gd, desde el 24/11) y «tus últimas partidas» de la cuenta
+## (panel_cuenta.gd), para que se vean igual.
 ## Es una banda de 9 trozos con, de izquierda a derecha: el puesto (medalla en
 ## los tres primeros) o la fecha, la victoria o la derrota como icono, el
 ## nombre (solo en el ranking), el tiempo, el nivel, los eliminados, el

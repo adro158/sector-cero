@@ -146,6 +146,15 @@ poco). Falta medirlo con 100 partidas por dificultad (punto 7).
 
 ### Siguiente
 
+- **El balance de los jefes (issue #27, pedido por Adam el 18/11):** hecha la
+  primera parte en el PR #29, sin fusionar
+  (`bitacora/2026-11-18_adam_balance-jefes.md`):
+  - el rebote del Ping ya no vuelve al jefe que acaba de golpear
+  - más horda al invocar
+  - la jaula solo encierra al jugador
+
+  Faltan la vida de las anclas y que la embestida de Kernel Panic escale con
+  la velocidad del jugador.
 - **El panel técnico (F3) con sprites:** rematado el 02/11 (sesión 20),
   sin publicar todavía. Falta verlo en casa, con la GPU de verdad: que la
   escala de los fps se ajuste bien a 1000-2500 fps. Las vistas previas y
@@ -383,6 +392,26 @@ Subido y fusionado con la v1.15 (05/11). Con el sí de Adam, borrada
 `main` protegida: solo con PR y la comprobación en verde
 (`flujo_de_trabajo.md`). El 09/11 Alan creó su `CLAUDE.local.md` y rellenó
 su ficha con el ordenador del instituto (falta el de casa).
+
+### El menú principal nuevo (24/11, PR #37, en la v1.23)
+
+Con las piezas de `lote_menu.zip` y su maqueta
+(`bitacora/2026-11-24_adam_menu-nuevo.md`):
+- cuatro botones: **JUGAR** (el modo, la dificultad en tarjetas, las reglas
+  y EMPEZAR), **COLECCIÓN** (las skins de Alan), **PERFIL** (la cuenta, los
+  récords, las partidas y el ranking) y **OPCIONES** (con la pestaña Versión)
+- los personajes en sus peanas, con su cartel
+- la cuenta, SALIR y las novedades en las esquinas
+- el marco nuevo en todas las ventanas
+- **dejar la partida a medias**: GUARDAR Y SALIR en la pausa (solo con un
+  jugador) y CONTINUAR en JUGAR; en `user://` y, con cuenta, en Supabase
+  (tabla `partida_guardada`)
+
+Falta:
+- jugarlo a mano con el mando y en táctil
+- la misión de hoy y el aviso de COLECCIÓN, cuando Alan tenga las misiones
+  y el pase (issue #35)
+- probar la partida guardada en la nube con una cuenta de verdad
 
 ### Para la entrega
 

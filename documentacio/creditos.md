@@ -285,6 +285,17 @@ scripts no forman parte del repositorio.
   misma paleta. Los dibujó Claude en el chat (claude.ai) con un script de
   Python (numpy y Pillow), y Adam los trajo en un zip
   (`lote_red_interfaz.zip`, rama `zips-lotes`).
+- **El menú principal nuevo** (`medios/interfaz/`, 24/11/2026): el botón
+  grande (5 estados), 17 iconos de 16x16, las tarjetas de JUGAR (normal,
+  encima y elegida), los iconos de las tres dificultades, la etiqueta de la
+  cuenta, la peana de los personajes, el cartel y su pico, el marco, la
+  pestaña y la insignia NUEVO de las novedades, el aviso con número, la
+  barra de la misión de hoy y el marco y la banda del título de todas las
+  ventanas (`ventana.png` y `ventana_titulo.png`). Casi todo en grises para
+  teñirlo; los iconos de dificultad, NUEVO y el aviso ya van de color. Los
+  dibujó Claude en el chat (claude.ai), con IA, con un script de Python
+  (numpy y Pillow), y Adam los trajo en un zip (`lote_menu.zip`, rama
+  `zips-lotes`).
 - **Icono del juego** (`medios/icono/`, 16/10/2026, de la misma forma): el
   encapuchado de los personajes, con los ojos brillando, delante de un cero
   tachado (Ø) de neón; por la túnica le bajan tres circuitos con los colores

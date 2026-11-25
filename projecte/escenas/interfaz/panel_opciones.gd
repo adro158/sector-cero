@@ -8,10 +8,19 @@ extends Control
 ## porque en una lista ya no cabían en 720 px. Con el mando, LB y RB cambian
 ## de pestaña (05/11).
 ## La usan el menú principal y el menú de pausa. Cada cambio se guarda en el
-## momento a través de GestorGuardado, que también lo aplica.
+## momento a través de GestorGuardado, que también lo aplica. En el menú lleva
+## además la pestaña Versión (pestana_version.gd, 24/11); en la pausa no, que
+## en mitad de una partida no pinta instalar versiones.
 
 signal cerrado
+## VERSIONES en la pestaña Versión: el menú abre su ventana.
+signal versiones_pedidas
 
+const PestanaVersion := preload("res://escenas/interfaz/pestana_version.gd")
+const Piezas := preload("res://escenas/menu_principal/piezas_menu.gd")
+
+## Si lleva la pestaña Versión: lo pone el menú antes de añadirla.
+var con_version := false
 var _ventana: ColorRect
 var _pestanas: TabContainer
 ## El control de cada opción, para que siga los cambios que llegan por otro
@@ -29,10 +38,6 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var caja := VBoxContainer.new()
-	var titulo := EstiloInterfaz.etiqueta("OPCIONES", 36, EstiloInterfaz.NEON)
-	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(titulo)
-
 	_pestanas = TabContainer.new()
 	# Del alto de la pestaña más larga: si no, la ventana cambiaría de tamaño
 	# (y de sitio, porque va centrada) al pasar de una a otra.
@@ -70,11 +75,15 @@ func _ready() -> void:
 	_selector(accesibilidad, "Números de daño", "numeros_dano",
 		["todos", "rojos", "ninguno"], ["todos", "solo los rojos", "ninguno"])
 	_casilla(accesibilidad, "Consejos (primeras partidas)", "consejos")
+	if con_version:
+		var version := PestanaVersion.new()
+		version.versiones_pedidas.connect(versiones_pedidas.emit)
+		_pestanas.add_child(version)
 
 	var volver := EstiloInterfaz.segun_mando(EstiloInterfaz.boton("", cerrar), "VOLVER  [Esc]", "VOLVER  [B]")
 	caja.add_child(volver)
 
-	_ventana = EstiloInterfaz.ventana_centrada(caja)
+	_ventana = EstiloInterfaz.ventana_centrada(caja, EstiloInterfaz.NEON, "OPCIONES", Piezas.icono(Piezas.Icono.OPCIONES))
 	add_child(_ventana)
 	visible = false
 	# Un método y no una lambda por control (13/11): una lambda que solo usa
