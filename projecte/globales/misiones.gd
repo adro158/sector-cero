@@ -109,28 +109,36 @@ static func avance(mision: Dictionary, partida: Dictionary) -> int:
 # --- Las de ahora, en el fichero de la cartera (sección [misiones]) ---
 
 
-## Si ha cambiado el día o la semana, sortea las nuevas y olvida el progreso
-## de las que se van. Devuelve si ha cambiado algo (para guardar).
+## Si ha cambiado el día o la semana, sortea las nuevas y empiezan de cero.
+## Devuelve si ha cambiado algo (para guardar).
 static func renovar(fichero: ConfigFile, dia: String) -> bool:
 	var semana := lunes_de(dia)
 	var cambia := false
 	if fichero.get_value("misiones", "dia", "") != dia:
 		fichero.set_value("misiones", "dia", dia)
 		fichero.set_value("misiones", "diarias", sortear_diarias(dia))
+		_olvidar(fichero, "diaria")
 		cambia = true
 	if fichero.get_value("misiones", "semana", "") != semana:
 		fichero.set_value("misiones", "semana", semana)
 		fichero.set_value("misiones", "semanales", sortear_semanales(semana))
+		_olvidar(fichero, "semanal")
 		cambia = true
-	if cambia:
-		var ahora := de_ahora(fichero)
-		var progreso: Dictionary = fichero.get_value("misiones", "progreso", {})
-		for id in progreso.keys():
-			if not id in ahora:
-				progreso.erase(id)
-		fichero.set_value("misiones", "progreso", progreso)
-		fichero.set_value("misiones", "hechas", fichero.get_value("misiones", "hechas", []).filter(func(id): return id in ahora))
 	return cambia
+
+
+## Olvida el progreso de todas las misiones de ese tipo y si estaban hechas.
+## Todas, no solo las que se van: una diaria que vuelve a salir al día
+## siguiente empieza de cero (hasta el 27/11 se quedaba con lo de ayer, ya
+## hecha, y parecía que las misiones no se renovaban).
+static func _olvidar(fichero: ConfigFile, de_tipo: String) -> void:
+	var progreso: Dictionary = fichero.get_value("misiones", "progreso", {})
+	for id in progreso.keys():
+		if tipo(id) == de_tipo:
+			progreso.erase(id)
+	fichero.set_value("misiones", "progreso", progreso)
+	var hechas: Array = fichero.get_value("misiones", "hechas", [])
+	fichero.set_value("misiones", "hechas", hechas.filter(func(id): return tipo(id) != de_tipo))
 
 
 static func de_ahora(fichero: ConfigFile) -> Array:
