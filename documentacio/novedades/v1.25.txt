@@ -1,0 +1,1 @@
+- Arreglado: si una misión diaria volvía a salir al día siguiente, salía ya hecha y no se podía cumplir. Ahora cada día empiezan todas de cero (y las semanales, cada lunes).

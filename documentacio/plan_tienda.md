@@ -280,3 +280,9 @@ menú, y los iconos en la pantalla final, las misiones, el pase y la tienda.
 
 Las piezas comunes están en `escenas/skins/piezas_cartera.gd`. No se tocan
 ficheros de Adam.
+
+**Arreglo del 27/11** (rama `alan/misiones-diarias`). Al cambiar de día
+(o de semana), el progreso y las «hechas» se borran para **todas** las
+misiones de ese tipo, no solo para las que se van. Antes, una diaria que
+volvía a salir al día siguiente seguía hecha (bitácora
+`2026-11-27_alan_misiones-diarias.md`).
